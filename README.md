@@ -18,9 +18,17 @@
 /plugin install hp@ai-plugins
 ```
 
-**Codex и другие совместимые агенты:** скопируйте папку нужного скилла из
-`plugins/<имя>/skills/<имя>/` в каталог скиллов вашего агента (для Codex —
-согласно его документации по скиллам). Формат `SKILL.md` одинаковый.
+**Codex:** скопируйте папку скилла в каталог скиллов Codex:
+
+```
+git clone https://github.com/Akurganow/ai-plugins /tmp/ai-plugins
+mkdir -p ~/.codex/skills
+cp -r /tmp/ai-plugins/plugins/hp/skills/hp ~/.codex/skills/hp
+```
+
+(путь каталога скиллов сверяйте с актуальной документацией Codex по Agent
+Skills — формат `SKILL.md` одинаковый). **Другие совместимые агенты:** так
+же — папка скилла целиком в каталог скиллов агента.
 
 ## Плагины
 

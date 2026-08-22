@@ -1,0 +1,11 @@
+{
+  "name": "hp",
+  "description": "Личный вероятностный дашборд: интересы → измеримые вопросы → вероятности рынков предсказаний (Polymarket, Manifold) → markdown-дашборд. Детерминированные шаги делают Rust-бинари (скачиваются из публичных релизов под вашу платформу), агентные роли — ваш агент, без внешних ключей.",
+  "version": "0.0.1",
+  "author": {
+    "name": "Alexander Kurganov",
+    "url": "https://github.com/Akurganow"
+  },
+  "repository": "https://github.com/Akurganow/ai-plugins",
+  "license": "MIT"
+}

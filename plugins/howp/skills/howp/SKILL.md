@@ -1,16 +1,16 @@
 ---
-name: hp
+name: howp
 description: >
-  Placeholder for the upcoming hp probability dashboard skill — not functional
+  Placeholder for the upcoming howp probability dashboard skill — not functional
   yet, do not use for real tasks; it only explains the project. Будущий скилл:
   личный вероятностный дашборд — интересы → измеримые вопросы → вероятности
   рынков предсказаний (Polymarket, Manifold) → markdown-дашборд. Рабочая
   версия появится вместе с первым релизом бинарей; до тех пор применять,
-  только если пользователь явно спрашивает про проект hp или этот плагин.
+  только если пользователь явно спрашивает про проект howp или этот плагин.
 license: MIT
 ---
 
-# hp — личный вероятностный дашборд (заготовка)
+# howp — личный вероятностный дашборд (заготовка)
 
 **Статус: заготовка.** Плагин опубликован для обкатки канала установки;
 рабочая версия скилла появится вместе с первым релизом бинарей. Этот скилл

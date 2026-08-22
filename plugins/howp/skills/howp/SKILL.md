@@ -1,40 +1,41 @@
 ---
 name: howp
 description: >
-  Placeholder for the upcoming howp probability dashboard skill — not functional
-  yet, do not use for real tasks; it only explains the project. Будущий скилл:
-  личный вероятностный дашборд — интересы → измеримые вопросы → вероятности
-  рынков предсказаний (Polymarket, Manifold) → markdown-дашборд. Рабочая
-  версия появится вместе с первым релизом бинарей; до тех пор применять,
-  только если пользователь явно спрашивает про проект howp или этот плагин.
+  Placeholder for the upcoming howp probability dashboard skill — not
+  functional yet, do not use for real tasks; it only explains the project.
+  The future skill: a personal probability dashboard — interests →
+  measurable questions → prediction-market probabilities (Polymarket,
+  Manifold) → a markdown dashboard. The working version ships with the
+  first binary release; until then, invoke only when the user explicitly
+  asks about the howp project or this plugin.
 license: MIT
 ---
 
-# howp — личный вероятностный дашборд (заготовка)
+# howp — personal probability dashboard (placeholder)
 
-**Статус: заготовка.** Плагин опубликован для обкатки канала установки;
-рабочая версия скилла появится вместе с первым релизом бинарей. Этот скилл
-ничего не скачивает и не настраивает — только объясняет замысел. Если
-пользователь просит выполнить реальную задачу — скажи, что скилл ещё в
-разработке, и покажи ссылку ниже.
+**Status: placeholder.** This plugin is published to exercise the
+installation channel; the working skill ships together with the first
+binary release. This skill downloads nothing and configures nothing — it
+only explains the idea. If the user asks for a real task, say the skill is
+still in development and point to the link below.
 
-## Что это будет
+## What it will be
 
-- Вместо новостной ленты — вероятности: интересы разворачиваются в измеримые
-  вопросы, вопросы закрываются рынками предсказаний, дашборд показывает
-  «что стало вероятнее и насколько», с честными оговорками.
-- Детерминированная работа (сбор котировок, подсчёты, детектор резких
-  движений, рендер, хранение) — набор Rust-бинарей. Скилл скачивает их из
-  публичных релизов под вашу систему и сверяет контрольные суммы с таблицей,
-  закоммиченной в этом репозитории.
-- Агентные роли (опросник интересов, поиск рынков, верификация критериев,
-  пояснения) выполняет ваш агент по инструкциям скилла — внешние API-ключи
-  не нужны.
-- Настройка по средам: macOS (сборщик по расписанию через launchd — только
-  после явного согласия, объяснённого простым языком), GitHub-форк
-  (workflow: бесплатный сбор по крону, агентное — вручную), локальный режим
-  (данные в ~/.local/share/hp, в git не попадают).
+- Probabilities instead of a news feed: interests unfold into measurable
+  questions, questions are matched to prediction markets, and the dashboard
+  shows "what became more likely and by how much" — with honest caveats.
+- Deterministic work (quote collection, computation, a sharp-move detector,
+  rendering, storage) is done by a set of Rust binaries. The skill downloads
+  them for your system from the published releases and verifies checksums
+  against the table committed in this repository.
+- Agent roles (the interests interview, market discovery, resolution
+  criteria verification, explanations) are performed by your agent following
+  the skill's instructions — no external API keys required.
+- Per-environment setup: macOS (a scheduled collector via launchd — only
+  after your explicit consent, explained in plain language), a GitHub fork
+  (workflows: free data collection on a schedule, agent work manual-only),
+  and a local mode (data lives in ~/.local/share/howp, never in git).
 
-## Следить за проектом
+## Follow the project
 
 https://github.com/Akurganow/ai-plugins

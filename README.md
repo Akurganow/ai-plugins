@@ -1,15 +1,16 @@
 # ai-plugins
 
-Публичный маркетплейс агентных плагинов и скиллов. Скиллы следуют открытому
-[стандарту Agent Skills](https://agentskills.io/specification) (папка +
-`SKILL.md` с frontmatter) и работают в Claude Code, OpenAI Codex и других
-агентах, принявших стандарт.
+A public marketplace of agent plugins and skills. Skills follow the open
+[Agent Skills standard](https://agentskills.io/specification) (a folder with
+a `SKILL.md`) and work in Claude Code, OpenAI Codex, and other agents that
+adopted the standard.
 
-В этом репозитории — только текстовые инструкции скиллов и вшитые ссылки на
-релизы. Исполняемые файлы здесь не хранятся: скилл сам скачивает бинари под
-вашу платформу из публичных релизов и проверяет контрольные суммы.
+This repository contains only text instructions and pinned links to
+releases. No executables are stored in the tree: a skill downloads the
+binaries for your platform from the published releases and verifies their
+checksums against the table committed here.
 
-## Установка
+## Installation
 
 **Claude Code:**
 
@@ -18,7 +19,7 @@
 /plugin install howp@ai-plugins
 ```
 
-**Codex:** скопируйте папку скилла в каталог скиллов Codex:
+**Codex:** copy the skill folder into the Codex skills directory:
 
 ```
 git clone https://github.com/Akurganow/ai-plugins /tmp/ai-plugins
@@ -26,24 +27,24 @@ mkdir -p ~/.codex/skills
 cp -r /tmp/ai-plugins/plugins/howp/skills/howp ~/.codex/skills/howp
 ```
 
-(путь каталога скиллов сверяйте с актуальной документацией Codex по Agent
-Skills — формат `SKILL.md` одинаковый). **Другие совместимые агенты:** так
-же — папка скилла целиком в каталог скиллов агента.
+(check the current Codex documentation on Agent Skills for the exact skills
+directory — the `SKILL.md` format is the same). **Other compatible agents:**
+same idea — copy the skill folder into your agent's skills directory.
 
-## Плагины
+## Plugins
 
-| Плагин | Что делает | Статус |
+| Plugin | What it does | Status |
 |---|---|---|
-| `howp` | Личный вероятностный дашборд: интересы → измеримые вопросы → вероятности рынков предсказаний → markdown-дашборд | заготовка, релиз готовится |
+| `howp` | Personal probability dashboard: interests → measurable questions → prediction-market probabilities → a markdown dashboard | placeholder, first release in the works |
 
-## Устройство
+## Layout
 
 ```
-.claude-plugin/marketplace.json   каталог маркетплейса (Claude Code)
-plugins/<имя>/
-  .claude-plugin/plugin.json      манифест плагина (версия — по ней едут обновления)
-  skills/<имя>/SKILL.md           скилл по стандарту Agent Skills
+.claude-plugin/marketplace.json   marketplace catalog (Claude Code)
+plugins/<name>/
+  .claude-plugin/plugin.json      plugin manifest (its version drives updates)
+  skills/<name>/SKILL.md          the skill, per the Agent Skills standard
 ```
 
-Версии плагинов бампаются при каждом изменении — без бампа `version` в
-`plugin.json` установленные копии не получат обновление.
+Plugin versions are bumped on every change — without a `version` bump in
+`plugin.json`, installed copies do not receive the update.

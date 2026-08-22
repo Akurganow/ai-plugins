@@ -1,6 +1,6 @@
 {
   "name": "howp",
-  "description": "Личный вероятностный дашборд: интересы → измеримые вопросы → вероятности рынков предсказаний (Polymarket, Manifold) → markdown-дашборд. Детерминированные шаги делают Rust-бинари (скачиваются из публичных релизов под вашу платформу), агентные роли — ваш агент, без внешних ключей.",
+  "description": "Personal probability dashboard: interests → measurable questions → prediction-market probabilities (Polymarket, Manifold) → a markdown dashboard. Deterministic steps run as Rust binaries downloaded from public releases; agent roles are performed by your own agent, no external keys.",
   "version": "0.0.1",
   "author": {
     "name": "Alexander Kurganov",

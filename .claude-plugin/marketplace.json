@@ -5,14 +5,14 @@
     "url": "https://github.com/Akurganow"
   },
   "metadata": {
-    "description": "Публичный маркетплейс агентных плагинов и скиллов Akurganow. Скиллы следуют открытому стандарту Agent Skills и работают в Claude Code, Codex и других совместимых агентах.",
+    "description": "Public marketplace of Akurganow's agent plugins and skills. Skills follow the open Agent Skills standard and work in Claude Code, Codex, and other compatible agents.",
     "version": "0.1.0"
   },
   "plugins": [
     {
       "name": "howp",
       "source": "./plugins/howp",
-      "description": "Личный вероятностный дашборд: интересы → измеримые вопросы → вероятности рынков предсказаний → markdown-дашборд. Детерминированная работа — набором Rust-бинарей (скилл скачивает их из публичных релизов под вашу платформу), агентные роли выполняет ваш агент."
+      "description": "Personal probability dashboard: interests → measurable questions → prediction-market probabilities → a markdown dashboard. Deterministic work is done by Rust binaries (downloaded from public releases for your platform); agent roles are performed by your own agent — no external API keys."
     }
   ]
 }

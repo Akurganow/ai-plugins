@@ -1,11 +1,1 @@
-{
-  "name": "howp",
-  "description": "Personal probability dashboard: interests → measurable questions → prediction-market probabilities (Polymarket, Manifold) → a markdown dashboard. Deterministic steps run as Rust binaries downloaded from public releases; agent roles are performed by your own agent, no external keys.",
-  "version": "0.0.1",
-  "author": {
-    "name": "Alexander Kurganov",
-    "url": "https://github.com/Akurganow"
-  },
-  "repository": "https://github.com/Akurganow/ai-plugins",
-  "license": "MIT"
-}
+../plugin.json

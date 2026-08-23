@@ -87,6 +87,9 @@ SKILL_FIELDS = {
     "allowed-tools",
 }
 SKILL_NAME_RE = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
+SKILL_COMPATIBILITY_MAX = 500
+# A frontmatter delimiter is a whole line, never a substring of a value.
+FRONTMATTER_DELIMITER = re.compile(r"---[ \t]*")
 SKILL_DESCRIPTION_MAX = 1024
 
 problems: list[str] = []
@@ -149,16 +152,37 @@ def load_schema_validator():
 
 
 def parse_frontmatter(text: str):
-    """Return the YAML frontmatter of a SKILL.md as a dict, or None."""
+    """Return the YAML frontmatter of a SKILL.md as a dict, or None.
+
+    The block ends at the first *line* that is `---`, which is how a client
+    finds it: Hermes reads the closer with `re.search(r"\n---\s*\n", ...)`
+    (`hermes_cli/agent_plugins.py`), and YAML itself treats `---` at the start
+    of a line as a document marker.
+
+    Splitting on the substring `---` instead — which is what the Agent Skills
+    reference validator `skills-ref` does at `src/skills_ref/parser.py:45`,
+    and what this function did until it was tested — ends the block at the
+    first occurrence anywhere, including inside a quoted or folded value. Then
+    every rule below runs on a partial document that no client ever sees, and
+    whatever the author wrote after the truncation point is invisible: a
+    `SKILL.md` carrying an em dash and `---` in its folded `description`, an
+    unknown frontmatter field, and a `name` that does not match its directory
+    passed this check with `conformance OK` and exit 0.
+    """
     import yaml
 
-    if not text.startswith("---"):
+    text = text.lstrip("\ufeff")
+    lines = text.splitlines()
+    if not lines or not FRONTMATTER_DELIMITER.fullmatch(lines[0]):
         return None
-    parts = text.split("---", 2)
-    if len(parts) < 3:
+    for index in range(1, len(lines)):
+        if FRONTMATTER_DELIMITER.fullmatch(lines[index]):
+            block = "\n".join(lines[1:index])
+            break
+    else:
         return None
     try:
-        data = yaml.safe_load(parts[1])
+        data = yaml.safe_load(block)
     except yaml.YAMLError:
         return None
     return data if isinstance(data, dict) else None
@@ -176,7 +200,10 @@ def check_manifest(plugin_root: Path, validator) -> dict | None:
         return None
     # Not a spec rule but a loader reality and a repository rule: the root
     # manifest is the real file that vendor paths point at, never a link.
-    # Codex's loader refuses a symlinked root manifest outright.
+    # Codex's loader refuses a symlinked root manifest outright --
+    # find_plugin_manifest_path() calls symlink_metadata() and returns None
+    # for a symlink, pinned by rejects_symlinked_root_plugin_manifest:
+    # https://github.com/openai/codex/blob/main/codex-rs/utils/plugins/src/plugin_namespace.rs
     if manifest_path.is_symlink():
         fail(where, "plugin.json at the plugin root is a symlink; it must be the real file")
         return None
@@ -283,6 +310,43 @@ def check_skill_frontmatter(skill_dir: Path, skill_md: Path) -> None:
     elif len(description) > SKILL_DESCRIPTION_MAX:
         fail(where, f"skill description is {len(description)} characters, over the 1024 limit")
 
+    # The optional fields decide load-or-skip just as the required ones do: a
+    # client that type-checks them skips the skill when one is the wrong
+    # shape. Hermes is the worked example — `_valid_skill_frontmatter` in
+    # `hermes_cli/agent_plugins.py` returns an error for each of these and the
+    # skill is dropped with a diagnostic while its siblings still load — so a
+    # check that verifies only `name` and `description` passes packages that
+    # the mandatory client silently loads short of a skill.
+    if "license" in data and not isinstance(data["license"], str):
+        # Agent Skills: `license` is "License name or reference to a bundled
+        # license file".
+        fail(where, "SKILL.md frontmatter `license` is not a string")
+
+    if "compatibility" in data:
+        # Agent Skills: `compatibility` "Must be 1-500 characters if provided".
+        compatibility = data["compatibility"]
+        if not isinstance(compatibility, str) or not compatibility.strip():
+            fail(where, "SKILL.md frontmatter `compatibility` is not a non-empty string")
+        elif len(compatibility) > SKILL_COMPATIBILITY_MAX:
+            fail(
+                where,
+                f"skill compatibility is {len(compatibility)} characters, "
+                f"over the {SKILL_COMPATIBILITY_MAX} limit",
+            )
+
+    if "metadata" in data:
+        # Agent Skills: `metadata` is "A map from string keys to string values".
+        metadata = data["metadata"]
+        if not isinstance(metadata, dict) or any(
+            not isinstance(key, str) or not isinstance(value, str)
+            for key, value in metadata.items()
+        ):
+            fail(where, "SKILL.md frontmatter `metadata` is not a map of string to string")
+
+    if "allowed-tools" in data and not isinstance(data["allowed-tools"], str):
+        # Agent Skills: `allowed-tools` is "A space-separated string of tools".
+        fail(where, "SKILL.md frontmatter `allowed-tools` is not a string")
+
 
 def check_containment(plugin_root: Path) -> None:
     """§4.1(3) — nothing in the package may resolve outside the plugin root."""
@@ -372,9 +436,23 @@ def check_marketplace_index(manifests: dict[str, dict]) -> None:
     except (OSError, UnicodeError, json.JSONDecodeError) as exc:
         fail(where, f"does not parse: {exc}")
         return
+    # Shape before content, twice over. A hand-edited index can be a JSON
+    # array, or carry `plugins` as a string, or hold strings where entries
+    # belong; each of those used to reach `.get` on something that has none
+    # and end the run in an AttributeError traceback instead of a finding.
+    if not isinstance(index, dict):
+        fail(where, "does not contain a top-level object")
+        return
+    entries = index.get("plugins", [])
+    if not isinstance(entries, list):
+        fail(where, f"`plugins` is {type(entries).__name__}, must be an array")
+        return
 
     listed = set()
-    for entry in index.get("plugins", []):
+    for entry in entries:
+        if not isinstance(entry, dict):
+            fail(where, f"entry {entry!r} is not an object")
+            continue
         name, source = entry.get("name"), entry.get("source")
         if not isinstance(name, str) or not isinstance(source, str):
             fail(where, f"entry {entry!r} needs a string `name` and `source`")

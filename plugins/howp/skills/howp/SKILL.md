@@ -42,8 +42,8 @@ each point says what is missing.
   here, no market discovery procedure and no resolution criteria procedure.
 - Raw numbers will be put where the agent can look at them rather than
   dumped into its context: a temporary folder inside the skill's own
-  directory, ignored by git, documented in the README that ships with the
-  working skill. This package creates no such folder and stores nothing.
+  directory, ignoring itself, documented in the README. This package creates
+  no such folder and stores nothing.
 
 Per-environment setup — how collection is scheduled, and what runs in a fork
 rather than on your own machine — is not decided yet and is deliberately not

@@ -32,16 +32,24 @@ is stated per client with its source, or not stated at all.
 
 The surfaces this marketplace is meant for:
 
-- **Claude** — cloud and local.
+- **Claude** — Claude Code, local and cloud, and the Claude desktop app.
 - **Hermes** — Desktop and server. Required.
 - **Codex**
 - **OpenCode**
 - **Any client that implements Agent Plugins Specification 1.0.0.**
 
-No client has been installed end to end against this repository. Every
-instruction below is read off that client's own documentation or its own
-source, and says which; where a statement comes from running a client's own
-code against this tree, it says that too.
+Nothing below has been installed from this repository as published, because
+what is published does not yet contain the package layout described here.
+Every instruction is read off that client's own documentation first, and its
+own source only where the documentation does not answer; each says which, and
+where a statement comes from running a client's own code, it says that too.
+Only Claude's documentation site is reachable from the network this was
+written on, and it was read directly. Hermes' and OpenCode's are blocked, and
+both publish the same pages as Markdown in their own repositories, which is
+what was read instead. Codex's is blocked as well and its repository carries
+no replacement — `docs/skills.md` there is a three-line stub pointing back at
+the blocked page — so its claims come from its own source, install commands
+included, which is where Codex keeps its command help.
 
 ## Installing
 
@@ -52,39 +60,86 @@ code against this tree, it says that too.
 /plugin install howp@ai-plugins
 ```
 
-Source: the `/plugin` command's built-in help in Claude Code
-(`/plugin marketplace add <path/url>`, `/plugin install <plugin>@<market>`).
-Nothing in this repository differs between local and cloud Claude; the
-plugin is the same package either way.
+Source: Claude Code's own documentation
+(<https://code.claude.com/docs/en/discover-plugins>), which documents
+`/plugin marketplace add owner/repo` for "a GitHub repository that contains a
+`.claude-plugin/marketplace.json` file" and `/plugin install
+plugin-name@marketplace-name`. Nothing in this repository differs between
+local and cloud Claude; the plugin is the same package either way.
+
+The desktop app installs from the marketplaces already configured, without a
+terminal: the **+** button beside the prompt box, then **Plugins** → **Add
+plugin**, which opens a browser over "available plugins from your configured
+marketplaces" (<https://code.claude.com/docs/en/desktop>). The desktop app
+applies name rules the CLI does not, and this repository satisfies them:
+Claude Desktop's managed marketplace sync rejects a marketplace named `org`,
+`org-provisioned` or `unknown` in any casing, and accepts names of up to 128
+characters made of letters, digits, `.`, `_` and `-`, starting with a letter
+or digit — it rejects a whole marketplace whose name fails that and silently
+drops a plugin entry whose name does
+(<https://code.claude.com/docs/en/plugin-marketplaces>). `ai-plugins` and
+`howp` both pass.
 
 ### Hermes — Desktop and server
 
-Hermes reads Agent Plugins 1.0.0 packages directly. In
-<https://github.com/NousResearch/hermes-agent>, `hermes_cli/agent_plugins.py`
-validates a portable manifest at `plugin.json` in the plugin root, requires
-the canonical 1.0.0 `$schema`, and hands the package's skills to Hermes' own
-skill runtime; `hermes_cli/plugins.py` scans installed plugin directories for
-that manifest. Those two were executed against this tree:
-`read_agent_plugin_manifest` returns the `howp` manifest with no diagnostics,
-and `_scan_directory_level` reports one plugin, `howp` — when what it scans
-is the package directory itself.
+Hermes has no per-repository catalogue and does not read
+`.claude-plugin/marketplace.json` or anything resembling it. Its catalogue is
+a single central community index, `NousResearch/hermes-plugin-index`, that a
+plugin joins by pull request. This repository is therefore not a marketplace
+to Hermes, and a package is installed from it directly, by identifier.
 
-The install command is not stated here yet. Hermes' installer accepts an
-`owner/repo` identifier with an optional trailing subdirectory, and the
-identifier has to name the package, not the repository: given
-`Akurganow/ai-plugins`, Hermes' own `_resolve_git_url` returns no
-subdirectory (executed, same repository as above), so the clone root is
-treated as the plugin, no manifest is found there, the plugin is installed
-under the repository's name and Hermes logs that it "may not be a valid
-plugin". Nothing named `howp` is created, and
-`hermes plugins enable howp` would have nothing to enable. The identifier and
-flags to write instead are being verified against Hermes' own source in a
-separate pass; until that lands, no command is stated rather than guessed.
+What Hermes does support is the package format, in a documented section
+called "Portable Agent Plugins v1 packages": root `plugin.json`, `skills/`,
+`mcp.json`, symlink containment validated locally, no schema fetched while
+loading, and packages disabled until explicitly enabled. Its own scope note
+is worth repeating rather than upgrading — "This is an explicit supported
+subset, not a claim of full Agent Plugins conformance."
 
-What is already sourced: portable packages install disabled and are enabled
-explicitly. Hermes' own `plugins` parser says so in its description
-("Portable packages install disabled"), and its `--no-enable` help points at
-`hermes plugins enable <name>` (`hermes_cli/subcommands/plugins.py`).
+```
+hermes plugins install Akurganow/ai-plugins/plugins/howp --no-enable
+hermes plugins list
+hermes plugins enable howp
+```
+
+The trailing `plugins/howp` is load-bearing. `hermes plugins install
+Akurganow/ai-plugins` copies the whole repository into
+`~/.hermes/plugins/ai-plugins/`, which leaves the package at discovery depth
+3 while Hermes' scan stops at depth 2, so nothing is ever discovered — and
+the install still exits 0 and tells you to enable a plugin that is not there.
+
+Sources, in the order they were consulted. Hermes' documentation site is
+unreachable from the network this was written on, but the site is a build of
+Markdown published in the project's own repository under `website/docs/`
+(<https://github.com/NousResearch/hermes-agent>), and that is where these
+claims come from: `developer-guide/plugins/index.md` for the portable-package
+section, the scope note and the install-list-enable sequence,
+`user-guide/features/plugins.md` for the community index and the discovery
+layout, `reference/cli-commands.md` for `plugins install <identifier>`.
+
+Documentation did not answer one question, and it is the one this section
+turns on: the CLI reference documents `owner/repo`, a Git URL and a bare
+index name, and does not document the subdirectory form at all. That came
+from the implementation — `_resolve_git_url` in `hermes_cli/plugins_cmd.py`,
+same repository — and was then executed:
+`Akurganow/ai-plugins/plugins/howp` resolves to that repository with subdir
+`plugins/howp`, while `Akurganow/ai-plugins` resolves with no subdir.
+
+Also executed, against this working tree rather than against what is
+published: Hermes' own Agent Plugins loader reads this package with zero
+diagnostics — manifest valid, one skill, the vendor symlink preserved and
+still contained — and a full install, list and enable through Hermes' own
+installer, from a `file://` clone, produced `howp | enabled | 0.0.3` — the
+manifest version as it stood at that run. Its
+plugin scanner finds `howp` when it scans a directory that *holds* the
+package — `plugins/`, or the repository root as `plugins/howp` — and finds
+nothing when it is pointed at `plugins/howp` itself, because it iterates the
+children of the directory it is given.
+
+Desktop and server are one backend: the desktop app's install goes through
+the same installer, so manifest rules, the depth cap and the enablement
+default are identical, and the differences are surface-level — a pre-flight
+probe over the repository, and a `hermes://plugin/install?repo=…` deep link
+that takes the same identifier.
 
 ### Codex
 
@@ -108,25 +163,35 @@ codex plugin marketplace add Akurganow/ai-plugins --ref main
 codex plugin add howp@ai-plugins
 ```
 
-Source: Codex's own CLI — `codex-rs/cli/src/marketplace_cmd.rs` documents
-`codex plugin marketplace add owner/repo --ref main`, and
-`codex-rs/cli/src/plugin_cmd.rs` documents `codex plugin add
-PLUGIN@MARKETPLACE`. The marketplace name is not chosen on the command line:
+Source: Codex's own CLI, where its command help lives — the `after_help`
+examples in `codex-rs/cli/src/marketplace_cmd.rs` give `codex plugin
+marketplace add owner/repo --ref main`, and those in
+`codex-rs/cli/src/plugin_cmd.rs` give `codex plugin add PLUGIN@MARKETPLACE`. The marketplace name is not chosen on the command line:
 Codex takes it from the `name` field of the index it has just fetched, which
-here is `ai-plugins` (`validate_marketplace_root`, same file as above).
+here is `ai-plugins` (`validate_marketplace_root` in
+`codex-rs/core-plugins/src/marketplace.rs`, not either CLI file).
 
 ### OpenCode
 
 OpenCode loads Agent Skills; what it calls plugins is a different,
-JavaScript extension mechanism. So the skill directory is what you install:
+JavaScript extension mechanism. So the skill directory is what you install,
+and it goes to the vendor-neutral location rather than OpenCode's own:
 
 ```
-cp -r plugins/howp/skills/howp ~/.config/opencode/skills/howp
+cp -r plugins/howp/skills/howp ~/.agents/skills/howp
 ```
 
-Source: OpenCode's own documentation (<https://opencode.ai/docs/skills/>),
-which lists `~/.config/opencode/skills/<name>/SKILL.md` as the global
-location and `.opencode/skills/<name>/SKILL.md` as the project-local one.
+Source: OpenCode's own documentation. Its site is unreachable from the
+network this was written on; the same page is published in the project's
+repository at `packages/web/src/content/docs/skills.mdx`
+(<https://github.com/sst/opencode>), and it lists six search locations,
+among them "Global agent-compatible: `~/.agents/skills/<name>/SKILL.md`" and
+"Project agent-compatible: `.agents/skills/<name>/SKILL.md`", beside the
+vendor paths `~/.config/opencode/skills/<name>/SKILL.md` and
+`.opencode/skills/<name>/SKILL.md`. The vendor-neutral pair is what this
+repository points at, because a standard location is preferred to a
+vendor one wherever a client offers both. Use `.agents/skills/howp` inside a
+project instead of the home directory to scope the skill to that project.
 
 ### Any client implementing Agent Plugins 1.0.0
 
@@ -158,8 +223,14 @@ tools/schemas/                     the official manifest schema, vendored
 .github/workflows/conformance.yml  runs the check on pushes to main and on pull requests
 ```
 
-Plugin versions are bumped on every change — without a `version` bump in
-`plugin.json`, installed copies do not receive the update.
+Plugin versions are bumped on every change. The standard does not require a
+client to care — §10.2 says only that clients "MAY use `version` to determine
+whether updates are available and whether caches are stale" — but Claude Code
+does: "If set (here or in `plugin.json`), the plugin is pinned to this string
+and users only receive updates when it changes"
+(<https://code.claude.com/docs/en/plugin-marketplaces>). So a corrected
+package shipped without a bump is a correction that installed copies do not
+get.
 
 ## Cloning on Windows
 
@@ -186,6 +257,26 @@ setting only takes effect where the account may create symlinks at all, which
 is what Developer Mode grants. `tools/check-conformance.py` fails on such a
 checkout, and names that cause in the finding rather than reporting only a
 second copy of the manifest.
+
+The plugin manifest is not the only symlink here: `.claude/rules` is a link to
+`.agents/rules` and materialises as a 16-byte text file under the same
+setting. The conformance check speaks only for the plugin packages, so that
+one is not covered by it — the clone flag above is what covers both.
+
+The vendor symlink is kept rather than dropped, and it is not free. It is the
+only manifest location Claude Code documents, so dropping it would cost every
+Claude user the plugin's version, description, author and license in order to
+protect one platform's default checkout setting, and Claude Code documents
+this exact arrangement as supported: a symlink whose target resolves "within
+the plugin's own directory … is preserved as a relative symlink in the cache,
+so it keeps resolving to the copied target at runtime". The cost is in
+Hermes, which validates a package by resolving `plugin.json` inside the
+directory it was handed: when its scanner descends into `plugins/howp` and
+reaches `.claude-plugin/` as if that were a package root, it logs `Failed to
+parse …/.claude-plugin/plugin.json: plugin.json must be a regular file within
+the plugin root`. Executed, and confirmed non-fatal — that scan finds nothing
+at that depth either way, and the supported install path never reaches it —
+but it is a warning in a mandatory client that the arrangement causes.
 
 ## Checking conformance
 

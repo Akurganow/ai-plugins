@@ -1,8 +1,8 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "howp",
-  "version": "0.0.2",
-  "description": "Personal probability dashboard: interests → measurable questions → prediction-market probabilities (Polymarket, Manifold) → a markdown dashboard. Placeholder release: the skill explains the project and does nothing else until the first binary release. Deterministic steps will run as Rust binaries downloaded from public releases; agent roles are performed by your own agent, no external keys.",
+  "version": "0.0.3",
+  "description": "Personal probability dashboard: interests → measurable questions → prediction-market probabilities (Polymarket, Manifold) → a markdown dashboard. Placeholder release: the skill explains the project and does nothing else until the first binary release. Deterministic steps will run as Rust binaries downloaded from public releases, and agent roles will be carried out by your own agent with no external keys; none of that is implemented yet.",
   "author": {
     "name": "Alexander Kurganov",
     "url": "https://github.com/Akurganow"

@@ -43,7 +43,8 @@ says which.
 
 Source: the `/plugin` command's built-in help in Claude Code
 (`/plugin marketplace add <path/url>`, `/plugin install <plugin>@<market>`).
-The commands are the same wherever Claude Code runs.
+Nothing in this repository differs between local and cloud Claude; the
+plugin is the same package either way.
 
 ### Hermes — Desktop and server
 

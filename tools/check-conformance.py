@@ -18,20 +18,32 @@ hand when changing a skill).
 So the split here is: everything the official schema can decide is decided
 by the official schema, through `jsonschema` — the schema file in
 tools/schemas/ is a verbatim copy of the published one, and the copy is
-checked for its canonical `$id` before use. Only the rules a JSON Schema
-cannot express — where files sit on disk, what symlinks resolve to, what the
-skill frontmatter says — are implemented below, against the spec text quoted
-at each check.
+authenticated by sha256 against the digest recorded below before it is used
+for anything. The digest is what makes a schema edited in place — same
+`$id`, a `pattern` or a `maxLength` quietly removed — fail instead of
+silently widening every manifest check. The `$id` check that follows it can
+only fire once the digest has been updated as well, which is the case where
+a different published version was vendored in deliberately and this script
+was not moved to it. Only the rules a JSON Schema cannot express — where
+files sit on disk, what symlinks resolve to, what the skill frontmatter
+says — are implemented below, against the spec text quoted at each check.
+
+Out of scope, recorded so it is a decision and not an oversight: a hard link
+whose target lies outside the plugin root is not detected. Git cannot
+represent a hard link, so one cannot arrive through a commit; it could only
+be created in a working tree after checkout, which is outside what a check on
+the repository's contents can speak to.
 
 Vendored schema provenance: https://agent-plugins.org/schemas/1.0.0/
 plugin.schema.json, published in github.com/agentplugins/agent-plugins-spec
 at schemas/1.0.0/plugin.schema.json, licensed Apache-2.0 by the Agent
-Plugins project. Copied verbatim, sha256
-0a4aad95ce337878ad38802ebf0daa3fde76abe3f65400c86bcbb1ec0b3ab883.
+Plugins project. Copied verbatim; the digest is `SCHEMA_SHA256` below and it
+is checked at every run.
 """
 
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 import re
@@ -45,6 +57,11 @@ SCHEMA_PATH = REPO_ROOT / "tools/schemas/agent-plugins/1.0.0/plugin.schema.json"
 # Agent Plugins 1.0.0 §5.2: for this version the value of `$schema` MUST be
 # this exact identifier.
 CANONICAL_SCHEMA_ID = "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json"
+
+# sha256 of the published 1.0.0 manifest schema, as vendored in tools/schemas/.
+# Recompute after deliberately revendoring, and never to make a failure go
+# away: a mismatch means the local copy is not the published schema.
+SCHEMA_SHA256 = "0a4aad95ce337878ad38802ebf0daa3fde76abe3f65400c86bcbb1ec0b3ab883"
 
 # Agent Plugins 1.0.0 §5.2: the manifest schema is closed.
 MANIFEST_FIELDS = {
@@ -105,10 +122,22 @@ def load_schema_validator():
         )
         raise SystemExit(2)
 
-    schema = json.loads(SCHEMA_PATH.read_text(encoding="utf-8"))
-    # The vendored copy is only trustworthy if it is still the published
-    # schema for this version, so check its identity before validating
-    # anything with it.
+    raw = SCHEMA_PATH.read_bytes()
+    # The vendored copy is only trustworthy if it is byte for byte the
+    # published schema for this version, so authenticate it before validating
+    # anything with it. `$id` alone would not: it is a field inside the file,
+    # so any edit that keeps it — dropping `pattern` from `name`, opening up
+    # `author` — would leave the check passing while the rules it enforces got
+    # weaker.
+    digest = hashlib.sha256(raw).hexdigest()
+    if digest != SCHEMA_SHA256:
+        fail(
+            str(SCHEMA_PATH.relative_to(REPO_ROOT)),
+            f"vendored schema sha256 is {digest}, expected {SCHEMA_SHA256}; "
+            "the copy is not the published schema",
+        )
+        raise SystemExit(report())
+    schema = json.loads(raw.decode("utf-8"))
     if schema.get("$id") != CANONICAL_SCHEMA_ID:
         fail(
             str(SCHEMA_PATH.relative_to(REPO_ROOT)),
@@ -274,6 +303,32 @@ def check_containment(plugin_root: Path) -> None:
                 )
 
 
+def materialised_symlink_hint(path: Path, expected_target: Path) -> str:
+    """Name the Windows checkout case instead of misreporting it.
+
+    A checkout with `core.symlinks=false` — git's default on Windows — writes
+    a symlink as a small text file holding its target path. The repository
+    still records mode 120000, so this is a property of the checkout and not
+    of the commit, and saying "second copy of the manifest" about it would
+    send a contributor looking for a defect that is not there.
+    """
+    try:
+        if path.stat().st_size > 4096:
+            return ""
+        content = path.read_text(encoding="utf-8").strip()
+    except (OSError, UnicodeError):
+        return ""
+    if not content or "\n" in content:
+        return ""
+    if (path.parent / content).resolve(strict=False) != expected_target:
+        return ""
+    return (
+        f" — the file holds {content!r} and nothing else, so this checkout "
+        "materialised the symlink as text (git core.symlinks=false, the "
+        "default on Windows); re-clone with `-c core.symlinks=true`"
+    )
+
+
 def check_no_duplicate_manifest(plugin_root: Path) -> None:
     """Repository rule: a vendor path may point at the manifest, not hold one.
 
@@ -291,7 +346,12 @@ def check_no_duplicate_manifest(plugin_root: Path) -> None:
         path = Path(dirpath) / "plugin.json"
         rel = path.relative_to(REPO_ROOT)
         if not path.is_symlink():
-            fail(str(rel), "second copy of the manifest; a vendor path may only be a symlink to ../plugin.json")
+            fail(
+                str(rel),
+                "second copy of the manifest; a vendor path may only be a "
+                "symlink to ../plugin.json"
+                + materialised_symlink_hint(path, root_manifest),
+            )
         elif path.resolve(strict=False) != root_manifest:
             fail(str(rel), f"symlink points at {path.resolve(strict=False)}, not the plugin's own manifest")
 
@@ -321,10 +381,23 @@ def check_marketplace_index(manifests: dict[str, dict]) -> None:
             continue
         listed.add(name)
         target = (REPO_ROOT / source).resolve(strict=False)
+        # An entry may point anywhere the filesystem allows, including out of
+        # the repository (`../elsewhere`, or an absolute path). That is a
+        # finding, not a crash: reported here rather than left to raise out of
+        # the `relative_to` below.
+        try:
+            relative_target = target.relative_to(REPO_ROOT)
+        except ValueError:
+            fail(
+                where,
+                f"entry {name!r} points at {source}, which resolves outside the "
+                f"repository ({target})",
+            )
+            continue
         if not (target / "plugin.json").is_file():
             fail(where, f"entry {name!r} points at {source}, which is not a plugin root")
             continue
-        declared = manifests.get(str(target.relative_to(REPO_ROOT)), {}).get("name")
+        declared = manifests.get(str(relative_target), {}).get("name")
         if declared is not None and declared != name:
             fail(where, f"entry {name!r} points at a plugin whose manifest name is {declared!r}")
 

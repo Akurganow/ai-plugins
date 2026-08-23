@@ -1,10 +1,14 @@
 name: conformance
 
-# Runs the Agent Plugins 1.0.0 conformance check on every push and pull
-# request. It costs nothing: one short job on a hosted Linux runner, no
-# services, no model calls.
+# Runs the Agent Plugins 1.0.0 conformance check. It costs nothing: one short
+# job on a hosted Linux runner, no services, no model calls.
+#
+# `push` is restricted to `main`. Without that restriction a pull request from
+# a branch in this repository triggers the workflow twice — once for the push
+# to the branch and once for the pull request — for one identical result.
 on:
   push:
+    branches: [main]
   pull_request:
 
 permissions:
@@ -14,18 +18,25 @@ jobs:
   check:
     runs-on: ubuntu-latest
     steps:
+      # Actions are pinned to a commit sha rather than a tag, because a tag
+      # can be moved to point at different code; the trailing comment records
+      # which release each sha is.
+      #
       # Linux checkout keeps symlinks as symlinks, which this check depends
       # on: it verifies where they resolve.
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
         with:
           python-version: "3.12"
 
       # `jsonschema` validates the manifest against the published schema
-      # vendored in tools/schemas/; `pyyaml` reads SKILL.md frontmatter.
+      # vendored in tools/schemas/; `pyyaml` reads SKILL.md frontmatter. Both
+      # are pinned so a rerun of an old commit installs what it installed then.
       - name: Install check dependencies
-        run: python -m pip install --disable-pip-version-check jsonschema pyyaml
+        run: >-
+          python -m pip install --disable-pip-version-check
+          jsonschema==4.26.0 pyyaml==6.0.3
 
       - name: Check conformance
         run: python tools/check-conformance.py

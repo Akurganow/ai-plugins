@@ -1,0 +1,43 @@
+# What an agent working in this repository may do, and where it must stop.
+id: repository
+description: >-
+  Ordinary maintenance: the plugin packages, the conformance check, the
+  README, the workflow. Narrow, because the repository is small and public
+  and its whole value is that its claims hold.
+
+capabilities:
+  filesystem:
+    read: true
+    write: true
+  exec:
+    enabled: true
+  network:
+    enabled: true
+  mcp:
+    enabled: true
+
+paths:
+  allow:
+    - ".agents/**"
+    - ".claude/rules"
+    - ".claude-plugin/**"
+    - ".github/**"
+    - "plugins/**"
+    - "tools/**"
+    - "README.md"
+  # Nothing is closed outright. The one tree that must not drift —
+  # `tools/schemas/`, a verbatim copy of a published schema — is gated by a
+  # confirmation instead, because it does have to be replaced when the
+  # specification publishes a new version. A deny entry here would make that
+  # confirmation dead text, and a policy that contradicts itself teaches a
+  # reader to ignore it.
+  deny: []
+  redact:
+    - "**/*.pem"
+    - "**/*.key"
+
+confirmations:
+  requiredFor:
+    - "publishing a release"
+    - "adding a plugin to the marketplace index"
+    - "changing the vendored specification schema"

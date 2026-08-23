@@ -1,0 +1,44 @@
+# The canonical agent configuration of this repository (.agents folder
+# specification, AGENTS-1). Vendor entry points are symlinks into this tree;
+# only a client's own configuration, which no standard defines, keeps content
+# of its own.
+specVersion: "1.0.0"
+
+project:
+  name: ai-plugins
+  description: >-
+    A public marketplace of agent plugins. Every package under `plugins/` is
+    an Agent Plugins 1.0.0 package, and the repository's job is that a client
+    implementing the specification can install one without knowing anything
+    about this repository.
+
+defaults:
+  mode: maintainer
+  policy: repository
+
+enabled:
+  modes:
+    - maintainer
+  policies:
+    - repository
+  skills: []
+
+# `rules/` is not one of the directories the required layout names, and the
+# specification does not close that list: it defines canonical sources by
+# location — everything under `.agents/` except `schemas/` and
+# `state/state.yaml` — so the directory is canonical source by construction.
+# The manifest's own field set *is* closed ("unknown top-level fields outside
+# `x` namespaces MUST cause validation failure"), so the declaration goes in
+# the extension namespace, which processors must preserve. This is what makes
+# the rules discoverable to a tool that reads only the manifest.
+x:
+  akurganow:
+    rules:
+      dir: rules
+      format: commonmark
+      scoping: >-
+        None. This repository is small enough that every rule bears on every
+        change, so no rule carries `paths` front matter and each one loads
+        unconditionally.
+      vendorPaths:
+        - .claude/rules

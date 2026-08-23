@@ -25,9 +25,10 @@ still in development and point to the link below.
   questions, questions are matched to prediction markets, and the dashboard
   shows "what became more likely and by how much" — with honest caveats.
 - Deterministic work (quote collection, computation, a sharp-move detector,
-  rendering, storage) is done by a set of Rust binaries. The skill downloads
-  them for your system from the published releases and verifies checksums
-  against the table committed in this repository.
+  rendering, storage) will be done by a set of Rust binaries. The skill will
+  download them for your system from the published releases and verify them
+  against a checksum table published with the release. Neither the binaries
+  nor the table exist yet.
 - Agent roles (the interests interview, market discovery, resolution
   criteria verification, explanations) are performed by your agent following
   the skill's instructions — no external API keys required.

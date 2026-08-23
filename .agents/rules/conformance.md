@@ -27,13 +27,33 @@ had the reason.
 
 Two checks deliberately duplicate the schema, and the exception is the rule's
 real shape. `$schema` is a `const` in the schema and the closed field set is
-`additionalProperties: false`, yet both are also checked by hand — because
-the schema's message for them is a generic `const` mismatch or an
-`additionalProperties` violation, and the hand check says which field and
-what it should have been. The owner's requirements (`docs/REQUIREMENTS.md`
-§13, in the `how-possible` repository) now require the first of those
-outright: the check *should* assert what silently breaks a Hermes install —
-the exact `$schema`, the skill-name rule, the description length.
+`additionalProperties: false`, yet both are also checked by hand. Not because
+the schema is vague about which field broke — break a manifest both ways and
+`jsonschema` names them: *"at (root): Additional properties are not allowed
+('nonsense' was unexpected)"* and *"at $schema: '…/1.0.0/plugin.schema.json'
+was expected"*, the second carrying the expected value as well. Run it before
+arguing about it.
+
+What the hand checks add is the **observed** value — the schema reports what
+it wanted, never what it found, so its line alone does not say what is in the
+file — and the **§5.2 citation**, which those messages have nowhere to carry
+and which is this repository's standing rule for a hand-written check. That is
+the second of the two reasons stated below, and on its own it is enough to
+keep both checks.
+
+The `$schema` one also does something no message can, and this is the part
+worth arguing: its identifier is pinned **in the script**, as
+`CANONICAL_SCHEMA_ID`, not read out of whichever file is sitting in
+`tools/schemas/`. The vendored `const` moves with the copy; that constant does
+not, so the two are independent assertions of which version this repository
+targets, and the script's `$id` check turns them disagreeing into a failure
+instead of a silent retarget.
+
+None of this rests on §13. The vendored `const` plus `required` assert the
+exact `$schema` on their own, so §13's "the check should assert what silently
+breaks a Hermes install" is satisfied whether or not the hand check exists —
+deleting it would not have breached the requirement. Keeping it is right for
+the reasons above and for no others.
 
 So "do not complicate the code" here — a check being the only code this
 repository has — is not "never duplicate the schema". It is: a hand-written
@@ -97,4 +117,7 @@ binaries are published elsewhere and referenced from here; the only thing
 this repository runs is its own conformance check.
 
 If this file and the things it describes ever disagree — the specification,
-the script, the workflow — they are right and this file is stale.
+the script, the workflow — they are right and this file is stale. The same
+holds for the owner's requirements: `docs/REQUIREMENTS.md` §5 and §13, in the
+`how-possible` repository, are restated here for the people who work in this
+one and are not owned here. Where this file and they disagree, they are right.

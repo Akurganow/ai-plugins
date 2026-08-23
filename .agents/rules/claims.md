@@ -49,4 +49,6 @@ wrote it.
 
 Where this file describes what `README.md` currently says, `README.md` is the
 truth and this file is stale — the standard above is the durable part, the
-examples are only current.
+examples are only current. And the sourcing order is restated here, not owned
+here: if this file and `docs/REQUIREMENTS.md` §5, in the `how-possible`
+repository, ever disagree, §5 is right and this file is stale.

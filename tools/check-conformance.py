@@ -24,9 +24,13 @@ for anything. The digest is what makes a schema edited in place — same
 silently widening every manifest check. The `$id` check that follows it can
 only fire once the digest has been updated as well, which is the case where
 a different published version was vendored in deliberately and this script
-was not moved to it. Only the rules a JSON Schema cannot express — where
-files sit on disk, what symlinks resolve to, what the skill frontmatter
-says — are implemented below, against the spec text quoted at each check.
+was not moved to it. What is implemented below is two things: the rules a
+JSON Schema cannot express — where files sit on disk, what symlinks resolve
+to, what the skill frontmatter says — and a short list of deliberate
+duplicates of the schema, kept because they turn a schema rejection into a
+line somebody can act on. Every check quotes the spec text it enforces, and
+every duplicate says beside itself which of those two reasons it is there
+for; a duplicate with neither is the one to delete.
 
 Out of scope, recorded so it is a decision and not an oversight: a hard link
 whose target lies outside the plugin root is not detected. Git cannot
@@ -225,8 +229,12 @@ def check_manifest(plugin_root: Path, validator) -> dict | None:
         return None
 
     # §5.2/§5.3: `$schema` is required and its value is fixed for 1.0.0.
-    # Checked explicitly as well as by the schema, so the failure names the
-    # reason instead of reading as a generic `const` mismatch.
+    # A deliberate duplicate of the schema's `const`, kept under the second
+    # reason in the carve-out: the schema's own error names the field and the
+    # expected value but never the value it found, and carries no clause. It
+    # also does something no message can -- the identifier demanded here is
+    # CANONICAL_SCHEMA_ID from this file, not whatever the vendored copy
+    # asserts, and the `$id` check above is what makes the two agree.
     if manifest.get("$schema") != CANONICAL_SCHEMA_ID:
         fail(
             where,
@@ -234,7 +242,11 @@ def check_manifest(plugin_root: Path, validator) -> dict | None:
             f"must be {CANONICAL_SCHEMA_ID!r} (§5.2)",
         )
 
-    # §5.2: the top-level schema is closed.
+    # §5.2: the top-level schema is closed. A deliberate duplicate of the
+    # schema's `additionalProperties: false`, kept for the second half of the
+    # carve-out only: it turns the rejection into an actionable line, citing
+    # the clause and saying the field is outside the closed set rather than
+    # that a property was "unexpected".
     for field in sorted(set(manifest) - MANIFEST_FIELDS):
         fail(where, f"plugin.json has top-level field {field!r}, outside the closed set (§5.2)")
 

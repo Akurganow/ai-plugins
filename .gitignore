@@ -1,0 +1,4 @@
+# The conformance check runs as __main__ and caches nothing, so an ordinary
+# run leaves no bytecode. Importing it (a REPL, py_compile, a future test)
+# does, and that is the only generated thing this repository can produce.
+__pycache__/

@@ -77,7 +77,8 @@ MANIFEST_FIELDS = {
     "extensions",
 }
 
-# Agent Skills specification: the frontmatter fields a skill may carry.
+# Agent Skills specification, https://agentskills.io/specification -- the
+# frontmatter fields a skill may carry, the name constraints, and the caps.
 SKILL_FIELDS = {
     "name",
     "description",
@@ -202,13 +203,15 @@ def check_manifest(plugin_root: Path, validator) -> dict | None:
     # manifest is the real file that vendor paths point at, never a link.
     # Codex's loader refuses a symlinked root manifest outright --
     # find_plugin_manifest_path() calls symlink_metadata() and returns None
-    # for a symlink, pinned by rejects_symlinked_root_plugin_manifest:
-    # https://github.com/openai/codex/blob/main/codex-rs/utils/plugins/src/plugin_namespace.rs
+    # for a symlink, pinned by rejects_symlinked_root_plugin_manifest. From
+    # source, not documentation: Codex publishes no plugins document at all.
+    # Permalinked, because a branch URL dates nothing:
+    # https://github.com/openai/codex/blob/e3e5ad28470f6a225301518c30a66e749a880164/codex-rs/utils/plugins/src/plugin_namespace.rs
     if manifest_path.is_symlink():
         fail(where, "plugin.json at the plugin root is a symlink; it must be the real file")
         return None
     if not manifest_path.is_file():
-        fail(where, "plugin.json is not a regular file (§5.1)")
+        fail(where, "plugin.json is not a regular file (§4.1)")
         return None
 
     try:

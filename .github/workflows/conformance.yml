@@ -1,0 +1,31 @@
+name: conformance
+
+# Runs the Agent Plugins 1.0.0 conformance check on every push and pull
+# request. It costs nothing: one short job on a hosted Linux runner, no
+# services, no model calls.
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      # Linux checkout keeps symlinks as symlinks, which this check depends
+      # on: it verifies where they resolve.
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # `jsonschema` validates the manifest against the published schema
+      # vendored in tools/schemas/; `pyyaml` reads SKILL.md frontmatter.
+      - name: Install check dependencies
+        run: python -m pip install --disable-pip-version-check jsonschema pyyaml
+
+      - name: Check conformance
+        run: python tools/check-conformance.py

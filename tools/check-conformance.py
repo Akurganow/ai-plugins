@@ -1,0 +1,372 @@
+#!/usr/bin/env python3
+"""Check that this repository's plugins still conform to Agent Plugins 1.0.0.
+
+Run it by hand (`python3 tools/check-conformance.py`) or let CI run it; it
+exits non-zero and prints one line per problem.
+
+Why this script exists instead of a ready-made tool. The specification
+publishes a machine-readable manifest schema (`schemas/1.0.0/
+plugin.schema.json`) but no validator: the agent-plugins-spec repository
+contains the spec text, the two JSON schemas, and governance files, and
+nothing executable. The Agent Skills project does publish a reference
+validator, `skills-ref`, but its own README says "This library is intended
+for demonstration purposes only. It is not meant to be used in production",
+and it is distributed from a source tree rather than a package index, so it
+is not something to pin a CI job to (it is still the right thing to run by
+hand when changing a skill).
+
+So the split here is: everything the official schema can decide is decided
+by the official schema, through `jsonschema` — the schema file in
+tools/schemas/ is a verbatim copy of the published one, and the copy is
+checked for its canonical `$id` before use. Only the rules a JSON Schema
+cannot express — where files sit on disk, what symlinks resolve to, what the
+skill frontmatter says — are implemented below, against the spec text quoted
+at each check.
+
+Vendored schema provenance: https://agent-plugins.org/schemas/1.0.0/
+plugin.schema.json, published in github.com/agentplugins/agent-plugins-spec
+at schemas/1.0.0/plugin.schema.json, licensed Apache-2.0 by the Agent
+Plugins project. Copied verbatim, sha256
+0a4aad95ce337878ad38802ebf0daa3fde76abe3f65400c86bcbb1ec0b3ab883.
+"""
+
+from __future__ import annotations
+
+import json
+import os
+import re
+import sys
+from pathlib import Path
+
+REPO_ROOT = Path(__file__).resolve().parent.parent
+PLUGINS_DIR = REPO_ROOT / "plugins"
+SCHEMA_PATH = REPO_ROOT / "tools/schemas/agent-plugins/1.0.0/plugin.schema.json"
+
+# Agent Plugins 1.0.0 §5.2: for this version the value of `$schema` MUST be
+# this exact identifier.
+CANONICAL_SCHEMA_ID = "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json"
+
+# Agent Plugins 1.0.0 §5.2: the manifest schema is closed.
+MANIFEST_FIELDS = {
+    "$schema",
+    "name",
+    "version",
+    "description",
+    "author",
+    "homepage",
+    "repository",
+    "license",
+    "keywords",
+    "extensions",
+}
+
+# Agent Skills specification: the frontmatter fields a skill may carry.
+SKILL_FIELDS = {
+    "name",
+    "description",
+    "license",
+    "compatibility",
+    "metadata",
+    "allowed-tools",
+}
+SKILL_NAME_RE = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
+SKILL_DESCRIPTION_MAX = 1024
+
+problems: list[str] = []
+
+
+def fail(where: str, message: str) -> None:
+    problems.append(f"{where}: {message}")
+
+
+def resolved_inside(path: Path, root: Path) -> bool:
+    """True when `path` resolves inside the resolved `root`.
+
+    Agent Plugins 1.0.0 §4.1(3): "When a client discovers, reads, or executes
+    a file or directory supplied by the plugin package, the filesystem-
+    resolved path MUST remain within the filesystem-resolved plugin root."
+    """
+    try:
+        real_root = root.resolve(strict=True)
+        path.resolve(strict=False).relative_to(real_root)
+    except (OSError, RuntimeError, ValueError):
+        return False
+    return True
+
+
+def load_schema_validator():
+    try:
+        import jsonschema
+    except ImportError:
+        print(
+            "This check needs the `jsonschema` and `pyyaml` packages:\n"
+            "    pip install jsonschema pyyaml",
+            file=sys.stderr,
+        )
+        raise SystemExit(2)
+
+    schema = json.loads(SCHEMA_PATH.read_text(encoding="utf-8"))
+    # The vendored copy is only trustworthy if it is still the published
+    # schema for this version, so check its identity before validating
+    # anything with it.
+    if schema.get("$id") != CANONICAL_SCHEMA_ID:
+        fail(
+            str(SCHEMA_PATH.relative_to(REPO_ROOT)),
+            f"vendored schema declares $id {schema.get('$id')!r}, "
+            f"expected {CANONICAL_SCHEMA_ID!r}",
+        )
+        raise SystemExit(report())
+    return jsonschema.Draft202012Validator(schema)
+
+
+def parse_frontmatter(text: str):
+    """Return the YAML frontmatter of a SKILL.md as a dict, or None."""
+    import yaml
+
+    if not text.startswith("---"):
+        return None
+    parts = text.split("---", 2)
+    if len(parts) < 3:
+        return None
+    try:
+        data = yaml.safe_load(parts[1])
+    except yaml.YAMLError:
+        return None
+    return data if isinstance(data, dict) else None
+
+
+def check_manifest(plugin_root: Path, validator) -> dict | None:
+    """§4.1(2), §5.1, §5.2, §5.3, §5.5 — the manifest at the plugin root."""
+    where = str(plugin_root.relative_to(REPO_ROOT))
+    manifest_path = plugin_root / "plugin.json"
+
+    # §4.1(2): "A plugin MUST include a manifest at `plugin.json` in the
+    # plugin root."
+    if not manifest_path.exists():
+        fail(where, "no plugin.json at the plugin root (§4.1, §5.1)")
+        return None
+    # Not a spec rule but a loader reality and a repository rule: the root
+    # manifest is the real file that vendor paths point at, never a link.
+    # Codex's loader refuses a symlinked root manifest outright.
+    if manifest_path.is_symlink():
+        fail(where, "plugin.json at the plugin root is a symlink; it must be the real file")
+        return None
+    if not manifest_path.is_file():
+        fail(where, "plugin.json is not a regular file (§5.1)")
+        return None
+
+    try:
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeError, json.JSONDecodeError) as exc:
+        fail(where, f"plugin.json does not parse: {exc}")
+        return None
+    # §5.2: "The manifest MUST be JSON and MUST contain a top-level object."
+    if not isinstance(manifest, dict):
+        fail(where, "plugin.json does not contain a top-level object (§5.2)")
+        return None
+
+    # §5.2/§5.3: `$schema` is required and its value is fixed for 1.0.0.
+    # Checked explicitly as well as by the schema, so the failure names the
+    # reason instead of reading as a generic `const` mismatch.
+    if manifest.get("$schema") != CANONICAL_SCHEMA_ID:
+        fail(
+            where,
+            f"plugin.json $schema is {manifest.get('$schema')!r}, "
+            f"must be {CANONICAL_SCHEMA_ID!r} (§5.2)",
+        )
+
+    # §5.2: the top-level schema is closed.
+    for field in sorted(set(manifest) - MANIFEST_FIELDS):
+        fail(where, f"plugin.json has top-level field {field!r}, outside the closed set (§5.2)")
+
+    # Everything else the published schema decides: required fields (§5.3),
+    # the name constraints (§5.5), field types (§5.4), the closed `author`
+    # object, `extensions` shape (§8.1).
+    for error in sorted(validator.iter_errors(manifest), key=lambda e: list(e.path)):
+        location = ".".join(str(p) for p in error.path) or "(root)"
+        fail(where, f"plugin.json fails the published schema at {location}: {error.message}")
+
+    return manifest
+
+
+def check_skills(plugin_root: Path) -> None:
+    """§6.1, §6.2, §7.1 — skills live in `skills/`, one level deep."""
+    where = str(plugin_root.relative_to(REPO_ROOT))
+    skills_dir = plugin_root / "skills"
+    # §6.2: "If a fixed component location is absent, the client MUST NOT
+    # treat that as an error." A plugin with no skills is fine.
+    if not skills_dir.exists():
+        return
+    # §6.2: present but not the expected filesystem kind is invalid.
+    if not skills_dir.is_dir():
+        fail(where, "skills/ exists but is not a directory (§6.2)")
+        return
+
+    for child in sorted(skills_dir.iterdir()):
+        if not child.is_dir():
+            continue
+        skill_md = child / "SKILL.md"
+        # §7.1: "Each immediate child directory containing a path named
+        # exactly `SKILL.md` that resolves to a regular file is treated as
+        # one skill."
+        if not skill_md.exists():
+            fail(f"{where}/skills/{child.name}", "directory has no SKILL.md (§7.1)")
+            continue
+        if not skill_md.is_file():
+            fail(f"{where}/skills/{child.name}", "SKILL.md does not resolve to a regular file (§7.1)")
+            continue
+        # §4.1(3) with the failure boundary of §4.1: "If a discovered
+        # `SKILL.md` does not resolve within the plugin root, the client MUST
+        # skip that skill under §7.1."
+        if not resolved_inside(skill_md, plugin_root):
+            fail(f"{where}/skills/{child.name}", "SKILL.md resolves outside the plugin root (§4.1)")
+            continue
+        check_skill_frontmatter(child, skill_md)
+
+
+def check_skill_frontmatter(skill_dir: Path, skill_md: Path) -> None:
+    """§7.1 defers the format to the Agent Skills specification.
+
+    Only the rules that decide whether a client loads or skips the skill are
+    checked here; `skills-ref validate` is the full reference check.
+    """
+    where = str(skill_dir.relative_to(REPO_ROOT))
+    data = parse_frontmatter(skill_md.read_text(encoding="utf-8"))
+    if data is None:
+        fail(where, "SKILL.md has no parseable YAML frontmatter")
+        return
+
+    for field in sorted(set(data) - SKILL_FIELDS):
+        fail(where, f"SKILL.md frontmatter has unknown field {field!r}")
+
+    name = data.get("name")
+    if not isinstance(name, str) or not name:
+        fail(where, "SKILL.md frontmatter has no `name`")
+    else:
+        if len(name) > 64 or not SKILL_NAME_RE.fullmatch(name):
+            fail(where, f"skill name {name!r} breaks the Agent Skills name constraints")
+        if name != skill_dir.name:
+            fail(where, f"skill name {name!r} does not match its directory {skill_dir.name!r}")
+
+    description = data.get("description")
+    if not isinstance(description, str) or not description.strip():
+        fail(where, "SKILL.md frontmatter has no `description`")
+    elif len(description) > SKILL_DESCRIPTION_MAX:
+        fail(where, f"skill description is {len(description)} characters, over the 1024 limit")
+
+
+def check_containment(plugin_root: Path) -> None:
+    """§4.1(3) — nothing in the package may resolve outside the plugin root."""
+    where = str(plugin_root.relative_to(REPO_ROOT))
+    for dirpath, dirnames, filenames in os.walk(plugin_root):
+        for entry in list(dirnames) + list(filenames):
+            path = Path(dirpath) / entry
+            if not path.is_symlink():
+                continue
+            rel = path.relative_to(REPO_ROOT)
+            if not path.exists():
+                fail(str(rel), "symlink target does not exist")
+                continue
+            if not resolved_inside(path, plugin_root):
+                fail(
+                    str(rel),
+                    f"symlink resolves to {os.path.realpath(path)}, outside the plugin root (§4.1)",
+                )
+
+
+def check_no_duplicate_manifest(plugin_root: Path) -> None:
+    """Repository rule: a vendor path may point at the manifest, not hold one.
+
+    A second `plugin.json` anywhere below the plugin root is only acceptable
+    as a symlink to the root manifest; a real file there would be a copy that
+    drifts, and §5.1 is explicit that "No other file can replace, supplement,
+    or override the core fields in root `plugin.json`."
+    """
+    root_manifest = (plugin_root / "plugin.json").resolve(strict=False)
+    for dirpath, _dirnames, filenames in os.walk(plugin_root):
+        if Path(dirpath) == plugin_root:
+            continue
+        if "plugin.json" not in filenames:
+            continue
+        path = Path(dirpath) / "plugin.json"
+        rel = path.relative_to(REPO_ROOT)
+        if not path.is_symlink():
+            fail(str(rel), "second copy of the manifest; a vendor path may only be a symlink to ../plugin.json")
+        elif path.resolve(strict=False) != root_manifest:
+            fail(str(rel), f"symlink points at {path.resolve(strict=False)}, not the plugin's own manifest")
+
+
+def check_marketplace_index(manifests: dict[str, dict]) -> None:
+    """Cross-check Claude's vendor index against the conforming manifests.
+
+    Agent Plugins 1.0.0 defines no repository-level index, so this file is
+    outside the standard; it is checked only for pointing at real plugin
+    roots under the names those plugins actually declare.
+    """
+    index_path = REPO_ROOT / ".claude-plugin/marketplace.json"
+    if not index_path.exists():
+        return
+    where = ".claude-plugin/marketplace.json"
+    try:
+        index = json.loads(index_path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeError, json.JSONDecodeError) as exc:
+        fail(where, f"does not parse: {exc}")
+        return
+
+    listed = set()
+    for entry in index.get("plugins", []):
+        name, source = entry.get("name"), entry.get("source")
+        if not isinstance(name, str) or not isinstance(source, str):
+            fail(where, f"entry {entry!r} needs a string `name` and `source`")
+            continue
+        listed.add(name)
+        target = (REPO_ROOT / source).resolve(strict=False)
+        if not (target / "plugin.json").is_file():
+            fail(where, f"entry {name!r} points at {source}, which is not a plugin root")
+            continue
+        declared = manifests.get(str(target.relative_to(REPO_ROOT)), {}).get("name")
+        if declared is not None and declared != name:
+            fail(where, f"entry {name!r} points at a plugin whose manifest name is {declared!r}")
+
+    for plugin_path, manifest in manifests.items():
+        if manifest.get("name") not in listed:
+            fail(where, f"plugin {plugin_path} is not listed in the index")
+
+
+def report() -> int:
+    if problems:
+        print(f"{len(problems)} conformance problem(s):")
+        for problem in problems:
+            print(f"  - {problem}")
+        return 1
+    return 0
+
+
+def main() -> int:
+    validator = load_schema_validator()
+
+    if not PLUGINS_DIR.is_dir():
+        print("no plugins/ directory, nothing to check")
+        return 0
+
+    manifests: dict[str, dict] = {}
+    plugin_roots = sorted(p for p in PLUGINS_DIR.iterdir() if p.is_dir())
+    for plugin_root in plugin_roots:
+        manifest = check_manifest(plugin_root, validator)
+        if manifest is not None:
+            manifests[str(plugin_root.relative_to(REPO_ROOT))] = manifest
+        check_skills(plugin_root)
+        check_containment(plugin_root)
+        check_no_duplicate_manifest(plugin_root)
+
+    check_marketplace_index(manifests)
+
+    exit_code = report()
+    if exit_code == 0:
+        names = ", ".join(sorted(m.get("name", "?") for m in manifests.values()))
+        print(f"conformance OK: {len(plugin_roots)} plugin(s) checked ({names})")
+    return exit_code
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

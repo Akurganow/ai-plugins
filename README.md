@@ -49,7 +49,9 @@ both publish the same pages as Markdown in their own repositories, which is
 what was read instead. Codex's is blocked as well and its repository carries
 no replacement — `docs/skills.md` there is a three-line stub pointing back at
 the blocked page — so its claims come from its own source, install commands
-included, which is where Codex keeps its command help.
+included, which is where Codex keeps its command help. Every citation into a
+repository below is a commit permalink, so it names the revision the claim
+was read at rather than whatever the branch says next.
 
 ## Installing
 
@@ -167,15 +169,14 @@ the plugin root and recognises
 `https://agent-plugins.org/schemas/1.0.0/plugin.schema.json` as a supported
 schema identifier, falling back to `.claude-plugin/plugin.json` when there is
 no root manifest. Source: Codex's own source,
-`codex-rs/utils/plugins/src/plugin_namespace.rs` in
-<https://github.com/openai/codex>.
+[`codex-rs/utils/plugins/src/plugin_namespace.rs`](https://github.com/openai/codex/blob/e3e5ad28470f6a225301518c30a66e749a880164/codex-rs/utils/plugins/src/plugin_namespace.rs).
 
 It reads this repository's marketplace index too: `.claude-plugin/marketplace.json`
 is one of the marketplace manifest paths Codex looks for, it needs only a
 top-level `name` and `plugins`, each entry needs only `name` and `source`, and
 a `source` string beginning with `./` is resolved against the marketplace root
 — the directory that holds `.claude-plugin/` — which is the form used here
-(`codex-rs/core-plugins/src/marketplace.rs`).
+([`codex-rs/core-plugins/src/marketplace.rs`](https://github.com/openai/codex/blob/e3e5ad28470f6a225301518c30a66e749a880164/codex-rs/core-plugins/src/marketplace.rs)).
 
 ```
 codex plugin marketplace add Akurganow/ai-plugins --ref main
@@ -183,11 +184,13 @@ codex plugin add howp@ai-plugins
 ```
 
 Source: Codex's own CLI, where its command help lives — the `after_help`
-examples in `codex-rs/cli/src/marketplace_cmd.rs` give `codex plugin
-marketplace add owner/repo --ref main`, and those in
-`codex-rs/cli/src/plugin_cmd.rs` give `codex plugin add PLUGIN@MARKETPLACE`. The marketplace name is not chosen on the command line:
-Codex takes it from the `name` field of the index it has just fetched, which
-here is `ai-plugins` (`validate_marketplace_root` in
+examples in
+[`codex-rs/cli/src/marketplace_cmd.rs`](https://github.com/openai/codex/blob/e3e5ad28470f6a225301518c30a66e749a880164/codex-rs/cli/src/marketplace_cmd.rs)
+give `codex plugin marketplace add owner/repo --ref main`, and those in
+[`codex-rs/cli/src/plugin_cmd.rs`](https://github.com/openai/codex/blob/e3e5ad28470f6a225301518c30a66e749a880164/codex-rs/cli/src/plugin_cmd.rs)
+give `codex plugin add PLUGIN@MARKETPLACE`. The marketplace name is not
+chosen on the command line: Codex takes it from the `name` field of the index
+it has just fetched, which here is `ai-plugins` (`validate_marketplace_root` in
 `codex-rs/core-plugins/src/marketplace.rs`, not either CLI file).
 
 ### OpenCode

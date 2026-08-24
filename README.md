@@ -200,17 +200,31 @@ and it goes to the vendor-neutral location rather than OpenCode's own:
 cp -r plugins/howp/skills/howp ~/.agents/skills/howp
 ```
 
-Source: OpenCode's own documentation. Its site is unreachable from the
-network this was written on; the same page is published in the project's
-repository at `packages/web/src/content/docs/skills.mdx`
-(<https://github.com/sst/opencode>), and it lists six search locations,
-among them "Global agent-compatible: `~/.agents/skills/<name>/SKILL.md`" and
-"Project agent-compatible: `.agents/skills/<name>/SKILL.md`", beside the
-vendor paths `~/.config/opencode/skills/<name>/SKILL.md` and
+Source, for both halves of that first sentence: OpenCode's own
+documentation. Its site is unreachable from the network this was written on;
+the same pages are published in the project's repository, on its default
+branch `dev` — there is no `main` there, so a commit permalink is what
+resolves as well as what dates the claim.
+
+The skills half is
+[`packages/web/src/content/docs/skills.mdx`](https://github.com/sst/opencode/blob/03521003fafdc6d340de6a36a189e3c121b07d40/packages/web/src/content/docs/skills.mdx),
+which lists six search locations, among them "Global agent-compatible:
+`~/.agents/skills/<name>/SKILL.md`" and "Project agent-compatible:
+`.agents/skills/<name>/SKILL.md`", beside the vendor paths
+`~/.config/opencode/skills/<name>/SKILL.md` and
 `.opencode/skills/<name>/SKILL.md`. The vendor-neutral pair is what this
 repository points at, because a standard location is preferred to a
 vendor one wherever a client offers both. Use `.agents/skills/howp` inside a
 project instead of the home directory to scope the skill to that project.
+
+The plugins half is
+[`packages/web/src/content/docs/plugins.mdx`](https://github.com/sst/opencode/blob/03521003fafdc6d340de6a36a189e3c121b07d40/packages/web/src/content/docs/plugins.mdx),
+same repository and revision: an OpenCode plugin is "a JavaScript/TypeScript
+module that exports one or more plugin functions", loaded from
+`.opencode/plugins/`, `~/.config/opencode/plugins/` or an npm package. That
+page describes no manifest and mentions neither `plugin.json` nor Agent
+Plugins — which is why what you install above is the skill directory and not
+this package's plugin root.
 
 ### Any client implementing Agent Plugins 1.0.0
 

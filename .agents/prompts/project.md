@@ -14,10 +14,12 @@ it. `.claude-plugin/marketplace.json` at the repository root is a client's
 index — outside the standard, pointers only, labelled for what it is.
 
 `tools/check-conformance.py` decides by the published schema everything the
-published schema can decide, and implements by hand only the rules a JSON
-Schema cannot express — where files sit, what symlinks resolve to, what a
-skill's front matter says. `tools/schemas/` holds a verbatim copy of the
-published manifest schema, with its provenance and checksum recorded.
+published schema can decide, and implements by hand the rules a JSON Schema
+cannot express — where files sit, what symlinks resolve to, what a skill's
+front matter says — plus a short list of deliberate duplicates of the schema,
+kept because they turn a schema rejection into a line somebody can act on.
+`tools/schemas/` holds a verbatim copy of the published manifest schema, with
+its provenance and checksum recorded.
 
 ## Properties that must survive any change
 

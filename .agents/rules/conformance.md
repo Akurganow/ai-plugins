@@ -18,12 +18,12 @@ conforms; "it looks right" is not a result the check produced.
 ## What the check is allowed to be
 
 Everything the published schema can decide is decided by the published
-schema. Only the rules a JSON Schema cannot express — where a file sits, what
-a symlink resolves to, what a skill's front matter says — are implemented by
-hand, and each of those quotes the clause it enforces beside it. Keep that
-shape when adding a check: a hand-written rule with no clause next to it is
-an opinion that later readers cannot argue with, and it will outlive whoever
-had the reason.
+schema. What is implemented by hand is, for the most part, the rules a JSON
+Schema cannot express — where a file sits, what a symlink resolves to, what a
+skill's front matter says — and each of those quotes the clause it enforces
+beside it. Keep that shape when adding a check: a hand-written rule with no
+clause next to it is an opinion that later readers cannot argue with, and it
+will outlive whoever had the reason.
 
 Two checks deliberately duplicate the schema, and the exception is the rule's
 real shape. `$schema` is a `const` in the schema and the closed field set is

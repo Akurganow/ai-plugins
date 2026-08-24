@@ -1,0 +1,28 @@
+{
+  "schema": "howp-binaries-1",
+  "version": "0.1.0",
+  "tag": "howp-v0.1.0",
+  "source_repository": "Akurganow/how-possible",
+  "source_commit": "a6e50b2bbb291eb34dac90003c473e6c1a8b10f3",
+  "released_at": "2026-08-24T12:59:51Z",
+  "targets": [
+    {
+      "target": "aarch64-apple-darwin",
+      "os": "Darwin",
+      "arch": "arm64",
+      "archive": "howp-0.1.0-aarch64-apple-darwin.tar.gz",
+      "root": "howp-0.1.0-aarch64-apple-darwin",
+      "bin_dir": "bin",
+      "sha256": "5c0a06eb63039ee8c5ba18c4245290c702619b8e4ce5b2c989b23940cfc6134f",
+      "binaries": [
+        "hp-collect",
+        "hp-explain",
+        "hp-moves",
+        "hp-render",
+        "hp-scout",
+        "hp-verify"
+      ],
+      "url": "https://github.com/Akurganow/ai-plugins/releases/download/howp-v0.1.0/howp-0.1.0-aarch64-apple-darwin.tar.gz"
+    }
+  ]
+}

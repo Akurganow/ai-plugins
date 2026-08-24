@@ -14,11 +14,13 @@ license: MIT
 # howp — personal probability dashboard (placeholder)
 
 **Status: placeholder.** This plugin is published to exercise the
-installation channel; the working skill ships together with the first
-binary release. This skill downloads nothing, configures nothing and runs
-no procedure of its own — it only explains the idea. If the user asks for a
-real task, say the skill is still in development and point to the link
-below.
+installation channel. The first binary release has shipped — tag
+`howp-v0.1.0`,
+<https://github.com/Akurganow/ai-plugins/releases/tag/howp-v0.1.0> — and the
+working skill has not shipped with it. This skill downloads nothing,
+configures nothing and runs no procedure of its own — it only explains the
+idea. If the user asks for a real task, say the skill is still in development
+and point to the link below.
 
 ## What it will be
 
@@ -33,8 +35,12 @@ each point says what is missing.
   rendering, storage) will be done by a set of Rust binaries, built first
   for macOS on Apple Silicon. The skill will download them for your system
   from the published releases and verify them against a checksum table
-  published with the release. Neither the binaries nor the table exist yet,
-  and this package contains nothing that downloads or verifies anything.
+  published with the release. Both now exist: `howp-v0.1.0` publishes one
+  archive for `aarch64-apple-darwin` and a `SHA256SUMS` table beside it
+  (<https://github.com/Akurganow/ai-plugins/releases/tag/howp-v0.1.0>), and
+  the archive's digest is recorded in this package's own `binaries.json`.
+  This package still contains nothing that downloads or verifies either of
+  them.
 - Agent roles — the interests interview, market discovery, resolution
   criteria verification, explanations — will be carried out by your own
   agent following the skill's instructions, with no external API keys

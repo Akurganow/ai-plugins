@@ -10,9 +10,14 @@ directory with `plugin.json` at its root, and its skills under
 
 The repository holds text. The one program in it is
 `tools/check-conformance.py`, the conformance check described at the bottom;
-no compiled artefact is stored here. The `howp` plugin is a placeholder: the
-binaries it describes are not released yet, and neither is the checksum table
-that will accompany them.
+no compiled artefact is stored here. The `howp` binaries are released: tag
+[`howp-v0.1.0`](https://github.com/Akurganow/ai-plugins/releases/tag/howp-v0.1.0)
+carries one archive, for `aarch64-apple-darwin`, and the checksum table
+[`SHA256SUMS`](https://github.com/Akurganow/ai-plugins/releases/download/howp-v0.1.0/SHA256SUMS)
+beside it; the archive's digest is also recorded in
+[`plugins/howp/binaries.json`](https://github.com/Akurganow/ai-plugins/blob/cd2d9f2683eabe118f363281996d3115af9a2d24/plugins/howp/binaries.json).
+The package is still a placeholder: nothing in it downloads or verifies any
+of that.
 
 ## Compatibility
 
@@ -242,7 +247,7 @@ different operation that the standard does not describe — see
 
 | Plugin | What it does | Status |
 |---|---|---|
-| `howp` | Personal probability dashboard: interests → measurable questions → prediction-market probabilities → a markdown dashboard | placeholder; the first binary release is not published yet |
+| `howp` | Personal probability dashboard: interests → measurable questions → prediction-market probabilities → a markdown dashboard | binaries released as [`howp-v0.1.0`](https://github.com/Akurganow/ai-plugins/releases/tag/howp-v0.1.0), `aarch64-apple-darwin` only, with a `SHA256SUMS` table; the package is still a placeholder and uses none of it |
 
 ## Layout
 

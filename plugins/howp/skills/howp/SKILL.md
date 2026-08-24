@@ -5,9 +5,9 @@ description: >
   functional yet, do not use for real tasks; it only explains the project.
   The future skill: a personal probability dashboard — interests →
   measurable questions → prediction-market probabilities (Polymarket,
-  Manifold) → a markdown dashboard. The working version ships with the
-  first binary release; until then, invoke only when the user explicitly
-  asks about the howp project or this plugin.
+  Manifold) → a markdown dashboard. The first binary release, howp-v0.1.0,
+  has shipped and the working version has not; until it does, invoke only
+  when the user explicitly asks about the howp project or this plugin.
 license: MIT
 ---
 

@@ -110,16 +110,18 @@ the install still exits 0 and tells you to enable a plugin that is not there.
 Sources, in the order they were consulted. Hermes' documentation site is
 unreachable from the network this was written on, but the site is a build of
 Markdown published in the project's own repository under `website/docs/`
-(<https://github.com/NousResearch/hermes-agent>), and that is where these
-claims come from: `developer-guide/plugins/index.md` for the portable-package
-section, the scope note and the install-list-enable sequence,
+(<https://github.com/NousResearch/hermes-agent/tree/a0ca7c19204e514f9590ce3b812e029b315ab9e9/website/docs>),
+and that is where these claims come from:
+`developer-guide/plugins/index.md` for the portable-package section, the
+scope note and the install-list-enable sequence,
 `user-guide/features/plugins.md` for the community index and the discovery
 layout, `reference/cli-commands.md` for `plugins install <identifier>`.
 
 Documentation did not answer one question, and it is the one this section
 turns on: the CLI reference documents `owner/repo`, a Git URL and a bare
 index name, and does not document the subdirectory form at all. That came
-from the implementation — `_resolve_git_url` in `hermes_cli/plugins_cmd.py`,
+from the implementation — `_resolve_git_url` in
+[`hermes_cli/plugins_cmd.py`](https://github.com/NousResearch/hermes-agent/blob/a0ca7c19204e514f9590ce3b812e029b315ab9e9/hermes_cli/plugins_cmd.py),
 same repository — and was then executed:
 `Akurganow/ai-plugins/plugins/howp` resolves to that repository with subdir
 `plugins/howp`, while `Akurganow/ai-plugins` resolves with no subdir.
@@ -139,7 +141,24 @@ Desktop and server are one backend: the desktop app's install goes through
 the same installer, so manifest rules, the depth cap and the enablement
 default are identical, and the differences are surface-level — a pre-flight
 probe over the repository, and a `hermes://plugin/install?repo=…` deep link
-that takes the same identifier.
+that takes the same identifier, subdirectory included.
+
+The documentation does not settle that last point:
+`user-guide/features/plugins.md` gives three deep-link forms, all bare
+`repo=owner/repo`, describes the handler as shallow-cloning "the repo", and
+carries no path segment anywhere. The source settles it. The desktop passes
+the `repo` parameter through as it stands
+([`apps/desktop/src/lib/deeplink-routes.ts`](https://github.com/NousResearch/hermes-agent/blob/a0ca7c19204e514f9590ce3b812e029b315ab9e9/apps/desktop/src/lib/deeplink-routes.ts)),
+and each half of the install then splits it the way the CLI does. The desktop
+half splits it in `resolvePluginGitUrl`, which rejects an unusable identifier
+with "Use a Git URL or 'owner/repo' (optionally with a subdirectory)" and
+whose own test pins `owner/repo/plugins/foo` to subdirectory `plugins/foo`
+([`apps/desktop/electron/desktop-plugin-install.ts`](https://github.com/NousResearch/hermes-agent/blob/a0ca7c19204e514f9590ce3b812e029b315ab9e9/apps/desktop/electron/desktop-plugin-install.ts)).
+The agent half — the half that installs this package — goes through the
+gateway's `plugins.manage` install action
+([`tui_gateway/methods_tools.py`](https://github.com/NousResearch/hermes-agent/blob/a0ca7c19204e514f9590ce3b812e029b315ab9e9/tui_gateway/methods_tools.py)),
+which calls `dashboard_install_plugin` in `hermes_cli/plugins_cmd.py`: the same
+module, and the same `_resolve_git_url`, as the command above.
 
 ### Codex
 

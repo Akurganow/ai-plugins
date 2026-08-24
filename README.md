@@ -145,7 +145,8 @@ default are identical, and the differences are surface-level — a pre-flight
 probe over the repository, and a `hermes://plugin/install?repo=…` deep link
 that takes the same identifier, subdirectory included.
 
-The documentation does not settle that last point:
+The documentation does not settle that last point either — it is the
+subdirectory question above, asked of the deep link:
 `user-guide/features/plugins.md` gives three deep-link forms, all bare
 `repo=owner/repo`, describes the handler as shallow-cloning "the repo", and
 carries no path segment anywhere. The source settles it. The desktop passes

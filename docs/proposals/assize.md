@@ -1,7 +1,7 @@
-# Proposal: `precinct` — a package of adversarial review roles
+# Proposal: `assize` — a package of adversarial review roles
 
 **Status: proposal.** Nothing described here is implemented. No package named
-`precinct` exists in `plugins/`, no skill has been written, and no client has
+`assize` exists in `plugins/`, no skill has been written, and no client has
 loaded any of it. Every install path below is quoted from a client's own
 documentation or its own source, per `.agents/rules/claims.md`, and the
 [Sources](#sources) section says which kind each one is. Where a client was
@@ -71,7 +71,7 @@ paragraph.
 So the portable substance of this package is **skills**. An agent file is a
 per-client projection of a skill, shipped where that client looks for one, and
 it is a convenience rather than the product. Concretely: a host with
-subagents gets `@precinct:prosecutor` as an addressable agent; a host without
+subagents gets `@assize:prosecutor` as an addressable agent; a host without
 gets the same brief handed to whatever the skill can spawn, or run in
 sequence in one context. The skill works everywhere; the agent file works
 where the client has the concept.
@@ -83,13 +83,13 @@ decision, and everything below follows from it.
 
 ### Layer 1 — the package (portable, versioned, installed)
 
-One plugin, `plugins/precinct/`, whose skills are the roles. Repository-
+One plugin, `plugins/assize/`, whose skills are the roles. Repository-
 agnostic: a role skill never names a crate, a verification command, or a
 label.
 
 ### Layer 2 — the charter in the policed repository (per-repo, committed)
 
-A single file the role skills read, proposed as `.agents/precinct.yaml` in the
+A single file the role skills read, proposed as `.agents/assize.yaml` in the
 target repository — the same `.agents/` tree this repository already uses for
 `rules/`, `policies/` and `modes/`. It declares what a role cannot know:
 
@@ -111,7 +111,7 @@ correct outcome, a plausible invented command is not.
 
 Unchanged in mechanism, reduced in content. A routine's prompt becomes:
 
-    Run the `precinct:dependency-police` skill against this repository,
+    Run the `assize:dependency-police` skill against this repository,
     following it exactly. Report in the shape it specifies.
 
 Everything a reviewer would want to argue with now lives in a file with a
@@ -153,17 +153,17 @@ The clerk is a skill. The prosecutor, defender and judge are **briefs held as
 reference files inside the `issue-court` skill**, and additionally shipped as
 agent files for the clients that have subagents. That way the trial runs
 identically whether the host can spawn three isolated contexts or has to run
-them in sequence — and where it can, `@precinct:prosecutor` is directly
+them in sequence — and where it can, `@assize:prosecutor` is directly
 addressable by a human who wants to argue with one side by hand.
 
-**`precinct-muster`** — the setup role. Given a repository, it writes the
+**`assize-muster`** — the setup role. Given a repository, it writes the
 Layer 2 charter by reading what the repository actually has, then sets up
 Layer 3 on whichever surface is available: routines on Claude, a scheduled
 GitHub Actions workflow anywhere else. This is the part of the ask that reads
 "a set of agents for configuring routines in different repositories", and
 making it a skill rather than a document is what makes it work on every host.
 
-**`precinct-charter`** — not a role. The doctrine every other skill repeats
+**`assize-charter`** — not a role. The doctrine every other skill repeats
 today, held once: the GitHub-over-REST recipes and why `gh issue list` is not
 used, the shallow-clone fetch, the "keep state in files, not in your context"
 discipline, the backpressure table, the fingerprint-and-dedup protocol, the
@@ -181,7 +181,7 @@ Three ways to share text across skills were considered:
    conformance.md` forbids built artefacts in the tree, and a generated
    `SKILL.md` is one.
 3. **A sibling skill directory, referenced by relative path.** Each role skill
-   opens with "read `../precinct-charter/SKILL.md` before anything else".
+   opens with "read `../assize-charter/SKILL.md` before anything else".
 
 (3) resolves in every install path that copies the whole `skills/` tree —
 which is all of them, including OpenCode's, provided the documented command
@@ -190,13 +190,13 @@ generation, and no duplication. It is the recommendation.
 
 ### Skill naming
 
-Claude namespaces plugin skills as `/precinct:dependency-police`, so a
-`precinct-` prefix on every directory would read as `/precinct:precinct-…`.
+Claude namespaces plugin skills as `/assize:dependency-police`, so a
+`assize-` prefix on every directory would read as `/assize:assize-…`.
 But OpenCode's vendor-neutral location, `~/.agents/skills/<name>/`, is a flat
 namespace shared with every other package, where `charter` and `muster` are
 collisions waiting to happen. Proposed split: role skills unprefixed
 (`dependency-police`, `issue-court`), the two generic ones prefixed
-(`precinct-charter`, `precinct-muster`).
+(`assize-charter`, `assize-muster`).
 
 ## 5. What no plugin format carries: the schedule
 
@@ -215,7 +215,7 @@ type for "run this weekly":
   policies — no schedule.
 - OpenCode's agents are user or project configuration, not package content.
 
-So Layer 3 is set up, never shipped, and `precinct-muster` exists precisely
+So Layer 3 is set up, never shipped, and `assize-muster` exists precisely
 because that step cannot be packaged. Its two honest targets are Claude
 routines and a scheduled GitHub Actions workflow committed to the policed
 repository — the second being the only mechanism that works for Codex,
@@ -224,12 +224,12 @@ OpenCode and Gemini alike.
 ## 6. Proposed layout
 
 ```text
-plugins/precinct/
+plugins/assize/
   plugin.json                       Agent Plugins 1.0.0, at the plugin root
   .claude-plugin/plugin.json        symlink → ../plugin.json (as howp does)
   skills/
-    precinct-charter/SKILL.md       the shared doctrine
-    precinct-muster/SKILL.md        writes the charter, sets up the schedule
+    assize-charter/SKILL.md       the shared doctrine
+    assize-muster/SKILL.md        writes the charter, sets up the schedule
     dependency-police/SKILL.md
     abstraction-police/SKILL.md
     logic-police/SKILL.md
@@ -279,7 +279,7 @@ for cloud sessions" — paired with `extraKnownMarketplaces` in the same file:
   "extraKnownMarketplaces": {
     "ai-plugins": { "source": { "source": "github", "repo": "Akurganow/ai-plugins" } }
   },
-  "enabledPlugins": { "precinct@ai-plugins": true }
+  "enabledPlugins": { "assize@ai-plugins": true }
 }
 ```
 
@@ -347,7 +347,7 @@ So the install is a copy of the skill tree, and — because of the sibling-
 charter decision in §4 — it must copy **every** skill directory, not one:
 
 ```
-cp -r plugins/precinct/skills/. ~/.agents/skills/
+cp -r plugins/assize/skills/. ~/.agents/skills/
 ```
 
 That command has not been executed. It is a direct application of the
@@ -360,29 +360,45 @@ place them.
 
 ### 7.6 Any Agent Plugins 1.0.0 client
 
-Point it at `plugins/precinct/`. It gets the skills, which is the whole
+Point it at `plugins/assize/`. It gets the skills, which is the whole
 product. It gets no agents, because §7 of the standard has no such component.
 
-## 8. Decisions the owner has to make
+## 8. Decisions
 
-1. **The name.** `precinct` is proposed: one word, houses both the patrols
-   and the court, and satisfies §5.5's name pattern. `assize` (a court that
-   visits each county on a schedule) is the more exact metaphor and the more
-   obscure word. `docket`, `nightwatch` and `tribunal` are the other
-   candidates considered.
-2. **Which cloud surface is the priority.** The request named "cloud Codex
-   from Anthropic". Those are two different products — Claude Code on the web
-   (§7.2), which is where the six routines run today, and OpenAI's Codex
-   (§7.3), which this repository already supports. Both are covered above;
-   which one gets executed and verified first is not decided here.
-3. **Whether the four existing routines migrate or are re-authored.** The
-   prompts contain repository facts about `how-possible` — the excluded
-   `chartgen/` workspace, the frozen `src/hp/**` Python original, the
-   `#[ignore]`d parity oracles — that must move to that repository's Layer 2
-   charter, not into the package. That split is the real work of the first
-   version.
-4. **Whether `claims-police` is in scope**, and whether it polices this
-   repository only or any repository with an `.agents/rules/claims.md`.
+Two are settled and recorded here so the reasoning does not have to be had
+again. Two are open.
+
+**Settled — the name is `assize`.** An assize is a court that sits in each
+county in turn, on a circuit, rather than one that waits to be visited. That
+is what these roles are: a review that arrives at a repository on a schedule,
+sits, decides, and leaves. It satisfies §5.5's name pattern. It is also an
+obscure word in English, which was weighed and accepted: `precinct`, `docket`,
+`nightwatch` and `tribunal` were the alternatives, and the metaphor was
+preferred to the familiarity. The obscurity has one practical consequence —
+the package README has to say what the word means in its first paragraph,
+because a reader deciding whether to install will not know.
+
+**Settled — Claude Code on the web is the priority surface.** The request
+named "cloud Codex from Anthropic", which is two different products; the one
+meant is Claude Code on the web (§7.2), where the six routines already run.
+OpenAI's Codex (§7.3) stays supported, because this repository already
+supports it and skills install there unchanged, but it is not what gets
+executed and verified first. Concretely this makes §7.2's unverified
+`enabledPlugins` claim the first thing to settle before any skill is written:
+if a cloud session does not install a marketplace-sourced plugin from a
+committed `.claude/settings.json`, the priority surface needs the roles
+committed to the policed repository's own `.claude/` tree instead, and that
+changes Layer 1's shape rather than a sentence about it.
+
+**Open — whether the four existing routines migrate or are re-authored.** The
+prompts contain repository facts about `how-possible` — the excluded
+`chartgen/` workspace, the frozen `src/hp/**` Python original, the
+`#[ignore]`d parity oracles — that must move to that repository's Layer 2
+charter, not into the package. That split is the real work of the first
+version.
+
+**Open — whether `claims-police` is in scope**, and whether it polices this
+repository only or any repository carrying an `.agents/rules/claims.md`.
 
 ## 9. What has not been verified
 

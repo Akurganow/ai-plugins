@@ -1,0 +1,14 @@
+# What this repository is, as GitHub's language bar reports it.
+#
+# The repository holds text: plugin packages, their skills, and the
+# catalogue index. The one program in it is `tools/check-conformance.py`,
+# which validates those packages and ships with none of them. Left alone,
+# linguist counts that single file and labels the whole marketplace
+# "Python" — the first thing a visitor sees about a repository that
+# contains no Python for them to use.
+#
+# `linguist-vendored` is the standard marking for code that is present but
+# is not the repository's own subject. It changes nothing about the file:
+# it is still committed, still run by the conformance check, still
+# described in README.md by name.
+tools/** linguist-vendored

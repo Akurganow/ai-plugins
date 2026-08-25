@@ -1,8 +1,8 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "howp",
-  "version": "0.1.0",
-  "description": "Personal probability dashboard: interests → measurable questions → prediction-market probabilities (Polymarket, Manifold) → a markdown dashboard. The binaries are released — tag howp-v0.1.0, one archive for aarch64-apple-darwin, published with a SHA256SUMS table and recorded in this package's binaries.json — and this package does not use them yet: the skill explains the project and does nothing else. Deterministic steps will run as those Rust binaries downloaded from public releases, and agent roles will be carried out by your own agent with no external keys; nothing here downloads, verifies or runs any of it yet.",
+  "version": "0.1.1",
+  "description": "Personal probability dashboard: interests → measurable questions → prediction-market probabilities (Polymarket, Manifold) → a local dashboard of what became more or less likely. The skill reads this package's binaries.json, downloads the released archive for the host platform, verifies it against the sha256 recorded there before unpacking it, caches it under the user's home, and then drives the six binaries. Only aarch64-apple-darwin is published, and the skill says so and stops on any other platform. No API keys and no accounts. Deterministic work — market calls, storage, arithmetic, move detection, rendering — is the binaries'; every step that needs judgement is performed by the agent running the skill, between a binary's plan command and its apply command. No binary invokes a model.",
   "author": {
     "name": "Alexander Kurganov",
     "url": "https://github.com/Akurganow"

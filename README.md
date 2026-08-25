@@ -16,8 +16,15 @@ carries one archive, for `aarch64-apple-darwin`, and the checksum table
 [`SHA256SUMS`](https://github.com/Akurganow/ai-plugins/releases/download/howp-v0.1.0/SHA256SUMS)
 beside it; the archive's digest is also recorded in
 [`plugins/howp/binaries.json`](https://github.com/Akurganow/ai-plugins/blob/cd2d9f2683eabe118f363281996d3115af9a2d24/plugins/howp/binaries.json).
-The package is still a placeholder: nothing in it downloads or verifies any
-of that.
+The `howp` package uses that release: its skill reads
+`plugins/howp/binaries.json`, refuses any platform the manifest does not
+name, downloads the archive for the one it does, checks the download's
+sha256 against the digest recorded there before unpacking it, and then runs
+the binaries. The download and the checksum were executed against the
+published release on 2026-08-25, including the failure branch — a tampered
+archive is refused and deleted. Nothing in the package has been run on
+macOS, which is the only platform the release targets; the skill says so
+itself.
 
 ## Compatibility
 
@@ -247,7 +254,7 @@ different operation that the standard does not describe — see
 
 | Plugin | What it does | Status |
 |---|---|---|
-| `howp` | Personal probability dashboard: interests → measurable questions → prediction-market probabilities → a markdown dashboard | binaries released as [`howp-v0.1.0`](https://github.com/Akurganow/ai-plugins/releases/tag/howp-v0.1.0), `aarch64-apple-darwin` only, with a `SHA256SUMS` table; the package is still a placeholder and uses none of it |
+| `howp` | Personal probability dashboard: interests → measurable questions → prediction-market probabilities → a dashboard of what became more or less likely | working, `aarch64-apple-darwin` only. The skill downloads [`howp-v0.1.0`](https://github.com/Akurganow/ai-plugins/releases/tag/howp-v0.1.0), verifies it against the digest in `binaries.json`, and drives the six binaries; it stops on any other platform. Untested on macOS itself |
 
 ## Layout
 
@@ -259,7 +266,13 @@ plugins/<name>/
   plugin.json                      the manifest — Agent Plugins 1.0.0, at the plugin root
   .claude-plugin/plugin.json       symlink → ../plugin.json, Claude's documented manifest
                                    path; it holds no content of its own
+  binaries.json                    the released binary set: tag, targets, archives,
+                                   download URLs and their sha256 digests. Written by
+                                   the release path; the skill reads it and nothing
+                                   duplicates it
   skills/<name>/SKILL.md           the skill, per the Agent Skills specification
+  skills/<name>/references/*.md    the skill's own bundled references, loaded by the
+                                   agent when a procedure needs them
 tools/check-conformance.py         the conformance check
 tools/schemas/                     the official manifest schema, vendored
 .github/workflows/conformance.yml  runs the check on pushes to main and on pull requests

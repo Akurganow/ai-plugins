@@ -260,6 +260,8 @@ plugins/<name>/
   .claude-plugin/plugin.json       symlink → ../plugin.json, Claude's documented manifest
                                    path; it holds no content of its own
   skills/<name>/SKILL.md           the skill, per the Agent Skills specification
+docs/proposals/                    proposals for packages not yet built; each
+                                   one says so in its first line
 tools/check-conformance.py         the conformance check
 tools/schemas/                     the official manifest schema, vendored
 .github/workflows/conformance.yml  runs the check on pushes to main and on pull requests

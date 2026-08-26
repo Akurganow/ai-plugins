@@ -18,10 +18,12 @@ the run's report (below) is where doubt goes.
 ## Before analysing: the do-not-report list
 
 First load what the tracker already holds, with the REST calls from
-`.agents/rules/unattended.md`: every issue carrying the run's own label or
-fingerprint, open **and** closed, and the whole open list. Read full
-bodies, not titles — each automated issue ends with a fingerprint comment,
-and the fingerprint is the identity. Build a do-not-report list and write
+`.agents/rules/unattended.md`: every issue carrying the run's own label,
+open **and** closed, and the whole open list. Read full bodies, not
+titles — each automated issue ends with a fingerprint comment, and the
+fingerprint is the identity. The label is what makes closed issues
+findable at all, which is why a run's label is never removed from an issue
+it filed; an unlabeled closed issue's fingerprint is out of reach. Build a do-not-report list and write
 it to a file (`$RUN/do-not-report.md`, in the per-run state directory
 `.agents/rules/unattended.md` prescribes) before any analysis:
 
@@ -47,7 +49,7 @@ run's own label before analysing anything, and cap the run:
 
 | Open issues with the run's label | Maximum filed this run |
 | :-- | :-- |
-| 0–2 | the run's own cap (its instructions name it) |
+| 0–2 | the run's own cap (3 unless its instructions say otherwise) |
 | 3–4 | 1 |
 | 5 or more | 0 — file nothing, and say so |
 
@@ -94,17 +96,26 @@ shape can be compared across weeks:
 5. **Blockers** — missing tools, blocked sources, GitHub errors, and the
    `git status --porcelain` result.
 
+A run whose instructions add independent triage inserts a **Triage**
+section between Candidates and Filed — what the verifiers rejected and on
+what grounds, what the ranker dropped — so the record of the rejections
+survives without breaking the shared shape for runs that have none.
+
 Filing nothing is stated in one line, without apology or hedging. The
 report is the deliverable of a quiet week; it is not a failed run.
 
 ## Hard constraints
 
-- Never modify, commit, or push anything. Never open a pull request. Never
-  edit or close issues the run did not create.
+- Never modify the working tree or its git state: no edit to a tracked
+  file, no commit, no push, no pull request. The tracker writes this file
+  requires — labels, issues, comments — and the `$RUN` state files are the
+  whole of what a run produces. Never edit or close issues the run did not
+  create.
 - Never exceed the backpressure cap (outside the run's one named exception,
   if it has one), and never re-file an existing fingerprint.
 - Never file a finding backed by nothing but taste, and never file an issue
   to demonstrate that the run happened.
-- If the conformance check itself cannot run — missing interpreter, missing
-  dependency — the report says so and the conformance findings are reported
-  as not checked, not as clean.
+- If a check the run's analysis depends on cannot run — a missing
+  interpreter, a missing dependency, a blocked source — the report says so
+  and everything that check would have decided is reported as not checked,
+  not as clean.

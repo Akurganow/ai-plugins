@@ -18,5 +18,6 @@ answer (`docs/REQUIREMENTS.md` §5, in the `how-possible` repository), saying
 per fact which of the two it was.
 
 Topic rules sit in `.agents/rules/`: what conformance means here and how it
-is checked, and the sourcing standard for claims. They are additions to this
-mode, not a summary of it.
+is checked, the sourcing standard for claims, how an unattended analysis
+run works alone, and the discipline for filing issues from one. They are
+additions to this mode, not a summary of it.

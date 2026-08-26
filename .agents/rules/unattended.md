@@ -109,11 +109,12 @@ the path to a long record rather than its text.
 
 ## Leave no trace
 
-Running the conformance check, fetching sources and writing throwaway files
-are all allowed — under the run's own `$RUN` directory, never in the working
-tree. An analysis run must not commit, stage, push, or leave any
-modification behind: it finishes with `git status --porcelain` empty and
-says so in its report. A run whose whole job is analysis has no business
+Running the repository's checks, fetching sources and writing throwaway
+files are all allowed. A check that reads the tree in place — the
+conformance check does — runs in place; everything a run *writes* goes
+under its own `$RUN` directory, never into the working tree. An analysis
+run must not commit, stage, push, or leave any modification behind: it
+finishes with `git status --porcelain` empty and says so in its report. A run whose whole job is analysis has no business
 changing what it analysed.
 
 ## Report honestly

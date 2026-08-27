@@ -160,6 +160,11 @@ WORK="$(mktemp -d)"
 "$BIN/hp-verify" status --work-dir "$WORK"
 ```
 
+`plan` is the command that searches the market sources, so on a declaring
+build it fetches nothing itself: it takes `--cache DIR` and declares what it
+needs first. `model-steps.md` shows that cycle around this exact command, and
+`SKILL.md` Step 6 is how to tell which build you have.
+
 Then tell the user which questions got a market and which did not. The ones
 that did not are not a failure of the interview; they are the honest part of
 the page, and often the ones worth rewording together.

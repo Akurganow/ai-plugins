@@ -17,6 +17,40 @@ You are that someone else. That is not a workaround: it is what keeps the
 judgement auditable — the prompt and the answer are both files on disk that
 a person can read afterwards.
 
+## This is not the fetch loop
+
+On a declaring build — `SKILL.md` Step 6 tells you which you have —
+`hp-verify` and `hp-scout` also hand you their *fetching*, and that is a
+different loop with a different shape, a different directory and no
+judgement in it at all. It runs **inside** the `plan` step below and
+finishes before the first prompt file exists: `plan` has to search the
+sources before it can ask you anything, and searching is what needs the
+network. The whole of it — the manifest, the termination rule, the round
+counts — is the fetch cycle section of `SKILL.md`, and it is written down
+once, there.
+
+What you need here is the boundary, because running the wrong loop wastes a
+cycle in both directions:
+
+| | the fetch loop | the model loop, below |
+| --- | --- | --- |
+| named by | `--cache DIR` | `--work-dir DIR` |
+| what appears | `needed.json` | `*.prompt.md` |
+| what you do | fetch bytes, write files | read, judge, write one JSON object |
+| ends when | the manifest comes back empty | `status` exits 0 |
+
+Two directories, never the same one, and they even want opposite lifetimes:
+the work directory is **fresh and empty per cycle** (rule 1 below), while the
+cache is a cache and reuse is the point. A body fetched into a work directory
+is a file `apply` was not expecting; a prompt answered into a cache directory
+is an answer nothing will ever read. And nothing under `--cache` is for you
+to reason about — those bodies are the binary's to parse.
+
+`$FETCH` below is the cache directory `SKILL.md` sets up, kept across runs;
+`$WORK` is the throwaway one, made per cycle with `mktemp -d`.
+
+`hp-explain` has no fetch loop: it works from data already in the workspace.
+
 ## The rules, in one place
 
 1. **Use a fresh, empty work directory per cycle.** Somewhere under the
@@ -58,8 +92,18 @@ and it is the reason a plain text-similarity match is not enough.
 
 ```sh
 WORK="$(mktemp -d)"
-"$BIN/hp-verify" plan --repo "$WORKSPACE" --work-dir "$WORK"
+
+# a declaring build only: the fetch loop first, until the manifest is empty
+"$BIN/hp-verify" plan --repo "$WORKSPACE" --work-dir "$WORK" \
+                      --cache "$FETCH" --declare
+# … fetch what "$FETCH/needed.json" names, declare again, repeat …
+
+# then the real plan — the same command line, without --declare
+"$BIN/hp-verify" plan --repo "$WORKSPACE" --work-dir "$WORK" --cache "$FETCH"
 ```
+
+On a self-fetching build it is the one line without either flag:
+`"$BIN/hp-verify" plan --repo "$WORKSPACE" --work-dir "$WORK"`.
 
 `plan` searches the sources, decides what it can without judgement (a market
 that published no resolution criteria is failed on the spot, without asking
@@ -109,6 +153,11 @@ has nothing to quote.
 WORK="$(mktemp -d)"
 "$BIN/hp-scout" plan --repo "$WORKSPACE" --work-dir "$WORK"
 ```
+
+`index` and `plan` are gathering commands, so on a declaring build each takes
+`--cache "$FETCH"` and runs its own fetch loop first — `index` before it
+updates `data/news/`, `plan` before it writes a prompt. `eligible` reads what
+is already on disk and takes neither flag.
 
 `plan` picks the pending moves, decides by itself the ones it can (a move
 with an empty news window needs no judgement), and writes:

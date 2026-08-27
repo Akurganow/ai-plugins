@@ -2,7 +2,7 @@
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "howp",
   "version": "0.1.4",
-  "description": "Personal probability dashboard: interests → measurable questions → prediction-market probabilities (Polymarket, Manifold) → a local dashboard of what became more or less likely. The skill reads this package's binaries.json, downloads the released archive for the host platform, verifies it against the sha256 recorded there before unpacking it, caches it under the user's home, and then drives the six binaries. Only aarch64-apple-darwin is published, and the skill says so and stops on any other platform. No API keys and no accounts. Deterministic work — market calls, storage, arithmetic, move detection, rendering — is the binaries'; every step that needs judgement is performed by the agent running the skill, between a binary's plan command and its apply command. No binary invokes a model.",
+  "description": "Personal probability dashboard: interests → measurable questions → prediction-market probabilities (Polymarket, Manifold) → a local dashboard of what became more or less likely. The skill reads this package's binaries.json, refuses any platform it does not name, downloads and sha256-verifies the released archive for one it does, caches it under the user's home, and drives the six binaries; which targets are published comes from that file, not from this sentence. No API keys and no accounts. Deterministic work — storage, arithmetic, move detection, rendering — is the binaries'; every step that needs judgement is the agent's, between a binary's plan command and its apply command, and no binary invokes a model. In a build whose commands offer --cache, no binary opens a socket either: it declares the URLs it needs and the agent fetches them, which puts that traffic inside the permission flow the agent's client already has. The hosts it needs are declared under extensions below — a statement rather than a request, since no client is documented to read that field as network permission.",
   "author": {
     "name": "Alexander Kurganov",
     "url": "https://github.com/Akurganow"
@@ -18,5 +18,25 @@
     "manifold",
     "dashboard",
     "agent-skills"
-  ]
+  ],
+  "extensions": {
+    "io.github.akurganow.ai-plugins": {
+      "network": {
+        "hosts": [
+          "github.com",
+          "gamma-api.polymarket.com",
+          "clob.polymarket.com",
+          "api.manifold.markets"
+        ],
+        "purpose": {
+          "github.com": "download the released binary archive that binaries.json names, once per release",
+          "gamma-api.polymarket.com": "Polymarket quotes, for hp-collect and hp-verify",
+          "clob.polymarket.com": "Polymarket quotes, for hp-collect and hp-verify",
+          "api.manifold.markets": "Manifold quotes, for hp-collect and hp-verify"
+        },
+        "not_listed": "News hosts. The news side is the agent's own web search rather than a fixed list, and in a declaring build every URL a run wants is named at run time in the fetch manifest — so this list is a floor and not a fence.",
+        "status": "A declaration, not a request. Agent Plugins 1.0.0 assigns no semantics to the contents of an extensions namespace, and no client is documented to read this field as network permission; skills/howp/SKILL.md carries the same list in its frontmatter metadata, for an install that takes the skill without the package, and its preflight step is what actually establishes reachability and tells the user what to allow and where."
+      }
+    }
+  }
 }

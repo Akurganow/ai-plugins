@@ -8,12 +8,17 @@ description: >
   Use when the user asks to set up, run or refresh a howp workspace, collect
   market probabilities for their questions, check that a market really
   answers a question, find sharp probability moves, explain a move from the
-  news, or write the weekly digest. macOS on Apple Silicon only — the
-  published binaries are aarch64-apple-darwin and this skill stops on any
-  other platform. No API keys. Every step that needs judgement is performed
-  by you, the agent, between a binary's `plan` command and its `apply`
-  command: the binaries never call a model.
+  news, or write the weekly digest. It runs on the platforms the package's
+  binaries.json names and stops on any other — read that file, do not assume
+  a platform. No API keys. Every step that needs judgement is performed by
+  you, the agent, between a binary's `plan` command and its `apply` command:
+  the binaries never call a model. In a build that offers `--cache`, the
+  fetching is yours too: the binary declares the URLs it needs and you get
+  them for it.
 license: MIT
+metadata:
+  network-hosts: "github.com gamma-api.polymarket.com clob.polymarket.com api.manifold.markets"
+  network-note: "A declaration, not a grant: no client is documented to read this field as network permission. See the preflight step in SKILL.md, which says what to ask the user for and where."
 ---
 
 # howp — a personal probability dashboard
@@ -23,26 +28,44 @@ questions to prediction markets, records what the markets say over time, and
 renders a dashboard of what became more or less likely — with the caveats
 kept visible rather than smoothed away.
 
-The deterministic half — talking to the market APIs, storing, arithmetic,
-move detection, rendering — is six released Rust binaries. **The half that
-needs judgement is you.** No binary in this package invokes a model, not
-directly and not through a wrapper: a binary writes a prompt file and exits,
-you answer it, and a second command reads the answer and validates it. That
-split is the architecture, not a limitation, and
-`references/model-steps.md` is how to hold up your end of it.
+The deterministic half — storing, arithmetic, move detection, rendering — is
+six released Rust binaries. **The half that needs judgement is you.** No
+binary in this package invokes a model, not directly and not through a
+wrapper: a binary writes a prompt file and exits, you answer it, and a second
+command reads the answer and validates it. That split is the architecture,
+not a limitation, and `references/model-steps.md` is how to hold up your end
+of it.
+
+A second half is on its way to you, for a related reason. A binary that opens
+its own socket loses against every sandbox, allowlist and intercepting proxy
+it meets, and — the part that decides it — it cannot take part in the
+permission flow your client already has. You can be granted permission to
+reach a host; a subprocess of yours cannot ask for one. So in a build whose
+commands offer `--cache`, the three binaries that need the network declare
+the URLs they want and you fetch them. **The fetch cycle** below is that
+shape. **Step 6 is how to tell which build you are holding, and it is not
+optional**: when this file was written, no published release carried that
+flag, so both contracts are live and only the binary in front of you knows
+which one it implements.
 
 ## What you need before starting
 
-- **macOS on Apple Silicon.** Only `aarch64-apple-darwin` is published.
-  Step 0 below is not a formality: on any other machine, stop.
-- `curl`, `tar` and `shasum`, which ship with macOS.
-- Outbound HTTPS. `github.com` for the download; `gamma-api.polymarket.com`,
-  `clob.polymarket.com` and `api.manifold.markets` for quotes; assorted news
-  hosts if the news scout is used.
+- **A platform `binaries.json` names.** Step 0 is not a formality: on a
+  machine that file does not cover, stop. On 2026-08-27 the file named one
+  target, `aarch64-apple-darwin`, and so did every release published up to
+  then — but a release rewrites that file, so the sentence is dated and the
+  file is not. Read the file.
+- `curl`, `tar`, and something that checks a sha256: `shasum` on macOS,
+  `sha256sum` on Linux, where a minimal container may have only the latter
+  and no `shasum` at all.
+- Outbound HTTPS to the hosts in Step 1, which is where the whole question of
+  what may be blocked and what to ask the user for is dealt with.
 - **No API keys, and no accounts.** If a procedure here ever seems to want a
   key, something is wrong — stop and say so.
-- About 45 MB of disk: a 12 MB archive that is deleted after unpacking, and
-  31 MB of binaries that stay in the cache.
+- About 45 MB of disk for the binaries: a 12 MB archive that is deleted after
+  unpacking, and 31 MB that stays in the cache. A build that uses the fetch
+  cycle also keeps market responses in a cache directory of its own; that one
+  grows with use and is safe to delete.
 
 ## Step 0 — the platform gate
 
@@ -76,12 +99,20 @@ Find the entry in `targets[]` whose `os` equals `uname -s` and whose `arch`
 equals `uname -m`.
 
 **If there is no such entry, stop.** Say exactly this much to the user: howp
-publishes binaries only for the targets `binaries.json` lists (today that is
-one, `aarch64-apple-darwin`), this machine is `<uname -s>/<uname -m>`, so
-there is nothing to run here. Do not download an archive for another
+publishes binaries only for the targets `binaries.json` lists, this machine
+is `<uname -s>/<uname -m>`, and none of the entries matches — so there is
+nothing to run here. Name the targets the file does list, read out of the
+file rather than from memory. Do not download an archive for another
 platform, do not offer to build from source — the source repository is
 private — and do not carry on with the rest of this file. That is the whole
 answer, and it is not a failure of the skill.
+
+**If two entries match, stop as well and report it.** `uname -s`/`uname -m`
+cannot tell two builds of the same OS and architecture apart — a glibc and a
+musl build of Linux/`x86_64` answer identically — so at most one entry can
+be meant for a given machine. Two matching means the manifest is asking you
+to guess, and guessing which C library a binary wants is how a user gets an
+executable that will not start.
 
 From the matching entry, take these, and use them everywhere below:
 
@@ -99,7 +130,67 @@ In the shell below, everything in `<angle brackets>` is a placeholder for a
 value out of that entry. Substitute them before running anything; a command
 run with the brackets still in it is a command that does nothing useful.
 
-## Step 1 — is a verified copy already here?
+## Step 1 — the preflight: what has to be reachable, and by whom
+
+Check this before you spend a download on it, and check it again the first
+time a run needs a market rather than assuming Step 1 settled the whole day.
+
+| Host | Wanted for | When |
+| --- | --- | --- |
+| `github.com` | the release archive | until a verified copy is cached; not again after that |
+| `gamma-api.polymarket.com` | Polymarket quotes | `hp-collect`, `hp-verify` |
+| `clob.polymarket.com` | Polymarket quotes | `hp-collect`, `hp-verify` |
+| `api.manifold.markets` | Manifold quotes | `hp-collect`, `hp-verify` |
+
+That list is a floor and not a fence. **News hosts are deliberately not in
+it**: the news side is your own web search rather than a fixed list, and in
+the fetch cycle every URL a run wants arrives in `needed.json` at the moment
+it is wanted — so a host you have never seen before may appear there, and
+that is normal rather than suspicious. Read what the manifest asks for; do
+not pre-approve a wildcard because this table was short.
+
+Probe with the tool you will actually fetch with, not with a different one.
+A `HEAD` or a small `GET` is enough, and the archive download in Step 3 is
+its own probe of `github.com`.
+
+**If something is blocked, do not work around it — say precisely what to
+allow, and where.** Which mechanism that is depends on the client, so name
+the one in front of you rather than a generic one:
+
+- **Claude Code.** Two settings, and which one you need depends on what does
+  the fetching. Its own fetch tool is allowed per domain with a permission
+  rule: `WebFetch(domain:example.com)` "Matches fetch requests to
+  example.com", saved to `.claude/settings.local.json` for one repository or
+  `~/.claude/settings.json` for every project — from Claude Code's own
+  documentation, <https://code.claude.com/docs/en/permissions>. A shell
+  command like `curl` runs under the Bash sandbox instead, whose network
+  layer is an allowlist: `"sandbox": {"network": {"allowedDomains":
+  ["github.com", "*.npmjs.org"]}}`, and "Claude Code pre-allows no domains
+  by default" — its sandboxing documentation,
+  <https://code.claude.com/docs/en/sandboxing>, which also records that a
+  `WebFetch(domain:…)` allow rule adds its domain to that same list.
+- **Any other client.** This skill names no mechanism, because none was
+  verified for one when this was written. Tell the user which host answered
+  what, and let them use whatever their setup provides.
+- **Neither, sometimes.** A corporate proxy, a container's egress policy or
+  a firewall is not something a client setting reaches. If a host is blocked
+  below the client, say so plainly instead of sending the user to edit a
+  settings file that will not help.
+
+The package declares these hosts in two machine-readable places — the
+`extensions` object of `plugin.json`, and this skill's own frontmatter
+`metadata` — so that a person or a tool can read them without reading this
+file. **Neither is a grant.** No client is documented to read either field as
+network permission, and nothing in Agent Plugins 1.0.0 or the Agent Skills
+specification gives a plugin a way to request it; the manifest schema says of
+`extensions` only that it is "Client-specific manifest data keyed by
+reverse-domain extension namespace" and that "Agent Plugins assigns no
+semantics to namespace object contents"
+(`tools/schemas/agent-plugins/1.0.0/plugin.schema.json`, the vendored copy of
+the published schema). The declaration is there to be quoted at a user who
+asks what to allow. This step is what actually finds out.
+
+## Step 2 — is a verified copy already here?
 
 ```sh
 HOWP_CACHE="${HOWP_CACHE:-$HOME/.cache/howp}"
@@ -107,7 +198,7 @@ DEST="$HOWP_CACHE/<version>"          # .version from binaries.json
 BIN="$DEST/<root>/<bin_dir>"          # target.root / target.bin_dir
 ```
 
-Skip steps 2 to 4 when **both** of these hold:
+Skip steps 3 to 5 when **both** of these hold:
 
 - `$DEST/verified.sha256` exists and its contents equal `target.sha256`;
 - every name in `target.binaries` exists under `$BIN` and is executable.
@@ -121,7 +212,12 @@ download again. The stamp is what makes a new release replace an old copy
 instead of being ignored: a new version lands in a new `$DEST`, and a
 re-released digest fails the comparison.
 
-## Step 2 — download
+A cache under `$HOME` is not promised to survive. A cloud session, a fresh
+container or a machine that clears `~/.cache` starts with nothing here, and
+then downloading again is the normal outcome and not a fault to investigate
+— it costs one archive. Say that rather than hunting for what deleted it.
+
+## Step 3 — download
 
 ```sh
 mkdir -p "$DEST"
@@ -132,7 +228,7 @@ curl --fail --location --proto '=https' --tlsv1.2 \
 `--fail` matters: without it curl writes GitHub's error page into the file
 and exits 0, and you would go on to checksum an HTML page.
 
-## Step 3 — verify. This is the step that must not be skipped
+## Step 4 — verify. This is the step that must not be skipped
 
 You are about to run a binary from the internet on someone else's machine.
 The digest in `binaries.json` is what stands between that and a stranger's
@@ -140,12 +236,18 @@ code, and unlike a release asset — which can be replaced after the fact — th
 copy in the package was fixed when the user installed this plugin.
 
 ```sh
+# macOS, and any Linux that has it:
 ( cd "$DEST" && printf '%s  %s\n' "<sha256>" "<archive>" | shasum -a 256 -c - )
+
+# Linux without `shasum` — a minimal container usually has only this one:
+( cd "$DEST" && printf '%s  %s\n' "<sha256>" "<archive>" | sha256sum -c - )
 ```
 
-Two spaces between the digest and the name; that is the format `shasum -c`
-reads. It prints `<archive>: OK` and exits 0, or `<archive>: FAILED` and
-exits non-zero.
+Two spaces between the digest and the name; that is the format both readers
+expect. Each prints `<archive>: OK` and exits 0, or `<archive>: FAILED` and
+exits non-zero. Use whichever exists — check for one before running it, and
+if neither is there, stop: an unverified archive is not unpacked, and there
+is no third option in this file.
 
 **On any non-zero exit:**
 
@@ -163,7 +265,7 @@ The release also publishes a `SHA256SUMS` asset beside the archive. It is a
 convenience for a person checking by hand; the digest this skill checks
 against is the one inside the package.
 
-## Step 4 — unpack
+## Step 5 — unpack
 
 ```sh
 tar -xzf "$DEST/<archive>" -C "$DEST"
@@ -177,14 +279,55 @@ runs. Write the stamp only after the checksum passed — it is a record that
 these bytes were verified, and a stamp written on unverified bytes is worse
 than no stamp.
 
-If macOS refuses to open a binary ("cannot be opened because the developer
-cannot be verified"), that is Gatekeeper's quarantine attribute, applied by
-whatever fetched the file. The attribute is cleared with `xattr -d
-com.apple.quarantine <file>`; that command has not been run or verified
-by anyone who wrote this file, and it is only reasonable **after** step 3
-passed. Report it to the user rather than doing it silently.
+**The archive holds the binaries and a licence, and nothing else.** There is
+no helper script in it, for this cycle or any other, and `binaries.json`
+promises none: its `binaries` array is the list of names that must be under
+`bin/`, and there is no field for anything more. Whatever a script would have
+done, you do.
 
-## Step 5 — the workspace
+**On macOS only:** if the system refuses to open a binary ("cannot be opened
+because the developer cannot be verified"), that is Gatekeeper's quarantine
+attribute, applied by whatever fetched the file. The attribute is cleared
+with `xattr -d com.apple.quarantine <file>`; that command has not been run or
+verified by anyone who wrote this file, and it is only reasonable **after**
+step 4 passed. Report it to the user rather than doing it silently. Nothing
+in this paragraph applies to Linux, which has no such attribute — a binary
+that will not start there is a different problem, usually the wrong C
+library, and Step 0's two-matching-entries rule is what guards against it.
+
+## Step 6 — which contract do these binaries implement?
+
+Two contracts exist, and the difference decides half of what follows. Every
+release published up to 2026-08-27 implements the first; the second was built
+in the source project and had not been released when this file was written.
+So the answer will change under this file rather than with it — ask the
+binary, never this paragraph:
+
+```sh
+"$BIN/hp-collect" collect --help | grep -q -- '--cache' && echo declaring || echo self-fetching
+```
+
+- **`--cache` is there — a declaring build.** `hp-collect`, `hp-verify` and
+  `hp-scout` do not open sockets. Every command of theirs that needs the
+  network takes `--cache DIR`, required and with no default, and the fetching
+  is yours: **the fetch cycle**, below, is how.
+- **`--cache` is not there — a self-fetching build**, which is what every
+  release published so far is. Those three binaries make their own HTTPS
+  calls, and there is nothing to declare and nothing for you to fetch. Two
+  consequences worth saying out loud. Your client's per-domain permission
+  does not reach inside a subprocess, so a sandbox that blocks the binary
+  cannot be opened up with a fetch-tool rule — the process itself needs
+  egress of its own, and if it does not have it the run fails and no setting
+  this skill knows about will fix it. And `hp-scout` polls news feeds whose
+  addresses are compiled into it, which is one reason no list of news hosts
+  appears in Step 1: it is not this package's to publish. The other reason is
+  the declaring contract, where the news side is your own web search instead.
+
+`--help` is in Russian; the flag names in it are ASCII. Run the probe again
+after an upgrade rather than remembering the answer — a new release is
+exactly when it changes.
+
+## Step 7 — the workspace
 
 Every binary works on one directory, passed as `--repo` (or named by the
 `HP_ROOT` environment variable — but pass it explicitly; it is one flag and
@@ -198,7 +341,7 @@ mkdir -p "$WORKSPACE"
 ```
 
 `$BIN` and `$WORKSPACE` are the two variables every command below uses; they
-come from step 1 and from here.
+come from step 2 and from here. `$FETCH` joins them on a declaring build.
 
 ```
 <workspace>/
@@ -222,6 +365,96 @@ them is a conversation, not a form: **`references/interview.md`** holds the
 interview and both file formats. Do not invent someone's interests for them,
 and do not write a question you could not check the answer to.
 
+## The fetch cycle — how a declaring build gets what it needs
+
+Three of the six binaries touch the network at all: `hp-collect`,
+`hp-verify` and `hp-scout`. `hp-moves`, `hp-render` and `hp-explain` never
+do, in either contract, and never take `--cache`.
+
+The shape is one shape, wherever it appears:
+
+```
+<binary> <command> … --cache "$FETCH" --declare
+    writes "$FETCH/needed.json" and nothing else — a JSON array of
+    {"url": …, "file": …, "status": …}, where `file` and `status` are
+    names relative to "$FETCH"
+
+you                fetch each `url`; write the response body to
+                   "$FETCH/<file>" and the HTTP status, as a bare number,
+                   to "$FETCH/<status>"
+
+repeat             declare again, until the manifest comes back empty
+
+<binary> <command> … --cache "$FETCH"
+    the real run, reading the directory you filled
+```
+
+**The declare run is the real run's own command line with `--cache DIR` and
+`--declare` added.** Nothing else about it changes — same `--repo`, same
+`--work-dir` where the command has one. `--declare` changes what the command
+writes, not what it needs.
+
+**`--cache` is required and has no default.** If a command refuses to start
+because it is missing, that command is one of the fetchers: give it the same
+directory, run its declare cycle first, and take that refusal as the
+authority over any list, this one included.
+
+**It is a fixpoint, not a single list.** Some URLs are only discoverable from
+an earlier response, so one round is not enough. Rounds measured when the
+cycle was built, worth having as an expectation rather than as a promise:
+
+| Command | Rounds to converge |
+| --- | --- |
+| `hp-collect collect` | 2 |
+| `hp-scout` | 2 |
+| `hp-verify plan` | 4 |
+| `hp-collect backfill` | 7 |
+
+The termination condition is the empty manifest, not the count. **Stop if a
+round asks for exactly what the round before it asked for**: nothing
+converged, another round will not change that, and the loop would not end on
+its own. Report which URLs are stuck and why — a blocked host and a dead URL
+look identical from inside the loop and completely different to the user.
+
+**A response you cannot get costs one item, not the run.** A market that
+would not answer has always been reported and skipped rather than failing
+the run, and a URL you could not fetch behaves the same way: the real run
+does without that item. So fetch what you can, and let the rest go. If an
+HTTP response came back at all, write it — a 404 body and a `404` status are
+an answer the run wants to see. If nothing came back (DNS, refused,
+blocked), write neither file; the unchanged-manifest rule above is what
+keeps that from becoming a loop.
+
+**Fetch with something that hands you the bytes.** What you write is parsed,
+so a tool that renders a page to markdown, summarises it, or pretty-prints
+JSON is not usable here. `curl` is:
+
+```sh
+curl --silent --show-error --location --proto '=https' --tlsv1.2 \
+  --output "$FETCH/<file>" --write-out '%{http_code}' \
+  "<url>" > "$FETCH/<status>"
+```
+
+No `--fail` in this one, deliberately, and it is the opposite of Step 3 on
+purpose: there an error page was a trap, here a non-2xx response is
+information the run is asking for, and `--fail` would throw the body away.
+
+**The two caches are two different directories, and mixing them up is the
+mistake this paragraph exists to prevent.** `$HOWP_CACHE` holds the
+binaries — unpacked once per release, stamped, and left alone. `$FETCH`
+holds market responses:
+
+```sh
+FETCH="$HOWP_CACHE/fetch"
+mkdir -p "$FETCH"
+```
+
+It is a cache and reuse is the point: a run re-declares whatever it still
+needs, so an old response either gets used or gets asked for again. Never
+point `--cache` at a `--work-dir` — that directory belongs to the model
+cycle and a fetched body dropped into it is a file `apply` was not expecting
+— and do not put it inside the workspace, whose layout is the user's.
+
 ## The order things must happen in
 
 Nothing downstream works without the step above it:
@@ -238,13 +471,15 @@ Nothing downstream works without the step above it:
    correctly finds nothing, and that is not a bug to chase.
 5. **snapshots → dashboard** (`hp-render render`).
 
-`hp-scout` (which news explains a move) needs step 4, and `hp-explain` (the
-weekly digest) needs step 5's data.
+`hp-scout` (which news explains a move) needs the fourth of those, and
+`hp-explain` (the weekly digest) needs the fifth's data. These five are the
+pipeline's order, not the numbered install steps above — the two lists are
+unrelated.
 
 ## The routine cycle
 
 Once a workspace is set up, this is a whole run, and it costs nothing but
-market API calls:
+market API calls. On a **self-fetching** build it is three lines:
 
 ```sh
 "$BIN/hp-collect" collect --repo "$WORKSPACE"
@@ -252,14 +487,35 @@ market API calls:
 "$BIN/hp-render"  render  --repo "$WORKSPACE"
 ```
 
+On a **declaring** build the first of those becomes the fetch cycle, and the
+other two are unchanged because neither touches the network:
+
+```sh
+"$BIN/hp-collect" collect --repo "$WORKSPACE" --cache "$FETCH" --declare
+# fetch what "$FETCH/needed.json" names; declare again; about two rounds
+"$BIN/hp-collect" collect --repo "$WORKSPACE" --cache "$FETCH"
+"$BIN/hp-moves"   detect  --repo "$WORKSPACE"
+"$BIN/hp-render"  render  --repo "$WORKSPACE"
+```
+
 The dashboard lands at `<workspace>/data/dashboard/index.html`; `hp-render
 render` prints the path it wrote. Running this about every six hours is what
-gives the move detector a grid to work on — offer to set that up (a `cron`
-entry or a `launchd` job) rather than assuming it.
+gives the move detector a grid to work on.
 
-Writing those three lines into `<workspace>/howp.sh` is worth doing: the
-user then has a script they own and can change, and you have something to
-point at when they ask what just ran.
+**Unattended scheduling is where the two contracts differ most, so do not
+promise it before checking which one you have.** A self-fetching build's
+three lines go into a `cron` entry or a `launchd` job as they stand. A
+declaring build's collect step needs somebody to do the fetching, and no
+script for it ships — the archive holds the binaries and a licence. The
+cycle is mechanical, so a shell loop around `curl` can do it and the user
+owns whatever you write; `hp-moves detect` and `hp-render render` can be
+scheduled either way. Offer that, with what it involves, rather than
+assuming it — and rather than leaving the user with a schedule that quietly
+collects nothing.
+
+Writing the run into `<workspace>/howp.sh` is worth doing whichever contract
+you are on: the user then has a script they own and can change, and you have
+something to point at when they ask what just ran.
 
 ## The model steps: your half of the split
 
@@ -297,6 +553,35 @@ Rules that hold for all three:
   yours to keep — a leftover answer file under a name the new plan reused
   would be applied as though it had answered the new prompt.
 
+### Two loops, and they are not the same loop
+
+On a declaring build, `hp-verify` and `hp-scout` have both of them, and the
+fetch cycle sits **inside** the `plan` step of the model cycle — it finishes
+before the first prompt file exists, because the searching that produces the
+prompts is the thing that needed the network.
+
+```
+hp-verify plan  --repo W --work-dir K --cache F --declare  ┐ the fetch cycle
+  fetch what F/needed.json names; declare again; repeat    │ mechanical, no
+  until the manifest is empty                              ┘ judgement at all
+
+hp-verify plan  --repo W --work-dir K --cache F   ← the real plan: writes prompts
+  answer K/*.prompt.md                                     ┐ the model cycle
+hp-verify apply --repo W --work-dir K                      │ judgement, and no
+hp-verify status --work-dir K                              ┘ fetching in it
+```
+
+The surest way not to confuse them is that they are **two directories, each
+named by its own flag**: `--cache` is where the network lands, `--work-dir`
+is where the judgement lands, and neither is the other. A `needed.json` in
+front of you means fetch. A `*.prompt.md` with no answer beside it means
+judge. If you find yourself about to reason about the contents of something
+under `$FETCH`, you are in the wrong loop — those bodies are for the binary
+to parse, not for you to read.
+
+`hp-explain` has no fetch cycle at all: it works from data already in the
+workspace, which is why it never takes `--cache`.
+
 The three procedures, with their exact file names, loop rules and what each
 `apply` decides, are in **`references/model-steps.md`**. Read it before
 running any of them.
@@ -304,23 +589,33 @@ running any of them.
 ## Every command, and what it reads and writes
 
 **`references/commands.md`** lists all six binaries, every subcommand, every
-flag, and the files each one touches. Read it rather than guessing: these
-binaries have no command that is not in that file, and a command that does
-not exist fails in a way that reads like a broken install and sends the user
-looking for the wrong problem.
+flag, which of them fetch, and the files each one touches. Read it rather
+than guessing: these binaries have no command that is not in that file, and a
+command that does not exist fails in a way that reads like a broken install
+and sends the user looking for the wrong problem.
 
 ## The output is in Russian
 
 The binaries' progress reports, their `--help`, the dashboard's text and the
 instructional core of the prompt files are Russian. That is what the
-published release does — checked in the released binaries themselves — and
-it is written here because it surprises people. It changes nothing about the
+published releases do — checked in the released binaries themselves, most
+recently on 2026-08-27 — and it is written here because it surprises people. It changes nothing about the
 commands, the file formats or the JSON the prompts ask you for: those are
 ASCII and stable. When reporting a run to a user who does not read Russian,
 translate what the binary printed instead of pasting it.
 
 ## Troubleshooting
 
+- **A command refuses to start, naming `--cache`.** It is a declaring build
+  and that command fetches. Give it `--cache "$FETCH"`, run its declare
+  cycle first, and re-read Step 6 if you thought otherwise.
+- **`--declare` is rejected as an unknown flag.** The opposite case: a
+  self-fetching build, which needs neither flag. Run the probe in Step 6
+  instead of guessing from a failure.
+- **`needed.json` never empties.** Compare this round's manifest with the
+  last one. Identical means nothing is converging — stop, and report which
+  URLs are stuck; almost always a blocked host, and Step 1 is what to walk
+  the user through.
 - **`hp-render` produced an empty dashboard.** Almost always nothing
   upstream of it: no `matches/<interest>.yaml` holding a `match` or
   `partial` verdict, or no snapshot yet because `hp-collect collect` has not
@@ -341,36 +636,74 @@ translate what the binary printed instead of pasting it.
 ## What has been verified, and what has not
 
 Stated plainly, because the alternative is a stranger trusting a claim
-nobody checked.
+nobody checked. Two dates, and they cover different things.
 
-**Verified** (2026-08-25, on Linux, against the published release):
+**Verified 2026-08-27, on Linux, against every release published up to then.**
+Each published archive was downloaded and inspected; none of the binaries
+could be executed, because every published target is macOS, so what was
+checked in them is their contents and their string tables and not their
+behaviour.
 
-- The archive at `target.url` downloads and its sha256 is exactly the value
-  `binaries.json` records.
-- It unpacks to `howp-0.1.0-aarch64-apple-darwin/bin/` holding the six
-  binaries `binaries.json` names, each a Mach-O arm64 executable.
+- The digest chain holds. The archive `binaries.json` named at the time of
+  that check downloaded, and its sha256 was exactly the value recorded
+  beside it in the file. The same held for the newest release published that
+  day, against the manifest that names it.
+- **The archive contains the binaries and a licence, and nothing else** —
+  `LICENSE` plus `bin/` with the six binaries `binaries.json` names, each a
+  Mach-O arm64 executable. There is no helper script in it, which is why
+  this skill tells you to drive the fetch cycle yourself.
+- Every subcommand and flag named in this file and in
+  `references/commands.md` occurs as a literal string in the corresponding
+  published binary, with one exception, now removed from that file:
+  `hp-render wiki` was present in the `howp-v0.1.0` build (`wiki`,
+  `wiki-out` and `Home.md` all in its string table) and is absent from every
+  build published since.
+- The output really is Russian: every one of the six carries Cyrillic
+  strings, in the build published that day and not only in an older one.
+- `hp-scout` carries its news feeds inside it: the hosts it polls are
+  literals in the published binary rather than configuration, which is what
+  Step 6 says about a self-fetching build and why no news-host list is
+  published with this package.
+- **The fetch cycle is not in any published build.** `--cache`, `--declare`
+  and `needed.json` occur in none of them, and `hp-collect`, `hp-verify` and
+  `hp-scout` each still link a TLS client stack while the other three do
+  not. Everything this file says about declaring builds therefore describes
+  a contract that had not been released when it was written — which is why
+  Step 6 asks the binary instead of asserting an answer.
+
+**Verified 2026-08-25, against the release published then.** These exercised
+steps that this file still spells the same way, but against an earlier build
+than the one `binaries.json` names today, and the failure branches have not
+been re-run since:
+
 - A corrupted archive is refused: a single flipped byte makes the checksum
   step exit non-zero, and the download is deleted. A wrong URL is refused
   too — `curl --fail` writes no file at all on a 404.
-- The second download is skipped: with the stamp in place, step 1 short-
-  circuits.
-- Every subcommand and flag named in this skill and in
-  `references/commands.md` occurs in the corresponding published binary, and
-  matches the source of the revision `binaries.json` records as the one they
-  were built from.
-- The platform gate refuses a machine that is not `Darwin`/`arm64`.
-- Everything each command reads and writes is described from that same
-  source revision.
+- The second download is skipped: with the stamp in place, the cache check
+  short-circuits.
+- The platform gate refuses a machine no entry matches.
 
 **Not verified:**
 
-- **Nothing here has been run on a Mac.** The binaries could not be executed
-  on the machine this was written on. Downloading, verifying, unpacking and
-  running a full cycle on real hardware is untested end to end.
+- **Nothing here has been run on a Mac**, which is the only platform any
+  published release targets. Downloading, verifying, unpacking and running a
+  full cycle on real hardware is untested end to end.
+- **The whole fetch cycle.** No published binary carries `--cache` or
+  `--declare`, so the flags, the manifest's shape, the round counts and the
+  `curl` invocation above are written from the contract as recorded and have
+  never been executed. When a build that has them ships, its `--help` is the
+  authority and this file is the second opinion.
+- **Every platform note that is not macOS.** `binaries.json` named a single
+  macOS target when this was written, so the `sha256sum` branch, the
+  containers-without-`shasum` remark and the two-matching-entries rule have
+  not been exercised against a published Linux archive.
 - No live market call has been made through these binaries from a user's
   machine, so how they behave against a rate-limited or unavailable market
   API today is unknown.
-- The Gatekeeper note in step 4 is untested.
+- The Gatekeeper note in Step 5 is untested.
+- The host declarations in `plugin.json` and in this file's frontmatter are
+  read by nothing that has been observed to act on them; they are a
+  statement, and Step 1 is the part that works.
 
 If a step fails on a Mac, that is new information and worth reporting to
 <https://github.com/Akurganow/ai-plugins> rather than working around.

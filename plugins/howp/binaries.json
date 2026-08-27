@@ -1,19 +1,19 @@
 {
   "schema": "howp-binaries-1",
-  "version": "0.1.2",
-  "tag": "howp-v0.1.2",
+  "version": "0.1.3",
+  "tag": "howp-v0.1.3",
   "source_repository": "Akurganow/how-possible",
-  "source_commit": "56fb6f4d596ae56ad4de9b45650f07a6998eff52",
-  "released_at": "2026-08-27T15:41:39Z",
+  "source_commit": "b84493267ae8b3d0477591d1ad9eab705b968a7f",
+  "released_at": "2026-08-27T18:27:59Z",
   "targets": [
     {
       "target": "aarch64-apple-darwin",
       "os": "Darwin",
       "arch": "arm64",
-      "archive": "howp-0.1.2-aarch64-apple-darwin.tar.gz",
-      "root": "howp-0.1.2-aarch64-apple-darwin",
+      "archive": "howp-0.1.3-aarch64-apple-darwin.tar.gz",
+      "root": "howp-0.1.3-aarch64-apple-darwin",
       "bin_dir": "bin",
-      "sha256": "21fea7eb7c29d4059b6f456bda78987fd0b78e82f05920e494324f326808e559",
+      "sha256": "7f8fdb367006ac643e1ae08778cf3c5139931f2cd02dc7ba77efa9227af2e1c5",
       "binaries": [
         "hp-collect",
         "hp-explain",
@@ -22,7 +22,7 @@
         "hp-scout",
         "hp-verify"
       ],
-      "url": "https://github.com/Akurganow/ai-plugins/releases/download/howp-v0.1.2/howp-0.1.2-aarch64-apple-darwin.tar.gz"
+      "url": "https://github.com/Akurganow/ai-plugins/releases/download/howp-v0.1.3/howp-0.1.3-aarch64-apple-darwin.tar.gz"
     }
   ]
 }

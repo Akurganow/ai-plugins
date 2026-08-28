@@ -7,13 +7,12 @@ act on, and the standing rule is that a claim names where it was read.
 ## The rule
 
 - **Documentation first, source only where it does not answer.**
-  The owner's requirements — `docs/REQUIREMENTS.md` §5, in the
-  `how-possible` repository, which governs both — make this an order rather
-  than a choice: a pass that works source-first is invalid and its
-  conclusions are not used, however right they turn out to be. "The
-  documentation is unreachable" is a claim to be tested, not accepted — and
-  a vendor whose site is blocked usually publishes the same pages as Markdown
-  in its own repository, which is documentation and is read first.
+  An order rather than a choice, and the owner set it: a pass that works
+  source-first is invalid and its conclusions are not used, however right
+  they turn out to be. "The documentation is unreachable" is a claim to be
+  tested, not accepted — and a vendor whose site is blocked usually publishes
+  the same pages as Markdown in its own repository, which is documentation
+  and is read first.
 - **Cite the source, in the text, and say which kind it is.** A statement
   about a client's behaviour cites that client's documentation or its source,
   by link, at the place the statement is made — not in a commit message, not
@@ -49,6 +48,7 @@ wrote it.
 
 Where this file describes what `README.md` currently says, `README.md` is the
 truth and this file is stale — the standard above is the durable part, the
-examples are only current. And the sourcing order is restated here, not owned
-here: if this file and `docs/REQUIREMENTS.md` §5, in the `how-possible`
-repository, ever disagree, §5 is right and this file is stale.
+examples are only current. The sourcing order is owned here rather than
+borrowed: this file is where it is written down, and it defers outward to
+nothing — a rule that lives somewhere the reader cannot open is a rule this
+repository does not really have.

@@ -117,7 +117,4 @@ binaries are published elsewhere and referenced from here; the only thing
 this repository runs is its own conformance check.
 
 If this file and the things it describes ever disagree — the specification,
-the script, the workflow — they are right and this file is stale. The same
-holds for the owner's requirements: `docs/REQUIREMENTS.md` §5 and §13, in the
-`how-possible` repository, are restated here for the people who work in this
-one and are not owned here. Where this file and they disagree, they are right.
+the script, the workflow — they are right and this file is stale.

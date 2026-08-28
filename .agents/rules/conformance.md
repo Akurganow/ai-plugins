@@ -49,11 +49,11 @@ not, so the two are independent assertions of which version this repository
 targets, and the script's `$id` check turns them disagreeing into a failure
 instead of a silent retarget.
 
-None of this rests on §13. The vendored `const` plus `required` assert the
-exact `$schema` on their own, so §13's "the check should assert what silently
-breaks a Hermes install" is satisfied whether or not the hand check exists —
-deleting it would not have breached the requirement. Keeping it is right for
-the reasons above and for no others.
+None of this was forced from outside. The vendored `const` plus `required`
+assert the exact `$schema` on their own, so the standing requirement that the
+check assert what silently breaks a Hermes install is satisfied whether or not
+the hand check exists — deleting it would have breached nothing. Keeping it is
+right for the reasons above and for no others.
 
 So "do not complicate the code" here — a check being the only code this
 repository has — is not "never duplicate the schema". It is: a hand-written

@@ -37,6 +37,14 @@ act on, and the standing rule is that a claim names where it was read.
 - **A supported-surface list is a list of obligations.** A row is added when
   there is a source for it, and it is removed rather than left standing when
   the source stops supporting it.
+- **A claim about a released artifact is written so a release cannot silently
+  falsify it**: it points at the machine-written record or at the artifact's
+  own output, or it names the tag and date it was measured against. Prose
+  that restates a property of the current build is not corrected at the next
+  release — nothing in the release path can correct it — so it is not written
+  that way. The release bot rewrites `binaries.json` and one field of
+  `plugin.json`; every sentence about what ships stays exactly as it was, and
+  a reader cannot tell a fresh one from one the last release falsified.
 
 ## Why it is written down rather than assumed
 

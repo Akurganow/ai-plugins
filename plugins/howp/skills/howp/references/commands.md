@@ -9,9 +9,12 @@ directory when that is unset; `HP_DATA_DIR` moves the `data/` tree elsewhere
 while leaving the configs under the workspace root. Pass `--repo` explicitly
 anyway.
 
-Every binary also answers `--help` and `--version`. `--help` is Russian; the
-flag names in it are ASCII, and it is the authority whenever this file and a
-binary disagree.
+Every binary also answers `--help` and `--version`, and `--help` is the
+authority whenever this file and a binary disagree. It is not all one
+language: measured on 2026-08-28 against `howp-v0.2.0`, each binary's
+one-line summary is Russian for five of the six and English for `hp-render`,
+while the `Usage:` line, the subcommand names and the flag names are English
+and ASCII throughout. A release can move that; read what it prints.
 
 ## Which commands touch the network
 
@@ -176,9 +179,10 @@ already on disk. `--help` names `--cache` on exactly the ones that need it;
 where this file and `--help` differ, `--help` is right.
 
 **`index`** polls the news feeds and updates `data/news/`. Free and
-read-only towards the world; worth running alongside `collect`. On a
-self-fetching build the feed list is compiled into the binary, which is why
-no list of news hosts is published with this package.
+read-only towards the world; worth running alongside `collect`. Which feeds
+it polls comes from `<workspace>/feeds.yaml` when that file exists, and from
+a list built into the binary when it does not — so the hosts are the user's
+to set. `references/interview.md` carries the file's format.
 
 **`eligible`** prints, one id per line on stdout, the moves a run would take:
 confirmed by a later snapshot, not mechanical, not already decided, and
@@ -193,9 +197,11 @@ the candidate list with its URLs instead. The run report goes to stderr.
 **`plan` / `apply` / `status`** are the cycle; see `model-steps.md`.
 `--moves N` takes at most N moves, leaving the rest for the next run.
 
-`apply` writes the journal under `data/news_scout/`. Note that the dashboard
-does not display it in this release: it is a data product, so report it to
-the user yourself.
+`apply` writes the journal under `data/news_scout/`. Measured on 2026-08-28
+against `howp-v0.2.0`, the dashboard does not display it — `news_scout`
+occurs nowhere in `hp-render`'s string table — so it is a data product and
+yours to report to the user. Open the page rather than trusting this
+sentence if a later release matters to you.
 
 ## `hp-explain` — the weekly digest
 

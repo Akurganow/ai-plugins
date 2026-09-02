@@ -1,10 +1,11 @@
-# The interests interview, and the two files it produces
+# The interests interview, and the files the user owns
 
 Everything downstream is built on `interests.yaml` and `questions/*.yaml`.
-They are the two files the user owns, and they are the reason a howp
+Those two come out of the interview below, and they are the reason a howp
 dashboard is about *them* rather than about whatever happened to be liquid
 this week. Get them wrong and the rest of the pipeline works perfectly on
-the wrong subject.
+the wrong subject. A third file, `feeds.yaml`, is the user's too but is not
+interviewed for — its format is at the foot of this file.
 
 Do not fill them in from a template. Do not guess someone's interests from
 their repository, their timezone or the fact that they installed this. Ask.
@@ -134,6 +135,39 @@ One file per interest, a list at the top level.
 
 The user edits both files by hand afterwards, and should be told so. Never
 overwrite a question they wrote; append.
+
+## `feeds.yaml` — the news feeds `hp-scout` polls
+
+Optional, and at the workspace root beside `interests.yaml`. **Absent it,
+`hp-scout` polls a list built into the binary**, so a user who has never
+heard of this file still gets news; writing one replaces that list rather
+than adding to it. It takes no part in the interview — offer it when a user
+asks why some source is or is not being read.
+
+A list at the top level, one entry per feed:
+
+```yaml
+- id: openai
+  url: https://openai.com/news/rss.xml
+  kind: lab
+- id: arxiv-cs-ai
+  url: https://rss.arxiv.org/rss/cs.AI
+  kind: arxiv
+```
+
+- `id` — short and unique; it names the feed in the index under `data/news/`.
+- `url` — the feed itself, RSS or Atom.
+- `kind` — one of `lab`, `arxiv`, `outlet`. It says what sort of source this
+  is: a lab or company publishing its own announcements, an arXiv listing, or
+  a news outlet.
+
+**Dated, because it is the binary's own parsing contract and a release can
+change it silently:** the keys and the three `kind` values above were read
+out of `hp-scout`'s YAML deserialiser in `howp-v0.2.0` on 2026-08-28. What
+the scout does differently with each `kind` when it weighs a candidate is not
+recorded in this package and has not been verified here. If a feed file is
+rejected, the binary's own error message names the field or the variant it
+did not accept, and that message is the authority over this section.
 
 ## What makes a good question here
 

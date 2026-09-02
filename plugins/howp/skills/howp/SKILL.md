@@ -60,11 +60,13 @@ knows which one it implements.
   what may be blocked and what to ask the user for is dealt with.
 - **No API keys, and no accounts.** If a procedure here ever seems to want a
   key, something is wrong — stop and say so.
-- Disk for the binaries. Measured against `howp-v0.2.0` on 2026-08-28, and a
-  release changes it: an archive of 9-11 MB that is deleted after unpacking,
-  and 25-30 MB that stays in the cache. A build that uses the fetch
-  cycle also keeps market responses in a cache directory of its own; that one
-  grows with use and is safe to delete.
+- Disk for the binaries. Measured against `howp-v0.2.0` on 2026-09-02 — in
+  decimal MB, counting file bytes and not directory entries — and a release
+  changes it: an archive of 9-11 MB that is deleted after unpacking, and
+  25-31 MB that stays in the cache. Each range spans both targets
+  `binaries.json` names, so whichever one Step 0 matches falls inside it. A
+  build that uses the fetch cycle also keeps market responses in a cache
+  directory of its own; that one grows with use and is safe to delete.
 
 ## Step 0 — the platform gate
 
@@ -674,10 +676,16 @@ one.
 - The musl binaries run on this Linux host — `hp-collect --version` prints
   `hp-collect 0.2.0`.
 - Every subcommand and flag named in this file and in
-  `references/commands.md` occurs as a literal string in the corresponding
-  binary of that release, with one exception, now removed from that file:
-  `hp-render wiki` was present in the `howp-v0.1.0` build (`wiki`,
-  `wiki-out` and `Home.md` all in its string table) and occurs zero times in
+  `references/commands.md` appears in the corresponding binary's own
+  `--help` output — the six top-level helps and the seventeen subcommand
+  helps under them, dumped on 2026-09-02 and read against those two files.
+  **Grepping a binary for a flag as it is typed finds nothing, and that is
+  not evidence against the documentation**: clap stores a long flag's name
+  without its dashes, so `--repo` occurs zero times in `hp-collect` while
+  `repo` occurs twelve. The help output is the oracle; the string table is
+  not. One exception, now removed from `references/commands.md`: `hp-render
+  wiki` was present in the `howp-v0.1.0` build (`wiki`, `wiki-out` and
+  `Home.md` all in its string table) and occurs zero times in
   `howp-v0.2.0`'s `hp-render`, whose only subcommands are `render` and
   `help`.
 - The markers the prompts write are `<data>` and `</data>`: the shipped

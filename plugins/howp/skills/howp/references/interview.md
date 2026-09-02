@@ -155,19 +155,43 @@ A list at the top level, one entry per feed:
   kind: arxiv
 ```
 
-- `id` — short and unique; it names the feed in the index under `data/news/`.
-- `url` — the feed itself, RSS or Atom.
+- `id` — `^[a-z0-9][a-z0-9-]*$`, at most 40 characters: lower-case ASCII
+  letters, digits and hyphens, beginning with a letter or a digit. It has to
+  be unique in the file, and it names the feed in the index under
+  `data/news/`.
+- `url` — the feed itself, RSS or Atom. **Write `https://`.** The binary
+  accepts a plain `http://` address and declares it for fetching, but the
+  fetch cycle `SKILL.md` documents will not retrieve one: that `curl` is
+  pinned to `--proto '=https'`, so the address comes back unfetched every
+  round and the loop's unchanged-manifest rule stops the run.
 - `kind` — one of `lab`, `arxiv`, `outlet`. It says what sort of source this
   is: a lab or company publishing its own announcements, an arXiv listing, or
   a news outlet.
 
+**An entry the binary will not accept is dropped, not reported**, and that is
+the failure worth knowing about here, because nothing announces it: an `id`
+that fails the pattern above, or one already taken, costs that entry and
+nothing else. The run still exits 0, and because the file exists there is no
+falling back to the built-in list — so a file whose entries all fail polls
+nothing and says so only through its count (`asked 0`). Read the count after
+editing this file.
+
 **Dated, because it is the binary's own parsing contract and a release can
-change it silently:** the keys and the three `kind` values above were read
-out of `hp-scout`'s YAML deserialiser in `howp-v0.2.0` on 2026-08-28. What
-the scout does differently with each `kind` when it weighs a candidate is not
+change it silently:** the keys, the three `kind` values and the `id` rule
+above were read on 2026-09-02 out of the source project's own documentation,
+[`docs/formats.md`](https://github.com/Akurganow/how-possible/blob/6a5f5e267dc553483ed577928aa2aec188e52037/docs/formats.md),
+at the commit `binaries.json` records as the source of `howp-v0.2.0`; the
+same rule is written into
+[`crates/hp-scout/src/feeds.rs`](https://github.com/Akurganow/how-possible/blob/6a5f5e267dc553483ed577928aa2aec188e52037/crates/hp-scout/src/feeds.rs)
+at that commit, which is where `id_is_well_formed` and its 40-character cap
+live. The silent drop above is neither of those: it was reproduced by
+running that release's own `hp-scout index --cache DIR --declare`. What the
+scout does differently with each `kind` when it weighs a candidate is not
 recorded in this package and has not been verified here. If a feed file is
-rejected, the binary's own error message names the field or the variant it
-did not accept, and that message is the authority over this section.
+*rejected* — an unknown key, a missing key, a `kind` outside the three — the
+binary's own error message names the field or the variant it did not accept,
+and that message is the authority over this section; a dropped entry
+produces no such message, which is why it has a paragraph of its own.
 
 ## What makes a good question here
 

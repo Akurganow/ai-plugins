@@ -35,11 +35,22 @@ def main() -> int:
     bases = sorted({t["url"].split("/releases/")[0] for t in manifest["targets"]})
     pattern = re.compile(
         "(?:" + "|".join(re.escape(b) for b in bases) + ")"
-        # The delimiter set matters: a markdown autolink <URL> and a link
-        # [t](URL) both end the tag with a character that is not part of
-        # it. Getting this wrong makes a *correct* link fail, which is the
-        # one behaviour this check may never have.
-        + r"/releases/(?:tag|download)/([^/)\]>\s\"']+)"
+        # Match what a tag *is*, not what ends one. Markdown follows and
+        # wraps a bare URL with punctuation -- a code span's backtick, a
+        # sentence's full stop, a comma, a semicolon, bold's asterisks, a
+        # '#' fragment, a '?' query -- and the first version of this
+        # excluded only '/', the four bracketing characters, whitespace and
+        # quotes, so each of those seven forms swallowed its punctuation
+        # into the "tag" and made a *correct* link fail, which is the one
+        # behaviour this check may never have. A positive class cannot fail
+        # that way. It is narrower than git's own ref rules on purpose --
+        # the tags here are howp-vX.Y.Z, so: an alphanumeric, then
+        # alphanumerics, dots, hyphens and underscores. The trailing dot is
+        # excluded in the class rather than stripped from the match
+        # afterwards; git refuses a ref that ends in one, so a dot there is
+        # never part of a tag, and keeping it here leaves the whole
+        # definition of a tag in one place.
+        + r"/releases/(?:tag|download)/([A-Za-z0-9](?:[A-Za-z0-9._-]*[A-Za-z0-9_-])?)"
     )
 
     paths = []

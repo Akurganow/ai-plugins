@@ -10,9 +10,10 @@ directory with `plugin.json` at its root, and its skills under
 
 The repository holds text. The two programs in it are
 `tools/check-conformance.py`, the conformance check described at the bottom,
-and `tools/check-release-links.py`, which holds every release link in this
-repository to the tag `binaries.json` records; no compiled artefact is stored
-here. The `howp` binaries are released on the
+and `tools/check-release-links.py`, which holds the release links under
+`plugins/` and in this file to the tag `binaries.json` records — those two
+are what it searches, and the rest of the tree is not scanned; no compiled
+artefact is stored here. The `howp` binaries are released on the
 [releases page](https://github.com/Akurganow/ai-plugins/releases), and
 **which release and which targets exist is recorded in
 [`plugins/howp/binaries.json`](plugins/howp/binaries.json), not in this
@@ -57,20 +58,20 @@ The surfaces this marketplace is meant for:
 - **OpenCode**
 - **Any client that implements Agent Plugins Specification 1.0.0.**
 
-Nothing below has been installed from this repository as published, because
-what is published does not yet contain the package layout described here.
-Every instruction is read off that client's own documentation first, and its
-own source only where the documentation does not answer; each says which, and
-where a statement comes from running a client's own code, it says that too.
-Only Claude's documentation site is reachable from the network this was
-written on, and it was read directly. Hermes' and OpenCode's are blocked, and
-both publish the same pages as Markdown in their own repositories, which is
-what was read instead. Codex's is blocked as well and its repository carries
-no replacement — `docs/skills.md` there is a three-line stub pointing back at
-the blocked page — so its claims come from its own source, install commands
-included, which is where Codex keeps its command help. Every citation into a
-repository below is a commit permalink, so it names the revision the claim
-was read at rather than whatever the branch says next.
+Nothing below has been installed by a client from this repository as
+published. Every instruction is read off that client's own documentation
+first, and its own source only where the documentation does not answer; each
+says which, and where a statement comes from running a client's own code, it
+says that too. Only Claude's documentation site is reachable from the
+network this was written on, and it was read directly. Hermes' and
+OpenCode's are blocked, and both publish the same pages as Markdown in their
+own repositories, which is what was read instead. Codex's is blocked as well
+and its repository carries no replacement — `docs/skills.md` there is a
+three-line stub pointing back at the blocked page — so its claims come from
+its own source, install commands included, which is where Codex keeps its
+command help. Every citation into a repository below is a commit permalink,
+so it names the revision the claim was read at rather than whatever the
+branch says next.
 
 ## Installing
 
@@ -281,8 +282,9 @@ plugins/<name>/
   skills/<name>/references/*.md    the skill's own bundled references, loaded by the
                                    agent when a procedure needs them
 tools/check-conformance.py         the conformance check
-tools/check-release-links.py       holds every release link to the tag binaries.json
-                                   records; two machine-written strings compared
+tools/check-release-links.py       holds the release links under plugins/ and in
+                                   README.md to the tag binaries.json records; two
+                                   machine-written strings compared
 tools/schemas/                     the official manifest schema, vendored
 .github/workflows/conformance.yml  runs both checks on pushes to main and on pull
                                    requests

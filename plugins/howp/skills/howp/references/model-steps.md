@@ -151,16 +151,34 @@ has nothing to quote.
 ## `hp-scout` — what news explains a move
 
 ```sh
-"$BIN/hp-scout" index --repo "$WORKSPACE"          # refresh the news index
-"$BIN/hp-scout" eligible --repo "$WORKSPACE"       # which moves are pending
 WORK="$(mktemp -d)"
-"$BIN/hp-scout" plan --repo "$WORKSPACE" --work-dir "$WORK"
+
+# a declaring build only: the fetch loop first, until the manifest is empty
+"$BIN/hp-scout" index --repo "$WORKSPACE" --cache "$FETCH" --declare
+# … fetch what "$FETCH/needed.json" names, declare again, repeat …
+
+# then the real index — the same command line, without --declare
+"$BIN/hp-scout" index --repo "$WORKSPACE" --cache "$FETCH"
+
+"$BIN/hp-scout" eligible --repo "$WORKSPACE"       # which moves are pending
+
+# plan has a fetch loop of its own, in the same shape
+"$BIN/hp-scout" plan --repo "$WORKSPACE" --work-dir "$WORK" \
+                     --cache "$FETCH" --declare
+# … fetch, declare again, repeat …
+"$BIN/hp-scout" plan --repo "$WORKSPACE" --work-dir "$WORK" --cache "$FETCH"
 ```
 
-`index` and `plan` are gathering commands, so on a declaring build each takes
-`--cache "$FETCH"` and runs its own fetch loop first — `index` before it
-updates `data/news/`, `plan` before it writes a prompt. `eligible` reads what
-is already on disk and takes neither flag.
+On a self-fetching build each of those is the one line without either flag:
+`"$BIN/hp-scout" index --repo "$WORKSPACE"`.
+
+`index`, `plan` and `candidates` are the gathering commands. On a declaring
+build `--cache` is **required** on all three, not optional: leaving it out
+is `error: the following required arguments were not provided:` and exit 2,
+before any work happens. Each runs its own fetch loop first — `index` before
+it updates `data/news/`, `plan` before it writes a prompt, `candidates`
+before it prints one. `eligible` reads what is already on disk and takes
+neither flag.
 
 `plan` picks the pending moves, decides by itself the ones it can (a move
 with an empty news window needs no judgement), and writes:
@@ -189,8 +207,16 @@ and an invented connection is worse than a recorded blank.
 There is no retry round here: a prompt that gets no usable answer is
 recorded as undecided and picked up by a later run.
 
-To work a single move by hand instead, `hp-scout candidates --move-id ID`
-prints the very same prompt text to stdout without planning a cycle.
+To work a single move by hand instead, `candidates` prints the very same
+prompt text to stdout without planning a cycle. It is a gathering command
+like the two above, so on a declaring build it takes the same pair:
+
+```sh
+"$BIN/hp-scout" candidates --repo "$WORKSPACE" --cache "$FETCH" --declare \
+                           --move-id ID
+# … fetch, declare again, repeat …
+"$BIN/hp-scout" candidates --repo "$WORKSPACE" --cache "$FETCH" --move-id ID
+```
 
 ## `hp-explain` — the weekly digest
 

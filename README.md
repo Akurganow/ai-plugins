@@ -8,22 +8,30 @@ directory with `plugin.json` at its root, and its skills under
 `skills/<name>/SKILL.md` per the
 [Agent Skills specification](https://agentskills.io/specification).
 
-The repository holds text. The one program in it is
-`tools/check-conformance.py`, the conformance check described at the bottom;
-no compiled artefact is stored here. The `howp` binaries are released: tag
-[`howp-v0.1.0`](https://github.com/Akurganow/ai-plugins/releases/tag/howp-v0.1.0)
-carries one archive, for `aarch64-apple-darwin`, and the checksum table
-[`SHA256SUMS`](https://github.com/Akurganow/ai-plugins/releases/download/howp-v0.1.0/SHA256SUMS)
-beside it; the archive's digest is also recorded in
-[`plugins/howp/binaries.json`](https://github.com/Akurganow/ai-plugins/blob/cd2d9f2683eabe118f363281996d3115af9a2d24/plugins/howp/binaries.json).
+The repository holds text. The two programs in it are
+`tools/check-conformance.py`, the conformance check described at the bottom,
+and `tools/check-release-links.py`, which holds the release links under
+`plugins/` and in this file to the tag `binaries.json` records — those two
+are what it searches, and the rest of the tree is not scanned; no compiled
+artefact is stored here. The `howp` binaries are released on the
+[releases page](https://github.com/Akurganow/ai-plugins/releases), and
+**which release and which targets exist is recorded in
+[`plugins/howp/binaries.json`](plugins/howp/binaries.json), not in this
+paragraph** — a release rewrites that file and cannot rewrite this sentence,
+so read the file. Each release publishes a `SHA256SUMS` asset beside its
+archives; for the release `binaries.json` names today that is
+[`SHA256SUMS`](https://github.com/Akurganow/ai-plugins/releases/download/howp-v0.2.0/SHA256SUMS),
+and its digests are the ones recorded in `binaries.json`.
 The `howp` package uses that release: its skill reads
 `plugins/howp/binaries.json`, refuses any platform the manifest does not
 name, downloads the archive for the one it does, checks the download's
 sha256 against the digest recorded there before unpacking it, and then runs
-the binaries. The download and the checksum were executed against the
-published release on 2026-08-25, including the failure branch — a tampered
-archive is refused and deleted. Nothing in the package has been run on
-macOS, which is the only platform the release targets; the skill says so
+the binaries. On 2026-08-28, against `howp-v0.2.0`, both archives the
+manifest names were downloaded and each matched its recorded digest; the
+failure branch — a tampered archive is refused and deleted — was executed on
+2026-08-25 against the release published then. Nothing in the package has
+been run on macOS: the `aarch64-apple-darwin` archive was downloaded and
+verified but no binary out of it has been executed here. The skill says so
 itself.
 
 ## Compatibility
@@ -50,10 +58,9 @@ The surfaces this marketplace is meant for:
 - **OpenCode**
 - **Any client that implements Agent Plugins Specification 1.0.0.**
 
-Nothing below has been installed from this repository as published, because
-what is published does not yet contain the package layout described here.
-Every instruction is read off that client's own documentation first, and its
-own source only where the documentation does not answer; each says which, and
+Nothing below has been installed from this repository as published. Every
+instruction is read off that client's own documentation first, and its own
+source only where the documentation does not answer; each says which, and
 where a statement comes from running a client's own code, it says that too.
 Only Claude's documentation site is reachable from the network this was
 written on, and it was read directly. Hermes' and OpenCode's are blocked, and
@@ -254,7 +261,7 @@ different operation that the standard does not describe — see
 
 | Plugin | What it does | Status |
 |---|---|---|
-| `howp` | Personal probability dashboard: interests → measurable questions → prediction-market probabilities → a dashboard of what became more or less likely | working, `aarch64-apple-darwin` only. The skill downloads [`howp-v0.1.0`](https://github.com/Akurganow/ai-plugins/releases/tag/howp-v0.1.0), verifies it against the digest in `binaries.json`, and drives the six binaries; it stops on any other platform. Untested on macOS itself |
+| `howp` | Personal probability dashboard: interests → measurable questions → prediction-market probabilities → a dashboard of what became more or less likely | working. The skill reads [`plugins/howp/binaries.json`](plugins/howp/binaries.json) for the release and the targets — that file is the record, not this cell — downloads the archive for a target it names, verifies it against the digest recorded there, and drives the six binaries; it stops on any platform the file does not name. Untested on macOS itself |
 
 ## Layout
 
@@ -274,8 +281,12 @@ plugins/<name>/
   skills/<name>/references/*.md    the skill's own bundled references, loaded by the
                                    agent when a procedure needs them
 tools/check-conformance.py         the conformance check
+tools/check-release-links.py       holds the release links under plugins/ and in
+                                   README.md to the tag binaries.json records; two
+                                   machine-written strings compared
 tools/schemas/                     the official manifest schema, vendored
-.github/workflows/conformance.yml  runs the check on pushes to main and on pull requests
+.github/workflows/conformance.yml  runs both checks on pushes to main and on pull
+                                   requests
 ```
 
 Plugin versions are bumped on every change. The standard does not require a

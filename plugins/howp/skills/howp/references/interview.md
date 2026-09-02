@@ -1,10 +1,11 @@
-# The interests interview, and the two files it produces
+# The interests interview, and the files the user owns
 
 Everything downstream is built on `interests.yaml` and `questions/*.yaml`.
-They are the two files the user owns, and they are the reason a howp
+Those two come out of the interview below, and they are the reason a howp
 dashboard is about *them* rather than about whatever happened to be liquid
 this week. Get them wrong and the rest of the pipeline works perfectly on
-the wrong subject.
+the wrong subject. A third file, `feeds.yaml`, is the user's too but is not
+interviewed for — its format is at the foot of this file.
 
 Do not fill them in from a template. Do not guess someone's interests from
 their repository, their timezone or the fact that they installed this. Ask.
@@ -134,6 +135,74 @@ One file per interest, a list at the top level.
 
 The user edits both files by hand afterwards, and should be told so. Never
 overwrite a question they wrote; append.
+
+## `feeds.yaml` — the news feeds `hp-scout` polls
+
+Optional, and at the workspace root beside `interests.yaml`. **Absent it,
+`hp-scout` polls a list built into the binary**, so a user who has never
+heard of this file still gets news; writing one replaces that list rather
+than adding to it. It takes no part in the interview — offer it when a user
+asks why some source is or is not being read.
+
+A list at the top level, one entry per feed:
+
+```yaml
+- id: openai
+  url: https://openai.com/news/rss.xml
+  kind: lab
+- id: arxiv-cs-ai
+  url: https://rss.arxiv.org/rss/cs.AI
+  kind: arxiv
+```
+
+- `id` — `^[a-z0-9][a-z0-9-]*$`, at most 40 characters: lower-case ASCII
+  letters, digits and hyphens, beginning with a letter or a digit. It has to
+  be unique in the file, and it names the feed in the index under
+  `data/news/`.
+- `url` — the feed itself, RSS or Atom. **Write `https://`.** The fetch
+  cycle `SKILL.md` documents pins its `curl` to `--proto '=https'`, so an
+  `http://` address is never retrieved and no response is ever written back
+  for it. That costs the one feed and not the run: the fetch loop ends on
+  the unchanged manifest, the index runs without that feed and exits 0 —
+  `SKILL.md`'s "a response you cannot get costs one item, not the run"
+  covers this exactly as it covers a market that will not answer.
+- `kind` — one of `lab`, `arxiv`, `outlet`. It says what sort of source this
+  is: a lab or company publishing its own announcements, an arXiv listing, or
+  a news outlet.
+
+**An entry the binary will not accept is dropped, not reported**, and that is
+the failure worth knowing about here, because nothing announces it: an `id`
+that fails the pattern above, or one already taken, costs that entry and
+nothing else. The run still exits 0, and because the file exists there is no
+falling back to the built-in list — so a file whose entries all fail polls
+nothing and says so only through its count (`asked 0`). Read the count after
+editing this file.
+
+**Dated, because it is the binary's own parsing contract and a release can
+change it silently:** the keys, the three `kind` values and the `id` rule
+above were read on 2026-09-02 out of the source project's own documentation,
+[`docs/formats.md`](https://github.com/Akurganow/how-possible/blob/6a5f5e267dc553483ed577928aa2aec188e52037/docs/formats.md),
+at the commit `binaries.json` records as the source of `howp-v0.2.0`; the
+same rule is written into
+[`crates/hp-scout/src/feeds.rs`](https://github.com/Akurganow/how-possible/blob/6a5f5e267dc553483ed577928aa2aec188e52037/crates/hp-scout/src/feeds.rs)
+at that commit, which is where `id_is_well_formed` and its 40-character cap
+live. **Neither link may open for you**: `Akurganow/how-possible` is not
+publicly readable — an unauthenticated request for either answered 404 on
+2026-09-02, where this repository's own page answered 200 — so the two names
+record where the rule was read, not somewhere you can go and check it.
+What you can check is the binary, and the same rules were reproduced against
+it on 2026-09-02 with `howp-v0.2.0`'s own `hp-scout index --cache DIR
+--declare`: a 40-character `id` is asked for and a 41-character one is not,
+`OpenAI` is not and `openai` is, and an `http://` `url` is declared for
+fetching, comes back unfetched from the `curl` `SKILL.md` documents, and
+leaves the index reporting one feed polled, one that did not answer, and
+exit 0. The silent drop above was reproduced the same way. What the
+scout does differently with each `kind` when it weighs a candidate is not
+recorded in this package and has not been verified here. If a feed file is
+*rejected* — an unknown key, a missing key, a `kind` outside the three — the
+binary's own error message names the field or the variant it did not accept,
+and that message is the authority over this section; a dropped entry
+produces no such message, which is why it has a paragraph of its own.
 
 ## What makes a good question here
 

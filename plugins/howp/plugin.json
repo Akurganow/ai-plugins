@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "howp",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Personal probability dashboard: interests → measurable questions → prediction-market probabilities (Polymarket, Manifold) → a local dashboard of what became more or less likely. The skill reads this package's binaries.json, refuses any platform it does not name, downloads and sha256-verifies the released archive for one it does, caches it under the user's home, and drives the six binaries; which targets are published comes from that file, not from this sentence. No API keys and no accounts. Deterministic work — storage, arithmetic, move detection, rendering — is the binaries'; every step that needs judgement is the agent's, between a binary's plan command and its apply command, and no binary invokes a model. In a build whose commands offer --cache, no binary opens a socket either: it declares the URLs it needs and the agent fetches them, which puts that traffic inside the permission flow the agent's client already has. The hosts it needs are declared under extensions below — a statement rather than a request, since no client is documented to read that field as network permission.",
   "author": {
     "name": "Alexander Kurganov",
@@ -34,7 +34,7 @@
           "clob.polymarket.com": "Polymarket quotes, for hp-collect and hp-verify",
           "api.manifold.markets": "Manifold quotes, for hp-collect and hp-verify"
         },
-        "not_listed": "News hosts. The news side is the agent's own web search rather than a fixed list, and in a declaring build every URL a run wants is named at run time in the fetch manifest — so this list is a floor and not a fence.",
+        "not_listed": "News hosts. Which feeds hp-scout polls is the workspace's own feeds.yaml when that file exists and a default built into the binary when it does not, so the hosts are the user's to set and not this package's to fix; and in a declaring build every URL a run wants is named at run time in the fetch manifest. This list is a floor and not a fence.",
         "status": "A declaration, not a request. Agent Plugins 1.0.0 assigns no semantics to the contents of an extensions namespace, and no client is documented to read this field as network permission; skills/howp/SKILL.md carries the same list in its frontmatter metadata, for an install that takes the skill without the package, and its preflight step is what actually establishes reachability and tells the user what to allow and where."
       }
     }

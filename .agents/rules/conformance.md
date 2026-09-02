@@ -55,8 +55,8 @@ check assert what silently breaks a Hermes install is satisfied whether or not
 the hand check exists — deleting it would have breached nothing. Keeping it is
 right for the reasons above and for no others.
 
-So "do not complicate the code" here — a check being the only code this
-repository has — is not "never duplicate the schema". It is: a hand-written
+So "do not complicate the code" here — the checks below being the only code
+this repository has — is not "never duplicate the schema". It is: a hand-written
 check either enforces something a JSON Schema cannot express, or it turns a
 schema rejection into a message somebody can act on, and it says beside
 itself which of the two it is. A duplicate with neither reason is the one to
@@ -113,8 +113,22 @@ bump is one a client is entitled to never notice.
 ## Text only
 
 No executables and no built artefacts are stored in the tree. Released
-binaries are published elsewhere and referenced from here; the only thing
-this repository runs is its own conformance check.
+binaries are published elsewhere and referenced from here; the only things
+this repository runs are its own two checks, and
+`.github/workflows/conformance.yml` runs both.
+
+The second is `tools/check-release-links.py`, and it lives outside
+`check-conformance.py` on purpose. That script's remit is installability
+against the published specification, and the section above allows a
+hand-written check inside it only where the check expresses a rule JSON
+Schema cannot express, with its clause beside it, or turns a schema rejection
+into a message somebody can act on. A stale release link is neither: it
+breaks nothing about the package's shape. What it does is compare two
+machine-written strings — the tag segment of a release URL under `plugins/**`
+or in `README.md`, and the `tag` field the release bot writes into
+`plugins/howp/binaries.json` — so no hit of it needs a reader's judgement.
+That is the test for a check belonging in this tree at all: not whether it is
+committed, but whether a hit of it can be wrong.
 
 If this file and the things it describes ever disagree — the specification,
 the script, the workflow — they are right and this file is stale.

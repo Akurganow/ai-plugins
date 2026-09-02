@@ -40,12 +40,19 @@ SUFFIXES = {".md", ".json", ".yaml", ".yml", ".txt"}
 # -- markdown's underscore emphasis, `_URL_` and `__URL__`. Making a correct
 # link fail is the one behaviour this check may never have.
 #
-# What it refuses by design is one thing: a tag whose last character is not
-# alphanumeric. `git check-ref-format` accepts `refs/tags/howp-v0.2.0-` and
-# `refs/tags/howp-v0.2.0_`; this class does not, so under such a tag every
-# correct link in the tree would look stale. That is why the recorded tag is
-# asserted against this same class before anything is scanned: one loud
-# refusal naming the tag beats a page of hits that are all wrong.
+# What it refuses by design is three shapes, which the refusal message
+# below states as the one rule they break -- a tag must begin and end with a
+# letter or a digit, with letters, digits, dots, hyphens and underscores
+# between. So: a tag whose *first* character is not alphanumeric, a tag whose
+# *last* character is not alphanumeric, and a tag carrying any character
+# outside `[A-Za-z0-9._-]` -- a semver '+' among them. git accepts all three:
+# `git check-ref-format --allow-onelevel` accepts `refs/tags/_howp`,
+# `refs/tags/howp-v0.2.0-`, `refs/tags/howp-v0.2.0_`, `refs/tags/howp+build.5`
+# and `refs/tags/howp@1`, and this class matches none of them, so under such a
+# tag every correct link in the tree would look stale. That is why the
+# recorded tag is asserted against this same class before anything is
+# scanned: one loud refusal naming the tag beats a page of hits that are all
+# wrong.
 TAG_FORM = r"[A-Za-z0-9](?:[A-Za-z0-9._-]*[A-Za-z0-9])?"
 
 
@@ -104,7 +111,10 @@ def main() -> int:
             print(f"  {rel}:{n}: names {found!r}, expected {tag!r}", file=sys.stderr)
         return 1
 
-    print(f"release-links OK: every release link names {tag}")
+    print(
+        f"release-links OK: every release link under plugins/ and in "
+        f"README.md names {tag}"
+    )
     return 0
 
 

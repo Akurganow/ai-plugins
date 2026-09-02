@@ -58,20 +58,19 @@ The surfaces this marketplace is meant for:
 - **OpenCode**
 - **Any client that implements Agent Plugins Specification 1.0.0.**
 
-Nothing below has been installed by a client from this repository as
-published. Every instruction is read off that client's own documentation
-first, and its own source only where the documentation does not answer; each
-says which, and where a statement comes from running a client's own code, it
-says that too. Only Claude's documentation site is reachable from the
-network this was written on, and it was read directly. Hermes' and
-OpenCode's are blocked, and both publish the same pages as Markdown in their
-own repositories, which is what was read instead. Codex's is blocked as well
-and its repository carries no replacement — `docs/skills.md` there is a
-three-line stub pointing back at the blocked page — so its claims come from
-its own source, install commands included, which is where Codex keeps its
-command help. Every citation into a repository below is a commit permalink,
-so it names the revision the claim was read at rather than whatever the
-branch says next.
+Nothing below has been installed from this repository as published. Every
+instruction is read off that client's own documentation first, and its own
+source only where the documentation does not answer; each says which, and
+where a statement comes from running a client's own code, it says that too.
+Only Claude's documentation site is reachable from the network this was
+written on, and it was read directly. Hermes' and OpenCode's are blocked, and
+both publish the same pages as Markdown in their own repositories, which is
+what was read instead. Codex's is blocked as well and its repository carries
+no replacement — `docs/skills.md` there is a three-line stub pointing back at
+the blocked page — so its claims come from its own source, install commands
+included, which is where Codex keeps its command help. Every citation into a
+repository below is a commit permalink, so it names the revision the claim
+was read at rather than whatever the branch says next.
 
 ## Installing
 

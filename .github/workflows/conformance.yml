@@ -1,8 +1,9 @@
 name: conformance
 
 # Runs the repository's two checks: the Agent Plugins 1.0.0 conformance check,
-# and the release-link check that holds every release URL in the published text
-# to the tag plugins/howp/binaries.json records. Both are in one job because
+# and the release-link check that holds the release URLs under `plugins/` and
+# in README.md — those two, and not the rest of the tree — to the tag
+# plugins/howp/binaries.json records. Both are in one job because
 # they cost nothing between them: one short job on a hosted Linux runner, no
 # services, no model calls.
 #

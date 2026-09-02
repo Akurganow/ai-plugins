@@ -159,11 +159,13 @@ A list at the top level, one entry per feed:
   letters, digits and hyphens, beginning with a letter or a digit. It has to
   be unique in the file, and it names the feed in the index under
   `data/news/`.
-- `url` — the feed itself, RSS or Atom. **Write `https://`.** The binary
-  accepts a plain `http://` address and declares it for fetching, but the
-  fetch cycle `SKILL.md` documents will not retrieve one: that `curl` is
-  pinned to `--proto '=https'`, so the address comes back unfetched every
-  round and the loop's unchanged-manifest rule stops the run.
+- `url` — the feed itself, RSS or Atom. **Write `https://`.** The fetch
+  cycle `SKILL.md` documents pins its `curl` to `--proto '=https'`, so an
+  `http://` address is never retrieved and no response is ever written back
+  for it. That costs the one feed and not the run: the fetch loop ends on
+  the unchanged manifest, the index runs without that feed and exits 0 —
+  `SKILL.md`'s "a response you cannot get costs one item, not the run"
+  covers this exactly as it covers a market that will not answer.
 - `kind` — one of `lab`, `arxiv`, `outlet`. It says what sort of source this
   is: a lab or company publishing its own announcements, an arXiv listing, or
   a news outlet.
@@ -184,8 +186,17 @@ at the commit `binaries.json` records as the source of `howp-v0.2.0`; the
 same rule is written into
 [`crates/hp-scout/src/feeds.rs`](https://github.com/Akurganow/how-possible/blob/6a5f5e267dc553483ed577928aa2aec188e52037/crates/hp-scout/src/feeds.rs)
 at that commit, which is where `id_is_well_formed` and its 40-character cap
-live. The silent drop above is neither of those: it was reproduced by
-running that release's own `hp-scout index --cache DIR --declare`. What the
+live. **Neither link may open for you**: `Akurganow/how-possible` is not
+publicly readable — an unauthenticated request for either answered 404 on
+2026-09-02, where this repository's own page answered 200 — so the two names
+record where the rule was read, not somewhere you can go and check it.
+What you can check is the binary, and the same rules were reproduced against
+it on 2026-09-02 with `howp-v0.2.0`'s own `hp-scout index --cache DIR
+--declare`: a 40-character `id` is asked for and a 41-character one is not,
+`OpenAI` is not and `openai` is, and an `http://` `url` is declared for
+fetching, comes back unfetched from the `curl` `SKILL.md` documents, and
+leaves the index reporting one feed polled, one that did not answer, and
+exit 0. The silent drop above was reproduced the same way. What the
 scout does differently with each `kind` when it weighs a candidate is not
 recorded in this package and has not been verified here. If a feed file is
 *rejected* — an unknown key, a missing key, a `kind` outside the three — the

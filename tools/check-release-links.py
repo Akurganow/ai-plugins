@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Every release link in the published text names the tag binaries.json records.
+"""Every release link under plugins/ and in README.md names the tag binaries.json records.
 
 Not a check on prose. Both sides are machine-written: the tag segment of a
 release URL, and the `tag` field the release bot writes into
@@ -23,10 +23,46 @@ BINARIES = ROOT / "plugins" / "howp" / "binaries.json"
 SEARCH = ["plugins", "README.md"]
 SUFFIXES = {".md", ".json", ".yaml", ".yml", ".txt"}
 
+# What a tag is: an alphanumeric, then any run of alphanumerics, dots,
+# hyphens and underscores, ending on an alphanumeric. One definition, used
+# twice -- to match the tag segment of a URL, and to check the tag
+# binaries.json records -- so the two ends of the comparison cannot drift
+# apart.
+#
+# It describes what a tag *is* rather than what ends one, because the first
+# version of this check ended the tag at a negated class naming only '/',
+# the four bracketing characters, whitespace and quotes, and markdown puts
+# far more than that after a URL. Eight ordinary ways of writing a *correct*
+# release link swallowed their punctuation into the "tag" and failed: a code
+# span's backtick, a sentence's full stop, a comma, a semicolon, bold's
+# asterisks, a '#' fragment, a '?' query, and -- surviving the first
+# correction, whose class still admitted '_' and '-' as terminal characters
+# -- markdown's underscore emphasis, `_URL_` and `__URL__`. Making a correct
+# link fail is the one behaviour this check may never have.
+#
+# What it refuses by design is one thing: a tag whose last character is not
+# alphanumeric. `git check-ref-format` accepts `refs/tags/howp-v0.2.0-` and
+# `refs/tags/howp-v0.2.0_`; this class does not, so under such a tag every
+# correct link in the tree would look stale. That is why the recorded tag is
+# asserted against this same class before anything is scanned: one loud
+# refusal naming the tag beats a page of hits that are all wrong.
+TAG_FORM = r"[A-Za-z0-9](?:[A-Za-z0-9._-]*[A-Za-z0-9])?"
+
 
 def main() -> int:
     manifest = json.loads(BINARIES.read_text(encoding="utf-8"))
     tag = manifest["tag"]
+    if not re.fullmatch(TAG_FORM, tag):
+        print(
+            f"release-links: plugins/howp/binaries.json records the tag "
+            f"{tag!r}, which this check cannot match: a tag must begin and "
+            f"end with a letter or a digit, with letters, digits, dots, "
+            f"hyphens and underscores between (/{TAG_FORM}/). Nothing was "
+            f"scanned. Widen TAG_FORM in this file and re-run it, rather "
+            f"than reading the links as stale.",
+            file=sys.stderr,
+        )
+        return 1
     # Bases are derived from the manifest rather than hardcoded, so the check
     # follows wherever the release bot actually publishes. Every target is
     # read, not just the first: they share a base today, but a manifest that
@@ -35,22 +71,7 @@ def main() -> int:
     bases = sorted({t["url"].split("/releases/")[0] for t in manifest["targets"]})
     pattern = re.compile(
         "(?:" + "|".join(re.escape(b) for b in bases) + ")"
-        # Match what a tag *is*, not what ends one. Markdown follows and
-        # wraps a bare URL with punctuation -- a code span's backtick, a
-        # sentence's full stop, a comma, a semicolon, bold's asterisks, a
-        # '#' fragment, a '?' query -- and the first version of this
-        # excluded only '/', the four bracketing characters, whitespace and
-        # quotes, so each of those seven forms swallowed its punctuation
-        # into the "tag" and made a *correct* link fail, which is the one
-        # behaviour this check may never have. A positive class cannot fail
-        # that way. It is narrower than git's own ref rules on purpose --
-        # the tags here are howp-vX.Y.Z, so: an alphanumeric, then
-        # alphanumerics, dots, hyphens and underscores. The trailing dot is
-        # excluded in the class rather than stripped from the match
-        # afterwards; git refuses a ref that ends in one, so a dot there is
-        # never part of a tag, and keeping it here leaves the whole
-        # definition of a tag in one place.
-        + r"/releases/(?:tag|download)/([A-Za-z0-9](?:[A-Za-z0-9._-]*[A-Za-z0-9_-])?)"
+        + r"/releases/(?:tag|download)/(" + TAG_FORM + ")"
     )
 
     paths = []

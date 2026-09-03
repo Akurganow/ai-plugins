@@ -1,10 +1,11 @@
 # Every `hp` command, verbatim
 
 Generated from the binary's own `--help`, top level and every subcommand
-recursively, at `hp 0.2.1` on 2026-09-03. Nothing here is paraphrased and
-nothing is added. Where this file and the binary in front of you disagree,
-**the binary is right** — a release moves this surface and nothing in the
-release path rewrites this file. Re-read it out of `hp` after an upgrade.
+recursively, at `hp 0.3.1` on 2026-09-03, unpacked from the published
+`howp-v0.3.1` archive. Nothing here is paraphrased and nothing is added. Where
+this file and the binary in front of you disagree, **the binary is right** — a
+release moves this surface and nothing in the release path rewrites this file.
+Re-read it out of `hp` after an upgrade.
 
 ## `hp --help`
 
@@ -21,7 +22,7 @@ Commands:
   render   The dashboard, as one Markdown page
   digest   The weekly digest, read rather than written
   moves    Sharp probability moves over the live snapshot history
-  bench    The benchmark's deterministic half: arithmetic, a substring check, two reports
+  bench    The benchmark's deterministic half: arithmetic, a substring check, two reports, and the requests a case's own sources imply
   help     Print this message or the help of the given subcommand(s)
 
 Options:
@@ -465,7 +466,7 @@ Options:
 ## `hp bench --help`
 
 ```
-The benchmark's deterministic half: arithmetic, a substring check, two reports
+The benchmark's deterministic half: arithmetic, a substring check, two reports, and the requests a case's own sources imply
 
 Usage: hp bench <COMMAND>
 
@@ -475,6 +476,7 @@ Commands:
   quotes    Check an article's quotations against the fixtures it cites
   verdicts  Verdict agreement with the committed match records
   brief     The brief a writing agent is given for a case
+  sources   The addresses a case's evidence comes from, and what to save each as
   help      Print this message or the help of the given subcommand(s)
 
 Options:
@@ -568,5 +570,18 @@ Usage: hp bench brief --case <FILE>
 
 Options:
       --case <FILE>  The case file
+  -h, --help         Print help
+```
+
+### `hp bench sources --help`
+
+```
+The addresses a case's evidence comes from, and what to save each as
+
+Usage: hp bench sources --case <FILE> --json
+
+Options:
+      --case <FILE>  The case file
+      --json         Print JSON. Required for the reason `hp sources urls` gives
   -h, --help         Print help
 ```

@@ -20,22 +20,27 @@ artefact is stored here. The `howp` binaries are released on the
 paragraph** — a release rewrites that file and cannot rewrite this sentence,
 so read the file. Each release publishes a `SHA256SUMS` asset beside its
 archives; for the release `binaries.json` names today that is
-[`SHA256SUMS`](https://github.com/Akurganow/ai-plugins/releases/download/howp-v0.2.0/SHA256SUMS),
+[`SHA256SUMS`](https://github.com/Akurganow/ai-plugins/releases/download/howp-v0.3.1/SHA256SUMS),
 and its digests are the ones recorded in `binaries.json`.
 The `howp` package uses that release: its skill reads
 `plugins/howp/binaries.json`, refuses any platform the manifest does not
 name, downloads the archive for the one it does, checks the download's sha256
 against the digest recorded there before unpacking it, and then runs what
 that entry's `binaries` array says the archive holds. **The skill drives one
-binary, `hp`**, and that array is also what says whether an archive has it:
-the release `binaries.json` records today was published before `hp` existed,
-so no published archive holds it yet and the skill stops there rather than
-running something else. On 2026-08-28, against `howp-v0.2.0`, both archives
-the manifest names were downloaded and each matched its recorded digest; the
-failure branch — a tampered archive is refused and deleted — was executed on
-2026-08-25 against the release published then. Nothing in the package has
-been run on macOS: the `aarch64-apple-darwin` archive was downloaded and
-verified but no binary out of it has been executed here. The skill says so
+binary, `hp`**, and that array is also what says whether an archive has it: an
+entry whose `binaries` array omits `hp` stops the skill rather than having it
+run something else, so which releases can be driven is a property of that file
+and not of this paragraph. On 2026-09-03, against `howp-v0.3.1`, both archives
+the manifest names were downloaded from the URLs it records, and each matched
+both its recorded `sha256` and its line in that release's `SHA256SUMS`; each
+holds a `LICENSE` and one `bin/hp` and nothing else. On Linux `x86_64` the
+skill's own install procedure was then carried out from that archive — the
+platform gate, the download, the digest check, the staging unpack and the stamp
+— and the `hp` it installed printed `hp 0.3.1`. Nothing was run on macOS: the
+`aarch64-apple-darwin` archive was downloaded and its digest verified, and no
+binary out of it has been executed here. Nothing in that run was made to fail
+on purpose; a tampered archive being refused and deleted was executed on
+2026-08-25, against the release published then. The skill says all of this
 itself.
 
 ## Compatibility
@@ -265,7 +270,7 @@ different operation that the standard does not describe — see
 
 | Plugin | What it does | Status |
 |---|---|---|
-| `howp` | Personal probability dashboard: interests → measurable questions → prediction-market probabilities → a local Markdown dashboard of what became more or less likely | working. The skill reads [`plugins/howp/binaries.json`](plugins/howp/binaries.json) for the release, the targets and what an archive holds — that file is the record, not this cell — downloads the archive for a target it names, verifies it against the digest recorded there, and drives one binary, `hp`; it stops on any platform the file does not name. `hp` opens no socket and reads no clock: the agent fetches each market body itself and passes the moment in, and every judgement is the agent's. No release naming `hp` has been published yet, and untested on macOS itself |
+| `howp` | Personal probability dashboard: interests → measurable questions → prediction-market probabilities → a local Markdown dashboard of what became more or less likely | working. The skill reads [`plugins/howp/binaries.json`](plugins/howp/binaries.json) for the release, the targets and what an archive holds — that file is the record, not this cell — downloads the archive for a target it names, verifies it against the digest recorded there, and drives one binary, `hp`; it stops on any platform the file does not name. `hp` opens no socket and reads no clock: the agent fetches each market body itself and passes the moment in, and every judgement is the agent's. The published `howp-v0.3.1` binary archive was installed and run by the skill's own procedure on Linux `x86_64` on 2026-09-03 — the package itself through no client — and nothing has been run on macOS |
 
 ## Layout
 

@@ -37,23 +37,27 @@ there is nothing to construct.
 
 **Then judge it**, and there are four judgements:
 
-- **The verdict.** Its horizon part is arithmetic: the market's own deadline
-  against the question's `horizon`. Up to about three months apart is a
-  `partial`; more than three months is a `mismatch`; a deadline that has
-  already passed is a `mismatch` outright. A vague horizon therefore does not
-  buy a lenient verdict, it buys a worse one. Beyond the deadline, ask whether
-  the market resolves on the event the question asks about — one resolving on
-  a wider or a different criterion is a `partial` at best.
+- **The verdict**, and its horizon half is arithmetic. **The horizon
+  convention:** a market whose close date is more than three calendar months
+  after the question's `horizon` — or more than three calendar months before it
+  — is a `mismatch`; within three calendar months either way, the boundary
+  included, is a `partial`; and a close date already in the past is a
+  `mismatch` outright.
+  A vague horizon therefore buys a worse verdict rather than a lenient one.
+  The horizon is only ever one half of the judgement: a market resolving on a
+  wider or a different event is a `partial` at best whatever its close date
+  says.
 
-  **Those three months are this package's own convention, and nothing
-  enforces them.** `hp ingest match` does no month arithmetic at all; it
-  stores the verdict you hand it, which is what makes the whole judgement
-  yours. Nor is the threshold recorded outside this package. What it *is*
-  backed by is the record it produced: the `notes` on the verdicts already in
-  a workspace's `matches/*.yaml` were taken under it and say so in words, so
-  read a few before your first verdict and keep new ones consistent with
-  them. If you depart from it, say why in `--notes` — that text is published
-  on the card, and it is the only place the reasoning survives.
+  **`hp` stores the verdict it is handed and computes none of this** — `hp
+  ingest match` does no month arithmetic at all, which is what makes the whole
+  judgement yours. The convention is recorded in the source project's
+  `docs/formats.md`, under "`matches/*.yaml`: the horizon convention a verdict
+  was written under"; that repository is not publicly readable, so what you
+  can check is the record it produced — the `notes` on the verdicts already in
+  a workspace's `matches/*.yaml` state it in their own words. Read a few
+  before your first verdict and keep new ones consistent with them. A verdict
+  that departs from it is legitimate and says so in `--notes`, which is the
+  only place that reasoning survives: it is published on the card.
 - **The direction**: whether the market's YES is the question's yes, `direct`
   or `inverse`.
 - **The confidence**: `high`, `medium` or `low`.
@@ -62,14 +66,35 @@ there is nothing to construct.
   published on the card. It is refused rather than repaired if it carries a
   control or invisible code point, or runs past the stored cap.
 
+**Every one of those goes in as one argv element**, and the free text most of
+all. Put the reasoning in a shell variable and pass it quoted; never splice it
+into a command string, and never let a shell see it unquoted — an apostrophe,
+a `$`, a backtick or a newline in a market's own wording would end the
+argument, and what reached `--notes` would be a truncated note or a command.
+The closed sets go in variables too, because `match|partial|mismatch` written
+on a command line is a **pipeline**, not a choice.
+
 ```sh
-"$BIN/hp" ingest match --repo "$W" --source polymarket|manifold \
-  --question <question-id> --ref <the market's own key> \
-  --from "$CACHE/<the body you fetched>" \
-  --verdict match|partial|mismatch --direction direct|inverse \
-  --confidence high|medium|low --notes '<the reasoning>' \
-  --checked-at YYYY-MM-DD
+SOURCE=polymarket                       # or manifold
+QUESTION=ai-agi-claim-2028              # the question's id
+REF=event:some-slug                     # the market's own key
+BODY="$CACHE/4f6c5807….body"            # the body you fetched for it
+VERDICT=partial                         # match | partial | mismatch
+DIRECTION=direct                        # direct | inverse
+CONFIDENCE=high                         # high | medium | low
+NOTES=$(cat <<'TEXT'
+Why this market answers the question, or where the two diverge. One argument,
+however long, and quoted at every point below.
+TEXT
+)
+
+"$BIN/hp" ingest match --repo "$W" --source "$SOURCE" --question "$QUESTION" \
+  --ref "$REF" --from "$BODY" --verdict "$VERDICT" --direction "$DIRECTION" \
+  --confidence "$CONFIDENCE" --notes "$NOTES" --checked-at 2026-09-03
 ```
+
+The heredoc is quoted (`<<'TEXT'`), so nothing inside it is expanded — the
+text arrives at `hp` as the bytes you wrote.
 
 `--ref` is the market's own key, `event:some-slug` or `market:kar1` in the
 command's own words. The wording, the link, the deadline and the resolution
@@ -106,10 +131,24 @@ without writing anything.
 Find the story that explains one — your own search, over whatever sources you
 have. Then:
 
+The headline and the reason are free text and go in as one argv element each,
+by the same rule and for the same reason as `--notes`:
+
 ```sh
-"$BIN/hp" ingest explanation --repo "$W" --move '<move_id>' \
-  --url '<the story's link>' --title '<its headline>' \
-  --published '<ISO-8601 with an offset>' --why '<why it explains the move>'
+MOVE='polymarket:3584362:October 31:2026-09-01T01:14:41Z'   # its move_id
+URL='https://example.com/the-story'
+PUBLISHED='2026-09-01T00:10:00Z'                            # offset required
+TITLE=$(cat <<'TEXT'
+The headline, exactly as published
+TEXT
+)
+WHY=$(cat <<'TEXT'
+Why this story is offered as the explanation of that move.
+TEXT
+)
+
+"$BIN/hp" ingest explanation --repo "$W" --move "$MOVE" --url "$URL" \
+  --title "$TITLE" --published "$PUBLISHED" --why "$WHY"
 ```
 
 - `--url` must be `https` and carry no credentials.
@@ -147,9 +186,18 @@ paragraph is refused too. It refuses rather than repairs, so a paragraph that
 breaks one of them costs the call and not the text. There is no ban on stating
 a figure, and none on any particular word.
 
+The paragraph goes to `--from -` on standard input rather than onto a command
+line at all, which is the same rule taken one step further — nothing about the
+text can reach the shell as syntax:
+
 ```sh
-printf '%s' '<the paragraph>' | "$BIN/hp" ingest digest --repo "$W" \
-  --from - --generated-at "$TS"
+DIGEST=$(cat <<'TEXT'
+One paragraph: no link, no markup, no line break, and not empty.
+TEXT
+)
+
+printf '%s' "$DIGEST" | "$BIN/hp" ingest digest --repo "$W" --from - \
+  --generated-at "$TS"
 ```
 
 `--generated-at` is required for the reason `--ts` is, and it does a second

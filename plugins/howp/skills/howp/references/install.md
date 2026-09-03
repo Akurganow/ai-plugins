@@ -119,17 +119,28 @@ BIN="$DEST/<root>/<bin_dir>"          # target.root / target.bin_dir
 ```
 
 Skip Steps 3 to 5 when **both** of these hold: `$DEST/verified.sha256` exists
-and its contents equal `target.sha256`, and every name in `target.binaries`
-exists under `$BIN` and is executable.
+and its contents equal `target.sha256`, **and** every name in
+`target.binaries` exists under `$BIN` and is executable. Check both — a stamp
+beside a tree that is missing a binary is exactly the state a half-finished
+install leaves behind, and a shortcut that reads only the stamp would skip the
+install that never finished.
 
 ```sh
-[ "$(cat "$DEST/verified.sha256" 2>/dev/null)" = "<sha256>" ] && echo cached
+# `<binary> …` is target.binaries, expanded from binaries.json.
+cached=false
+if [ "$(cat "$DEST/verified.sha256" 2>/dev/null)" = "<sha256>" ]; then
+  cached=true
+  for name in <binary> …; do
+    [ -x "$BIN/$name" ] || { cached=false; break; }
+  done
+fi
+if $cached; then echo cached; else echo install; fi
 ```
 
-Anything else — no stamp, a different digest, a missing binary — means
-download again. The stamp is what makes a new release replace an old copy
-instead of being ignored: a new version lands in a new `$DEST`, and a
-re-released digest fails the comparison.
+Anything else — no stamp, a different digest, a missing or non-executable
+binary — means download again. The stamp is what makes a new release replace
+an old copy instead of being ignored: a new version lands in a new `$DEST`,
+and a re-released digest fails the comparison.
 
 A cache under `$HOME` is not promised to survive. A cloud session, a fresh
 container or a machine that clears `~/.cache` starts with nothing here, and
@@ -140,9 +151,13 @@ it costs one archive. Say that rather than hunting for what deleted it.
 
 ```sh
 mkdir -p "$DEST"
-curl --fail --location --proto '=https' --tlsv1.2 \
+curl --fail --location --proto '=https' --tlsv1.2 --connect-timeout 15 \
   --output "$DEST/<archive>" "<url>"
 ```
+
+`--connect-timeout` and no `--max-time`: a host that never answers should fail
+in seconds rather than hang a run, while the transfer itself is tens of
+megabytes and may legitimately take minutes on a slow link.
 
 `--fail` matters: without it curl writes GitHub's error page into the file and
 exits 0, and you would go on to checksum an HTML page.
@@ -179,19 +194,48 @@ The release also publishes a `SHA256SUMS` asset beside the archive. It is a
 convenience for a person checking by hand; the digest this skill checks
 against is the one inside the package.
 
-## Step 5 — unpack
+## Step 5 — unpack, into a staging directory
+
+**Never extract over the destination.** A `tar` that dies half way — a full
+disk, a killed shell — would leave a partial tree where the next run expects a
+complete one, and if the stamp were already there that run would happily use
+it. So the archive is opened somewhere else, checked there, and moved into
+place only once it is known good; the stamp is written last of all, so a stamp
+is only ever beside a tree that was extracted whole and shown to run.
 
 ```sh
-tar -xzf "$DEST/<archive>" -C "$DEST"
-rm -f "$DEST/<archive>"
-printf '%s\n' "<sha256>" > "$DEST/verified.sha256"
+STAGE=$(mktemp -d "${TMPDIR:-/tmp}/howp-unpack.XXXXXX")
+trap 'rm -rf "$STAGE"' EXIT
+tar -xzf "$DEST/<archive>" -C "$STAGE"
+
+# Validate in the staging tree, before anything in $DEST is touched.
+# `<binary> …` is target.binaries again.
+ok=true
+for name in <binary> …; do
+  [ -x "$STAGE/<root>/<bin_dir>/$name" ] &&
+    continue || { echo "the archive does not hold $name" >&2; ok=false; }
+done
+"$STAGE/<root>/<bin_dir>/hp" --version >/dev/null 2>&1 ||
+  { echo "hp will not run on this machine" >&2; ok=false; }
+
+# Replace the destination only if every check passed — stale contents and all.
+if $ok; then
+  rm -rf "$DEST/<root>"
+  mkdir -p "$DEST"
+  mv "$STAGE/<root>" "$DEST/<root>"
+  rm -f "$DEST/<archive>"
+  # Last of all, so the stamp can never describe a tree that is not there.
+  printf '%s\n' "<sha256>" > "$DEST/verified.sha256"
+else
+  echo "nothing was installed; $DEST is untouched" >&2
+fi
 ```
 
-Then confirm the archive held what it promised: every name in
-`target.binaries` is present under `$BIN`, and `"$BIN/hp" --version` runs.
-Write the stamp only after the checksum passed — it is a record that these
-bytes were verified, and a stamp written on unverified bytes is worse than no
-stamp.
+The `rm -rf "$DEST/<root>"` is what makes a re-released digest recover rather
+than half-overwrite: whatever an earlier attempt left is gone before the new
+tree lands. The stamp is a record that these bytes were verified *and*
+unpacked whole, and one written any earlier is worse than no stamp — Step 2's
+shortcut believes it.
 
 **Every archive holds the binaries and a licence, and nothing else.** There is
 no helper script in one, for the fetch cycle or anything else, and
@@ -208,3 +252,8 @@ Report it to the user rather than doing it silently. Nothing in this paragraph
 applies to Linux, which has no such attribute — a binary that will not start
 there is usually the wrong C library, and Step 0's two-matching-entries rule
 is what guards against that.
+
+**If a step here fails, that is new information**, and worth reporting to
+<https://github.com/Akurganow/ai-plugins> rather than working around. Say which
+platform you were on and which release `binaries.json` named — both change what
+the answer means.

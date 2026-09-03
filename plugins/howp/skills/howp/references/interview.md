@@ -113,14 +113,17 @@ One file per interest, a list at the top level.
   how, it is not a question yet.
 - `kind` — `binary` (one yes/no outcome) or `multi` (several mutually
   exclusive outcomes). Defaults to `binary`.
-- `horizon` — free text, but a date is what makes verification work: you
-  measure the market's own deadline against it when you bind one, and by this
-  package's own convention a divergence of up to three months makes the match
-  `partial`, more than three months a `mismatch`, and a deadline already
-  passed a `mismatch` outright (`references/procedures.md`, which says what
-  that convention rests on). So a vague horizon does not produce a lenient
-  verdict, it produces a worse one. Quote a bare date so YAML keeps it a
-  string.
+- `horizon` — free text, but a date is what makes verification work: binding a
+  market measures its close date against this one under **the horizon
+  convention**, which is that a market whose close date is more than three
+  calendar months after the question's `horizon` — or more than three calendar
+  months before it — is a `mismatch`; within three calendar months either way,
+  the boundary included, is a `partial`; and a close date already in the past
+  is a `mismatch` outright.
+  `hp` stores the verdict it is handed and computes none of this;
+  `references/procedures.md` says what the convention rests on. So a vague
+  horizon does not produce a lenient verdict, it produces a worse one. Quote a
+  bare date so YAML keeps it a string.
 - `status` — `active`, `resolved`, `expired` or `archived`. Defaults to
   `active`. **Only `active` questions are quoted**, which is also how a user
   parks something without deleting it.

@@ -27,23 +27,33 @@ package searches for you.
 
 **Fetch the candidate's own body** from the venue's API and keep the file. The
 lookup shapes are the ones `hp` builds its own requests from — Polymarket's
-Gamma at `https://gamma-api.polymarket.com/events?slug=<slug>` (or
-`/markets?slug=<slug>`, and `/events/<id>` as the fallback when a slug lookup
-answers no rows), and Manifold's v0 API at
+Gamma at `https://gamma-api.polymarket.com/events?slug=<slug>`, with the
+collection following the ref's kind (`/markets?slug=<slug>` for a `market:`
+ref) and `/<collection>/<id>` as the fallback when a slug lookup answers no
+rows; and Manifold's v0 API at
 `https://api.manifold.markets/v0/market/<id>` or `/v0/slug/<slug>`. Once a
 record exists, `hp sources urls` prints the exact URL for that market and
 there is nothing to construct.
 
 **Then judge it**, and there are four judgements:
 
-- **The verdict**, and the horizon part of it is decided by arithmetic: the
-  market's own deadline against the question's `horizon`. Up to about three
-  months apart is a `partial`; more than three months is a `mismatch`; a
-  deadline that has already passed is a `mismatch` outright. A vague horizon
-  therefore does not buy a lenient verdict, it buys a worse one. Beyond the
-  deadline, ask whether the market resolves on the event the question asks
-  about — a market that resolves on a wider or a different criterion is a
-  `partial` at best. **`hp` records this judgement and does not check it.**
+- **The verdict.** Its horizon part is arithmetic: the market's own deadline
+  against the question's `horizon`. Up to about three months apart is a
+  `partial`; more than three months is a `mismatch`; a deadline that has
+  already passed is a `mismatch` outright. A vague horizon therefore does not
+  buy a lenient verdict, it buys a worse one. Beyond the deadline, ask whether
+  the market resolves on the event the question asks about — one resolving on
+  a wider or a different criterion is a `partial` at best.
+
+  **Those three months are this package's own convention, and nothing
+  enforces them.** `hp ingest match` does no month arithmetic at all; it
+  stores the verdict you hand it, which is what makes the whole judgement
+  yours. Nor is the threshold recorded outside this package. What it *is*
+  backed by is the record it produced: the `notes` on the verdicts already in
+  a workspace's `matches/*.yaml` were taken under it and say so in words, so
+  read a few before your first verdict and keep new ones consistent with
+  them. If you depart from it, say why in `--notes` — that text is published
+  on the card, and it is the only place the reasoning survives.
 - **The direction**: whether the market's YES is the question's yes, `direct`
   or `inverse`.
 - **The confidence**: `high`, `medium` or `low`.

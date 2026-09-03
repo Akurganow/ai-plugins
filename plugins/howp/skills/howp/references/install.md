@@ -84,8 +84,9 @@ the one in front of you rather than a generic one:
   `~/.claude/settings.json` for every project — from Claude Code's own
   documentation, <https://code.claude.com/docs/en/permissions>. A shell
   command like `curl` runs under the Bash sandbox instead, whose network
-  layer is an allowlist: `"sandbox": {"network": {"allowedDomains":
-  ["github.com"]}}`, and "Claude Code pre-allows no domains by default" — its
+  layer is an allowlist, shaped like that documentation's own example
+  (`"sandbox": {"network": {"allowedDomains": ["github.com",
+  "*.npmjs.org"]}}`), and "Claude Code pre-allows no domains by default" — its
   sandboxing documentation, <https://code.claude.com/docs/en/sandboxing>,
   which also records that a `WebFetch(domain:…)` allow rule adds its domain
   to that same list.

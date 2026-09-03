@@ -114,10 +114,11 @@ One file per interest, a list at the top level.
 - `kind` — `binary` (one yes/no outcome) or `multi` (several mutually
   exclusive outcomes). Defaults to `binary`.
 - `horizon` — free text, but a date is what makes verification work: you
-  measure the market's own deadline against it when you bind one, and a
-  divergence of up to three months makes the match `partial`, more than three
-  months a `mismatch`, and a deadline already passed a `mismatch` outright
-  (`references/procedures.md`). So a vague horizon does not produce a lenient
+  measure the market's own deadline against it when you bind one, and by this
+  package's own convention a divergence of up to three months makes the match
+  `partial`, more than three months a `mismatch`, and a deadline already
+  passed a `mismatch` outright (`references/procedures.md`, which says what
+  that convention rests on). So a vague horizon does not produce a lenient
   verdict, it produces a worse one. Quote a bare date so YAML keeps it a
   string.
 - `status` — `active`, `resolved`, `expired` or `archived`. Defaults to

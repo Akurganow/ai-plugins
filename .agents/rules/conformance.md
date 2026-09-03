@@ -107,11 +107,21 @@ The rules that decide whether a client loads a package at all:
 
 `version` in `plugins/howp/plugin.json` and the whole of
 `plugins/howp/binaries.json` are written by the release that publishes the
-binaries — the job in `Akurganow/how-possible`, in one commit — and by
-nothing else; `plugins/howp/skills/howp/references/commands.md` joins them
-once that job writes it too, which is a change being made in how-possible as
-this is written (2026-09-03). **Nobody edits any of them by hand, ever.** A pull request that moves `version` is refused whatever else it
-does, and the machine half of that refusal is `tools/check-release-record.py`.
+binaries — `.github/scripts/release-plugin-commit.sh` in
+`Akurganow/how-possible`, in one commit — and by nothing else. **Nobody edits
+either by hand, ever.** A pull request that moves `version` is refused
+whatever else it does, and the machine half of that refusal is
+`tools/check-release-record.py`.
+
+Two files is what that job writes, and it is dated: on how-possible's `main`,
+read 2026-09-03, it stages `binaries.json` and the manifest, and refuses to
+commit at all if the index holds anything besides those two — "the index
+holds files this release may not change". Extending it to
+`plugins/howp/skills/howp/references/commands.md` is intended and **has not
+landed**: nothing on that `main` writes that file, and no open pull request
+there proposed it when this was checked on 2026-09-03. Until such a change
+lands, `commands.md` is hand-written like any other text here; when it lands,
+this paragraph is what gets updated, with that pull request named.
 
 The owner decided it on 2026-09-03: «вручную бампать версии строжайше
 запрещено … никто и никогда не имеет права руками менять версии» — *bumping
@@ -119,15 +129,24 @@ versions by hand is strictly forbidden … nobody, ever, has the right to
 change versions by hand*. Quoted rather than only translated, because a
 decision is evidence and a translation is a paraphrase.
 
-Two failures are why, and both were paid for. On 2026-09-02 a hand bump of
-`plugin.json` to 0.2.1 (PR #7) landed 23 seconds after how-possible's
-`release-version.yml` had read that file, so the 0.2.1 release's last step
-refused to move the package — "already at 0.2.1" — and `binaries.json` stayed
-at `howp-v0.2.0`: a manifest advertising a version whose binaries were never
-published. And the hand bump is what forces how-possible to release one patch
-above whatever version sits here, so a documentation-only bump in this
-repository, 0.3.1 → 0.3.2, would have pushed the next `hp` release to 0.3.3;
-it was reverted with this rule.
+Two failures are why. On 2026-09-02 how-possible's `release-version.yml` read
+this repository's `plugin.json` and computed from it — `The plugin package is
+at 0.2.0, so the floor is 0.2.1.`, printed at 17:54:52.76Z in that run's job
+log — and six seconds later, at 17:54:59Z, PR #7 merged a hand bump of the
+same file to 0.2.1 (the pull request's own merge time). The release itself
+succeeded: `howp-v0.2.1` exists, published at 18:03:49Z with both archives
+and `SHA256SUMS`. What failed was the last step, which refuses a package
+already at the version being released — "release-plugin-commit: the package
+is already at 0.2.1", the script on how-possible's `main`, read 2026-09-03 —
+so the package was never pointed at that release. `binaries.json` stayed at
+`howp-v0.2.0`, and this repository's history holds no 0.2.1 release commit
+between `howp 0.2.0` and `howp 0.3.1`: the binaries exist and nothing here
+names them.
+
+The second failure is the floor itself. While a version sits here by hand,
+how-possible has to release one patch above whatever it reads, so a
+documentation-only bump in this repository, 0.3.1 → 0.3.2, would have pushed
+the next `hp` release to 0.3.3; it was reverted with this rule.
 
 **The catalogue index carries no version at all.** `.claude-plugin/marketplace.json`
 has no top-level `version`, none under `metadata`, and no `version` in a plugin

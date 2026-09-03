@@ -27,17 +27,17 @@ absence of text no machine writes, so no hit needs a reader's judgement:
 
 It exists because each of the three has already failed here. The package once
 shipped `howp-v0.2.0` while `README.md` still sent readers to the
-`howp-v0.1.0` release page and its `SHA256SUMS` -- that is check 2. And on
-2026-09-02 a hand bump of `plugin.json` to 0.2.1 landed 23 seconds after the
-release job had read that file, so the release's last step refused to move
-the package ("already at 0.2.1") and `binaries.json` stayed at
-`howp-v0.2.0`: the manifest advertised a release whose binaries were never
-published under that version. That is check 1, and it is the shape this
-script is named for -- the record the release writes has to agree with
-itself, or the package points at something that does not exist. Check 3 is
-the same defect in the one file the release does not touch at all: the index
-sat at 0.3.0 against a package the release had moved to 0.3.1, and it sat
-there because moving it was somebody's job to remember.
+`howp-v0.1.0` release page and its `SHA256SUMS` -- that is check 2. On
+2026-09-02 the release job read this repository's `plugin.json` at
+17:54:52.76Z and a hand bump of the same file to 0.2.1 merged six seconds
+later, at 17:54:59Z; the release itself succeeded -- `howp-v0.2.1`, both
+archives and `SHA256SUMS`, published at 18:03:49Z -- and its last step then
+refused a package already at 0.2.1, so nothing here was ever pointed at it
+and `binaries.json` stayed at `howp-v0.2.0`. That is check 1: the record has
+to agree with itself, or the package names a release it is not on. Check 3
+is the same defect in the one file no release touches at all -- the
+marketplace index sat at 0.3.0 against a package the release had moved to
+0.3.1, and it sat there because moving it was somebody's job to remember.
 
 This script replaces `check-release-links.py`, which compared the tag in a
 link against the tag `binaries.json` records. Comparing them is no longer a
@@ -93,6 +93,11 @@ def check_versions() -> tuple[list[str], list[str]]:
         binaries = json.loads(binaries_path.read_text(encoding="utf-8"))
         name = manifest["name"]
         version = manifest["version"]
+        # `<name>-v<version>` is this repository's convention rather than
+        # anything the specification says, and it is the shape the release
+        # builds: `tag="howp-v$version"` in how-possible's release.yml. It
+        # holds for howp; a package released under some other scheme would
+        # need this line to learn about it.
         expected_tag = f"{name}-v{version}"
         if binaries.get("version") != version or binaries.get("tag") != expected_tag:
             problems.append(
@@ -109,8 +114,11 @@ def check_versions() -> tuple[list[str], list[str]]:
 
 
 def check_no_tag_in_prose() -> list[str]:
-    """No release tag in text the release path cannot rewrite."""
+    """No release URL naming a tag in text the release path cannot rewrite."""
     problems: list[str] = []
+    # `binaries.json` is the only exemption, and it stays the only one while
+    # it is the only file under plugins/ a release writes. commands.md is not
+    # machine-written yet -- see .agents/rules/conformance.md.
     paths = [p for p in text_files(PLUGINS_DIR) if p.name != "binaries.json"]
     if README.is_file():
         paths.append(README)
@@ -183,8 +191,8 @@ def main() -> int:
     )
     print(
         f"release-record OK: {len(checked)} package(s) at the version the "
-        f"release wrote ({'; '.join(checked)}), no release tag in the "
-        f"text under plugins/ or in README.md{index}"
+        f"release wrote ({'; '.join(checked)}), no release URL naming a tag "
+        f"in the text under plugins/ or in README.md{index}"
     )
     return 0
 

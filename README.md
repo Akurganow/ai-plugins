@@ -10,18 +10,19 @@ directory with `plugin.json` at its root, and its skills under
 
 The repository holds text. The two programs in it are
 `tools/check-conformance.py`, the conformance check described at the bottom,
-and `tools/check-release-links.py`, which holds the release links under
-`plugins/` and in this file to the tag `binaries.json` records — those two
-are what it searches, and the rest of the tree is not scanned; no compiled
-artefact is stored here. The `howp` binaries are released on the
+and `tools/check-release-record.py`, which holds `plugins/howp/plugin.json`'s
+`version` to the `version` and `tag` the release writes into
+`plugins/howp/binaries.json`, and keeps a release tag out of the prose under
+`plugins/` and in this file; no compiled artefact is stored here. The `howp`
+binaries are released on the
 [releases page](https://github.com/Akurganow/ai-plugins/releases), and
 **which release and which targets exist is recorded in
 [`plugins/howp/binaries.json`](plugins/howp/binaries.json), not in this
 paragraph** — a release rewrites that file and cannot rewrite this sentence,
-so read the file. Each release publishes a `SHA256SUMS` asset beside its
-archives; for the release `binaries.json` names today that is
-[`SHA256SUMS`](https://github.com/Akurganow/ai-plugins/releases/download/howp-v0.3.1/SHA256SUMS),
-and its digests are the ones recorded in `binaries.json`.
+so read the file. Every release publishes a `SHA256SUMS` asset beside its
+archives, in the same release the archive URLs in `binaries.json` point at:
+those URLs are where to look for it, and its digests are the ones recorded in
+`binaries.json`.
 The `howp` package uses that release: its skill reads
 `plugins/howp/binaries.json`, refuses any platform the manifest does not
 name, downloads the archive for the one it does, checks the download's sha256
@@ -30,18 +31,11 @@ that entry's `binaries` array says the archive holds. **The skill drives one
 binary, `hp`**, and that array is also what says whether an archive has it: an
 entry whose `binaries` array omits `hp` stops the skill rather than having it
 run something else, so which releases can be driven is a property of that file
-and not of this paragraph. On 2026-09-03, against `howp-v0.3.1`, both archives
-the manifest names were downloaded from the URLs it records, and each matched
-both its recorded `sha256` and its line in that release's `SHA256SUMS`; each
-holds a `LICENSE` and one `bin/hp` and nothing else. On Linux `x86_64` the
-skill's own install procedure was then carried out from that archive — the
-platform gate, the download, the digest check, the staging unpack and the stamp
-— and the `hp` it installed printed `hp 0.3.1`. Nothing was run on macOS: the
-`aarch64-apple-darwin` archive was downloaded and its digest verified, and no
-binary out of it has been executed here. Nothing in that run was made to fail
-on purpose; a tampered archive being refused and deleted was executed on
-2026-08-25, against the release published then. The skill says all of this
-itself.
+and not of this paragraph. What has actually been downloaded, verified and run
+— with its date, the release it was measured against, and what it did not
+exercise — is recorded once, in the skill's own [What has been verified, and
+what has not](plugins/howp/skills/howp/SKILL.md#what-has-been-verified-and-what-has-not).
+This file keeps no second copy of it.
 
 ## Compatibility
 
@@ -290,22 +284,29 @@ plugins/<name>/
   skills/<name>/references/*.md    the skill's own bundled references, loaded by the
                                    agent when a procedure needs them
 tools/check-conformance.py         the conformance check
-tools/check-release-links.py       holds the release links under plugins/ and in
-                                   README.md to the tag binaries.json records; two
-                                   machine-written strings compared
+tools/check-release-record.py      holds plugin.json's version to the version and
+                                   tag the release writes into binaries.json, and
+                                   refuses a release tag in the text under plugins/
+                                   or in README.md; machine-written strings only
 tools/schemas/                     the official manifest schema, vendored
 .github/workflows/conformance.yml  runs both checks on pushes to main and on pull
                                    requests
 ```
 
-Plugin versions are bumped on every change. The standard does not require a
-client to care — §10.2 says only that clients "MAY use `version` to determine
-whether updates are available and whether caches are stale" — but Claude Code
-does: "If set (here or in `plugin.json`), the plugin is pinned to this string
-and users only receive updates when it changes"
-(<https://code.claude.com/docs/en/plugin-marketplaces>). So a corrected
-package shipped without a bump is a correction that installed copies do not
-get.
+A plugin's `version` is written by the release that publishes its binaries,
+in the same commit as `binaries.json`, and is **never edited by hand here** —
+`.agents/rules/conformance.md` carries the rule and why it exists.
+`tools/check-release-record.py` is what enforces it.
+
+That has a consequence worth stating rather than working around. The standard
+does not require a client to care about `version` — §10.2 says only that
+clients "MAY use `version` to determine whether updates are available and
+whether caches are stale" — but Claude Code does: "If set (here or in
+`plugin.json`), the plugin is pinned to this string and users only receive
+updates when it changes"
+(<https://code.claude.com/docs/en/plugin-marketplaces>). So a change to a
+package made between two releases — a corrected sentence in a skill, say —
+reaches such a client at the next release and not before. That is accepted.
 
 ## Cloning on Windows
 

@@ -105,10 +105,35 @@ The rules that decide whether a client loads a package at all:
 
 ## Versions
 
-Every change to a package bumps `version` in its `plugin.json`. §10.2 leaves
-update detection to the client — clients *MAY* use `version` to decide
-whether an update exists or a cache is stale — so a fix shipped without a
-bump is one a client is entitled to never notice.
+`version` in `plugins/howp/plugin.json` and the whole of
+`plugins/howp/binaries.json` are written by the release that publishes the
+binaries — the job in `Akurganow/how-possible`, in one commit — and by
+nothing else; `plugins/howp/skills/howp/references/commands.md` joins them
+once that job writes it too, which is a change being made in how-possible as
+this is written (2026-09-03). **Nobody edits any of them by hand, ever.** A pull request that moves `version` is refused whatever else it
+does, and the machine half of that refusal is `tools/check-release-record.py`.
+
+The owner decided it on 2026-09-03: «вручную бампать версии строжайше
+запрещено … никто и никогда не имеет права руками менять версии» — *bumping
+versions by hand is strictly forbidden … nobody, ever, has the right to
+change versions by hand*. Quoted rather than only translated, because a
+decision is evidence and a translation is a paraphrase.
+
+Two failures are why, and both were paid for. On 2026-09-02 a hand bump of
+`plugin.json` to 0.2.1 (PR #7) landed 23 seconds after how-possible's
+`release-version.yml` had read that file, so the 0.2.1 release's last step
+refused to move the package — "already at 0.2.1" — and `binaries.json` stayed
+at `howp-v0.2.0`: a manifest advertising a version whose binaries were never
+published. And the hand bump is what forces how-possible to release one patch
+above whatever version sits here, so a documentation-only bump in this
+repository, 0.3.1 → 0.3.2, would have pushed the next `hp` release to 0.3.3;
+it was reverted with this rule.
+
+§10.2 is untouched by any of it: clients *MAY* use `version` to decide
+whether an update exists or a cache is stale, and Claude Code does. The
+consequence is accepted rather than worked around — a change to a package
+between two releases reaches such a client at the next release, which follows
+the next merge to how-possible's `main`, and not before.
 
 ## Text only
 
@@ -117,18 +142,25 @@ binaries are published elsewhere and referenced from here; the only things
 this repository runs are its own two checks, and
 `.github/workflows/conformance.yml` runs both.
 
-The second is `tools/check-release-links.py`, and it lives outside
+The second is `tools/check-release-record.py`, and it lives outside
 `check-conformance.py` on purpose. That script's remit is installability
 against the published specification, and the section above allows a
 hand-written check inside it only where the check expresses a rule JSON
 Schema cannot express, with its clause beside it, or turns a schema rejection
-into a message somebody can act on. A stale release link is neither: it
-breaks nothing about the package's shape. What it does is compare two
-machine-written strings — the tag segment of a release URL under `plugins/**`
-or in `README.md`, and the `tag` field the release bot writes into
-`plugins/howp/binaries.json` — so no hit of it needs a reader's judgement.
-That is the test for a check belonging in this tree at all: not whether it is
-committed, but whether a hit of it can be wrong.
+into a message somebody can act on. A hand-moved version is neither: it
+breaks nothing about the package's shape, and a package whose `version` and
+`binaries.json` disagree still validates. What the script does is compare
+machine-written text with machine-written text, twice. It holds
+`plugin.json`'s `version` to the `version` and the `tag` the release writes
+into `plugins/howp/binaries.json` — three strings from one release commit, so
+a disagreement is a hand edit and not an opinion. And it refuses a release
+URL naming a tag anywhere in the text under `plugins/` or in `README.md`,
+`binaries.json` excepted because that is the one file a release rewrites:
+nothing in the release path can rewrite a sentence, so a tag in prose is a
+claim the next release falsifies in silence (`.agents/rules/claims.md`). No
+hit of either needs a reader's judgement. That is the test for a check
+belonging in this tree at all: not whether it is committed, but whether a hit
+of it can be wrong.
 
 If this file and the things it describes ever disagree — the specification,
 the script, the workflow — they are right and this file is stale.

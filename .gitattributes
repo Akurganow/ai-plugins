@@ -2,9 +2,11 @@
 #
 # The repository holds text: plugin packages, their skills, and the
 # catalogue index. The two programs in it are `tools/check-conformance.py`,
-# which validates those packages, and `tools/check-release-links.py`, which
-# holds the release URLs under `plugins/` and in README.md to the tag
-# `plugins/howp/binaries.json` records; neither ships with any package.
+# which validates those packages, and `tools/check-release-record.py`, which
+# holds `plugins/howp/plugin.json`'s version to the version and tag the
+# release writes into `plugins/howp/binaries.json`, and refuses a release tag
+# in the text under `plugins/` or in README.md; neither ships with any
+# package.
 # Left alone, linguist counts those files and labels the whole marketplace
 # "Python" — the first thing a visitor sees about a repository that
 # contains no Python for them to use.

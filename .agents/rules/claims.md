@@ -42,9 +42,10 @@ act on, and the standing rule is that a claim names where it was read.
   own output, or it names the tag and date it was measured against. Prose
   that restates a property of the current build is not corrected at the next
   release — nothing in the release path can correct it — so it is not written
-  that way. The release bot rewrites `binaries.json` and one field of
-  `plugin.json`; every sentence about what ships stays exactly as it was, and
-  a reader cannot tell a fresh one from one the last release falsified.
+  that way. The release bot rewrites three files — `binaries.json`,
+  `plugin.json`'s `version`, and the skill's `references/commands.md`; every
+  other sentence about what ships stays exactly as it was, and a reader cannot
+  tell a fresh one from one the last release falsified.
 
 ## Why it is written down rather than assumed
 

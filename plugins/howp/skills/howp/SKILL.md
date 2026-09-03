@@ -172,10 +172,10 @@ subcommand's, verbatim — and the binary's own is the authority over both.
 ## What has been verified, and what has not
 
 **2026-09-03, against `howp-v0.3.1`**, and everything here is dated because
-nothing in the release path rewrites this file. Both archives `binaries.json`
-records were downloaded from the URLs in it; each had exactly the recorded
-`sha256`, matching that release's own `SHA256SUMS`, and each holds one
-`LICENSE` and one `bin/hp` and nothing else — no helper script. On Linux
+nothing in the release path rewrites this `SKILL.md`. Both archives
+`binaries.json` records were downloaded from the URLs in it; each had exactly
+the recorded `sha256`, matching that release's own `SHA256SUMS`, and each holds
+one `LICENSE` and one `bin/hp` and nothing else — no helper script. On Linux
 `x86_64`, `references/install.md` was then carried out from that archive —
 Steps 0, 2, 3, 4 and 5: one entry matched, the cache missed, the download, the
 digest check, the staging unpack with its `-x` and `--version` checks, the move
@@ -193,10 +193,12 @@ host's real proof — and the three market hosts did not, the proxy refusing
 rather than remembered.
 
 Every `hp` command and flag named in this package was read out of that
-installed binary's `--help`, top level and every subcommand, and is
-`references/commands.md`. The three market hosts are **not** anywhere in that
-output; they are literals in the binary itself, one occurrence each —
-`https://gamma-api.polymarket.com`, `https://clob.polymarket.com` and
+installed `hp 0.3.1` binary's `--help` on 2026-09-03, top level and every
+subcommand; `references/commands.md` is that same surface as the release
+records it, so re-read it after an upgrade. The three market hosts are **not**
+anywhere in that binary's help output; they are literals in the binary itself,
+one occurrence each — `https://gamma-api.polymarket.com`,
+`https://clob.polymarket.com` and
 `https://api.manifold.markets/v0`, read out of its bytes with `strings` on the
 same day. That is the published artifact rather than a source tree, which is
 what a reader of this package can check for themselves.

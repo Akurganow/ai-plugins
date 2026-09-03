@@ -1,229 +1,572 @@
-# Every howp command
+# Every `hp` command, verbatim
 
-The complete command surface of the six released binaries. Nothing outside
-this file exists — if a command you want is not here, it is not there.
+Generated from the binary's own `--help`, top level and every subcommand
+recursively, at `hp 0.2.1` on 2026-09-03. Nothing here is paraphrased and
+nothing is added. Where this file and the binary in front of you disagree,
+**the binary is right** — a release moves this surface and nothing in the
+release path rewrites this file. Re-read it out of `hp` after an upgrade.
 
-Paths below are relative to the workspace directory given by `--repo`.
-`--repo` defaults to the `HP_ROOT` environment variable, and to the current
-directory when that is unset; `HP_DATA_DIR` moves the `data/` tree elsewhere
-while leaving the configs under the workspace root. Pass `--repo` explicitly
-anyway.
-
-Every binary also answers `--help` and `--version`, and `--help` is the
-authority whenever this file and a binary disagree. It is not all one
-language: measured on 2026-08-28 against `howp-v0.2.0`, each binary's
-one-line summary is Russian for five of the six and English for `hp-render`,
-while the `Usage:` line, the subcommand names and the flag names are English
-and ASCII throughout. A release can move that; read what it prints.
-
-## Which commands touch the network
-
-Three binaries do: `hp-collect`, `hp-verify` and `hp-scout`. `hp-moves`,
-`hp-render` and `hp-explain` never do — they work from what is already in the
-workspace.
-
-**How those three get their data depends on the build**, and `SKILL.md` Step 6
-is how to tell which one you are holding. A self-fetching build calls out
-itself and takes no extra flags. A declaring build cannot: it takes
-`--cache DIR` — **required, no default** — on every command that fetches,
-writes what it needs into `DIR/needed.json` when you add `--declare`, and
-reads back what you put there. That loop, its termination rule and the round
-counts are in **the fetch cycle section of `SKILL.md`**; it is one shape and
-it is written down once. Below, each command only says whether it is in it.
-
-A command that refuses to start because `--cache` is missing is a fetching
-command, whatever this file says. Believe the binary.
-
----
-
-## `hp-collect` — record what the markets say
+## `hp --help`
 
 ```
-hp-collect collect  [--repo PATH] [--cache DIR [--declare]]
-hp-collect backfill [--repo PATH] [--cache DIR [--declare]]
+One command over a how-possible workspace: ingest what somebody else fetched, name what to fetch next, and compute, render and score what the store holds
+
+Usage: hp <COMMAND>
+
+Commands:
+  ingest   Write a source's raw response into the record
+  sources  Name the requests a fetch needs
+  matches  Read the verdict cache
+  stats    Everything the dashboard computes about a question, as JSON
+  render   The dashboard, as one Markdown page
+  digest   The weekly digest, read rather than written
+  moves    Sharp probability moves over the live snapshot history
+  bench    The benchmark's deterministic half: arithmetic, a substring check, two reports
+  help     Print this message or the help of the given subcommand(s)
+
+Options:
+  -h, --help     Print help
+  -V, --version  Print version
 ```
 
-**Both fetch.** Both are in the fetch cycle on a declaring build.
-
-**`collect`** quotes one market per active question — its best match — and
-appends the result to `data/snapshots/<YYYY-MM-DD>.<source>.jsonl`, one line
-per outcome, so a binary question contributes one row and a multi-outcome
-market contributes one per outcome. "Best match" is the same choice the
-dashboard shows: per question the record with the strongest verdict, `match`
-before `partial`, and a `mismatch` never. Only questions with
-`status: active` are quoted.
-
-**`backfill`** pulls whole price histories into
-`data/snapshots/backfill.<source>.jsonl`, one file per source. A pass where
-every market answered rewrites that file whole; a pass where some failed
-merges into it instead, so a bad day cannot erase history already gathered.
-Safe to re-run either way, and worth running once on a new workspace so the
-dashboard has a history on day one. The move detector ignores these
-files on purpose: backfill and live quotes come from different endpoints,
-and the seam between them is not a market movement. It is also the deepest
-fetch loop of the six — a whole history is discovered response by response —
-so expect more rounds here than anywhere else.
-
-Exit 0 means the run finished. A market that refused to quote is reported
-and skipped, one line per market, and does not fail the run — "no snapshots"
-is an answer, not an error. A response you could not fetch for it lands in
-the same place: one item missing, not a failed run. Non-zero means the
-workspace could not be read or a file could not be written.
-
-## `hp-moves` — find sharp movements
+## `hp ingest --help`
 
 ```
-hp-moves detect [--repo PATH] [--now ISO]
-hp-moves report [--repo PATH] [--now ISO]
+Write a source's raw response into the record
+
+Usage: hp ingest <COMMAND>
+
+Commands:
+  snapshot     Append one live quote per outcome to the day's snapshot file
+  history      Merge one market's whole price history into the source's backfill file
+  match        Record one verdict on a market, reading the market's own facts from its body
+  digest       Store the weekly digest: one paragraph, and the numbers it was written against
+  explanation  Record one story as the explanation of one sharp move
+  check        Read the curated files strictly and report what is wrong with them
+  help         Print this message or the help of the given subcommand(s)
+
+Options:
+  -h, --help  Print help
 ```
 
-**No network.** Neither command takes `--cache`.
-
-**`detect`** finds the moves and appends them to `data/moves/`.
-**`report`** prints what the detector sees and writes nothing — the one to
-run when a user asks "why did it flag that?".
-
-`--now ISO` sets the cutoff moment (ISO-8601 with an offset). Without it the
-cutoff is the latest snapshot, never the wall clock, so two runs over the
-same workspace answer the same.
-
-It reads **live snapshots only**, on a six-hour grid with a tolerance either
-side; it needs at least two collect runs about six hours apart before it can
-say anything. Finding nothing is the normal state of a market feed. Exit 0
-either way; non-zero only if the workspace could not be read or the log
-could not be written.
-
-## `hp-render` — the dashboard
+### `hp ingest snapshot --help`
 
 ```
-hp-render render [--repo PATH] [--note TEXT] [--out PATH]
+Append one live quote per outcome to the day's snapshot file
+
+Usage: hp ingest snapshot [OPTIONS] --source <SOURCE> --question <ID> --ts <ISO> --from <FILE>
+
+Options:
+      --repo <PATH>
+          Workspace root (from HP_ROOT, then the current directory, by default)
+
+      --source <SOURCE>
+          The source the response came from
+
+          Possible values:
+          - polymarket: Polymarket: Gamma for markets and events, CLOB for price history
+          - manifold:   Manifold Markets, through the public v0 API
+
+      --question <ID>
+          The question the response is being recorded against
+
+      --ref <REF>
+          A record of that question by its own key, e.g. event:some-slug
+
+      --ts <ISO>
+          The moment every row of this run is stamped with: ISO-8601 with an offset. Required, and one value for the whole run
+
+      --from <FILE>
+          The raw response body, or - for standard input
+
+  -h, --help
+          Print help (see a summary with '-h')
 ```
 
-**No network.** It renders what the workspace already holds.
-
-**`render`** writes the interactive HTML dashboard, by default to
-`data/dashboard/index.html`, and prints the path it wrote. `--note` puts a
-banner line in the page header.
-
-The page is grouped by interest, and per question shows the probability that
-answers the question **as asked** — an inverse market appears as 1−P — with
-its 24-hour and 7-day change, a history chart and the source. Several venues
-on one binary question are folded into one number with each venue's
-contribution visible beside it. A partial match's divergence is shown above
-the fold, not hidden under it. There is no money on the page: liquidity,
-volume and spread are kept as a reliability signal and come out in words
-rather than sums. Frozen, closed and expired outcomes are marked and stay
-out of the headline. Questions with no market do not disappear — they land
-in a coverage block at the end. The one piece of written text is the weekly
-digest, which `hp-explain` produces; `render` only displays the file that is
-already there.
-
-`render` is the whole of this binary. **There is no `wiki` subcommand**: one
-existed in the `howp-v0.1.0` build, writing `Home.md` and `charts/*.svg` for
-a user who kept their dashboard in a wiki clone, and it is absent from every
-build published since — checked in the binaries themselves rather than
-inferred. If a user asks for it, that is the answer.
-
-A rendered page is all-or-nothing: exit 0 means the page was written,
-non-zero means nothing was, because half a dashboard is worse than
-yesterday's whole one.
-
-## `hp-verify` — does this market actually answer this question?
+### `hp ingest history --help`
 
 ```
-hp-verify plan   [--repo PATH] --work-dir PATH [--refresh] [--chunks N] [--cache DIR [--declare]]
-hp-verify apply  [--repo PATH] --work-dir PATH
-hp-verify status --work-dir PATH
+Merge one market's whole price history into the source's backfill file
+
+Usage: hp ingest history [OPTIONS] --source <SOURCE> --question <ID> --from <DIR>
+
+Options:
+      --repo <PATH>
+          Workspace root (from HP_ROOT, then the current directory, by default)
+
+      --source <SOURCE>
+          The source the response came from
+
+          Possible values:
+          - polymarket: Polymarket: Gamma for markets and events, CLOB for price history
+          - manifold:   Manifold Markets, through the public v0 API
+
+      --question <ID>
+          The question the response is being recorded against
+
+      --ref <REF>
+          A record of that question by its own key, e.g. event:some-slug
+
+      --from <DIR>
+          The directory the responses were fetched into
+
+  -h, --help
+          Print help (see a summary with '-h')
 ```
 
-**`plan` fetches** — it is the command that searches the sources. `apply`
-and `status` read files. The `plan`/`apply` split with you in between is
-`model-steps.md`; the fetch cycle sits inside `plan` and finishes before the
-first prompt file exists, which `SKILL.md` draws out in full. `--cache` and
-`--work-dir` are different directories and must not be pointed at each
-other.
-
-**`plan`** searches the sources for candidate markets, applies the checks it
-can make without judgement, writes those verdicts straight into
-`matches/*.yaml`, and leaves prompt files plus `manifest.json` in the work
-directory. It calls no model and spawns no process.
-
-**`apply`** reads the answer files, validates them against the manifest, and
-writes the accepted verdicts into `matches/<interest>.yaml`. An item the
-answers failed is recorded in `outcome.json`, **not** in the exit code, so
-what did validate can be saved first.
-
-**`status`** exits non-zero when the run left items unverified.
-
-`--refresh` re-verifies records whose resolution criteria changed and keeps
-looking for better markets for questions that only matched partially — the
-periodic mode. `--chunks N` writes prompts for at most N chunks; it is a
-smoke limiter, and what it leaves out is picked up by the next run. Both
-change what `plan` searches for, so run the declare cycle with the same
-flags the real run will carry.
-
-## `hp-scout` — which news explains a move
+### `hp ingest match --help`
 
 ```
-hp-scout index      [--repo PATH] [--now ISO] [--cache DIR [--declare]]
-hp-scout eligible   [--repo PATH] [--now ISO]
-hp-scout candidates [--repo PATH] [--now ISO] --move-id MOVE_ID [--json] [--cache DIR [--declare]]
-hp-scout plan       [--repo PATH] [--now ISO] --work-dir PATH [--moves N] [--cache DIR [--declare]]
-hp-scout apply      [--repo PATH] [--now ISO] --work-dir PATH
-hp-scout status     --work-dir PATH
+Record one verdict on a market, reading the market's own facts from its body
+
+Usage: hp ingest match [OPTIONS] --source <SOURCE> --question <ID> --ref <REF> --from <BODY> --verdict <match|partial|mismatch> --direction <direct|inverse> --confidence <high|medium|low> --notes <TEXT> --checked-at <YYYY-MM-DD>
+
+Options:
+      --repo <PATH>
+          Workspace root (from HP_ROOT, then the current directory, by default)
+
+      --source <SOURCE>
+          The source the market is at
+
+          Possible values:
+          - polymarket: Polymarket: Gamma for markets and events, CLOB for price history
+          - manifold:   Manifold Markets, through the public v0 API
+
+      --question <ID>
+          The question the verdict is about
+
+      --ref <REF>
+          The market's own key, e.g. event:some-slug or market:kar1
+
+      --from <BODY>
+          The raw lookup body for that market, or - for standard input. Every field the venue publishes — the wording, the link, the deadline and the resolution criteria — is read out of this, never typed
+
+      --verdict <match|partial|mismatch>
+          Does the market answer the question
+
+      --direction <direct|inverse>
+          Whether the market's YES is the question's yes
+
+      --confidence <high|medium|low>
+          How sure the verdict is
+
+      --notes <TEXT>
+          The reasoning. Refused rather than repaired if it carries a control or invisible code point, or runs past the stored cap
+
+      --checked-at <YYYY-MM-DD>
+          The day the judgement was made. Required and never defaulted, for the reason `--ts` is: this binary has no clock, and a date it invented would be a claim about when a market was read
+
+  -h, --help
+          Print help (see a summary with '-h')
 ```
 
-**The gathering commands fetch**: `index`, and the search leg inside
-`candidates` and `plan`. `eligible`, `apply` and `status` read what is
-already on disk. `--help` names `--cache` on exactly the ones that need it;
-where this file and `--help` differ, `--help` is right.
-
-**`index`** polls the news feeds and updates `data/news/`. Free and
-read-only towards the world; worth running alongside `collect`. Which feeds
-it polls comes from `<workspace>/feeds.yaml` when that file exists, and from
-a list built into the binary when it does not — so the hosts are the user's
-to set. `references/interview.md` carries the file's format.
-
-**`eligible`** prints, one id per line on stdout, the moves a run would take:
-confirmed by a later snapshot, not mechanical, not already decided, and
-inside the age window. The reasons for what it dropped go to stderr, so the
-stdout list stays machine-readable.
-
-**`candidates --move-id ID`** runs both search legs for one move and prints
-to stdout the exact prompt text `plan` would have written for it — so a
-person can work one move by hand without planning a cycle. `--json` prints
-the candidate list with its URLs instead. The run report goes to stderr.
-
-**`plan` / `apply` / `status`** are the cycle; see `model-steps.md`.
-`--moves N` takes at most N moves, leaving the rest for the next run.
-
-`apply` writes the journal under `data/news_scout/`. Measured on 2026-08-28
-against `howp-v0.2.0`, the dashboard does not display it — `news_scout`
-occurs nowhere in `hp-render`'s string table — so it is a data product and
-yours to report to the user. Open the page rather than trusting this
-sentence if a later release matters to you.
-
-## `hp-explain` — the weekly digest
+### `hp ingest digest --help`
 
 ```
-hp-explain plan   [--repo PATH] --work-dir PATH [--force]
-hp-explain apply  [--repo PATH] --work-dir PATH
-hp-explain status --work-dir PATH
+Store the weekly digest: one paragraph, and the numbers it was written against
+
+Usage: hp ingest digest [OPTIONS] --from <FILE> --generated-at <ISO>
+
+Options:
+      --repo <PATH>
+          Workspace root (from HP_ROOT, then the current directory, by default)
+
+      --from <FILE>
+          The paragraph, or - for standard input. It is refused rather than repaired if it carries a link, markup or a line break, or if it normalizes to nothing
+
+      --generated-at <ISO>
+          The moment the digest is stamped with, and the moment the card facts it is stored beside are computed at.
+          
+          **Required, and never defaulted**, for the reason `--ts` is: this binary reads no clock, and a moment it invented would be a claim about when the paragraph was written.
+
+  -h, --help
+          Print help (see a summary with '-h')
 ```
 
-**No network**, in either build. It works from the page's own data, so it
-takes no `--cache` and has no declare step.
+### `hp ingest explanation --help`
 
-**`plan`** builds the digest's facts from the current page and writes a
-prompt **only when a digest is actually due** — when the numbers have moved
-away from the stored digest's snapshot, or the stored one is about a week
-old. Otherwise it writes no prompt, and that is a successful run.
-`--force` asks for a rewrite anyway.
+```
+Record one story as the explanation of one sharp move
 
-**`apply`** reads the answer and either writes `data/summaries.yaml` or
-writes one rewrite prompt. **`status`** exits non-zero when there is no
-digest at the end; a digest that is deliberately empty is a real answer and
-stays green.
+Usage: hp ingest explanation [OPTIONS] --move <MOVE_ID> --url <URL> --title <TEXT> --published <ISO> --why <TEXT>
 
-`hp-render render` picks up `data/summaries.yaml` on its next run, so
-re-render after a digest lands.
+Options:
+      --repo <PATH>      Workspace root (from HP_ROOT, then the current directory, by default)
+      --move <MOVE_ID>   The move being explained, by its `move_id` in `data/moves/**`
+      --url <URL>        The story's link. https, and no credentials in it
+      --title <TEXT>     Its headline. Refused rather than repaired if it carries a control or invisible code point, or runs past the stored cap
+      --published <ISO>  When it was published: ISO-8601 with an offset. The record's label — before, inside or after the move's window — is computed from this and is never supplied
+      --why <TEXT>       Why it is offered as the explanation. Screened like the headline
+  -h, --help             Print help
+```
+
+### `hp ingest check --help`
+
+```
+Read the curated files strictly and report what is wrong with them
+
+Usage: hp ingest check [OPTIONS] <SUBJECT>
+
+Arguments:
+  <SUBJECT>
+          Which of the three sets of curated files to read
+
+          Possible values:
+          - interests: `interests.yaml`
+          - questions: `questions/*.yaml`, and the interests naming them
+          - matches:   `matches/*.yaml`, the questions they point at, and the interests naming both
+
+Options:
+      --repo <PATH>
+          Workspace root (from HP_ROOT, then the current directory, by default)
+
+  -h, --help
+          Print help (see a summary with '-h')
+```
+
+## `hp sources --help`
+
+```
+Name the requests a fetch needs
+
+Usage: hp sources <COMMAND>
+
+Commands:
+  urls  The first request every active best match needs
+  next  The requests one already-fetched body implies
+  help  Print this message or the help of the given subcommand(s)
+
+Options:
+  -h, --help  Print help
+```
+
+### `hp sources urls --help`
+
+```
+The first request every active best match needs
+
+Usage: hp sources urls [OPTIONS] --json
+
+Options:
+      --repo <PATH>    Workspace root (from HP_ROOT, then the current directory, by default)
+      --question <ID>  Only this question
+      --json           Print JSON. Required rather than defaulted, so the format a caller parses is on the command line rather than implied by it
+  -h, --help           Print help
+```
+
+### `hp sources next --help`
+
+```
+The requests one already-fetched body implies
+
+Usage: hp sources next [OPTIONS] --source <SOURCE> --question <ID> --url <URL> --from <FILE> --json
+
+Options:
+      --repo <PATH>
+          Workspace root (from HP_ROOT, then the current directory, by default)
+
+      --source <SOURCE>
+          The source the response came from
+
+          Possible values:
+          - polymarket: Polymarket: Gamma for markets and events, CLOB for price history
+          - manifold:   Manifold Markets, through the public v0 API
+
+      --question <ID>
+          The question the response is being recorded against
+
+      --ref <REF>
+          A record of that question by its own key, e.g. event:some-slug
+
+      --url <URL>
+          The URL the body was fetched from
+
+      --from <FILE>
+          The body that URL answered with
+
+      --status <N>
+          The HTTP status it answered with, when it is known
+
+      --history
+          Walk a history rather than a live quote
+
+      --page <N>
+          Which Manifold `bets` page this body is, counting from one. The page after the eighth is never named, which is the client's own bound: a loop that did not carry it would page an active market for ever.
+          
+          **It has no default**, for the reason `--ts` has none: a defaulted ordinal is a silent claim about where in a walk the caller is, and a loop that forgot to count would page the first market for ever while every run looked healthy. So it is required with `--history` and refused without it, where there is no walk to be at a page of.
+
+      --json
+          Print JSON. Required for the reason `hp sources urls` gives
+
+  -h, --help
+          Print help (see a summary with '-h')
+```
+
+## `hp matches --help`
+
+```
+Read the verdict cache
+
+Usage: hp matches <COMMAND>
+
+Commands:
+  stale  Stored verdicts whose market's resolution criteria have moved
+  help   Print this message or the help of the given subcommand(s)
+
+Options:
+  -h, --help  Print help
+```
+
+### `hp matches stale --help`
+
+```
+Stored verdicts whose market's resolution criteria have moved
+
+Usage: hp matches stale [OPTIONS] --cache <DIR> --json
+
+Options:
+      --repo <PATH>  Workspace root (from HP_ROOT, then the current directory, by default)
+      --cache <DIR>  The directory the market bodies were fetched into
+      --json         Print JSON. Required for the reason `hp sources urls` gives
+  -h, --help         Print help
+```
+
+## `hp stats --help`
+
+```
+Everything the dashboard computes about a question, as JSON
+
+Usage: hp stats [OPTIONS] --as-of <ISO> --json
+
+Options:
+      --repo <PATH>
+          Workspace root (from HP_ROOT, then the current directory, by default)
+
+      --as-of <ISO>
+          The moment the deltas and the lifecycle badges are computed against.
+          
+          **Required, and never defaulted**, for the reason `--ts` is: this binary reads no clock, and a moment it invented would be a claim about when the numbers were read. A run passes the one moment it took at its start, the same one it stamps its snapshots with.
+
+      --json
+          Print JSON. Required for the reason `hp sources urls` gives
+
+  -h, --help
+          Print help (see a summary with '-h')
+```
+
+## `hp render --help`
+
+```
+The dashboard, as one Markdown page
+
+Usage: hp render [OPTIONS] --as-of <ISO>
+
+Options:
+      --repo <PATH>
+          Workspace root (from HP_ROOT, then the current directory, by default)
+
+      --as-of <ISO>
+          The moment the page is built at.
+          
+          **Required, and never defaulted**, for the reason `hp stats` gives — the page states when it was taken, and the charts' ninety-day window ends here.
+
+      --out <PATH>
+          Where to write the page (data/dashboard.md by default)
+
+      --note <TEXT>
+          A note in the page's header
+          
+          [default: ""]
+
+  -h, --help
+          Print help (see a summary with '-h')
+```
+
+## `hp digest --help`
+
+```
+The weekly digest, read rather than written
+
+Usage: hp digest <COMMAND>
+
+Commands:
+  due   Whether the stored digest still describes the page
+  help  Print this message or the help of the given subcommand(s)
+
+Options:
+  -h, --help  Print help
+```
+
+### `hp digest due --help`
+
+```
+Whether the stored digest still describes the page
+
+Usage: hp digest due [OPTIONS] --as-of <ISO> --json
+
+Options:
+      --repo <PATH>
+          Workspace root (from HP_ROOT, then the current directory, by default)
+
+      --as-of <ISO>
+          The moment the stored digest's age and drift are read against.
+          
+          **Required, and never defaulted**, for the reason `--as-of` is on `hp stats`: the answer is about a moment, and one this binary invented would be a claim about when the page was read.
+
+      --json
+          Print JSON. Required for the reason `hp sources urls` gives
+
+  -h, --help
+          Print help (see a summary with '-h')
+```
+
+## `hp moves --help`
+
+```
+Sharp probability moves over the live snapshot history
+
+Usage: hp moves <COMMAND>
+
+Commands:
+  detect  Find the moves and append them to data/moves/
+  report  Show what the detector sees, writing nothing
+  help    Print this message or the help of the given subcommand(s)
+
+Options:
+  -h, --help  Print help
+```
+
+### `hp moves detect --help`
+
+```
+Find the moves and append them to data/moves/
+
+Usage: hp moves detect [OPTIONS]
+
+Options:
+      --repo <PATH>  Workspace root (from HP_ROOT, then the current directory, by default)
+      --now <ISO>    The cutoff moment, ISO-8601 with an offset (the last snapshot by default). It is optional here, and only here, because the detector already has a moment that is not the wall clock: the newest live snapshot
+  -h, --help         Print help
+```
+
+### `hp moves report --help`
+
+```
+Show what the detector sees, writing nothing
+
+Usage: hp moves report [OPTIONS]
+
+Options:
+      --repo <PATH>  Workspace root (from HP_ROOT, then the current directory, by default)
+      --now <ISO>    The cutoff moment, ISO-8601 with an offset (the last snapshot by default). It is optional here, and only here, because the detector already has a moment that is not the wall clock: the newest live snapshot
+  -h, --help         Print help
+```
+
+## `hp bench --help`
+
+```
+The benchmark's deterministic half: arithmetic, a substring check, two reports
+
+Usage: hp bench <COMMAND>
+
+Commands:
+  score     Turn a judge's marks into a total under a rubric
+  record    Append one scored run to a case's history
+  quotes    Check an article's quotations against the fixtures it cites
+  verdicts  Verdict agreement with the committed match records
+  brief     The brief a writing agent is given for a case
+  help      Print this message or the help of the given subcommand(s)
+
+Options:
+  -h, --help  Print help
+```
+
+### `hp bench score --help`
+
+```
+Turn a judge's marks into a total under a rubric
+
+Usage: hp bench score --rubric <FILE> --marks <FILE> --json
+
+Options:
+      --rubric <FILE>  The rubric the marks were given under
+      --marks <FILE>   The judge's marks
+      --json           Print JSON. Required for the reason `hp sources urls` gives
+  -h, --help           Print help
+```
+
+### `hp bench record --help`
+
+```
+Append one scored run to a case's history
+
+Usage: hp bench record [OPTIONS] --case <ID> --page <FILE> --evidence <FILE> --marks <FILE> --at <ISO>
+
+Options:
+      --repo <PATH>
+          Workspace root (from HP_ROOT, then the current directory, by default)
+
+      --case <ID>
+          The case, which is also the directory the history is written under
+
+      --page <FILE>
+          The article
+
+      --evidence <FILE>
+          The article's evidence file
+
+      --marks <FILE>
+          The judge's marks
+
+      --at <ISO>
+          The moment the run was scored at.
+          
+          **Required, and never defaulted**, for the reason `--ts` is: this binary reads no clock, and a moment it invented would be a claim about when a page was judged.
+
+      --commit <SHA>
+          The commit the run was made at, where the caller knows it
+
+  -h, --help
+          Print help (see a summary with '-h')
+```
+
+### `hp bench quotes --help`
+
+```
+Check an article's quotations against the fixtures it cites
+
+Usage: hp bench quotes --page <FILE> --evidence <FILE> --fixtures <DIR> --json
+
+Options:
+      --page <FILE>      The article
+      --evidence <FILE>  The article's evidence file
+      --fixtures <DIR>   The directory the fixtures were collected into
+      --json             Print JSON. Required for the reason `hp sources urls` gives
+  -h, --help             Print help
+```
+
+### `hp bench verdicts --help`
+
+```
+Verdict agreement with the committed match records
+
+Usage: hp bench verdicts --expected <DIR> --actual <DIR> --json
+
+Options:
+      --expected <DIR>  The labels: the committed match records, projected (`bench/verdicts/`)
+      --actual <DIR>    The `matches/` of the workspace the run wrote into
+      --json            Print JSON. Required for the reason `hp sources urls` gives
+  -h, --help            Print help
+```
+
+### `hp bench brief --help`
+
+```
+The brief a writing agent is given for a case
+
+Usage: hp bench brief --case <FILE>
+
+Options:
+      --case <FILE>  The case file
+  -h, --help         Print help
+```

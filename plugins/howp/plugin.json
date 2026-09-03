@@ -1,8 +1,8 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "howp",
-  "version": "0.2.1",
-  "description": "Personal probability dashboard: interests → measurable questions → prediction-market probabilities (Polymarket, Manifold) → a local dashboard of what became more or less likely. The skill reads this package's binaries.json, refuses any platform it does not name, downloads and sha256-verifies the released archive for one it does, caches it under the user's home, and drives the six binaries; which targets are published comes from that file, not from this sentence. No API keys and no accounts. Deterministic work — storage, arithmetic, move detection, rendering — is the binaries'; every step that needs judgement is the agent's, between a binary's plan command and its apply command, and no binary invokes a model. In a build whose commands offer --cache, no binary opens a socket either: it declares the URLs it needs and the agent fetches them, which puts that traffic inside the permission flow the agent's client already has. The hosts it needs are declared under extensions below — a statement rather than a request, since no client is documented to read that field as network permission.",
+  "version": "0.3.0",
+  "description": "Personal probability dashboard: interests → measurable questions → prediction-market probabilities (Polymarket, Manifold) → a local Markdown dashboard of what became more or less likely. The skill reads this package's binaries.json, refuses any platform it does not name, downloads and sha256-verifies the released archive for one it does, caches it under the user's home, and drives one binary, hp; which targets are published, and what an archive holds, come from that file rather than from this sentence. No API keys and no accounts. Deterministic work is hp's — extracting a probability out of a venue's raw response, the append-only history, move detection and the rendered page — and everything else is the agent's: hp opens no socket and reads no clock, so the agent fetches each market body with its own tools, under the permission flow its client already has, and passes the moment in. Every judgement is the agent's too, and no part of this package invokes a model. The hosts hp builds requests from are declared under extensions below — a statement rather than a request, since no client is documented to read that field as network permission.",
   "author": {
     "name": "Alexander Kurganov",
     "url": "https://github.com/Akurganow"
@@ -30,12 +30,12 @@
         ],
         "purpose": {
           "github.com": "download the released binary archive that binaries.json names, once per release",
-          "gamma-api.polymarket.com": "Polymarket quotes, for hp-collect and hp-verify",
-          "clob.polymarket.com": "Polymarket quotes, for hp-collect and hp-verify",
-          "api.manifold.markets": "Manifold quotes, for hp-collect and hp-verify"
+          "gamma-api.polymarket.com": "Polymarket markets and events: the URLs `hp sources urls` names, fetched by the agent",
+          "clob.polymarket.com": "Polymarket price history: the URLs `hp sources next` names on the history path, fetched by the agent",
+          "api.manifold.markets": "Manifold markets, quotes and bets pages: the URLs `hp sources urls` and `hp sources next` name, fetched by the agent"
         },
-        "not_listed": "News hosts. Which feeds hp-scout polls is the workspace's own feeds.yaml when that file exists and a default built into the binary when it does not, so the hosts are the user's to set and not this package's to fix; and in a declaring build every URL a run wants is named at run time in the fetch manifest. This list is a floor and not a fence.",
-        "status": "A declaration, not a request. Agent Plugins 1.0.0 assigns no semantics to the contents of an extensions namespace, and no client is documented to read this field as network permission; skills/howp/SKILL.md carries the same list in its frontmatter metadata, for an install that takes the skill without the package, and its preflight step is what actually establishes reachability and tells the user what to allow and where."
+        "not_listed": "Whatever the agent reaches on its own. Two of the three procedures in the skill — finding a candidate market to bind a question to, and finding the story that explains a sharp move — are the agent's own search, so the hosts they touch are the agent's client and its user to decide and are not this package's to name. The four above are only the hosts hp itself builds requests from. This list is a floor and not a fence.",
+        "status": "A declaration, not a request. Agent Plugins 1.0.0 assigns no semantics to the contents of an extensions namespace, and no client is documented to read this field as network permission; skills/howp/SKILL.md carries the same list in its frontmatter metadata, for an install that takes the skill without the package, and the preflight in skills/howp/references/install.md is what actually establishes reachability and tells the user what to allow and where."
       }
     }
   }

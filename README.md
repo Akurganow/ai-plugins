@@ -8,14 +8,9 @@ directory with `plugin.json` at its root, and its skills under
 `skills/<name>/SKILL.md` per the
 [Agent Skills specification](https://agentskills.io/specification).
 
-The repository holds text. The two programs in it are
-`tools/check-conformance.py`, the conformance check described at the bottom,
-and `tools/check-release-record.py`, which holds `plugins/howp/plugin.json`'s
-`version` to the `version` and `tag` the release writes into
-`plugins/howp/binaries.json`, keeps a release URL naming a tag out of the
-text under `plugins/` and in this file, and keeps a hand-written `version`
-out of the marketplace index; no compiled artefact is stored here. The `howp`
-binaries are released on the
+The repository holds text. The one program in it is
+`tools/check-conformance.py`, the conformance check described at the bottom;
+no compiled artefact is stored here. The `howp` binaries are released on the
 [releases page](https://github.com/Akurganow/ai-plugins/releases), and
 **which release and which targets exist is recorded in
 [`plugins/howp/binaries.json`](plugins/howp/binaries.json), not in this
@@ -285,20 +280,15 @@ plugins/<name>/
   skills/<name>/references/*.md    the skill's own bundled references, loaded by the
                                    agent when a procedure needs them
 tools/check-conformance.py         the conformance check
-tools/check-release-record.py      holds plugin.json's version to the version and
-                                   tag the release writes into binaries.json, and
-                                   refuses a release URL naming a tag in the text
-                                   under plugins/ or in README.md, and a version in
-                                   the marketplace index; machine-written text only
 tools/schemas/                     the official manifest schema, vendored
-.github/workflows/conformance.yml  runs both checks on pushes to main and on pull
+.github/workflows/conformance.yml  runs the check on pushes to main and on pull
                                    requests
 ```
 
-A plugin's `version` is written by the release that publishes its binaries,
-in the same commit as `binaries.json`, and is **never edited by hand here** —
-`.agents/rules/conformance.md` carries the rule and why it exists.
-`tools/check-release-record.py` is what enforces it.
+A plugin's `version`, its `binaries.json` and its skill's
+`references/commands.md` are written by the release that publishes its
+binaries, in `Akurganow/how-possible`, and by nothing here —
+`.agents/rules/conformance.md` carries the rule.
 
 That has a consequence worth stating rather than working around. The standard
 does not require a client to care about `version` — §10.2 says only that

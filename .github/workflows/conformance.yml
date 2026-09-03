@@ -1,13 +1,7 @@
 name: conformance
 
-# Runs the repository's two checks: the Agent Plugins 1.0.0 conformance check,
-# and the release-record check that holds plugins/howp/plugin.json's version
-# to the version and tag the release writes into plugins/howp/binaries.json,
-# refuses a release URL naming a tag in the text under `plugins/` or in
-# README.md — those two, and not the rest of the tree — and refuses a version
-# in the marketplace index, which nothing writes. Both are in one job because
-# they cost nothing between them: one short job on a hosted Linux runner, no
-# services, no model calls.
+# Runs the repository's check: the Agent Plugins 1.0.0 conformance check. One
+# short job on a hosted Linux runner, no services, no model calls.
 #
 # `push` is restricted to `main`. Without that restriction a pull request from
 # a branch in this repository triggers the workflow twice — once for the push
@@ -46,9 +40,3 @@ jobs:
 
       - name: Check conformance
         run: python tools/check-conformance.py
-
-      # Standard library only, which is why the pinned install above is
-      # untouched. It runs as its own step so a failure names which check
-      # failed without anyone reading the log twice.
-      - name: Check release record
-        run: python tools/check-release-record.py

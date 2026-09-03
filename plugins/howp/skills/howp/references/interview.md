@@ -4,8 +4,7 @@ Everything downstream is built on `interests.yaml` and `questions/*.yaml`.
 Those two come out of the interview below, and they are the reason a howp
 dashboard is about *them* rather than about whatever happened to be liquid
 this week. Get them wrong and the rest of the pipeline works perfectly on
-the wrong subject. A third file, `feeds.yaml`, is the user's too but is not
-interviewed for — its format is at the foot of this file.
+the wrong subject.
 
 Do not fill them in from a template. Do not guess someone's interests from
 their repository, their timezone or the fact that they installed this. Ask.
@@ -114,95 +113,27 @@ One file per interest, a list at the top level.
   how, it is not a question yet.
 - `kind` — `binary` (one yes/no outcome) or `multi` (several mutually
   exclusive outcomes). Defaults to `binary`.
-- `horizon` — free text, but a date is what makes verification work. The
-  verification step measures the market's own deadline against it: a
-  divergence of up to three months makes the match `partial`, more than
-  three months makes it a `mismatch`, and a market whose deadline has
-  already passed is a `mismatch` outright. So a vague horizon does not
-  produce a lenient verdict, it produces a worse one. Quote a bare date so
-  YAML keeps it a string.
+- `horizon` — free text, but a date is what makes verification work: you
+  measure the market's own deadline against it when you bind one, and a
+  divergence of up to three months makes the match `partial`, more than three
+  months a `mismatch`, and a deadline already passed a `mismatch` outright
+  (`references/procedures.md`). So a vague horizon does not produce a lenient
+  verdict, it produces a worse one. Quote a bare date so YAML keeps it a
+  string.
 - `status` — `active`, `resolved`, `expired` or `archived`. Defaults to
   `active`. **Only `active` questions are quoted**, which is also how a user
   parks something without deleting it.
-- `search_terms` — English phrases used to find candidate markets. English
-  regardless of the user's language: the markets are English. Each term is
-  searched on each source, the top three results per source are kept, and at
-  most six candidates per question go on to verification — so two to four
-  well-aimed terms beat a long list, and they should be phrased as somebody
-  would title a market rather than as a sentence. If the list is empty the
-  question's own text is used as the query, which for a question written in
-  another language is close to useless.
+- `search_terms` — English phrases to search Polymarket and Manifold with
+  when binding this question to a market. English regardless of the user's
+  language: the markets are English. Nothing in the package searches for you,
+  so these are notes to whoever does — phrase them as somebody would title a
+  market rather than as a sentence, and two or three well-aimed ones beat a
+  long list. An empty list leaves the question's own text as the only thing to
+  search with, which for a question written in another language is close to
+  useless.
 
 The user edits both files by hand afterwards, and should be told so. Never
 overwrite a question they wrote; append.
-
-## `feeds.yaml` — the news feeds `hp-scout` polls
-
-Optional, and at the workspace root beside `interests.yaml`. **Absent it,
-`hp-scout` polls a list built into the binary**, so a user who has never
-heard of this file still gets news; writing one replaces that list rather
-than adding to it. It takes no part in the interview — offer it when a user
-asks why some source is or is not being read.
-
-A list at the top level, one entry per feed:
-
-```yaml
-- id: openai
-  url: https://openai.com/news/rss.xml
-  kind: lab
-- id: arxiv-cs-ai
-  url: https://rss.arxiv.org/rss/cs.AI
-  kind: arxiv
-```
-
-- `id` — `^[a-z0-9][a-z0-9-]*$`, at most 40 characters: lower-case ASCII
-  letters, digits and hyphens, beginning with a letter or a digit. It has to
-  be unique in the file, and it names the feed in the index under
-  `data/news/`.
-- `url` — the feed itself, RSS or Atom. **Write `https://`.** The fetch
-  cycle `SKILL.md` documents pins its `curl` to `--proto '=https'`, so an
-  `http://` address is never retrieved and no response is ever written back
-  for it. That costs the one feed and not the run: the fetch loop ends on
-  the unchanged manifest, the index runs without that feed and exits 0 —
-  `SKILL.md`'s "a response you cannot get costs one item, not the run"
-  covers this exactly as it covers a market that will not answer.
-- `kind` — one of `lab`, `arxiv`, `outlet`. It says what sort of source this
-  is: a lab or company publishing its own announcements, an arXiv listing, or
-  a news outlet.
-
-**An entry the binary will not accept is dropped, not reported**, and that is
-the failure worth knowing about here, because nothing announces it: an `id`
-that fails the pattern above, or one already taken, costs that entry and
-nothing else. The run still exits 0, and because the file exists there is no
-falling back to the built-in list — so a file whose entries all fail polls
-nothing and says so only through its count (`asked 0`). Read the count after
-editing this file.
-
-**Dated, because it is the binary's own parsing contract and a release can
-change it silently:** the keys, the three `kind` values and the `id` rule
-above were read on 2026-09-02 out of the source project's own documentation,
-[`docs/formats.md`](https://github.com/Akurganow/how-possible/blob/6a5f5e267dc553483ed577928aa2aec188e52037/docs/formats.md),
-at the commit `binaries.json` records as the source of `howp-v0.2.0`; the
-same rule is written into
-[`crates/hp-scout/src/feeds.rs`](https://github.com/Akurganow/how-possible/blob/6a5f5e267dc553483ed577928aa2aec188e52037/crates/hp-scout/src/feeds.rs)
-at that commit, which is where `id_is_well_formed` and its 40-character cap
-live. **Neither link may open for you**: `Akurganow/how-possible` is not
-publicly readable — an unauthenticated request for either answered 404 on
-2026-09-02, where this repository's own page answered 200 — so the two names
-record where the rule was read, not somewhere you can go and check it.
-What you can check is the binary, and the same rules were reproduced against
-it on 2026-09-02 with `howp-v0.2.0`'s own `hp-scout index --cache DIR
---declare`: a 40-character `id` is asked for and a 41-character one is not,
-`OpenAI` is not and `openai` is, and an `http://` `url` is declared for
-fetching, comes back unfetched from the `curl` `SKILL.md` documents, and
-leaves the index reporting one feed polled, one that did not answer, and
-exit 0. The silent drop above was reproduced the same way. What the
-scout does differently with each `kind` when it weighs a candidate is not
-recorded in this package and has not been verified here. If a feed file is
-*rejected* — an unknown key, a missing key, a `kind` outside the three — the
-binary's own error message names the field or the variant it did not accept,
-and that message is the authority over this section; a dropped entry
-produces no such message, which is why it has a paragraph of its own.
 
 ## What makes a good question here
 
@@ -219,20 +150,14 @@ produces no such message, which is why it has a paragraph of its own.
 
 ## After writing the files
 
-Verification is what turns a question into something with a probability:
-
-```sh
-WORK="$(mktemp -d)"
-"$BIN/hp-verify" plan  --repo "$WORKSPACE" --work-dir "$WORK"
-# answer the prompt files — see model-steps.md
-"$BIN/hp-verify" apply --repo "$WORKSPACE" --work-dir "$WORK"
-"$BIN/hp-verify" status --work-dir "$WORK"
-```
-
-`plan` is the command that searches the market sources, so on a declaring
-build it fetches nothing itself: it takes `--cache DIR` and declares what it
-needs first. `model-steps.md` shows that cycle around this exact command, and
-`SKILL.md` Step 6 is how to tell which build you have.
+Verification is what turns a question into something with a probability: a
+question with no market behind it is listed on the dashboard as uncovered and
+never gets a number. Binding one is the first of the three procedures in
+`references/procedures.md` — you find candidate markets yourself, fetch the
+market's own body, judge it, and land the judgement with one `hp ingest match`
+call that reads every fact about the market out of that body. `hp ingest check
+questions` and `hp ingest check matches` read these files strictly afterwards
+and report what is wrong with them.
 
 Then tell the user which questions got a market and which did not. The ones
 that did not are not a failure of the interview; they are the honest part of

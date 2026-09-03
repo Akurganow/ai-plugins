@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""The release record agrees with itself, and no prose here names a release tag.
+"""The release record agrees with itself; nothing else here carries a version or a tag.
 
-Two checks, and both sides of both of them are machine-written, so no hit
-needs a reader's judgement:
+Three checks, and every one of them reads text a machine wrote or the
+absence of text no machine writes, so no hit needs a reader's judgement:
 
 1. `plugins/<name>/plugin.json`'s `version` equals the `version` in that
    package's `binaries.json`, and that file's `tag` is `<name>-v<version>`.
@@ -17,8 +17,15 @@ needs a reader's judgement:
    into prose is a claim the next release silently falsifies
    (`.agents/rules/claims.md`); `binaries.json` is exempt because it is the
    file the release writes.
+3. `.claude-plugin/marketplace.json` carries no `version`: not at the top
+   level, not under `metadata`, and not in a plugin entry. Nothing writes
+   that file, so any version in it is one a person moves by hand -- and the
+   top-level one had already drifted, reading 0.3.0 while the package it
+   points at was at 0.3.1. Absence is the machine-checkable half of the
+   same rule; the documentation this rests on is quoted in
+   `.agents/rules/conformance.md` beside it.
 
-It exists because both halves have already failed here. The package once
+It exists because each of the three has already failed here. The package once
 shipped `howp-v0.2.0` while `README.md` still sent readers to the
 `howp-v0.1.0` release page and its `SHA256SUMS` -- that is check 2. And on
 2026-09-02 a hand bump of `plugin.json` to 0.2.1 landed 23 seconds after the
@@ -27,7 +34,10 @@ the package ("already at 0.2.1") and `binaries.json` stayed at
 `howp-v0.2.0`: the manifest advertised a release whose binaries were never
 published under that version. That is check 1, and it is the shape this
 script is named for -- the record the release writes has to agree with
-itself, or the package points at something that does not exist.
+itself, or the package points at something that does not exist. Check 3 is
+the same defect in the one file the release does not touch at all: the index
+sat at 0.3.0 against a package the release had moved to 0.3.1, and it sat
+there because moving it was somebody's job to remember.
 
 This script replaces `check-release-links.py`, which compared the tag in a
 link against the tag `binaries.json` records. Comparing them is no longer a
@@ -44,6 +54,7 @@ import sys
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 PLUGINS_DIR = ROOT / "plugins"
 README = ROOT / "README.md"
+MARKETPLACE = ROOT / ".claude-plugin" / "marketplace.json"
 RULES = ".agents/rules/conformance.md"
 
 # Text the repository publishes about itself. Only the suffixes a reader
@@ -118,9 +129,44 @@ def check_no_tag_in_prose() -> list[str]:
     return problems
 
 
+def check_no_index_version() -> list[str]:
+    """The catalogue index carries no version for anybody to move by hand."""
+    if not MARKETPLACE.is_file():
+        return []
+    rel = MARKETPLACE.relative_to(ROOT)
+    index = json.loads(MARKETPLACE.read_text(encoding="utf-8"))
+    # Shape is check-conformance.py's business, not this script's: every
+    # isinstance below is there so a hand-edited index of the wrong shape
+    # reaches that check as a finding instead of ending this one in a
+    # traceback.
+    if not isinstance(index, dict):
+        return []
+    keys: list[str] = []
+    if "version" in index:
+        keys.append("version")
+    metadata = index.get("metadata")
+    if isinstance(metadata, dict) and "version" in metadata:
+        keys.append("metadata.version")
+    entries = index.get("plugins")
+    if isinstance(entries, list):
+        for n, entry in enumerate(entries):
+            if isinstance(entry, dict) and "version" in entry:
+                keys.append(f"plugins[{n}].version ({entry.get('name', '?')})")
+    return [
+        f"{rel}: carries `{key}`, a version no machine writes. The release "
+        f"writes plugin.json and binaries.json; nothing writes this file, so "
+        f"a version in it is one somebody moves by hand, which {RULES} "
+        f"forbids. Delete the key -- Claude Code documents it as optional, "
+        f"and plugin.json already carries the version the release wrote."
+        for key in keys
+    ]
+
+
 def main() -> int:
     version_problems, checked = check_versions()
-    problems = version_problems + check_no_tag_in_prose()
+    problems = (
+        version_problems + check_no_tag_in_prose() + check_no_index_version()
+    )
     if problems:
         print(
             f"release-record: {len(problems)} problem(s):",
@@ -130,10 +176,15 @@ def main() -> int:
             print(f"  {problem}", file=sys.stderr)
         return 1
 
+    index = (
+        ", and no hand-written version in .claude-plugin/marketplace.json"
+        if MARKETPLACE.is_file()
+        else ""
+    )
     print(
         f"release-record OK: {len(checked)} package(s) at the version the "
-        f"release wrote ({'; '.join(checked)}), and no release tag in the "
-        f"text under plugins/ or in README.md"
+        f"release wrote ({'; '.join(checked)}), no release tag in the "
+        f"text under plugins/ or in README.md{index}"
     )
     return 0
 

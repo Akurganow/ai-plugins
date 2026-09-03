@@ -129,6 +129,24 @@ above whatever version sits here, so a documentation-only bump in this
 repository, 0.3.1 → 0.3.2, would have pushed the next `hp` release to 0.3.3;
 it was reverted with this rule.
 
+**The catalogue index carries no version at all.** `.claude-plugin/marketplace.json`
+has no top-level `version`, none under `metadata`, and no `version` in a plugin
+entry. Claude Code's marketplace reference
+(<https://code.claude.com/docs/en/plugin-marketplaces>, read as documentation
+on 2026-09-03) puts the field in the marketplace schema's *Optional fields*
+table, whose whole description of it is "Marketplace manifest version", and
+adds under that table: "`description` and `version` are also accepted under
+`metadata` for backward compatibility." Optional is what lets the rule above
+decide the rest: a version no machine writes is a version somebody moves by
+hand, and this one already had — `0.3.0` in the index against a package the
+release had moved to `0.3.1`. A plugin entry is left without one because the
+same page describes that field as a second pin beside the manifest's: "Plugin
+version. If set (here or in `plugin.json`), the plugin is pinned to this
+string and users only receive updates when it changes. A plugin with a
+`command` source isn't pinned by either field. If set in neither place, the
+version comes from the next source in version management." Of those two
+places, `plugin.json` is the one a machine keeps current.
+
 §10.2 is untouched by any of it: clients *MAY* use `version` to decide
 whether an update exists or a cache is stale, and Claude Code does. The
 consequence is accepted rather than worked around — a change to a package
@@ -149,16 +167,19 @@ hand-written check inside it only where the check expresses a rule JSON
 Schema cannot express, with its clause beside it, or turns a schema rejection
 into a message somebody can act on. A hand-moved version is neither: it
 breaks nothing about the package's shape, and a package whose `version` and
-`binaries.json` disagree still validates. What the script does is compare
-machine-written text with machine-written text, twice. It holds
-`plugin.json`'s `version` to the `version` and the `tag` the release writes
-into `plugins/howp/binaries.json` — three strings from one release commit, so
-a disagreement is a hand edit and not an opinion. And it refuses a release
-URL naming a tag anywhere in the text under `plugins/` or in `README.md`,
-`binaries.json` excepted because that is the one file a release rewrites:
-nothing in the release path can rewrite a sentence, so a tag in prose is a
-claim the next release falsifies in silence (`.agents/rules/claims.md`). No
-hit of either needs a reader's judgement. That is the test for a check
+`binaries.json` disagree still validates. What the script reads is text a
+machine wrote, or the absence of text no machine writes, three times over. It
+holds `plugin.json`'s `version` to the `version` and the `tag` the release
+writes into `plugins/howp/binaries.json` — three strings from one release
+commit, so a disagreement is a hand edit and not an opinion. It refuses a
+release URL naming a tag anywhere in the text under `plugins/` or in
+`README.md`, `binaries.json` excepted because that is the one file a release
+rewrites: nothing in the release path can rewrite a sentence, so a tag in
+prose is a claim the next release falsifies in silence
+(`.agents/rules/claims.md`). And it refuses a `version` key anywhere in
+`.claude-plugin/marketplace.json`, which nothing writes, so a version there
+is one somebody has to remember to move. No hit of any of the three needs a
+reader's judgement. That is the test for a check
 belonging in this tree at all: not whether it is committed, but whether a hit
 of it can be wrong.
 

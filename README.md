@@ -12,8 +12,9 @@ The repository holds text. The two programs in it are
 `tools/check-conformance.py`, the conformance check described at the bottom,
 and `tools/check-release-record.py`, which holds `plugins/howp/plugin.json`'s
 `version` to the `version` and `tag` the release writes into
-`plugins/howp/binaries.json`, and keeps a release tag out of the prose under
-`plugins/` and in this file; no compiled artefact is stored here. The `howp`
+`plugins/howp/binaries.json`, keeps a release tag out of the prose under
+`plugins/` and in this file, and keeps a hand-written `version` out of the
+marketplace index; no compiled artefact is stored here. The `howp`
 binaries are released on the
 [releases page](https://github.com/Akurganow/ai-plugins/releases), and
 **which release and which targets exist is recorded in
@@ -271,7 +272,7 @@ different operation that the standard does not describe — see
 ```
 .claude-plugin/marketplace.json    the marketplace index: Claude's path and format,
                                    read by Codex as well; pointers only, no plugin
-                                   metadata of its own
+                                   metadata of its own and no version of its own
 plugins/<name>/
   plugin.json                      the manifest — Agent Plugins 1.0.0, at the plugin root
   .claude-plugin/plugin.json       symlink → ../plugin.json, Claude's documented manifest
@@ -287,7 +288,8 @@ tools/check-conformance.py         the conformance check
 tools/check-release-record.py      holds plugin.json's version to the version and
                                    tag the release writes into binaries.json, and
                                    refuses a release tag in the text under plugins/
-                                   or in README.md; machine-written strings only
+                                   or in README.md and a version in the marketplace
+                                   index; machine-written strings only
 tools/schemas/                     the official manifest schema, vendored
 .github/workflows/conformance.yml  runs both checks on pushes to main and on pull
                                    requests

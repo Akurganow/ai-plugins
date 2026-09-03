@@ -3,8 +3,9 @@ name: conformance
 # Runs the repository's two checks: the Agent Plugins 1.0.0 conformance check,
 # and the release-record check that holds plugins/howp/plugin.json's version
 # to the version and tag the release writes into plugins/howp/binaries.json,
-# and refuses a release tag in the text under `plugins/` or in README.md —
-# those two, and not the rest of the tree. Both are in one job because
+# refuses a release tag in the text under `plugins/` or in README.md — those
+# two, and not the rest of the tree — and refuses a version in the
+# marketplace index, which nothing writes. Both are in one job because
 # they cost nothing between them: one short job on a hosted Linux runner, no
 # services, no model calls.
 #

@@ -5,7 +5,6 @@
     "url": "https://github.com/Akurganow"
   },
   "description": "Public marketplace of Akurganow's agent plugins. Every plugin under plugins/ is an Agent Plugins 1.0.0 package; this file is the catalogue index in Claude's format and at Claude's path, and it holds pointers to those packages and nothing else. Codex reads the same file.",
-  "version": "0.3.0",
   "plugins": [
     {
       "name": "howp",

@@ -117,11 +117,15 @@ Two files is what that job writes, and it is dated: on how-possible's `main`,
 read 2026-09-03, it stages `binaries.json` and the manifest, and refuses to
 commit at all if the index holds anything besides those two — "the index
 holds files this release may not change". Extending it to
-`plugins/howp/skills/howp/references/commands.md` is intended and **has not
-landed**: nothing on that `main` writes that file, and no open pull request
-there proposed it when this was checked on 2026-09-03. Until such a change
-lands, `commands.md` is hand-written like any other text here; when it lands,
-this paragraph is what gets updated, with that pull request named.
+`plugins/howp/skills/howp/references/commands.md` is **proposed and not
+merged**: how-possible's pull request 18
+(<https://github.com/Akurganow/how-possible/pull/18>, open as a draft on
+2026-09-03) adds a script that transcribes the released binary's `--help` and
+has the release commit that file as a third one, and removes the floor
+described below. Until it lands, `main` there writes two files and
+`commands.md` is hand-written like any other text here — which is also why
+`tools/check-release-record.py` exempts `binaries.json` and nothing else.
+When that pull request merges, this paragraph is what gets updated.
 
 The owner decided it on 2026-09-03: «вручную бампать версии строжайше
 запрещено … никто и никогда не имеет права руками менять версии» — *bumping

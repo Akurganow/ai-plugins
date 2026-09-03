@@ -118,7 +118,8 @@ def check_no_tag_in_prose() -> list[str]:
     problems: list[str] = []
     # `binaries.json` is the only exemption, and it stays the only one while
     # it is the only file under plugins/ a release writes. commands.md is not
-    # machine-written yet -- see .agents/rules/conformance.md.
+    # machine-written yet: proposed in how-possible, not merged -- the rule
+    # file .agents/rules/conformance.md carries the pull request.
     paths = [p for p in text_files(PLUGINS_DIR) if p.name != "binaries.json"]
     if README.is_file():
         paths.append(README)

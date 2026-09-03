@@ -10,33 +10,33 @@ directory with `plugin.json` at its root, and its skills under
 
 The repository holds text. The two programs in it are
 `tools/check-conformance.py`, the conformance check described at the bottom,
-and `tools/check-release-links.py`, which holds the release links under
-`plugins/` and in this file to the tag `binaries.json` records — those two
-are what it searches, and the rest of the tree is not scanned; no compiled
-artefact is stored here. The `howp` binaries are released on the
+and `tools/check-release-record.py`, which holds `plugins/howp/plugin.json`'s
+`version` to the `version` and `tag` the release writes into
+`plugins/howp/binaries.json`, keeps a release URL naming a tag out of the
+text under `plugins/` and in this file, and keeps a hand-written `version`
+out of the marketplace index; no compiled artefact is stored here. The `howp`
+binaries are released on the
 [releases page](https://github.com/Akurganow/ai-plugins/releases), and
 **which release and which targets exist is recorded in
 [`plugins/howp/binaries.json`](plugins/howp/binaries.json), not in this
 paragraph** — a release rewrites that file and cannot rewrite this sentence,
-so read the file. Each release publishes a `SHA256SUMS` asset beside its
-archives; for the release `binaries.json` names today that is
-[`SHA256SUMS`](https://github.com/Akurganow/ai-plugins/releases/download/howp-v0.2.0/SHA256SUMS),
-and its digests are the ones recorded in `binaries.json`.
+so read the file. Every release publishes a `SHA256SUMS` asset beside its
+archives, in the same release the archive URLs in `binaries.json` point at:
+those URLs are where to look for it, and its digests are the ones recorded in
+`binaries.json`.
 The `howp` package uses that release: its skill reads
 `plugins/howp/binaries.json`, refuses any platform the manifest does not
 name, downloads the archive for the one it does, checks the download's sha256
 against the digest recorded there before unpacking it, and then runs what
 that entry's `binaries` array says the archive holds. **The skill drives one
-binary, `hp`**, and that array is also what says whether an archive has it:
-the release `binaries.json` records today was published before `hp` existed,
-so no published archive holds it yet and the skill stops there rather than
-running something else. On 2026-08-28, against `howp-v0.2.0`, both archives
-the manifest names were downloaded and each matched its recorded digest; the
-failure branch — a tampered archive is refused and deleted — was executed on
-2026-08-25 against the release published then. Nothing in the package has
-been run on macOS: the `aarch64-apple-darwin` archive was downloaded and
-verified but no binary out of it has been executed here. The skill says so
-itself.
+binary, `hp`**, and that array is also what says whether an archive has it: an
+entry whose `binaries` array omits `hp` stops the skill rather than having it
+run something else, so which releases can be driven is a property of that file
+and not of this paragraph. What has actually been downloaded, verified and run
+— with its date, the release it was measured against, and what it did not
+exercise — is recorded once, in the skill's own [What has been verified, and
+what has not](plugins/howp/skills/howp/SKILL.md#what-has-been-verified-and-what-has-not).
+This file keeps no second copy of it.
 
 ## Compatibility
 
@@ -265,14 +265,14 @@ different operation that the standard does not describe — see
 
 | Plugin | What it does | Status |
 |---|---|---|
-| `howp` | Personal probability dashboard: interests → measurable questions → prediction-market probabilities → a local Markdown dashboard of what became more or less likely | working. The skill reads [`plugins/howp/binaries.json`](plugins/howp/binaries.json) for the release, the targets and what an archive holds — that file is the record, not this cell — downloads the archive for a target it names, verifies it against the digest recorded there, and drives one binary, `hp`; it stops on any platform the file does not name. `hp` opens no socket and reads no clock: the agent fetches each market body itself and passes the moment in, and every judgement is the agent's. No release naming `hp` has been published yet, and untested on macOS itself |
+| `howp` | Personal probability dashboard: interests → measurable questions → prediction-market probabilities → a local Markdown dashboard of what became more or less likely | working. The skill reads [`plugins/howp/binaries.json`](plugins/howp/binaries.json) for the release, the targets and what an archive holds — that file is the record, not this cell — downloads the archive for a target it names, verifies it against the digest recorded there, and drives one binary, `hp`; it stops on any platform the file does not name. `hp` opens no socket and reads no clock: the agent fetches each market body itself and passes the moment in, and every judgement is the agent's. The published `howp-v0.3.1` binary archive was installed and run by the skill's own procedure on Linux `x86_64` on 2026-09-03 — the package itself through no client — and nothing has been run on macOS |
 
 ## Layout
 
 ```
 .claude-plugin/marketplace.json    the marketplace index: Claude's path and format,
                                    read by Codex as well; pointers only, no plugin
-                                   metadata of its own
+                                   metadata of its own and no version of its own
 plugins/<name>/
   plugin.json                      the manifest — Agent Plugins 1.0.0, at the plugin root
   .claude-plugin/plugin.json       symlink → ../plugin.json, Claude's documented manifest
@@ -285,22 +285,30 @@ plugins/<name>/
   skills/<name>/references/*.md    the skill's own bundled references, loaded by the
                                    agent when a procedure needs them
 tools/check-conformance.py         the conformance check
-tools/check-release-links.py       holds the release links under plugins/ and in
-                                   README.md to the tag binaries.json records; two
-                                   machine-written strings compared
+tools/check-release-record.py      holds plugin.json's version to the version and
+                                   tag the release writes into binaries.json, and
+                                   refuses a release URL naming a tag in the text
+                                   under plugins/ or in README.md, and a version in
+                                   the marketplace index; machine-written text only
 tools/schemas/                     the official manifest schema, vendored
 .github/workflows/conformance.yml  runs both checks on pushes to main and on pull
                                    requests
 ```
 
-Plugin versions are bumped on every change. The standard does not require a
-client to care — §10.2 says only that clients "MAY use `version` to determine
-whether updates are available and whether caches are stale" — but Claude Code
-does: "If set (here or in `plugin.json`), the plugin is pinned to this string
-and users only receive updates when it changes"
-(<https://code.claude.com/docs/en/plugin-marketplaces>). So a corrected
-package shipped without a bump is a correction that installed copies do not
-get.
+A plugin's `version` is written by the release that publishes its binaries,
+in the same commit as `binaries.json`, and is **never edited by hand here** —
+`.agents/rules/conformance.md` carries the rule and why it exists.
+`tools/check-release-record.py` is what enforces it.
+
+That has a consequence worth stating rather than working around. The standard
+does not require a client to care about `version` — §10.2 says only that
+clients "MAY use `version` to determine whether updates are available and
+whether caches are stale" — but Claude Code does: "If set (here or in
+`plugin.json`), the plugin is pinned to this string and users only receive
+updates when it changes"
+(<https://code.claude.com/docs/en/plugin-marketplaces>). So a change to a
+package made between two releases — a corrected sentence in a skill, say —
+reaches such a client at the next release and not before. That is accepted.
 
 ## Cloning on Windows
 

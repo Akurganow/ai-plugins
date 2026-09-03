@@ -47,10 +47,10 @@ the moment is yours to pass in, and so is every judgement. Two rules hold below.
 2. **Verify the sha256 before unpacking**, extract to a staging directory, and
    stamp only a tree that is complete and runs. An archive that fails the
    digest is deleted and nothing is run; there is no third option.
-3. **`target.binaries` says what an archive holds**, and **today it does not
-   name `hp`**, the one binary these procedures drive: `binaries.json` records
-   `howp-v0.2.0`, published before `hp` existed. Until a release names it
-   there is nothing here to drive — say so and stop.
+3. **`target.binaries` says what an archive holds.** These procedures drive one
+   binary, `hp`: check that the matched entry's array names it, and **stop if it
+   does not** — an archive without it is a release older than this skill, and
+   there is nothing here to drive. Never run something else out of one.
 4. **An archive holds the binaries and a licence and nothing else.** No
    helper script ships, so whatever one would have done, you do.
 
@@ -171,29 +171,47 @@ subcommand's, verbatim — and the binary's own is the authority over both.
 
 ## What has been verified, and what has not
 
-**2026-09-03**, and everything here is dated because nothing in the release
-path rewrites this file. Every `hp` command and flag named in this package was
-read out of `hp --help` and each subcommand's at `hp 0.2.1`, built from the
-source project rather than unpacked from a published archive. The three market
-hosts are **not** in that output: they are constants in that project's source —
-`GAMMA` and `CLOB` in `crates/hp/src/polymarket/mod.rs`, `API` in
-`crates/hp/src/manifold/mod.rs` — matching the URLs `hp sources urls` printed.
+**2026-09-03, against `howp-v0.3.1`**, and everything here is dated because
+nothing in the release path rewrites this file. Both archives `binaries.json`
+records were downloaded from the URLs in it; each had exactly the recorded
+`sha256`, matching that release's own `SHA256SUMS`, and each holds one
+`LICENSE` and one `bin/hp` and nothing else — no helper script. On Linux
+`x86_64`, `references/install.md` was then carried out from that archive —
+Steps 0, 2, 3, 4 and 5: one entry matched, the cache missed, the download, the
+digest check, the staging unpack with its `-x` and `--version` checks, the move
+into place, and the stamp written last. The installed `hp` printed `hp 0.3.1`.
+Step 2 was then run twice more over the populated cache: it short-circuited,
+and with `bin/hp` moved aside it refused the stamp and asked for a fresh
+install — the half-finished install that check exists for.
 
-**2026-08-28, against `howp-v0.2.0`**, whose archives predate `hp` — so what
-ran was not it, but the download and digest steps are unchanged and were
-exercised: both archives downloaded from the URLs `binaries.json` records, each
-with exactly the recorded `sha256`, each holding `LICENSE` and `bin/` and no
-helper script; the musl one's binaries ran on Linux `x86_64`. Step 5's staging
-directory and Step 2's binary check are newer than that run and are not covered
-by it.
+**Step 1, the preflight, is the step that run did not carry out**, and it is
+the one whose answer is local to whoever runs it. Probed the same day from the
+machine this was written on: `github.com` answered — the download above is that
+host's real proof — and the three market hosts did not, the proxy refusing
+`CONNECT` with a `403`. That is a fact about one machine's egress allowlist on
+2026-09-03 and not about the hosts, which is why Step 1 is written to be run
+rather than remembered.
+
+Every `hp` command and flag named in this package was read out of that
+installed binary's `--help`, top level and every subcommand, and is
+`references/commands.md`. The three market hosts are **not** anywhere in that
+output; they are literals in the binary itself, one occurrence each —
+`https://gamma-api.polymarket.com`, `https://clob.polymarket.com` and
+`https://api.manifold.markets/v0`, read out of its bytes with `strings` on the
+same day. That is the published artifact rather than a source tree, which is
+what a reader of this package can check for themselves.
+
 **2026-08-25, against the release published then:** a corrupted archive is
-refused and deleted, a wrong URL writes no file, the cache check short-circuits
-a second download, and the gate refuses an unnamed platform.
+refused and deleted, a wrong URL writes no file, and the gate refuses an
+unnamed platform. The 2026-09-03 run exercised none of those three — nothing in
+it was made to fail on purpose — which is why this older line is still the only
+record of them.
 
-**Not verified.** No published release contains `hp`, so nothing here has been
-run from an installed package, and no run has driven `sources urls` → fetch →
-`sources next` → `ingest` → `moves detect` → `render` end to end from a clean
-container. Nothing has been run on a Mac: that archive was downloaded and
-verified, no binary out of it executed; the Gatekeeper note and the
-two-matching-entries rule are untested, and the host declarations are read by
-nothing observed to act on them.
+**Not verified.** No run has driven `sources urls` → fetch → `sources next` →
+`ingest` → `moves detect` → `render` end to end from a clean container, so
+nothing above says a cycle works — only that the binary installs and starts.
+Nothing has been run on a Mac: that archive was downloaded and its digest
+verified, no binary out of it executed; the Gatekeeper note is untested, and so
+is Step 0's two-matching-entries rule, which has only ever been exercised with
+one entry matching. The host declarations are read by nothing observed to act
+on them.

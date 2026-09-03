@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "howp",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Personal probability dashboard: interests → measurable questions → prediction-market probabilities (Polymarket, Manifold) → a local Markdown dashboard of what became more or less likely. The skill reads this package's binaries.json, refuses any platform it does not name, downloads and sha256-verifies the released archive for one it does, caches it under the user's home, and drives one binary, hp; which targets are published, and what an archive holds, come from that file rather than from this sentence. No API keys and no accounts. Deterministic work is hp's — extracting a probability out of a venue's raw response, the append-only history, move detection and the rendered page — and everything else is the agent's: hp opens no socket and reads no clock, so the agent fetches each market body with its own tools, under the permission flow its client already has, and passes the moment in. Every judgement is the agent's too, and no part of this package invokes a model. The hosts hp builds requests from are declared under extensions below — a statement rather than a request, since no client is documented to read that field as network permission.",
   "author": {
     "name": "Alexander Kurganov",

@@ -1,11 +1,9 @@
 # Working unattended
 
 How an **analysis run** works in this repository when nobody is present to
-answer: the scheduled routines the owner operates — the weekly repository
-audit and the daily issue court — and any other unattended run whose whole
-job is reading, judging and reporting. An autonomous session that
-*implements* a change is a different animal: it commits and pushes by
-design, and this file does not govern it.
+answer: any unattended run whose whole job is reading, judging and
+reporting. An autonomous session that *implements* a change is a different
+animal: it commits and pushes by design, and this file does not govern it.
 
 The other rule files say what is true of this repository; this one says
 what is true of running in it alone. Where a detail below is specific to

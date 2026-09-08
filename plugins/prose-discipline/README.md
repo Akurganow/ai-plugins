@@ -68,6 +68,26 @@ fields will therefore find the skill, which sits at the fixed location, and
 not the rule file or the hook, which the root manifest names only inside
 `extensions`.
 
+Codex is the one client where that reading can be checked against a
+published field guide, so it is worth stating separately. Codex's manifest
+reader accepts `skills`, `hooks`, `mcpServers`, `apps` and `interface`.
+Agent Plugins 1.0.0 allows none of those five in a manifest, and its schema
+is closed, so a manifest carrying them fails this repository's conformance
+check. Two lines of Codex's own field guide say the rest. Path fields "are
+supplemented on top of default component discovery; they do not replace
+defaults", and the validation notes say "Validation rejects unsupported
+manifest fields such as `hooks`, so the scaffold keeps them out of generated
+manifests". Naming the hook in a Codex manifest is therefore not the route
+to it, and this package does not try. What Codex's default discovery does
+with `hooks/hooks.json` has not been established here. Codex documents no
+rule-file component at all, so on Codex the skill is the route this package
+can name. Source: Codex's own documentation, the plugin manifest field guide
+at
+[`codex-rs/skills/src/assets/samples/plugin-creator/references/plugin-json-spec.md`](https://github.com/openai/codex/blob/ce254df05a3162a93d8f3357ff4dd86582c534b7/codex-rs/skills/src/assets/samples/plugin-creator/references/plugin-json-spec.md),
+read on 2026-09-08, and its source,
+[`codex-rs/core-plugins/src/manifest.rs`](https://github.com/openai/codex/blob/ce254df05a3162a93d8f3357ff4dd86582c534b7/codex-rs/core-plugins/src/manifest.rs),
+where `RawPluginManifest` names those five fields.
+
 ## Configuration
 
 None. No credentials, no MCP servers, no settings files. Removing the plugin

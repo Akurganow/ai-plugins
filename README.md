@@ -54,7 +54,7 @@ The surfaces this marketplace is meant for:
 - **Claude** — Claude Code, local and cloud, and the Claude desktop app.
 - **Hermes** — Desktop and server. Required.
 - **Codex**
-- **OpenCode**
+- **Oh-My-Pi**
 - **Any client that implements Agent Plugins Specification 1.0.0.**
 
 Nothing below has been installed from this repository as published. Every
@@ -62,7 +62,7 @@ instruction is read off that client's own documentation first, and its own
 source only where the documentation does not answer; each says which, and
 where a statement comes from running a client's own code, it says that too.
 Only Claude's documentation site is reachable from the network this was
-written on, and it was read directly. Hermes' and OpenCode's are blocked, and
+written on, and it was read directly. Hermes' and Oh-My-Pi's are blocked, and
 both publish the same pages as Markdown in their own repositories, which is
 what was read instead. Codex's is blocked as well and its repository carries
 no replacement — `docs/skills.md` there is a three-line stub pointing back at
@@ -212,41 +212,68 @@ chosen on the command line: Codex takes it from the `name` field of the index
 it has just fetched, which here is `ai-plugins` (`validate_marketplace_root` in
 `codex-rs/core-plugins/src/marketplace.rs`, not either CLI file).
 
-### OpenCode
+### Oh-My-Pi
 
-OpenCode loads Agent Skills; what it calls plugins is a different,
-JavaScript extension mechanism. So the skill directory is what you install,
-and it goes to the vendor-neutral location rather than OpenCode's own:
+Oh-My-Pi installs this repository as a marketplace and reads the package
+through a discovery provider of its own that implements Agent Plugins 1.0.0,
+so nothing here is installed in a reduced form for it. Its preferred catalogue
+path is `.omp-plugin/marketplace.json`; `.claude-plugin/marketplace.json` —
+the only one published here — is the documented "Claude Code-compatible
+fallback", read when the first is absent.
 
 ```
-cp -r plugins/howp/skills/howp ~/.agents/skills/howp
+omp plugin marketplace add Akurganow/ai-plugins
+omp plugin install howp@ai-plugins
 ```
 
-Source, for both halves of that first sentence: OpenCode's own
-documentation. Its site is unreachable from the network this was written on;
-the same pages are published in the project's repository, on its default
-branch `dev` — there is no `main` there, so a commit permalink is what
-resolves as well as what dates the claim.
+Source: Oh-My-Pi's own documentation. Its site is unreachable from the network
+this was written on; the same pages are published as Markdown in the project's
+repository under `docs/`, and that is what was read.
 
-The skills half is
-[`packages/web/src/content/docs/skills.mdx`](https://github.com/sst/opencode/blob/03521003fafdc6d340de6a36a189e3c121b07d40/packages/web/src/content/docs/skills.mdx),
-which lists six search locations, among them "Global agent-compatible:
-`~/.agents/skills/<name>/SKILL.md`" and "Project agent-compatible:
-`.agents/skills/<name>/SKILL.md`", beside the vendor paths
-`~/.config/opencode/skills/<name>/SKILL.md` and
-`.opencode/skills/<name>/SKILL.md`. The vendor-neutral pair is what this
-repository points at, because a standard location is preferred to a
-vendor one wherever a client offers both. Use `.agents/skills/howp` inside a
-project instead of the home directory to scope the skill to that project.
+The two catalogue paths, `owner/repo` as a marketplace source, and both
+commands above are in
+[`docs/marketplace.md`](https://github.com/can1357/oh-my-pi/blob/a33cc26824e3c91edd9fa42d681f10dceb4ac2f0/docs/marketplace.md).
+The same install pair closes the publishing workflow in
+[`docs/skills/authoring-marketplaces.md`](https://github.com/can1357/oh-my-pi/blob/a33cc26824e3c91edd9fa42d681f10dceb4ac2f0/docs/skills/authoring-marketplaces.md),
+which also fixes the plugin identifier as `name@marketplace-name` — the
+marketplace half being the `name` inside the catalogue rather than the
+repository it was fetched from, which here is `ai-plugins` either way. Both
+halves must be lowercase letters, digits, hyphens and dots, must start and end
+with a letter or digit, and must stay within 64 characters; `ai-plugins` and
+`howp` pass. A plugin `source` written as a string must begin with `./` and
+resolve inside the marketplace root, which is the form both entries in this
+repository's index use.
 
-The plugins half is
-[`packages/web/src/content/docs/plugins.mdx`](https://github.com/sst/opencode/blob/03521003fafdc6d340de6a36a189e3c121b07d40/packages/web/src/content/docs/plugins.mdx),
-same repository and revision: an OpenCode plugin is "a JavaScript/TypeScript
-module that exports one or more plugin functions", loaded from
-`.opencode/plugins/`, `~/.config/opencode/plugins/` or an npm package. That
-page describes no manifest and mentions neither `plugin.json` nor Agent
-Plugins — which is why what you install above is the skill directory and not
-this package's plugin root.
+A local clone is pointed at directly instead, with a documented flag —
+`--plugin-dir <dir>`, "Add a local plugin directory to discovery (repeatable)"
+([`docs/cli-reference.md`](https://github.com/can1357/oh-my-pi/blob/a33cc26824e3c91edd9fa42d681f10dceb4ac2f0/docs/cli-reference.md)):
+
+```
+omp --plugin-dir plugins/howp
+```
+
+Documentation names the provider that reads the package either way and says
+where it ranks — `agent-plugins`, "Agent Plugins standard packages: skills and
+MCP servers", priority 75, above the `claude-plugins` and `codex` providers,
+which sit at 70
+([`docs/context-files.md`](https://github.com/can1357/oh-my-pi/blob/a33cc26824e3c91edd9fa42d681f10dceb4ac2f0/docs/context-files.md),
+[`docs/config-usage.md`](https://github.com/can1357/oh-my-pi/blob/a33cc26824e3c91edd9fa42d681f10dceb4ac2f0/docs/config-usage.md))
+— and stops there. What that provider reads is a claim from source:
+[`agent-plugins.ts`](https://github.com/can1357/oh-my-pi/blob/a33cc26824e3c91edd9fa42d681f10dceb4ac2f0/packages/coding-agent/src/discovery/agent-plugins.ts)
+takes its roots from marketplace installs and `--plugin-dir`, discovers skills
+as the immediate children of `skills/` whose `SKILL.md` resolves to a regular
+file inside the plugin root, and takes MCP servers from a root `mcp.json`.
+[`agent-plugin-format.ts`](https://github.com/can1357/oh-my-pi/blob/a33cc26824e3c91edd9fa42d681f10dceb4ac2f0/packages/coding-agent/src/discovery/agent-plugin-format.ts),
+same repository and revision, is where a root `plugin.json` is classified: a
+`$schema` under `https://agent-plugins.org/schemas/` that is not the 1.0.0
+identifier rejects the whole package, and a skill whose front matter carries a
+field outside the Agent Skills specification's six, or a `name` that differs
+from its directory, is skipped while the rest of the package loads. It is also
+what keeps the reading single: `legacyProviderAllowed` there stands the
+`claude-plugins` and `omp-plugins` providers down from the skills and MCP
+surfaces of any root that declares the standard, so this package's skill is
+loaded once, by the standard's loader, and not a second time through the
+vendor manifest symlink.
 
 ### Any client implementing Agent Plugins 1.0.0
 
@@ -267,8 +294,9 @@ different operation that the standard does not describe — see
 
 ```
 .claude-plugin/marketplace.json    the marketplace index: Claude's path and format,
-                                   read by Codex as well; pointers only, no plugin
-                                   metadata of its own and no version of its own
+                                   read by Codex and Oh-My-Pi as well; pointers only,
+                                   no plugin metadata of its own and no version of
+                                   its own
 plugins/<name>/
   plugin.json                      the manifest — Agent Plugins 1.0.0, at the plugin root
   .claude-plugin/plugin.json       symlink → ../plugin.json, Claude's documented manifest

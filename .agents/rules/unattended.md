@@ -27,6 +27,9 @@ them:
   and a listing that returns titles alone cannot build the do-not-report
   list `.agents/rules/tracker.md` requires;
 - the comments on an issue;
+- finding an issue by a fingerprint in its body, whatever its labels and
+  whatever its state — the identity that survives when a label could not
+  be applied;
 - filing an issue with a title, a body and labels; commenting on one;
   adding a label to one;
 - whether a label exists on the repository.
@@ -46,17 +49,24 @@ on nothing. If the probe fails, stop and say so in the final report; a
 need the environment cannot serve at all is reported as not served, and
 whatever depended on it as not checked.
 
-Two things a route may do differently, and what the run does about each:
+Three things a route may do differently, and what the run does about each:
 
 - A listing of issues may return pull requests among them. Filter them
   out; a pull request is never a case, a finding or a fingerprint.
 - Labels are checked before their first use — every name a run intends to
-  apply, before the analysis rather than after it. Where the route can
-  create a label, create it first, and treat "already exists" as success.
-  Where it cannot, a missing name is a line in the report and the issue is
-  filed without it; an issue's identity is its fingerprint, never a label.
-  A name applied without checking may create the label silently, which
-  is a change to the repository nobody decided on.
+  apply, before the analysis rather than after it. A name applied without
+  checking may create the label silently, which is a change to the
+  repository nobody decided on. Where the route can create a label, create
+  it first, and treat "already exists" as success.
+- Where the route cannot create one, the missing name is a line in the
+  report, and the issue is filed without it **only where the fingerprint
+  search above is served**. `tracker.md` reaches an issue two ways — the
+  label, and the fingerprint in its body — and an unlabeled issue is left
+  with the second alone: without it the run's cap stops counting that
+  issue and the next run's do-not-report list loses it once it closes,
+  which is how a finding gets filed twice. Where neither the label nor the
+  search is served, the finding stays in the report and is not filed: an
+  issue the next run cannot recognise costs more than one not filed.
 
 ## The network is allowlisted
 

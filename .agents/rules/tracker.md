@@ -18,13 +18,16 @@ the run's report (below) is where doubt goes.
 ## Before analysing: the do-not-report list
 
 First load what the tracker already holds, through the reads
-`.agents/rules/unattended.md` names: every issue carrying the run's own label,
-open **and** closed, and the whole open list. Read full bodies, not
-titles — each automated issue ends with a fingerprint comment, and the
-fingerprint is the identity. The label is what makes closed issues
-findable at all, which is why a run's label is never removed from an issue
-it filed; an unlabeled closed issue's fingerprint is out of reach. Build a do-not-report list and write
-it to a file (`$RUN/do-not-report.md`, in the per-run state directory
+`.agents/rules/unattended.md` names: every issue carrying the run's own
+label, open **and** closed; every issue its fingerprint marker finds,
+whatever the labels, for the ones filed when the label could not be
+applied; and the whole open list. Read full bodies, not titles — each
+automated issue ends with a fingerprint comment, and the fingerprint is
+the identity. A label is what makes closed issues findable by listing,
+which is why a run's label is never removed from an issue it filed; where
+the environment cannot also search bodies for a fingerprint, an unlabeled
+closed issue's fingerprint is out of reach. Build a do-not-report list and
+write it to a file (`$RUN/do-not-report.md`, in the per-run state directory
 `.agents/rules/unattended.md` prescribes) before any analysis:
 
 - Fingerprint present in **any** state → never report it again. A closed
@@ -44,10 +47,11 @@ to the moment it is needed, not just the moment it was built.
 ## Backpressure
 
 An untouched backlog means the maintainer is not consuming what the runs
-produce, and adding to it is pure noise. Count the open issues carrying the
-run's own label before analysing anything, and cap the run:
+produce, and adding to it is pure noise. Count the run's own open issues
+before analysing anything — those carrying its label, and any it filed
+without one, found by their fingerprints — and cap the run:
 
-| Open issues with the run's label | Maximum filed this run |
+| The run's own open issues | Maximum filed this run |
 | :-- | :-- |
 | 0–2 | the run's own cap (3 unless its instructions say otherwise) |
 | 3–4 | 1 |

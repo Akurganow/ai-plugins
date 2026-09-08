@@ -90,10 +90,12 @@ Labels first, checked or created the way `.agents/rules/unattended.md`
 prescribes — that file owns what a run does when a label is missing or
 already exists.
 
-**Two tiers, and only the first carries weight.** Every automated filing
-carries `police-report`. That is the label the listing above finds, and a
-run that cannot apply it falls back to the fingerprint search
-`unattended.md` describes. Beside it a run may add one `audit:*` label
+**Two tiers, and only the first carries weight.** `police-report` goes on
+every automated filing whose route can apply it, and it is the label the
+listing above finds. A run whose route cannot apply it files without it and
+is found by its fingerprint instead, exactly as `unattended.md` prescribes.
+Where neither the label nor that search is served, the finding stays in the
+report and is not filed. Beside it a run may add one `audit:*` label
 saying which kind of finding this is, for a person browsing the tracker.
 Nothing keys on those: no run counts them, no run stops because one is
 missing, and no run applies one its own instructions do not name.

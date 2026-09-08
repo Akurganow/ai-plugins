@@ -9,6 +9,7 @@
   },
   "homepage": "https://github.com/Akurganow/ai-plugins/tree/main/plugins/prose-discipline",
   "repository": "https://github.com/Akurganow/ai-plugins",
+  "license": "MIT",
   "keywords": [
     "prose",
     "writing",

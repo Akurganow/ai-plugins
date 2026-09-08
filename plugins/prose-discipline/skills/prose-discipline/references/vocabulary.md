@@ -16,12 +16,17 @@ catalog and the domain-term contract.
 | in the event that | if | shorter |
 | at this point in time | now, currently | shorter |
 | a plethora of, a myriad of | many | plain quantifier |
-| ensure that, make sure that | verify that, check that | active assertion |
+| ensure that, make sure that | verify that, check that | active assertion, where the step checks a condition |
 | delve into, dive into | examine, inspect, review | non-cliché |
 | establish connectivity | connect | plain verb |
 | streamlines, empowers, harnesses | (delete, or state the concrete effect) | marketing |
 | serves as a mechanism to | does | plain copula |
 | game-changer, transformative | (delete, or state the measurable change) | hype |
+
+`ensure` survives where the instruction requires the actor to *make* a
+condition true. Substituting `verify` there turns a required remediation
+into an observation, which is a worse defect than the weak verb. The test:
+if the reader must change something, keep `ensure` or name the action.
 
 ## Weak verbs and split predicates
 

@@ -7,7 +7,10 @@
 # observable in host debug logs.
 set -u
 
-PLUGIN_ROOT="${PLUGIN_ROOT:-${CLAUDE_PLUGIN_ROOT:-$(cd "$(dirname "$0")/.." && pwd)}}"
+# Same precedence as hooks/hooks.json uses to invoke this script. If the two
+# disagreed, the script would run from one plugin root and read its rule file
+# from another.
+PLUGIN_ROOT="${CLAUDE_PLUGIN_ROOT:-${PLUGIN_ROOT:-$(cd "$(dirname "$0")/.." && pwd)}}"
 CORE="$PLUGIN_ROOT/rules/prose-discipline.md"
 
 warn() { printf 'prose-discipline hook: %s\n' "$1" >&2; }

@@ -9,10 +9,15 @@ description: >
 
 # Prose Discipline
 
-The operating standard for your output in every mode. The core rules are
-already active in this session. Claude Code and Codex inject them at session
-start. Oh My Pi loads them as an always-apply rule. This skill carries
-the full protocol and the depth behind every rule.
+The operating standard for your output in every mode.
+
+The core rules reach a session by three routes, and which one a host takes
+is that host's business: a `SessionStart` hook that prints them for the host
+to inject, a rule file carrying `alwaysApply: true`, or this skill. Nothing
+here asserts that any named client does any of the three, and no route has
+been observed working from this repository's copy.
+
+This skill carries the full protocol and the depth behind every rule.
 
 ## Replying to the user
 
@@ -40,8 +45,10 @@ no closing commentary unless asked.
 
 1. Identify the artifact types and read the matching references.
 2. Report findings first, ordered by severity. Do not rewrite yet.
-3. Apply the core exemptions. Never flag code blocks, identifiers,
-   commands, URLs, quoted text, changelogs, or migration examples.
+3. Apply the core rule's exemption contract as it is written there, and do
+   not restate it here. It names licenses as well, and it limits the
+   changelog and migration exemptions to quoted historical text rather
+   than text you author now.
 4. Each finding states the location, the violated rule, and the smallest
    fix.
 5. Interactive sessions: apply the minimal fixes after the user approves.

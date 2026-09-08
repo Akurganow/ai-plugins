@@ -1,0 +1,17 @@
+{
+  "description": "Inject the prose-discipline core rules at session start.",
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup|resume|clear|compact|fork",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "sh \"${CLAUDE_PLUGIN_ROOT:-${PLUGIN_ROOT:-.}}/hooks/session-rules.sh\"",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}

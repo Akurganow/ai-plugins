@@ -1,0 +1,38 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "prose-discipline",
+  "version": "1.3.0",
+  "description": "Engineering prose standard for everything an agent writes: user replies, prose, code comments, review comments, commit messages, change descriptions, error messages and agent instructions. Five layers — sentence structure, plain vocabulary, comment hygiene, artifact formats, slop pruning — each stated as a rule a reader can check rather than a preference. The core rules are one file, rules/prose-discipline.md, injected at session start by the hook in hooks/ on hosts that run plugin hooks, and loaded as an always-apply rule by hosts that read plugin rule files; the skill carries the protocol and the depth behind every rule, including the substitution table, the Conventional Comments labels and a calibration corpus. Code blocks, identifiers, commands, URLs and quoted text are never flagged, and established domain terms are kept. No credentials, no MCP servers, no settings files, and no checker script: enforcement is model judgement over rule texts a person can read and argue with.",
+  "author": {
+    "name": "Alexander Kurganov",
+    "url": "https://github.com/Akurganow"
+  },
+  "homepage": "https://github.com/Akurganow/ai-plugins/tree/main/plugins/prose-discipline",
+  "repository": "https://github.com/Akurganow/ai-plugins",
+  "license": "MIT",
+  "keywords": [
+    "prose",
+    "writing",
+    "style-guide",
+    "anti-slop",
+    "code-review",
+    "conventional-comments",
+    "commit-messages",
+    "agent-skills"
+  ],
+  "extensions": {
+    "io.github.akurganow.ai-plugins": {
+      "components": {
+        "skills": "./skills",
+        "rules": "./rules/prose-discipline.md",
+        "hooks": "./hooks/hooks.json"
+      },
+      "components_note": "Agent Plugins 1.0.0 fixes the location of skills at ./skills (§6.1) and assigns no meaning to anything else here. The rules file and the hook are the two surfaces this package uses to make the standard active from the first turn; a client that reads neither still gets the skill. This namespace is a statement of where those files are, not a request that any client load them.",
+      "interface": {
+        "displayName": "Prose Discipline",
+        "shortDescription": "Engineering prose standard for agent-written text.",
+        "category": "Productivity"
+      }
+    }
+  }
+}

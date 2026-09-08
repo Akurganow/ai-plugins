@@ -18,15 +18,18 @@ the run's report (below) is where doubt goes.
 ## Before analysing: the do-not-report list
 
 First load what the tracker already holds, through the reads
-`.agents/rules/unattended.md` names: every issue carrying the run's own
-label, open **and** closed; every issue its fingerprint marker finds,
-whatever the labels, for the ones filed when the label could not be
-applied; and the whole open list. Read full bodies, not titles — each
-automated issue ends with a fingerprint comment, and the fingerprint is
-the identity. A label is what makes closed issues findable by listing,
-which is why a run's label is never removed from an issue it filed; where
-the environment cannot also search bodies for a fingerprint, an unlabeled
-closed issue's fingerprint is out of reach. Build a do-not-report list and
+`.agents/rules/unattended.md` names: every issue carrying the filing
+label `police-report`, open **and** closed; every issue its fingerprint
+marker finds, whatever the labels, for the ones filed when the label
+could not be applied; and the whole open list. Read full bodies, not
+titles — each automated issue ends with a fingerprint comment, and the
+fingerprint is the identity. **One filing label is shared by every
+automated run, so it names the population and not the filer**: which of
+those issues are this run's own is settled by its own fingerprint marker
+and by nothing else. A label is what makes closed issues findable by
+listing, which is why the filing label is never removed from an issue it
+was applied to; where the environment cannot also search bodies for a
+fingerprint, an unlabeled closed issue's fingerprint is out of reach. Build a do-not-report list and
 write it to a file (`$RUN/do-not-report.md`, in the per-run state directory
 `.agents/rules/unattended.md` prescribes) before any analysis:
 
@@ -48,8 +51,8 @@ to the moment it is needed, not just the moment it was built.
 
 An untouched backlog means the maintainer is not consuming what the runs
 produce, and adding to it is pure noise. Count the run's own open issues
-before analysing anything — those carrying its label, and any it filed
-without one, found by their fingerprints — and cap the run:
+before analysing anything — the ones its own fingerprint marker finds,
+whatever their labels — and cap the run:
 
 | The run's own open issues | Maximum filed this run |
 | :-- | :-- |
@@ -61,6 +64,11 @@ When the cap is 0, a light pass still happens so the report is honest, but
 nothing is filed. A run's instructions may name one narrow exception that
 overrides the cap (a fabricated claim published to readers, a security
 problem); absent that, nothing does.
+
+The count is by fingerprint and not by the filing label, because the label
+is shared. Counting by it would fold every run's backlog into every run's
+cap, and one noisy week of the auditor's would silence the slop review for
+reasons that have nothing to do with the slop review.
 
 ## Verify before you file
 
@@ -80,7 +88,17 @@ normal answer — follows them; this section is the floor, not the ceiling.
 
 Labels first, checked or created the way `.agents/rules/unattended.md`
 prescribes — that file owns what a run does when a label is missing or
-already exists. One issue
+already exists.
+
+**Two tiers, and only the first carries weight.** Every automated filing
+carries `police-report`. That is the label the listing above finds, and a
+run that cannot apply it falls back to the fingerprint search
+`unattended.md` describes. Beside it a run may add one `audit:*` label
+saying which kind of finding this is, for a person browsing the tracker.
+Nothing keys on those: no run counts them, no run stops because one is
+missing, and no run applies one its own instructions do not name.
+
+One issue
 per finding, never bundled, never more than the cap. Each issue ends with
 an HTML-comment fingerprint that names the finding stably enough for the
 next run to recognise it — same problem, same file, same fingerprint,

@@ -9,6 +9,10 @@
     {
       "name": "howp",
       "source": "./plugins/howp"
+    },
+    {
+      "name": "prose-discipline",
+      "source": "./plugins/prose-discipline"
     }
   ]
 }

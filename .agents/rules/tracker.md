@@ -17,8 +17,8 @@ the run's report (below) is where doubt goes.
 
 ## Before analysing: the do-not-report list
 
-First load what the tracker already holds, with the REST calls from
-`.agents/rules/unattended.md`: every issue carrying the run's own label,
+First load what the tracker already holds, through the reads
+`.agents/rules/unattended.md` names: every issue carrying the run's own label,
 open **and** closed, and the whole open list. Read full bodies, not
 titles — each automated issue ends with a fingerprint comment, and the
 fingerprint is the identity. The label is what makes closed issues
@@ -74,8 +74,9 @@ normal answer — follows them; this section is the floor, not the ceiling.
 
 ## Filing
 
-Labels first, created the way `.agents/rules/unattended.md` prescribes —
-that file owns the mechanics, including what a duplicate answers. One issue
+Labels first, checked or created the way `.agents/rules/unattended.md`
+prescribes — that file owns what a run does when a label is missing or
+already exists. One issue
 per finding, never bundled, never more than the cap. Each issue ends with
 an HTML-comment fingerprint that names the finding stably enough for the
 next run to recognise it — same problem, same file, same fingerprint,

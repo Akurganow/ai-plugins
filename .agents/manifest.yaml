@@ -54,6 +54,19 @@ x:
       vendorPaths:
         - .claude/rules
 
+    # The root entry point, outside `.agents/` and so not a canonical source
+    # under this specification — the layout defines those by location. It is
+    # declared here for the same reason `rules` is: so a tool that reads only
+    # the manifest can find it. `AGENTS.md` is the text; `CLAUDE.md` is a
+    # symlink to it, because Claude Code reads that name and every other
+    # harness reads the first, and two files would drift apart.
+    entryPoint:
+      file: ../AGENTS.md
+      format: commonmark
+      carriesRules: false
+      vendorPaths:
+        - ../CLAUDE.md
+
     # The roles of this repository's own unattended machinery. They lived in
     # eight routine bodies, edited by hand in a web form, until 2026-09-12;
     # moving them here makes a change to one a pull request with a review and

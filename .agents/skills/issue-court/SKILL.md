@@ -29,7 +29,7 @@ Before anything else, read from the fresh clone:
    sources cited and dated, unverified stated as unverified. An issue
    alleging a violation of it is squarely a case; a verdict that itself
    violated it would be worthless.
-3. `.agents/rules/conformance.md` — what `python3 tools/check-conformance.py`
+3. `.agents/rules/conformance.md` — what `tools/check-conformance.py`
    proves and what is deliberately checked by hand beside the schema.
 4. `.agents/rules/slop.md` — the one test for generator residue, its five
    kinds with the measurement each demands, and its "What is protected"
@@ -128,10 +128,9 @@ Exactly one issue per run. Never two. A skipped issue still counts as the
 run's issue.
 
 **The repository comes from the clone, never from a payload and never from an
-API call.** `.agents/rules/unattended.md` owns that rule and gives the two
-substitutions it takes:
-
-    R=$(git remote get-url origin | sed -E 's#\.git$##; s#.*[:/]([^/]+/[^/]+)$#\1#')
+API call.** `.agents/rules/unattended.md` owns that rule; taking `owner/repo`
+off the clone's `origin` is the whole of it — the last two path segments of
+that URL, without its `.git` suffix. Call the result `$R`.
 
 If the run carries a `<routine-fire-payload>` block containing
 `repository=<owner/repo> issue=<number>`, its `repository=` is checked against
@@ -209,9 +208,10 @@ Write it to `$RUN/case.md` and hand subagents the path, never the text:
 - `git rev-parse HEAD` — the trial commit; all citations use it;
 - for every path, manifest field, plugin name, spec clause or document the
   issue names: whether it exists at that commit, and its current content;
-- the baseline: the output of `python3 tools/check-conformance.py`
-  (installing `jsonschema pyyaml` first if needed) — does the repository
-  conform as it stands, and what fails if not;
+- the baseline: the output of `tools/check-conformance.py`, run with what it
+  imports available — `.agents/rules/conformance.md` names those and this
+  file names no way of getting them — does the repository conform as it
+  stands, and what fails if not;
 - history of the named paths (`git log -n 20 --oneline --`), after
   unshallowing per `unattended.md`;
 - related open issues or recent PRs touching the same files;

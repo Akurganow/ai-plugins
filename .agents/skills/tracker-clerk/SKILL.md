@@ -26,7 +26,7 @@ Before anything else, read from the clone:
    leaving the tree untouched. Follow it exactly.
 2. `.agents/rules/claims.md` — every sentence you post about a released
    artifact or a client is held to it, exactly as the police are.
-3. `.agents/rules/conformance.md` — what `python3 tools/check-conformance.py`
+3. `.agents/rules/conformance.md` — what `tools/check-conformance.py`
    proves, and what it deliberately does not.
 4. `.agents/rules/slop.md` — the one test for generator residue, its five
    kinds with the measurement each demands, and its "What is protected"
@@ -184,7 +184,7 @@ this run's `HEAD`. Take each kind of claim the body makes:
 
 1. A quoted line. Re-open the file. Check the quote and the line number.
 2. A missing file. Check that it now exists and is not empty.
-3. A conformance failure. Run `python3 tools/check-conformance.py`. Quote
+3. A conformance failure. Run `tools/check-conformance.py`. Quote
    what it printed.
 4. A release disagreement. Read the repository's releases, the plugin's
    `plugin.json` and its `binaries.json`. Quote all three.

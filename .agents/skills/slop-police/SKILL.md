@@ -516,13 +516,13 @@ Body:
     ```
     Lines that disappear — or, for a rename, the number of names for
     the thing before and after. For a change to the check, what
-    `python3 tools/check-conformance.py` printed on the scratch copy,
+    `tools/check-conformance.py` printed on the scratch copy,
     quoted.
 
     ## Risk
     What a reader is told differently, if anything; what the check
     refuses differently, if anything. Must be green:
-    `python3 tools/check-conformance.py`.
+    `tools/check-conformance.py`.
 
     ## Cost
     Effort: S|M|L

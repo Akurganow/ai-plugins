@@ -276,12 +276,12 @@ The root catalogue — the README's plugin table and
 README links the root: bidirectional, no orphans.
 
 **C. Agent Plugins 1.0.0 conformance.** First run the repository's own
-check and quote its output:
+check, `tools/check-conformance.py`, and quote its output. It must exit 0.
 
-    python3 -m pip install jsonschema==4.26.0 pyyaml==6.0.3
-    python3 tools/check-conformance.py
-
-It must exit 0. `conformance.md` owns what it decides.
+`conformance.md` owns what it decides and what it needs importable; the
+invocation is your routine's, because that is the only part of this that
+knows the environment. Where the run cannot install what the check imports,
+that is the check not run, reported as not run.
 
 Never re-implement by hand what the check already decides. Audit by hand
 only the three things it does not reach:

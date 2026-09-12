@@ -201,7 +201,7 @@ not here. Prefer a criterion a command settles over one a reader judges.
 For this repository that usually means one of these:
 
 - a named file contains a named string, or no longer does
-- `python3 tools/check-conformance.py` exits 0
+- `tools/check-conformance.py` exits 0
 - a named link resolves
 - a count in prose matches the inventory
 
@@ -216,12 +216,16 @@ Its tell is a sentence with no source beside it.
 **`## Steps`**: ordered, file by file. Each step is one slice the
 Implementer can carry to a green verification on its own.
 
-**`## Verification`**: the commands, with what each must print. At minimum:
+**`## Verification`**: what must be checked and what each check must produce.
+At minimum, `tools/check-conformance.py` exits 0.
 
-    python3 -m pip install jsonschema==4.26.0 pyyaml==6.0.3
-    python3 tools/check-conformance.py      # must exit 0
+Name the check, never an invocation of it. The Implementer runs it with what
+its own environment has, and `.agents/rules/conformance.md` owns what it needs
+available; a specification that writes one environment's command down is a
+specification that expires.
 
-Then, per criterion, the `grep -n` or `git show` that settles it.
+Then, per criterion, the read of a named file, or the `git show` that settles
+it.
 
 Where the change touches `tools/check-conformance.py`, name here the
 malformed package the new rule must reject, and the command that

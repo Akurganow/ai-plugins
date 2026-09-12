@@ -377,10 +377,11 @@ but it is a warning in a mandatory client that the arrangement causes.
 
 ## Checking conformance
 
-```
-pip install jsonschema pyyaml
-python3 tools/check-conformance.py
-```
+The check is `tools/check-conformance.py`, and it must exit 0. It verifies the
+parts of Agent Plugins 1.0.0 this repository is responsible for.
 
-It verifies the parts of Agent Plugins 1.0.0 this repository is responsible
-for. The same check runs in CI on pushes to `main` and on every pull request.
+It imports `jsonschema` and `yaml`, so both have to be importable by whatever
+runs it. Installing them is a fact about your machine rather than of this
+repository, so no command for it is stated here; one environment's way of
+doing it, pinned, is in `.github/workflows/conformance.yml`, which is also
+where the same check runs in CI on pushes to `main` and on every pull request.

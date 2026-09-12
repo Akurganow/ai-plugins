@@ -359,19 +359,23 @@ Only the Clerk allocates `<N>`, once, when it cuts the branch. Every later
 stage reads it back from the ref.
 
 The **spec hash** is sha256 of `spec.md` concatenated with `plan.md`, in that
-order, first 12 hex:
+order, first 12 hex. That sentence is the whole definition and it names no
+utility: hash the two files in that order with whatever this environment
+gives you.
+
+**Guard it.** Both files must exist before anything hashes them:
 
     test -f "$SPEC_DIR/spec.md" && test -f "$SPEC_DIR/plan.md" || {
       echo "no specification at $SPEC_DIR"; exit 1; }
-    cat "$SPEC_DIR/spec.md" "$SPEC_DIR/plan.md" | sha256sum | cut -c1-12
 
-**Guard it.** `cat` over missing files exits non-zero but the pipeline still
-prints `e3b0c44298fc`, the sha256 of empty input. A hash computed over
-nothing compares equal to the last hash computed over nothing, which turns a
-missing specification into "already judged". Check both files exist first,
-and treat their absence as a state, not a hash. The guard exits non-zero
-because `echo` succeeds: a guard whose failure branch returns success leaves
-the `cat` pipeline to run anyway, which is the case it was written to stop.
+Hashing files that are not there does not fail loudly — it yields
+`e3b0c44298fc`, the sha256 of empty input, and every fire that hashes nothing
+gets the same twelve characters. A hash computed over nothing therefore
+compares equal to the last hash computed over nothing, which turns a missing
+specification into "already judged". So treat their absence as a state, not a
+hash. The guard exits non-zero because `echo` succeeds: a failure branch that
+returns success leaves the hash to be computed anyway, which is the case the
+guard was written to stop.
 
 The **tree id** is git's own identifier for the head's whole tree, first 12
 hex. Nothing here hashes diff text: a diff moves when the base moves, a tree
@@ -530,10 +534,16 @@ Implementer's gate refuses it.
 **This is the one list.** The Writer checks it after writing. The Reviewer
 checks it in both rounds. The Implementer checks it first at the gate.
 
-All three run the same four commands, and they run them on the files with
-fenced blocks stripped. A heading inside a fence is a specimen, not a
-heading, and an unstripped scan both accepts a spec whose headings live only
-inside a fence and rejects a filled one that quotes a parenthesised line:
+All three check the same four signals, and they check them on the files with
+fenced blocks stripped. A heading inside a fence is a specimen, not a heading,
+and an unstripped scan both accepts a spec whose headings live only inside a
+fence and rejects a filled one that quotes a parenthesised line.
+
+**The four signals above are the authority; what follows is one way to read
+them**, in an environment that has `awk` and `grep`. A fire whose environment
+gives it other means uses those and reports the same four results — but it
+reports them, because a verdict nobody can re-derive is not one of this
+machine's verdicts:
 
     strip() {
       awk '{ t = $0; k = 0
@@ -568,8 +578,7 @@ unarguable: a reader who thinks it is wrong should say so.
 
 `plan.md` has no `## Tests first`, and the omission is deliberate. This
 repository ships prose, manifests and one check. Its verification is
-`python3 tools/check-conformance.py` plus re-reading every line the change
-quotes.
+`tools/check-conformance.py` plus re-reading every line the change quotes.
 
 Where a change touches `tools/check-conformance.py`, `## Verification` names
 the malformed package the new rule must reject, and the command that

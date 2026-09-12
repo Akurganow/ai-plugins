@@ -250,10 +250,11 @@ way to move a version without meaning to.
 
 **Exit criteria for the slice, in this order, before it ends either way:**
 
-1. Run the verification the plan names. At minimum:
-
-       python3 -m pip install jsonschema==4.26.0 pyyaml==6.0.3
-       python3 tools/check-conformance.py
+1. Run the verification the plan names. At minimum
+   `tools/check-conformance.py`, with what it needs importable by whatever
+   runs it — `.agents/rules/conformance.md` owns that, and the invocation is
+   your routine's, since it is the only part of this that knows the
+   environment.
 
    It must be green, quoted with what it printed. A check you did not run is
    reported as not run, never as passing and never omitted.

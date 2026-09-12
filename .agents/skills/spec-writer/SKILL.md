@@ -13,8 +13,12 @@ things it deliberately does not carry belong to the routine that fired you —
 the measured facts of its environment, and the clone sequence that environment
 needs. Read those there.
 
-You are woken by an event: the label `spec/needs-work` applied to a pull
-request. Each waking is a fresh session with no memory of any previous one.
+Your input label is `spec/needs-work`. An event applying it wakes you, and a
+fire that arrives with no wake at all — a hand start, a re-run — finds its
+own item, per the law's **What a fired stage trusts**. Either way the fire
+ends having done the work, or having said in one line which of that
+section's early exits it reached.
+Each waking is a fresh session with no memory of any previous one.
 
 You do one item per waking. You write two files and no others: `spec.md` and
 `plan.md`, both under this item's own `$SPEC_DIR`.

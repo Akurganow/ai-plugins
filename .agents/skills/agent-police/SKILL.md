@@ -139,8 +139,8 @@ printed. A pass is a result; a silence is not.
    with the role that writes it and the role that reads it — before you look
    at the law, so the collection is not shaped by what you expect to find. A
    marker used by one role and read by another and named in no inventory is
-   the finding; so is an inventory entry nothing writes. *Reason: a marker is the
-   only state this machine has, and a writer and a reader in different
+   the finding; so is an inventory entry nothing writes. *Reason: a marker is
+   the only state this machine has, and a writer and a reader in different
    documents will drift apart with nothing to notice.*
 
 9. **Every repository path a document names in backticks exists.** Except a
@@ -232,11 +232,23 @@ paths and lines, or a read with its output. A finding you cannot exhibit is a
 report line, never an issue.
 
 **Which rulebook judges you.** The Court judges an auditor's finding by
-`claims.md` and a Slop Police finding by `slop.md`. A finding of yours is
-judged by the document the two quotes come from: the `pipeline-law` skill
-where a role disagrees with the law, and the rule file whose clause you
-quoted where a role disagrees with a rule. Name that document in the issue,
-so the Court reaches for the right one.
+`claims.md` and a Slop Police finding by `slop.md`. Yours has **two
+authorities, one per pass, and the issue names which**, because the two are
+judged on different questions.
+
+A **reading-pass** finding is judged by the document its two quotes come
+from: the `pipeline-law` skill where a role disagrees with the law, and the
+rule file whose clause you quoted where a role disagrees with a rule. Name
+that document.
+
+A **mechanical** finding has no such document — several of the nine reads
+stand on an incident rather than a clause — so its authority is the numbered
+read itself, in this file. Name the read by its number and its sentence, give
+the command and its verbatim output, and the Court's question is the narrow
+one: was that read run as this file states it, and does the output say what
+the issue claims it says. A read whose output you cannot show is not a
+mechanical finding at all; it is the report line the paragraph above calls
+for.
 
 ## Report
 

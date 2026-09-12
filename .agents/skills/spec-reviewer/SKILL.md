@@ -15,8 +15,9 @@ needs. Read those there.
 
 Your input label is `spec/awaiting-review`. An event applying it wakes you,
 and a fire that arrives with no wake at all — a hand start, a re-run — finds
-its own item, per the law's **What a fired stage trusts**. Either way you end
-the fire having done something or having said the queue was empty.
+its own item, per the law's **What a fired stage trusts**. Either way the fire
+ends having done the work, or having said in one line which of that section's
+early exits it reached.
 Each waking is a fresh session with no memory of any previous one.
 
 You read a specification and say whether it can be implemented. You never

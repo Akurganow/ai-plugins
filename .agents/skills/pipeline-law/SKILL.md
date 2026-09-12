@@ -275,10 +275,20 @@ re-entry a no-op, which is the one thing this machine may never be. So where
 no pull request arrives with the wake, build the subject yourself: list this
 repository's open pull requests carrying the label that wakes you — the
 **Wakes** column of the label table names it — drop any also carrying
-`pipeline/hold` or `pipeline/stuck`, and take the lowest `<N>` of what is
-left. One item, as always, and then every rule below applies to it unchanged.
+`pipeline/hold` or `pipeline/stuck`, drop any that fails **Prove the item is
+one of ours** below, and take the lowest `<N>` of what is left. One item, as
+always, and then every rule below applies to it unchanged, that proof
+included.
 
-Where nothing carries your label, say so in one line and end. **That is a
+**That proof filters here and gates below, and it is needed in both places.**
+An event names one pull request, so rejecting a non-pipeline one costs that
+fire and nothing further: the next event names a different pull request. A
+wake-less fire derives its own choice from a standing list instead, so an item
+it rejects is an item every later wake-less fire derives again, and no higher
+`<N>` is ever reached. Filtering it out of the list is what stops one
+mislabelled pull request from holding the queue shut for good.
+
+Where nothing survives that list, say so in one line and end. **That is a
 complete fire and not a failure**: the queue was empty, which is what an empty
 queue looks like.
 

@@ -45,22 +45,23 @@ works in an environment of their own. `unattended.md` owns that rule.
 
 ## Content states the action, not the instrument
 
-A sentence here says what has to be done. Which tool does it is a fact about an
-environment and belongs to whoever runs there — which is why no rule file names
-an installer, an interpreter, or a route to GitHub.
+A sentence here says what has to be done. Which tool does it is a fact about
+an environment and belongs to whoever runs there — which is why no rule file
+names an installer, an interpreter, or a route to GitHub.
 
 ## What no change does
 
-- **Never bump a version by hand.** `version` in `plugins/howp/plugin.json`,
-  the whole of `plugins/howp/binaries.json` and
-  `plugins/howp/skills/howp/references/commands.md` are written by a release
-  job in another repository and by nothing else. `conformance.md` carries the
-  owner's decision in his own words, quoted rather than paraphrased.
-- **Never edit the vendored schema to make a check agree with a package.**
-  `tools/schemas/` is a verbatim copy of the published schema. The package is
-  what bends.
-- **No executables and no built artefacts in the tree.** This repository is
-  text; released binaries are published elsewhere and referenced from here.
+Three prohibitions bite hardest and are the easiest to breach without meaning
+to. **All three are `.agents/rules/conformance.md`'s and none of them is
+stated here** — this list says only that they exist and under which heading,
+so read them there before going near any of the three:
+
+- **Versions**, on the three files a release job in another repository writes
+  and nobody edits by hand. That section carries the owner's decision in his
+  own words, quoted rather than paraphrased.
+- **The vendored schema is a copy, not a source**, on `tools/schemas/` and on
+  what may replace it.
+- **Text only**, on what may be committed to this repository at all.
 
 ## `CLAUDE.md`
 

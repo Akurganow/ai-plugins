@@ -136,10 +136,10 @@ printed. A pass is a result; a silence is not.
 
 8. **Every marker any role writes or reads is inventoried where the law keeps
    its inventory.** Collect them from the roles — the exact marker names, each
-   with the role that writes it and the role that reads it — before you look at
-   the law, so the collection is not shaped by what you expect to find. A
-   marker used by one role and read by another and named in no inventory is the
-   finding; so is an inventory entry nothing writes. *Reason: a marker is the
+   with the role that writes it and the role that reads it — before you look
+   at the law, so the collection is not shaped by what you expect to find. A
+   marker used by one role and read by another and named in no inventory is
+   the finding; so is an inventory entry nothing writes. *Reason: a marker is the
    only state this machine has, and a writer and a reader in different
    documents will drift apart with nothing to notice.*
 

@@ -6,14 +6,19 @@ that difference visible.
 
 ## The check
 
-```
-pip install jsonschema pyyaml
-python3 tools/check-conformance.py
-```
+The check is `tools/check-conformance.py`, and it must exit 0.
 
-It must exit 0. `.github/workflows/conformance.yml` runs it in CI, so a
-change that breaks it does not merge. Run it locally before saying a package
-conforms; "it looks right" is not a result the check produced.
+It imports `jsonschema`, which validates the manifest against the schema
+vendored in `tools/schemas/`, and `yaml`, which reads `SKILL.md` front
+matter. Both have to be importable by whatever runs the script. **How they
+get there is not recorded here, and neither is the invocation**: those are
+facts about an environment, and `.agents/rules/unattended.md` keeps them with
+whoever runs in one. An environment that writes its own down is
+`.github/workflows/conformance.yml`, which is also where CI runs this same
+check, so a change that breaks it does not merge.
+
+Run it before saying a package conforms; "it looks right" is not a result the
+check produced.
 
 ## What the check is allowed to be
 

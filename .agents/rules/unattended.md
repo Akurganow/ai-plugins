@@ -17,12 +17,17 @@ environments of their own.
 
 A run reaches GitHub through whatever route its environment gives it; the
 route is not recorded here. Take the repository from the clone, never from
-an API call:
+an API call: it is `owner/repo`, the last two path segments of the clone's
+`origin` URL, without a `.git` suffix. Read that URL with `git`, which the
+clone gives you, and reduce it with whatever this environment has — nothing
+here names the tool, because a run that must install one to learn its own
+name is a run that can be stopped by a package index.
 
-    # two substitutions on purpose: ERE has no lazy quantifier, so a single
-    # pattern with an optional `(\.git)?` tail lets the greedy class swallow
-    # the suffix and returns "owner/repo.git" for SSH-style remotes.
-    R=$(git remote get-url origin | sed -E 's#\.git$##; s#.*[:/]([^/]+/[^/]+)$#\1#')
+Both halves of that reduction are load-bearing, and an SSH-style remote is
+where a careless one shows: `git@host:owner/repo.git` has to lose the host
+and the suffix both, and a single greedy pass over it returns
+`owner/repo.git`, which matches nothing and silently sends every read
+somewhere that does not exist.
 
 Then **probe the thing actually needed** — the cheapest read that touches
 this repository — before any analysis. Never gate a run on an
@@ -75,9 +80,8 @@ exactly the thing that mattered at the last step. Anything that must still
 be true at the end — collected findings, verdicts — goes to disk the moment
 it is learned, outside the working tree. The state directory is **per-run,
 never a fixed shared path**, so that two concurrent runs cannot overwrite
-each other's state:
-
-    RUN=$(mktemp -d /tmp/run.XXXXXX)
+each other's state. Make one the way this environment makes a temporary
+directory, and call it `$RUN`; every path below is relative to it.
 
 Re-read those files immediately before acting on them, and hand a subagent
 the path to a long record rather than its text.
@@ -96,8 +100,8 @@ finishes with `git status --porcelain` empty and says so in its report.
 Name the command and show what it printed; quote a file with its path and
 line. A check that was not run — a blocked source, a missing tool — is
 reported as not run, not as passing, and not omitted. The conformance check
-is `python3 tools/check-conformance.py` and `.agents/rules/conformance.md`
-owns what it does and does not prove; "it looks right" is not a result the
+is `tools/check-conformance.py`, and `.agents/rules/conformance.md` owns what
+it does and does not prove; "it looks right" is not a result the
 check produced. Unattended this matters twice over, because nobody was
 watching: the report is the only record that the run did what it claims.
 Never invent a path, a line number or command output.

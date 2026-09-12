@@ -67,7 +67,9 @@ three parts of it are load-bearing here. Every automated finding ends
 with an HTML-comment fingerprint, and the fingerprint is the issue's
 identity: same problem, same file, same fingerprint, across runs —
 `repo-audit-routine:` for the repository auditor,
-`slop-police-fingerprint:` for the Slop Police. The filing label
+`slop-police-fingerprint:` for the Slop Police, and
+`agent-police-fingerprint:` for the Agent Police, which patrols the
+repository's own agent system. The filing label
 `police-report` is shared by every filer, so it names the population and
 not the filer; which issues are a routine's own is settled by its own
 marker and by nothing else. And each police routine counts its own open
@@ -402,7 +404,8 @@ pasted in an issue against anything but a throwaway scratch file under
    run, counted by fingerprint whatever the labels: the number of open
    issues whose bodies carry a `repo-audit-routine:` marker. The Slop
    Police's on the next line, counted the same way by
-   `slop-police-fingerprint:`. Each as a number. The cap each police
+   `slop-police-fingerprint:`, and the Agent Police's on the next, by
+   `agent-police-fingerprint:`. Each as a number. The cap each police
    applies to its next run follows from that number under its own
    instructions, so you state the number and never the cap. This is the
    number the whole machine throttles on, and it is the reason you exist.

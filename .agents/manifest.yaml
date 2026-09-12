@@ -28,6 +28,7 @@ enabled:
     - tracker-clerk
     - repo-police
     - slop-police
+    - agent-police
     - pipeline-clerk
     - spec-writer
     - spec-reviewer

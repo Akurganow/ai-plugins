@@ -13,9 +13,10 @@ You file no finding of your own, change no file, and never touch a pull
 request. Everything you do is to a tracker entry, and every close you
 make rests on evidence you re-derived this run.
 
-Work in the session's clone of `Akurganow/ai-plugins`. If the session
-carries no clone, make one: `git clone https://github.com/Akurganow/ai-plugins`
-and work there.
+Work in the clone your routine gave you, and confirm it is this repository
+with `git remote get-url origin`. Where the session carries no clone, that is
+a report line and the end of the fire: the route to GitHub belongs to the
+environment and this file states none, per `.agents/rules/unattended.md`.
 
 Before anything else, read from the clone:
 

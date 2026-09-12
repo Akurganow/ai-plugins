@@ -278,7 +278,7 @@ README links the root: bidirectional, no orphans.
 **C. Agent Plugins 1.0.0 conformance.** First run the repository's own
 check and quote its output:
 
-    pip install jsonschema pyyaml
+    python3 -m pip install jsonschema==4.26.0 pyyaml==6.0.3
     python3 tools/check-conformance.py
 
 It must exit 0. `conformance.md` owns what it decides.
@@ -431,10 +431,18 @@ on the same ground, so the two routines agree on purpose.
 ## Report
 
 The five-part shape from the tracker discipline above, with this repo's
-convention on top: when nothing survived, the Filed line reads
-`Filed nothing. AUDIT CLEAN — no findings at <sha>.` with the commit SHA
-you audited in it. Blocked reference sources are listed with the checks
-they took with them.
+convention on top: when nothing survived **and every check below actually
+ran**, the Filed line reads `Filed nothing. AUDIT CLEAN — no findings at
+<sha>.` with the commit SHA you audited in it.
+
+Where any check did not run, that line reads `Filed nothing. AUDIT
+INCOMPLETE at <sha> — <n> checks not run.` instead, and never `AUDIT
+CLEAN`. `AUDIT CLEAN` is what the owner reads to mean the repository was
+audited and found sound; a run that could not reach a reference source
+audited less than that, and saying so is the whole of
+`.agents/rules/unattended.md`'s rule that a check not run is reported as
+not run rather than as passing. Blocked reference sources are listed either
+way, with the checks they took with them.
 
 ## Reference sources — fetch, do not rely on memory
 

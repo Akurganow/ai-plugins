@@ -62,8 +62,15 @@ matches, and only the first:
 | exactly one stage label, and a claim `state=released` whose `at=` is older than twelve hours | re-enter that stage |
 | exactly one stage label, and a claim released or absent, younger than that | nothing, the stage owns it |
 | exactly one stage label, and a claim `state=held` older than two hours | re-enter that stage |
+| exactly one stage label, and a claim `state=held` younger than two hours | nothing, one report line, the fire that holds it is still running |
 | no stage label and no terminal label | re-enter the stage the state block implies |
 | two or more stage labels | remove all but the one the state block implies, then re-enter it |
+
+**Where no row matches, the item is left exactly as it is**, with one report
+line naming the labels and the claim you found. The table is the whole of your
+authority over an item: a state it does not describe is a state you do not
+touch, because the alternative is guessing at a re-entry while a live fire
+holds the item.
 
 **Straightening a stuck item.** `pipeline/stuck` is a deliberate stop and you
 never remove it. What you repair is the state around it, because a fire can die
@@ -131,12 +138,28 @@ draft status is for.
 For an item carrying `pipeline/code-review`, read the newest `pipeline-cr`
 line and compare its `head=` with the pull request's current head:
 
-**No marker, or a different head.** Ask for a round:
+**No marker, or a different head.** Ask for a round, and write the marker
+before you post rather than after:
 
-1. Post one comment whose whole body is `@coderabbitai review`.
-2. Write `pipeline-cr head=<12 hex> outcome=asked findings=0 at=<UTC>` into
-   the state block, and increment `cr_rounds`.
-3. Read the body back.
+1. Write `pipeline-cr head=<12 hex> outcome=asking findings=0 at=<UTC>` into
+   the state block, increment `cr_rounds`, and read the body back.
+2. Post one comment whose whole body is `@coderabbitai review`. Nothing else
+   may go in that body: the request is a command to a client, not a record.
+3. Rewrite the marker to `outcome=asked`, keeping `at=`, and read the body
+   back.
+
+The order is what makes the request idempotent. The marker is the only thing
+that survives a fire, and a marker written after a successful post is a marker
+a dying fire never writes — so the next fire sees no marker, posts the same
+request and spends a second round on it. Written first, the worst a dying fire
+leaves is a round claimed and no request made, which the next case repairs.
+
+**The same head, `outcome=asking`.** A previous fire got as far as the marker.
+Read the comments back and look for one of yours whose whole body is
+`@coderabbitai review`, posted after that `at=`. Where one is there, the post
+landed: rewrite the marker to `outcome=asked` and post nothing. Where none is,
+post the request now and rewrite to `outcome=asked`. Either way `cr_rounds`
+stays as it is — that round is this head's, and it was counted once.
 
 **The same head, `outcome=asked`.** The round is in flight. Look for a review
 posted after that `at=`:

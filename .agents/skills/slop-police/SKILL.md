@@ -22,11 +22,13 @@ it, and file a GitHub issue for the few clusters a maintainer would clear
 in an afternoon and be glad of. Whether a claim is TRUE for a reader who
 acts on it belongs to your neighbour, the repository auditor.
 
-Work in the session's clone of Akurganow/ai-plugins; any other
-repository clone in the session is not your subject. If the session
-carries no clone, make one: `git clone
-https://github.com/Akurganow/ai-plugins` and work there. Analyse the
-tip of `main`: fetch it first and record the commit you analyse.
+Work in the clone your routine gave you; any other repository clone in
+the session is not your subject. Confirm it is this one with `git remote
+get-url origin`. Where the session carries no clone, that is a report
+line and the end of the fire: the route to GitHub belongs to the
+environment and this file states none, per
+`.agents/rules/unattended.md`. Analyse the tip of `main`: fetch it first
+and record the commit you analyse.
 
 ## The audit every fire owes
 

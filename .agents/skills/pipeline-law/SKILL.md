@@ -309,7 +309,29 @@ rewritten whole on every change. Comments are append-only records.
     <!-- pipeline-done: role=spec-reviewer hash=<12 hex> outcome=<accepted|rejected> round=<n> at=<UTC> -->
     <!-- pipeline-done: role=gate          hash=<12 hex> outcome=<accepted|rejected> at=<UTC> -->
     <!-- pipeline-done: role=implementer   hash=<12 hex> outcome=<accepted|rejected> at=<UTC> -->
-    <!-- pipeline-cr: head=<12 hex> outcome=<asked|returned|clean> findings=<n> at=<UTC> -->
+    <!-- pipeline-cr: head=<12 hex> outcome=<asking|asked|returned|clean> findings=<n> at=<UTC> -->
+
+**A stage comment carries its own key**, as its last line and nothing after
+it:
+
+    <!-- pipeline-comment: role=<role> key=<12 hex> at=<UTC> -->
+
+The key is what that role's completion marker keys on — the spec hash for the
+Writer, the Reviewer and the gate, the tree id for the Implementer. It is
+there so a comment can be recognised by a later fire, because posting is the
+one act in this machine that a repeat duplicates rather than repairs: a fire
+that posts and then dies before its marker leaves a record no marker
+accounts for, and the next fire, reading fresh content, posts the same
+comment again.
+
+So the order at every stage exit is: read the comments back for one of yours
+carrying this role and this key; post only where none is there; then write
+the marker. A comment already keyed to this key means the post landed, and
+what is left to do is the marker, the counter and the labels.
+
+The Clerk's `@coderabbitai review` is the one comment with no key, because
+its whole body is a command to a client and nothing else may go in it. Its
+own idempotence is the `outcome=asking` marker instead.
 
 The **fingerprint** is the item's identity and the discriminator's second
 half. The Clerk's skip test reads it, open and closed. It is never removed
@@ -339,14 +361,17 @@ stage reads it back from the ref.
 The **spec hash** is sha256 of `spec.md` concatenated with `plan.md`, in that
 order, first 12 hex:
 
-    test -f "$SPEC_DIR/spec.md" && test -f "$SPEC_DIR/plan.md" || { echo "no specification at $SPEC_DIR"; }
+    test -f "$SPEC_DIR/spec.md" && test -f "$SPEC_DIR/plan.md" || {
+      echo "no specification at $SPEC_DIR"; exit 1; }
     cat "$SPEC_DIR/spec.md" "$SPEC_DIR/plan.md" | sha256sum | cut -c1-12
 
 **Guard it.** `cat` over missing files exits non-zero but the pipeline still
 prints `e3b0c44298fc`, the sha256 of empty input. A hash computed over
 nothing compares equal to the last hash computed over nothing, which turns a
 missing specification into "already judged". Check both files exist first,
-and treat their absence as a state, not a hash.
+and treat their absence as a state, not a hash. The guard exits non-zero
+because `echo` succeeds: a guard whose failure branch returns success leaves
+the `cat` pipeline to run anyway, which is the case it was written to stop.
 
 The **tree id** is git's own identifier for the head's whole tree, first 12
 hex. Nothing here hashes diff text: a diff moves when the base moves, a tree
@@ -510,7 +535,16 @@ fenced blocks stripped. A heading inside a fence is a specimen, not a
 heading, and an unstripped scan both accepts a spec whose headings live only
 inside a fence and rejects a filled one that quotes a parenthesised line:
 
-    strip() { awk '/^```/{f=!f; next} !f' "$1"; }
+    strip() {
+      awk '{ t = $0; k = 0
+             while (k < 4 && substr(t, k + 1, 1) == " ") k++
+             t = substr(t, k + 1)
+             c = substr(t, 1, 1); n = 0
+             if (k < 4 && (c == "`" || c == "~")) while (substr(t, n + 1, 1) == c) n++
+             if (!f) { if (n >= 3) { f = 1; fc = c; fn = n } else print; next }
+             r = t; sub(/[ \t]+$/, "", r)
+             if (n >= fn && c == fc && n == length(r)) f = 0 }' "$1"
+    }
     strip "$SPEC_DIR/spec.md" > "$RUN/spec.stripped"
     strip "$SPEC_DIR/plan.md" > "$RUN/plan.stripped"
 
@@ -518,6 +552,13 @@ inside a fence and rejects a filled one that quotes a parenthesised line:
     grep -n '^```markdown' "$SPEC_DIR"/spec.md "$SPEC_DIR"/plan.md
     grep -nE '^#+ .*<(title|slug|N|root statement)>' "$RUN/spec.stripped" "$RUN/plan.stripped"
     awk '/^## /{p=1;next} p&&NF{if($0~/^\(/)print FILENAME": "$0;p=0}' "$RUN/spec.stripped" "$RUN/plan.stripped"
+
+`strip` takes both fence characters, up to three spaces of indentation, and
+closes a fence only on a run of the opener's own character at least as long —
+which is what Markdown means by a fence, and a scan that takes only column-zero
+backticks leaves a `~~~` block's contents in the file it hands on, headings
+and all. A fourth space of indentation makes a line an indented code block
+rather than a fence, so it opens nothing and is handed on as it is.
 
 The first must list `spec.md`'s seven headings in this list's order, then
 `plan.md`'s three, and nothing else. The other three must print nothing.

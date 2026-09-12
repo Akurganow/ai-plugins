@@ -230,7 +230,7 @@ commit. The gate checked the specification. This checks the diff:
 
     git diff --cached --name-only \
       | grep -E '^(tools/schemas/|\.agents/|plugins/[^/]+/binaries\.json$|plugins/[^/]+/skills/[^/]+/references/commands\.md$)' \
-      | grep -vE '^\.agents/specs/'
+      | grep -vF -- "$SPEC_DIR/"
     git diff --cached -- 'plugins/*/plugin.json' | grep -n '^[+-].*"version"'
 
 Either pipeline printing anything is a hard stop. Unstage it. If the plan
@@ -239,7 +239,10 @@ asked for it, apply `pipeline/stuck` with a comment quoting the law.
 The first pipeline is two commands on purpose. `grep -E` is POSIX extended
 regular expressions, which have no negative lookahead, so `(?!specs/)` inside
 it matches nothing and silently lets an edit to the repository's own law
-through. The second `grep -v` is what carves out `$SPEC_DIR`.
+through. The second grep is what carves out the one writable exception, and it
+is `-F` over the expanded `$SPEC_DIR` rather than a pattern over
+`.agents/specs/`: another item's specification is a forbidden path too, and a
+pattern over the whole directory exempts every item's.
 
 A change to a `plugin.json` that touches any field other than `version` is
 fine. The second command is there because a whole-file rewrite is the easy
@@ -249,7 +252,7 @@ way to move a version without meaning to.
 
 1. Run the verification the plan names. At minimum:
 
-       pip install jsonschema pyyaml
+       python3 -m pip install jsonschema==4.26.0 pyyaml==6.0.3
        python3 tools/check-conformance.py
 
    It must be green, quoted with what it printed. A check you did not run is

@@ -69,15 +69,23 @@ You are an analysis run by `.agents/rules/unattended.md`'s own definition.
 That file says everything a run writes goes under its own `$RUN` directory,
 never into the working tree.
 
-So do not check out the branch in the session's tree. Clone the head into
-`$RUN` and read it there:
+So do not check out the branch in the session's tree. Fetch the head through
+the clone your routine gave you — call it `$CLONE` — and read it in a
+throwaway worktree under `$RUN`:
 
-    git clone --depth 1 --branch "$HEAD_REF" \
-      https://github.com/Akurganow/ai-plugins "$RUN/head"
+    git -C "$CLONE" fetch --depth 1 origin "$HEAD_REF"
+    git -C "$CLONE" worktree add --detach "$RUN/head" FETCH_HEAD
+    #   … everything below runs in "$RUN/head" …
+    git -C "$CLONE" worktree remove --force "$RUN/head"
 
-Your routine's longer clone sequence is for the stages that push. You read
-no history, so a depth of one is what you want, and its still-shallow stop
-does not reach you.
+The route to GitHub is that clone's `origin` and this file states no URL of
+its own: the route belongs to the environment, per
+`.agents/rules/unattended.md`, and a session carrying no clone is a report
+line and the end of the fire. Your routine's longer clone sequence is for the
+stages that push: its checkout of the item's branch is not yours, and you run
+only as much of it as makes the clone present and its `origin` fetchable. You
+read no history, so a depth of one is what you want, and its still-shallow stop
+does not reach you. The worktree is removed because a run leaves no trace.
 
 Every command below runs inside `$RUN/head`.
 
@@ -93,9 +101,10 @@ again and do not post a second set of objections.
 
 **First check the comment landed.** The marker says a fire ruled on this hash;
 it does not say its comment reached the item. Read the comments back. Where one
-of yours carries this hash's objections, route as the table says. Where none
-does, the previous fire died between its marker and its comment, and the
-reasoning that comment carried is not recoverable: the marker records an
+of yours carries `role=spec-reviewer` and this hash as its `key=`, route as
+the table says. Where none does, the previous fire died between its marker and
+its comment, and the reasoning that comment carried is not recoverable: the
+marker records an
 outcome and nothing records the argument, and you may not invent one. Route as
 the table says anyway, and name the missing comment in the report, so the
 record shows a round spent with nothing a reader can act on.
@@ -244,8 +253,16 @@ content and never to the fire: spend a round only where no marker of yours at
 this spec hash already carries `round=`, and write the new value into the
 marker in the same body rewrite.
 
-Post the comment. Then rewrite the state block with your completion marker,
-keyed on the hash you judged:
+Read the comments back and look for one of yours carrying
+`role=spec-reviewer` and this spec hash as its `key=`, per the law's **A stage
+comment carries its own key**. Where one is there, a previous fire's post
+landed and died before its marker: post nothing, and go on to the marker and
+the labels below. Where none is, post the comment now, keyed:
+
+    <!-- pipeline-comment: role=spec-reviewer key=<SPEC_HASH> at=<UTC> -->
+
+Then rewrite the state block with your completion marker, keyed on the hash you
+judged:
 
     <!-- pipeline-done: role=spec-reviewer hash=<SPEC_HASH> outcome=<accepted|rejected> round=<n> at=<UTC> -->
 

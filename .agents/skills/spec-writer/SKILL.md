@@ -218,7 +218,7 @@ Implementer can carry to a green verification on its own.
 
 **`## Verification`**: the commands, with what each must print. At minimum:
 
-    pip install jsonschema pyyaml
+    python3 -m pip install jsonschema==4.26.0 pyyaml==6.0.3
     python3 tools/check-conformance.py      # must exit 0
 
 Then, per criterion, the `grep -n` or `git show` that settles it.

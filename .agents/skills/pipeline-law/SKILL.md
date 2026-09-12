@@ -269,6 +269,19 @@ start of the fire. A payload is a snapshot of a past moment.
 Re-read the label set immediately before every write. A `pipeline/hold`
 applied while the fire was thinking is then honoured rather than overwritten.
 
+**A fire that carries no wake finds its own item.** A hand-started run and a
+re-run carry no payload, and answering that by doing nothing would make a
+re-entry a no-op, which is the one thing this machine may never be. So where
+no pull request arrives with the wake, build the subject yourself: list this
+repository's open pull requests carrying the label that wakes you — the
+**Wakes** column of the label table names it — drop any also carrying
+`pipeline/hold` or `pipeline/stuck`, and take the lowest `<N>` of what is
+left. One item, as always, and then every rule below applies to it unchanged.
+
+Where nothing carries your label, say so in one line and end. **That is a
+complete fire and not a failure**: the queue was empty, which is what an empty
+queue looks like.
+
 **Prove the item is one of ours** before anything else, from two positive
 facts on the pull request:
 

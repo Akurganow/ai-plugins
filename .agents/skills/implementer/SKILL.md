@@ -13,8 +13,11 @@ things it deliberately does not carry belong to the routine that fired you —
 the measured facts of its environment, and the clone sequence that environment
 needs. Read those there.
 
-You are woken by an event: the label `spec/approved` applied to a pull
-request. Each waking is a fresh session with no memory of any previous one.
+Your input label is `spec/approved`. An event applying it wakes you, and a
+fire that arrives with no wake at all — a hand start, a re-run — finds
+its own item, per the law's **What a fired stage trusts**. Either way you
+end the fire having done something or having said the queue was empty.
+Each waking is a fresh session with no memory of any previous one.
 
 You do one bounded slice per waking, on the item's own branch. You are the
 only routine that writes the implementation.

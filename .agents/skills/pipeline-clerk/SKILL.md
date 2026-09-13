@@ -55,8 +55,8 @@ matches, and only the first:
 | What you find | What you do |
 | :-- | :-- |
 | `pipeline/hold` | nothing at all, one report line. It is the owner's freeze |
-| `pipeline/stuck` | straighten it first, below, then one report line |
-| `pipeline/code-review` | duty two, below |
+| `pipeline/stuck` | straighten it first, below; where it also carries `pipeline/code-review` or `ready-for-human`, take it out of draft; then one report line |
+| `pipeline/code-review` | duty two, below, which takes it out of draft first |
 | `ready-for-human` | take it out of draft where it is still one, then one report line. The item is the owner's |
 | `spec/approved`, a claim released, and a `pipeline-progress` line with `slices` at 3 or above and `slices_day` before today | re-enter `spec/approved` |
 | exactly one stage label, and a claim `state=released` whose `at=` is older than twelve hours | re-enter that stage |
@@ -66,12 +66,12 @@ matches, and only the first:
 | no stage label and no terminal label | re-enter the stage the state block implies |
 | two or more stage labels | remove all but the one the state block implies, then re-enter it |
 
-The `ready-for-human` row is the one repair in this table that is not a
-re-entry. The hand-off in duty two writes the label first and flips the draft
-second, so a fire that dies between them leaves a labelled draft: the label
-says the machine is finished and the draft says the owner may not review it
-yet. Flip it and say so in the report. An item already out of draft is a
-report line and nothing else, and does not count against the limit below.
+The draft flips in this table are the repairs that are not re-entries. The
+draft comes off in duty two, the moment the Implementer's work is done, so a
+fire that died before that write leaves an item whose implementation is
+written still sitting as a draft. Flip it and say so in the report. An item
+already out of draft is a report line and nothing else. No flip counts against
+the limit below: it is one field, not a repair of state.
 
 **Where no row matches, the item is left exactly as it is**, with one report
 line naming the labels and the claim you found. The table is the whole of your
@@ -87,10 +87,12 @@ sequence breaks that promise, with nothing else in the machine to notice.
 
 So on a stuck item, read the state block and the labels and fix only this:
 where no stage label stands, apply the one the state block implies; where two
-or more stand, remove all but that one. Never re-enter a stage on a stuck item
-— that would emit a wake event on work the owner has parked. Then one report
-line naming what the item carried and what you left it carrying, so the owner
-can clear it in one act as the law says he should.
+or more stand, remove all but that one; and where it carries
+`pipeline/code-review` or `ready-for-human`, the implementation is written, so
+take it out of draft as duty two would have. Never re-enter a stage on a stuck
+item — that would emit a wake event on work the owner has parked. Then one
+report line naming what the item carried and what you left it carrying, so the
+owner can clear it in one act as the law says he should.
 
 The slice-cap row below is the day's cap, not a dead fire. The Implementer
 stops there and does not re-enter itself, and the sweep is what brings it
@@ -136,11 +138,19 @@ sweep that keeps writing.
 
 The repository runs CodeRabbit. The law records what it does and what was
 measured. Two facts decide this duty: it does not review a draft
-automatically, and the command that asks it to is per head.
+automatically, which is one more reason the draft comes off here, and the
+command that asks it to is per head.
 
-**You never flip a draft to get a review.** The command works on a draft, so
-there is nothing to gain by it. The one flip you ever make is the hand-off
-below, after a round comes back clean.
+**Take the item out of draft, before anything else in this duty.**
+`pipeline/code-review` means the Implementer has finished: the work is
+written, and from here the pull request is the owner's to read whenever he
+looks. He is never handed a draft. Read the draft field back, per the law's
+table. One already out of draft is a report line and nothing else. Nothing in
+this machine ever puts a pull request back into draft.
+
+Do this first, before the marker and before the round, and do it on every
+item carrying the label. It costs one write and it is what the owner asked
+the machine for.
 
 For an item carrying `pipeline/code-review`, read the newest `pipeline-cr`
 line and compare its `head=` with the pull request's current head:
@@ -178,18 +188,10 @@ posted after that `at=`:
   findings=<n>`, remove `pipeline/code-review`, apply `spec/approved`. The
   Implementer works the findings.
 - A review with no actionable finding. Write `outcome=clean`, remove
-  `pipeline/code-review`, apply `ready-for-human`, take the pull request out
-  of draft, and stop. The machine is finished with this item, and what the
-  owner finds waiting is a pull request ready to review.
-
-**The label first, the flip second.** Read the label set back before you
-flip, and read the draft field back after it, per the law's table. A fire that
-dies between the two leaves a labelled draft, which the sweep repairs on the
-next run. The other order leaves a pull request presented for review with no
-label saying the machine is done with it, and nothing in the machine looks for
-that. An item the owner has already sent back is out of draft when you reach
-this step: read the field back and write the report line, there is nothing to
-flip.
+  `pipeline/code-review`, apply `ready-for-human`, and stop. The machine is
+  finished with this item. The draft came off at the top of this duty, so the
+  label is the only write left here: read the label set back, and read the
+  draft field back with it to confirm it is still false.
 
 The law defines actionable. A nit about taste, a compliment, a summary, and a
 finding about a file the diff does not touch are not actionable. Count only
@@ -206,12 +208,12 @@ many rounds ran and what the last one said. A changed head grants a fresh
 round, per the law's bound rule.
 
 **`ready-for-human` is yours and only yours, and so is the flip out of
-draft.** No routine removes the label, and no other routine ever flips a
-draft. Together they say the machine has finished with this pull request and
-the owner's review is what comes next, which is what the label's own
-description says. It lives on a pull request and never on an issue: an issue
-is a finding, not work a person can review, and the tracker Clerk is under
-the same rule.
+draft.** No routine removes the label, no other routine ever flips a draft,
+and nothing ever flips one back. The flip says the implementation is written;
+the label says the machine has nothing left to do and the owner's review is
+what comes next, which is what the label's own description says. It lives on a
+pull request and never on an issue: an issue is a finding, not work a person
+can review, and the tracker Clerk is under the same rule.
 
 ## Duty three: intake
 
@@ -431,10 +433,10 @@ brief.
 2. **Repairs**: each re-entry, what it was repairing, the label set read
    back, and the count against the limit of three; and each stuck item you
    straightened, what it carried and what you left it carrying.
-3. **Code review**: per item, the marker before and after, whether a round
-   was asked, what came back, how many findings were actionable, where the
-   item went, and for a hand-off the label set and the draft field as you read
-   them back.
+3. **Code review**: per item, the draft field before and after, the marker
+   before and after, whether a round was asked, what came back, how many
+   findings were actionable, where the item went, and the label set as you
+   read it back.
 4. **Intake**: whether the slot was free, the candidates and why each was
    dropped or taken, the branch, the pull request, the state block read back.
 5. **Decomposition**: the parent, the test's three answers, every part with
@@ -456,9 +458,8 @@ brief.
   touch there, and only to remove it.
 - Never write a forbidden path. Never write anything in the tree except the
   skeleton under `.agents/specs/<N>-<slug>/`.
-- Never merge. Never take a pull request out of draft anywhere but the
-  hand-off, and there only with `ready-for-human` already on it and read
-  back.
+- Never merge. Never put a pull request back into draft, whatever state it
+  reaches and however a surface spells it.
 - Never post a pull-request review, and never post a review comment on the
   diff. That door is the owner's and the code review's.
 - Never remove `pipeline/stuck` or `pipeline/hold`, and never re-enter a

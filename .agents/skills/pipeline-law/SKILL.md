@@ -52,8 +52,11 @@ next item's branch would be cut from a `main` that does not carry it.
 No routine merges. The Clerk alone takes a pull request out of draft, and
 only at the hand-off, where the machine has finished with the item: what
 reaches the owner is a pull request ready to review, never a draft he has to
-flip himself. `spec.md` and `plan.md` live only on the branch. The
-Implementer's final slice deletes them, so they never reach `main`.
+flip himself. The label goes on first and the flip second, so an item carrying
+`ready-for-human` while still a draft is a hand-off a fire died inside, not an
+invalid state: the Clerk's next sweep finishes it. `spec.md` and `plan.md`
+live only on the branch. The Implementer's final slice deletes them, so they
+never reach `main`.
 
 ### The labels
 
@@ -67,7 +70,7 @@ moment it exists.
 | `spec/awaiting-review` | the Reviewer | the spec is written and unread |
 | `spec/approved` | the Implementer | the spec passed, or findings came back |
 | `pipeline/code-review` | nothing | the work is with the automated review |
-| `ready-for-human` | nothing | the machine is finished, and the item is out of draft |
+| `ready-for-human` | nothing | the machine is finished; the item is out of draft, or the next sweep flips it |
 | `pipeline/stuck` | nothing | a bound was reached, a person must look |
 | `pipeline/hold` | nothing | frozen by the owner |
 

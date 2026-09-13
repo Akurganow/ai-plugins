@@ -32,7 +32,7 @@ Where this file and a role disagree, this file wins.
 
 | Routine | Woken by | Writes |
 | :-- | :-- | :-- |
-| Clerk | a daily schedule | the skeleton branch, its draft pull request, the code-review round |
+| Clerk | a daily schedule | the skeleton branch, its draft pull request, the code-review round, the hand-off out of draft |
 | Spec Writer | `spec/needs-work` applied | `spec.md` and `plan.md` |
 | Spec Reviewer | `spec/awaiting-review` applied | comments only |
 | Implementer | `spec/approved` applied | the implementation |
@@ -49,9 +49,11 @@ owes the audit below before it may exit.
 the throttle. A pull request waiting on the owner still holds the slot: the
 next item's branch would be cut from a `main` that does not carry it.
 
-No routine merges. No routine takes a pull request out of draft. `spec.md`
-and `plan.md` live only on the branch. The Implementer's final slice deletes
-them, so they never reach `main`.
+No routine merges. The Clerk alone takes a pull request out of draft, and
+only at the hand-off, where the machine has finished with the item: what
+reaches the owner is a pull request ready to review, never a draft he has to
+flip himself. `spec.md` and `plan.md` live only on the branch. The
+Implementer's final slice deletes them, so they never reach `main`.
 
 ### The labels
 
@@ -65,7 +67,7 @@ moment it exists.
 | `spec/awaiting-review` | the Reviewer | the spec is written and unread |
 | `spec/approved` | the Implementer | the spec passed, or findings came back |
 | `pipeline/code-review` | nothing | the work is with the automated review |
-| `ready-for-human` | nothing | the machine is finished |
+| `ready-for-human` | nothing | the machine is finished, and the item is out of draft |
 | `pipeline/stuck` | nothing | a bound was reached, a person must look |
 | `pipeline/hold` | nothing | frozen by the owner |
 
@@ -75,9 +77,12 @@ Three of these are stage labels: `spec/needs-work`, `spec/awaiting-review`,
 `pipeline/stuck` reads exactly like `pipeline/hold` everywhere. An item
 carrying either is out of every stage's input, not only out of the sweep.
 
-**There is no guard.** No script in this machine is deterministic, and
-nothing flips a draft. `ready-for-human` is applied last and no routine ever
-removes it. It is the owner's watchlist marker.
+**There is no guard.** No script in this machine is deterministic, and the
+draft flip is not one either: it is the Clerk's last act on an item the
+machine has finished with, and it asserts nothing about the checks.
+`ready-for-human` goes on first and no routine ever removes it. It is the
+owner's watchlist marker, and the flip beside it is what puts the item in
+front of him ready to review.
 
 The checks a guard would have made are the Implementer's own. It runs them as
 commands and quotes the output.
@@ -433,6 +438,7 @@ After every write, fetch the object back and check the field you wrote.
 | a comment | the pull request's comments | the marker is in the returned body |
 | the title | the pull request | the `title` field, not the body |
 | labels | the pull request's label set | the successor present, yours absent |
+| the draft flip | the pull request | the draft field reads false |
 
 Take the field exactly as the API returns it. A rendered page, a summary, or
 the string you sent is not a read-back.

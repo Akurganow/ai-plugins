@@ -75,9 +75,6 @@ Never a finding:
   `conformance.md` argues the two checks that duplicate the schema, the
   workflow's comments say why a commit sha and not a tag. Other reviews
   read these as evidence.
-- **The owner's decision, quoted.** `conformance.md` quotes the version
-  rule in the owner's own words and language. A quotation is evidence, and
-  its language is part of the evidence.
 - **What a release writes.** `version` in `plugins/howp/plugin.json`,
   `plugins/howp/binaries.json` and
   `plugins/howp/skills/howp/references/commands.md` are machine-written,

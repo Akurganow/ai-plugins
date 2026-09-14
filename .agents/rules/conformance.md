@@ -114,12 +114,10 @@ The rules that decide whether a client loads a package at all:
 `plugins/howp/binaries.json` and
 `plugins/howp/skills/howp/references/commands.md` are written by the release
 job that builds and publishes the binaries, and by nothing else. **Nobody
-edits any of the three by hand, ever.** The owner decided it on 2026-09-03:
-«вручную бампать версии строжайше запрещено … никто и никогда не имеет права
-руками менять версии» — *bumping versions by hand is strictly forbidden … nobody, ever, has
-the right to change versions by hand*. Quoted rather than only translated,
-because a decision is evidence and a translation is a paraphrase. **The
-catalogue index carries no version at all**: `.claude-plugin/marketplace.json`
+edits any of the three by hand, ever.** Each is a claim about a released
+artifact: a hand edit asserts a version, a digest or a target that no
+release produced, and the next release overwrites it without noticing.
+**The catalogue index carries no version at all**: `.claude-plugin/marketplace.json`
 has no top-level `version`, none under `metadata`, and no `version` in a
 plugin entry, because a version no machine writes is a version somebody moves
 by hand.

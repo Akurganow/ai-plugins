@@ -16,19 +16,41 @@ targets exist; this file does not restate what it holds.
 
 ## Reporting a vulnerability
 
-Report privately, through GitHub's advisory form for this repository:
+Report privately, through GitHub's advisory form for this repository. **The
+authoritative way in is the repository itself**, because it is the only one
+GitHub publishes: "Under the repository name, click the **Security and
+quality** tab. […] Click **Report a vulnerability** to open the advisory form"
+— [Privately reporting a security
+vulnerability](https://docs.github.com/en/code-security/how-tos/report-and-fix-vulnerabilities/report-privately),
+GitHub's documentation, read 2026-09-14.
+
+The form's own address is below, for a reader who would rather paste a link
+than navigate:
 
 <https://github.com/Akurganow/ai-plugins/security/advisories/new>
 
-**Do not open a public issue describing a vulnerability.** If that form is not
-available to you, private vulnerability reporting has been switched off since
-this file was written; open a public issue asking for a security contact and
-put nothing about the vulnerability in it. That is the route GitHub documents
-for a repository without private reporting — [Privately reporting a security
-vulnerability](https://docs.github.com/en/code-security/how-tos/report-and-fix-vulnerabilities/report-privately),
-GitHub's documentation, read 2026-09-11. Private vulnerability reporting was on
-for this repository that day; no file here is rewritten if it is turned off, so
-trust the form and not this sentence.
+**That URL is the one thing on this page nobody checked.** It was not opened
+from the environment that wrote this file, and GitHub documents no address for
+the form anywhere: at commit `078b583` of
+[`github/docs`](https://github.com/github/docs/tree/078b5832caa5cde591c2babb389ef447a0ef66eb/content),
+GitHub's documentation in source form, no file under `content/` carries the
+string `advisories/new`. If the link does not open a report form, that settles
+nothing about this repository's settings — use the **Report a vulnerability**
+control described above and disregard the link.
+
+**Do not open a public issue describing a vulnerability.** If neither route
+reaches a private form, open a public issue asking for a security contact and
+put nothing about the vulnerability in it. That is what GitHub tells a reporter
+to do where private reporting is unavailable: "you need to initiate the
+reporting process by following the instructions in the security policy for the
+repository, or by creating an issue asking the maintainers for a preferred
+security contact" — the same page, read the same day.
+
+Private vulnerability reporting was on for this repository on 2026-09-14, read
+as `{"enabled": true}` from GitHub's API, authenticated as the repository
+owner — which establishes the setting and not what a signed-out reader is
+shown. Nothing rewrites this file if it is switched off, so trust what the
+repository shows you over this paragraph.
 
 Include what you have:
 

@@ -513,11 +513,9 @@ for one is refused over it.
 | `tools/schemas/**` | a verbatim copy of a published schema |
 | `.agents/**` | the rules the machine is governed by |
 
-`.agents/rules/conformance.md` carries the owner's decision on the first
-three in his own words: *«вручную бампать версии строжайше запрещено … никто
-и никогда не имеет права руками менять версии»*. A finding that one of those
-files is wrong is a defect of the release job in the repository that runs it.
-The honest outcome here is a comment saying so.
+`.agents/rules/conformance.md` carries the rule on the first three. A finding
+that one of those files is wrong is a defect of the release job in the
+repository that runs it. The honest outcome here is a comment saying so.
 
 On `tools/schemas/**`, `conformance.md` says it "is never edited to make a
 check agree with a package — that inverts the whole arrangement: the package

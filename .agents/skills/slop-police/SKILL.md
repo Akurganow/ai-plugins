@@ -310,7 +310,6 @@ with the measurement that makes each real:
 **Never a finding.** Each line below is its own exclusion:
 
 - a recorded reason, wherever it argues its own existence
-- the owner's decision quoted in his own language
 - the three release-written files
 - the claims discipline's sentences
 - house style: argued paragraphs, em-dashes, bold on the load-bearing

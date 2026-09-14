@@ -113,10 +113,10 @@ The rules that decide whether a client loads a package at all:
 `version` in `plugins/howp/plugin.json`, the whole of
 `plugins/howp/binaries.json` and
 `plugins/howp/skills/howp/references/commands.md` are written by the release
-job in `Akurganow/how-possible` and by nothing else. **Nobody edits any of the
-three by hand, ever.** The owner decided it on 2026-09-03: «вручную бампать
-версии строжайше запрещено … никто и никогда не имеет права руками менять
-версии» — *bumping versions by hand is strictly forbidden … nobody, ever, has
+job that builds and publishes the binaries, and by nothing else. **Nobody
+edits any of the three by hand, ever.** The owner decided it on 2026-09-03:
+«вручную бампать версии строжайше запрещено … никто и никогда не имеет права
+руками менять версии» — *bumping versions by hand is strictly forbidden … nobody, ever, has
 the right to change versions by hand*. Quoted rather than only translated,
 because a decision is evidence and a translation is a paraphrase. **The
 catalogue index carries no version at all**: `.claude-plugin/marketplace.json`

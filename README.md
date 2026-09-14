@@ -316,8 +316,8 @@ tools/schemas/                     the official manifest schema, vendored
 
 A plugin's `version`, its `binaries.json` and its skill's
 `references/commands.md` are written by the release that publishes its
-binaries, in `Akurganow/how-possible`, and by nothing here —
-`.agents/rules/conformance.md` carries the rule.
+binaries, and by nothing here — `.agents/rules/conformance.md` carries the
+rule.
 
 That has a consequence worth stating rather than working around. The standard
 does not require a client to care about `version` — §10.2 says only that

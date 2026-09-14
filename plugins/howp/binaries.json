@@ -1,36 +1,34 @@
 {
   "schema": "howp-binaries-1",
-  "version": "0.3.4",
-  "tag": "howp-v0.3.4",
-  "source_repository": "Akurganow/how-possible",
-  "source_commit": "eb0669f2f5ba166b1a76c80ced880047cb628b5e",
-  "released_at": "2026-09-04T20:50:04Z",
+  "version": "0.3.5",
+  "tag": "howp-v0.3.5",
+  "released_at": "2026-09-14T12:32:22Z",
   "targets": [
     {
       "target": "aarch64-apple-darwin",
       "os": "Darwin",
       "arch": "arm64",
-      "archive": "howp-0.3.4-aarch64-apple-darwin.tar.gz",
-      "root": "howp-0.3.4-aarch64-apple-darwin",
+      "archive": "howp-0.3.5-aarch64-apple-darwin.tar.gz",
+      "root": "howp-0.3.5-aarch64-apple-darwin",
       "bin_dir": "bin",
-      "sha256": "8fca9bb31f36eaf0634ab3df57a1d0bf8bf2e90c08b9ddf628359b36a9119e5c",
+      "sha256": "faa81b0edb0a2654e503430ec5ce14b413b1df42a9f016b50ae1210fdc1febe5",
       "binaries": [
         "hp"
       ],
-      "url": "https://github.com/Akurganow/ai-plugins/releases/download/howp-v0.3.4/howp-0.3.4-aarch64-apple-darwin.tar.gz"
+      "url": "https://github.com/Akurganow/ai-plugins/releases/download/howp-v0.3.5/howp-0.3.5-aarch64-apple-darwin.tar.gz"
     },
     {
       "target": "x86_64-unknown-linux-musl",
       "os": "Linux",
       "arch": "x86_64",
-      "archive": "howp-0.3.4-x86_64-unknown-linux-musl.tar.gz",
-      "root": "howp-0.3.4-x86_64-unknown-linux-musl",
+      "archive": "howp-0.3.5-x86_64-unknown-linux-musl.tar.gz",
+      "root": "howp-0.3.5-x86_64-unknown-linux-musl",
       "bin_dir": "bin",
-      "sha256": "59ce78022cf44156a056300664541ae869161c4d1b60bc6187ec6e5514559d3f",
+      "sha256": "9755c03c0bccefbe9c74bb5c41f9b5a43566cc1c2e9e2da47178e4efa3847ea4",
       "binaries": [
         "hp"
       ],
-      "url": "https://github.com/Akurganow/ai-plugins/releases/download/howp-v0.3.4/howp-0.3.4-x86_64-unknown-linux-musl.tar.gz"
+      "url": "https://github.com/Akurganow/ai-plugins/releases/download/howp-v0.3.5/howp-0.3.5-x86_64-unknown-linux-musl.tar.gz"
     }
   ]
 }

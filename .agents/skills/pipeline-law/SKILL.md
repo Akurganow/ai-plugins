@@ -502,9 +502,6 @@ unchanged hash goes straight back to `pipeline/stuck`.
 **No AI model identity in code or on a published page.** That covers
 `README.md`, a plugin manifest, a `SKILL.md`, a reference file.
 
-Tooling attribution is allowed. Leave it where the harness puts it. Never
-scan for one, strip one, or let one stop a push.
-
 **The forbidden paths.** No stage writes these, ever. A specification asking
 for one is refused over it.
 

@@ -49,8 +49,20 @@ List every open pull request whose head branch matches `pipeline/*` and whose
 body carries `<!-- pipeline-work-fingerprint:`. Both facts, per the law. That
 list is the whole of the machine's live state.
 
-Read each one's labels, body and comments. Then apply the first row that
-matches, and only the first:
+Read each one's labels, body and comments, **and its mergeability**.
+
+**One repair comes before the table and consumes no item: a head that does
+not merge with its base.** Resolve it under the law's rule — merge
+`origin/main` into the branch, the base's side where the two sides decided
+the same question differently, never a rebase and never a force-push — then
+push and comment naming the files that conflicted and what each resolution
+chose. Then go on to the table, which still applies to that item unchanged.
+It is yours because a conflict on an item no stage is working is a conflict
+nobody else meets: the stages are woken by labels, and no label is applied
+when a branch stops merging. An item carrying `pipeline/hold` or
+`pipeline/stuck` is the exception, untouched here as everywhere.
+
+Then apply the first row that matches, and only the first:
 
 | What you find | What you do |
 | :-- | :-- |

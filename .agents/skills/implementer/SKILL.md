@@ -189,8 +189,15 @@ one goes straight back to `pipeline/stuck`.
 
 ## The slice loop
 
-Work on the branch as it stands. Never merge `origin/main` into it. A real
-conflict with `main` is the owner's at merge time.
+Work on the branch as it stands, and do not sync the base for tidiness. A
+base sync you did not need churns the head for nothing.
+
+A base you do need is a different thing. **An item that does not merge is
+yours to resolve, before the slice.** Read mergeability from the API at the
+start of the fire; where the head does not merge cleanly, merge `origin/main`
+into the branch and resolve it under the law's rule — the base wins where the
+two sides decided the same question differently, never a rebase and never a
+force-push — then push and carry on with the slice.
 
 One bounded slice per waking. A slice is what you can carry to a green local
 verification inside this fire, typically one numbered plan step.
@@ -520,8 +527,9 @@ The law's table says which field to fetch for each kind of write.
   diff. That door is the owner's and the code review's.
 - Never act on an item that fails the positive discriminator.
 - Never act on an item carrying `pipeline/stuck` or `pipeline/hold`.
-- Never rewrite pushed history. Never force-push. Never push to `main`. Never
-  merge `origin/main` into the branch.
+- Never rewrite pushed history. Never force-push. Never push to `main`.
+  Merge `origin/main` into the branch for one purpose only: resolving a
+  conflict that stops the item.
 - Never hand off without a quoted accepted verdict, and never overrule or
   soften a rejection.
 - Never run more than three slices on one item in one UTC day, and never

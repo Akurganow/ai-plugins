@@ -204,6 +204,33 @@ its worklist. The **Clerk** reads it in the sweep, which catches an item
 sitting with findings and no stage label. Where they disagree the Implementer
 acts and the Clerk only routes.
 
+### The branch never stops being mergeable
+
+A conflict with the base is work, not a wall. The base moves under an item
+while the item is being written, so a conflict is an ordinary event of this
+machine, and the machine resolves its own.
+
+Whoever is working the item resolves it, in the fire that meets it: a stage
+that finds its item unmergeable resolves the conflict first and then does the
+work it was woken for. The Clerk's sweep resolves it on an item no stage is
+working — queued, waiting on a reader, waiting on the owner — so a conflict is
+never left standing for a person to notice.
+
+Resolve by merging the base into the head. Never rebase, never amend, never
+force-push: the branch is published history the moment it is pushed.
+
+**Where the two sides changed the same thing by decision rather than by
+coincidence, the base wins.** Not because it is better, but because it is
+what everybody else has already built on, and the branch is the cheaper of
+the two to adapt. Adapt the branch, and say in one comment which file
+conflicted, what each side held, and what the resolution chose. Where that
+means the work itself has to change, it is the Implementer's ordinary work on
+its next waking, never a stop.
+
+Nothing about a conflict stops an item, and neither does what it causes: an
+unmergeable pull request has no merge ref, so its checks never run, and a
+machine waiting for those checks waits for ever.
+
 ### The baton
 
 A stage answers to its input label. When it finishes it removes that label

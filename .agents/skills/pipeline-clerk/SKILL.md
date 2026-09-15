@@ -86,8 +86,8 @@ Then apply the first row that matches, and only the first:
 | `pipeline/stuck` | straighten it first, below; then one report line. It is not flipped and no stage is re-entered on it |
 | `pipeline/code-review` | duty two, below, which takes it out of draft first |
 | `ready-for-human` | take it out of draft where it is still one, then one report line. The item is the owner's |
-| a removal of `pipeline/stuck` or `pipeline/hold` newer than the item's newest machine marker | the owner has settled it: re-enter the stage label the item still carries, and say which removal you acted on |
-| a `pipeline-stop` marker whose `key=` equals that key computed now | the last-gate case, below: try your own repairs, and `pipeline/stuck` only where none of them moves it |
+| an `unlabeled` event removing `pipeline/stuck` or `pipeline/hold`, newer than the item's newest machine marker | the owner has settled it: re-enter the stage label the item still carries, and say which removal you acted on, by label and time |
+| a `pipeline-stop` marker whose `key=` equals the key its `key_kind=` names, computed now | the last-gate case, below: try your own repairs, and `pipeline/stuck` only where none of them moves it |
 | `spec/approved`, a claim released, and a `pipeline-progress` line with `slices` at 3 or above and `slices_day` before today | re-enter `spec/approved` |
 | exactly one stage label, and a claim `state=released` whose `at=` is older than twelve hours | re-enter that stage |
 | exactly one stage label, and a claim released or absent, younger than that | nothing, the stage owns it |
@@ -128,11 +128,11 @@ says he should.
 **The last-gate case, and the only one that ends in `pipeline/stuck`.** A
 stage that can carry an item no further does not label its own dead end. It
 records a stop, leaves its stage label where it is, and ends. The law names
-the two kinds and what each writes: a **bound reached** carries a counter, a
-completion marker and a comment, and a **condition it cannot work around**
-carries a comment alone, because no counter counts one. Either way the item
-reads as a stage label, a released claim, and a stop comment naming the
-content it was met at.
+the two kinds and what each writes **beside the marker**: a **bound reached**
+moves a counter and writes a completion marker where the stopping role has
+one, and a **condition it cannot work around** writes neither, because no
+counter counts one. Both write the marker. Either way the item reads as a
+stage label, a released claim, and a `pipeline-stop`.
 
 Both kinds arrive here. A stop with no counter behind it is not a lesser
 stop: the Spec Writer meeting a source that is not a file, the Reviewer
@@ -141,12 +141,11 @@ forbidden path in its plan, and any role whose marker will not stay written
 all reach this row, and none of them has a bound to show.
 
 **Read the stop from its marker and never from the prose of a comment.** The
-newest `pipeline-stop` on the item carries the key it was met at; compute
-that same key now and compare the two. A stop is keyed on content, and each
-has its own key: the spec hash for `review_rounds`, `gate_bounces` and any
-stop inside the specification stages; the tree id for `judge_rejects` and any
-stop inside the implementation; the head sha for `cr_rounds`. The marker's
-`key=` says which was used, so there is nothing to infer.
+newest `pipeline-stop` on the item carries `key_kind=` and `key=`. Compute
+the key that `key_kind=` names, and compare it with `key=`. Both fields are
+needed and neither is guessable from the other: a spec hash, a tree id and a
+head sha are all twelve hex characters, so a marker carrying the value alone
+would be compared against whichever key you happened to compute.
 
 Try your own repairs first and name each in the comment. A key that moved
 since the marker spends the stop, so re-enter the stage instead. A conflict
@@ -248,6 +247,23 @@ landed: rewrite the marker to `outcome=asked` and post nothing. Where none is,
 post the request now and rewrite to `outcome=asked`. Either way `cr_rounds`
 stays as it is — that round is this head's, and it was counted once.
 
+**The same head, `outcome=returned` or `outcome=clean`.** This head has had
+its round and you routed it. The item is back under `pipeline/code-review`
+without the head moving, which means the Implementer answered the findings
+without a commit — it may, since a finding that widens the item is refused
+rather than worked. There is nothing to ask for and nothing new to read.
+
+- `outcome=returned`: the findings stand unanswered in code. Remove
+  `pipeline/code-review`, apply `spec/approved`, and comment naming the
+  findings the Implementer declined and that the head did not move. It
+  answers them on the record or the round comes back here.
+- `outcome=clean`: the round already passed. Remove `pipeline/code-review`,
+  apply `ready-for-human`, and stop, exactly as the clean branch below does.
+
+Without these two the item sits under `pipeline/code-review` matching no
+case, and row three sends it back to this duty on every fire, so no later row
+can ever reach it.
+
 **The same head, `outcome=asked`.** The round is in flight. Look for a review
 posted after that `at=`:
 
@@ -279,7 +295,7 @@ fire. Route it if it has. Leave it for tomorrow if it has not.
 reached. A changed head grants a fresh round, per the law's bound rule.
 
 Record it in the counter, in the law's `pipeline-stop` marker with
-`kind=bound` and `key=` the head sha it was reached at, and in one comment
+`kind=bound`, `key_kind=head-sha` and `key=` the head sha it was reached at, and in one comment
 saying how many rounds ran and what the last one said. **You write no
 completion marker.** The law's role tokens are exactly four and the Clerk is
 not one of them, so a marker of yours would make your own implied-stage table
@@ -482,8 +498,9 @@ Writer which neighbouring work is deliberately not his. Omit the section
 otherwise rather than writing it empty.
 
 Seed the state block exactly like that, at the foot of the body, and read
-every line of it back. The `pipeline-done` and `pipeline-cr` lines are added
-by the routines that write them.
+every line of it back. The `pipeline-done`, `pipeline-cr` and `pipeline-stop`
+lines are added by the routines that write them, so a body without them is
+intact rather than damaged.
 
 Then:
 

@@ -48,9 +48,11 @@ may be written at all.
 9. Set `ITEM` and `SPEC_DIR` as the law defines them, and `RUN` as
    `.agents/rules/unattended.md` defines it.
 
-**On the claim.** A claim never blocks you and never ends your fire. It is
-evidence that some fire reached this item, and nothing more. A `spec-writer` claim
-reading `state=held` is a fire that may have died before finishing: take it
+**On the claim.** A `spec-writer` claim reading `state=held` and still fresh by
+the law's claim-freshness bound is a fire that is running now: leave the item
+to it, report the fact, and end. You commit and push, so two of your fires on
+one branch is the race the lock exists for. A claim the bound calls stale is a
+fire that died, and a `state=released` claim never blocks: take either
 over under your own role, and go on to the audit the law owes. Another role's
 claim you leave exactly as it stands.
 
@@ -137,7 +139,7 @@ Three cases end an item here rather than in implementation:
 3. What they ask for is not a file at all, such as a repository setting.
 
 Any of the three is a stop, recorded the law's way: the `pipeline-stop`
-marker with `kind=condition` and `key=` the spec hash, and one comment naming
+marker with `kind=condition`, `key_kind=spec-hash` and `key=` the spec hash, and one comment naming
 which of the three it is, with `spec/needs-work` left where it is, and the
 fire ends there. The Clerk reads
 that comment on its sweep and decides whether the item is stuck.
@@ -268,7 +270,10 @@ the comparison:
     git show "origin/$HEAD_REF:$SPEC_DIR/spec.md" | head -40
 
 A push the read-back does not confirm is fixed and pushed once more. If it
-still does not confirm, stop the item and say so.
+still does not confirm, that is a stop: record it the law's way, with the
+`pipeline-stop` marker at `kind=condition`, `key_kind=spec-hash` and `key=`
+the spec hash, and one comment saying what would not confirm. Leave the label
+where it is and end.
 
 Then rewrite the state block with your completion marker:
 
@@ -295,10 +300,14 @@ second, and read the label set back.
 
 **The bound.** Read `review_rounds` from the state block. At 5 or above,
 compare the current spec hash with the `key=` of the newest `pipeline-stop`
-on the item. A hash that differs grants one fresh round, per
-the law's bound rule. An equal hash, or no stop marker yet, is the bound: do
+on the item. **A fresh round needs two things**: a hash that differs from that
+key, and an `unlabeled` event removing `pipeline/stuck` newer than the stop's
+`spent_at`, or newer than its `at=` where `spent_at` is `none`. Grant the
+round, write `spent_at` on that stop, and hand on. The hash alone would grant
+a round on every revision for ever, and the owner would pay for the first
+escape and none after it. An equal hash, or no stop marker yet, is the bound: do
 not hand on. Record it the law's way, with the `pipeline-stop` marker at
-`kind=bound` and `key=` that spec hash, and one comment setting out both
+`kind=bound`, `key_kind=spec-hash` and `key=` that spec hash, and one comment setting out both
 positions — what the Reviewer keeps asking for, why you have not written it,
 and that spec hash. You write no completion marker and touch no counter; both
 are the Reviewer's. Then stop. You never apply `pipeline/stuck`. The Clerk is

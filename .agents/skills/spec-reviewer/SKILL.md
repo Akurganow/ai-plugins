@@ -50,13 +50,15 @@ would break a correct implementation. Taste is dropped and never reported.
 **On the counter.** The bound turns on `review_rounds`, so you read it before
 anything else can spend it. A state block that is absent, or a
 `review_rounds` that will not parse is a stop, recorded the law's way: the
-`pipeline-stop` marker with `kind=condition` and `key=` the spec hash, and
+`pipeline-stop` marker with `kind=condition`, `key_kind=spec-hash` and `key=` the
+spec hash, and
 one comment saying which of the two it is, the label left as it is, and a
 report line. A bound you cannot count is a bound
 you do not have. The Clerk reads that comment on its sweep and decides
 whether the item is stuck.
 
-**On the claim.** A `spec-reviewer` claim reading `state=held` and still
+**On the claim.** The law's claim lock binds every role, and this is what it
+means here. A `spec-reviewer` claim reading `state=held` and still
 fresh by the law's claim-freshness bound is a fire that is running now: leave
 the item to it, report the fact, and end. Two reviewer fires editing one body
 and one label set is a race this pipeline has no lock for. A claim the bound
@@ -125,8 +127,8 @@ What follows depends on the outcome recorded and on the counter:
 | `outcome=accepted` | remove `spec/awaiting-review`, apply `spec/approved`, one line, no increment |
 | `outcome=rejected`, the marker carries no `round=` | record the round: increment `review_rounds` by one, rewrite the marker with `round=<the new value>`, then remove `spec/awaiting-review` and apply `spec/needs-work` |
 | `outcome=rejected`, the marker carries `round=`, and no `spec-writer` marker at this hash is newer than it | the hand-back never landed. Remove `spec/awaiting-review`, apply `spec/needs-work`, and increment nothing: this content has spent its round |
-| `outcome=rejected`, the marker carries `round=`, and a `spec-writer` marker at this hash is newer than it | the Writer has returned this content unchanged. Record the bound in one comment naming this spec hash, leave `spec/awaiting-review` where it is, and stop |
-| `review_rounds` at 5 or above, whatever else the marker says | record the bound in one comment naming this spec hash, leave `spec/awaiting-review` where it is, and stop |
+| `outcome=rejected`, the marker carries `round=`, and a `spec-writer` marker at this hash is newer than it | the Writer has returned this content unchanged. Record the stop the law's way — the `pipeline-stop` marker at `kind=bound`, `key_kind=spec-hash`, `key=` this spec hash — and one comment naming it, leave `spec/awaiting-review` where it is, and stop |
+| `review_rounds` at 5 or above, whatever else the marker says | the bound below, which compares this spec hash before it stops |
 
 **`round=` is what bounds this shortcut.** The round is recorded on the content
 rather than counted per fire, so two fires reading the same hash reach the same
@@ -290,14 +292,17 @@ with no reasoning is indistinguishable from a routine that did not read the
 file.
 
 **The bound.** At `review_rounds` of 5 or above, compare the current spec
-hash with the `key=` of the newest `pipeline-stop` on the item. **A hash that
-differs is changed content and grants one fresh round**, per the law's bound
-rule, and the counter does not reset — that is what makes each further round
-cost the owner an action.
+hash with the `key=` of the newest `pipeline-stop` on the item. **A fresh
+round needs two things, not one**: a hash that differs from that key, and an
+`unlabeled` event removing `pipeline/stuck` newer than the stop's `spent_at`,
+or newer than its `at=` where `spent_at` is `none`. Grant the round, write
+`spent_at` on that stop, and hand on. The counter does not reset. Both
+conditions together are what make each further round cost the owner an
+action: the hash alone would grant one on every revision for ever.
 
 An equal hash, or no stop marker yet, is the bound. Do not hand on. Record it
-the law's way: the `pipeline-stop` marker with `kind=bound` and `key=` that
-spec hash, your completion marker, and one comment naming it with the
+the law's way: the `pipeline-stop` marker with `kind=bound`, `key_kind=spec-hash` and `key=`
+that spec hash, your completion marker, and one comment naming it with the
 objections and the Writer's standing answer to them where one exists. Then
 stop.
 

@@ -108,7 +108,7 @@ that accumulates.
 | `spec/needs-work` | Clerk at promotion; Reviewer; the gate; the sweep | Writer, at the end of a revision; the sweep |
 | `spec/awaiting-review` | Writer; the sweep | Reviewer; the sweep |
 | `spec/approved` | Reviewer; Writer after a gate bounce; Implementer re-entering itself; Clerk returning findings; the sweep | Implementer; the gate; the sweep |
-| `pipeline/code-review` | Implementer, last, on an accepted verdict; the sweep | Clerk, when the code-review round ends |
+| `pipeline/code-review` | Implementer, last, on an accepted verdict | Clerk, when the code-review round ends, whichever way it ends |
 | `ready-for-human` | Clerk, and only the Clerk | nobody; the owner alone |
 | `pipeline/stuck` | the Clerk, and only the Clerk, after a repair it could not make | the owner |
 | `pipeline/hold` | the owner | the owner |
@@ -257,18 +257,31 @@ item no further **records a stop** and ends. It leaves its stage label where
 it is. The Clerk applies `pipeline/stuck` afterwards, and only where its own
 repairs cannot move the item.
 
+A **machine marker** is any of the markers in this section: a claim, a
+completion marker, the state block, the progress line, a stop, a verdict. The
+Clerk's resume row orders the item's newest one against the owner's most
+recent removal of a label, and that removal is read from the item's timeline
+events — the `unlabeled` events naming that label, by their `created_at`.
+A fire that cannot read those events reports the row as not evaluated rather
+than guessing.
+
 **Every stop writes the same marker**, whatever its kind, because the Clerk
 finds a stop by that marker and by nothing else. A Clerk that had to
 recognise a stop from the prose of a comment would take an ordinary
 rejection for a stop and miss a real one:
 
-    <!-- pipeline-stop: role=<role> kind=<bound|condition> key=<12 hex> at=<UTC> -->
+    <!-- pipeline-stop: item=<id> kind=<bound|condition> key_kind=<spec-hash|tree-id|head-sha> key=<12 hex> at=<UTC> spent_at=<UTC|none> -->
 
-`key=` is the content the stop was met at, spelled as the key that stop is
-judged on: the spec hash for a stop inside the specification stages, the tree
-id for one inside the implementation, the head sha for `cr_rounds`. That is
-what lets the Clerk tell a stop nothing has answered from one the content has
-moved past.
+`key=` is the content the stop was met at and `key_kind=` says which key that
+is. `spent_at=` is absent until a stage grants the one fresh round the bound
+rules allow, and is written then — **that is what makes the round one rather
+than unlimited**. Without it a stage compares each new revision against a key
+frozen at the first stop, finds it different every time, and grants a round
+every time, so the owner pays for the first escape and none after it. **Both fields are needed**: a spec hash, a tree id and a head sha are all
+twelve hex characters and nothing in the value tells them apart, so a Clerk
+holding the value alone would compare a spec hash against a tree it computed
+and never match. It carries no `role=`, because the Clerk writes one of these
+and the law's four role tokens do not include it.
 
 What each kind records **beside** the marker differs, and no rule here claims
 otherwise.
@@ -281,10 +294,12 @@ otherwise.
   condition and the content. No counter moves, because none counts them.
   **Which conditions those are is each role's to name**, beside the check
   that meets one: a closed list here would go stale the moment a role gained
-  a check or lost one. A stage that labelled its own
-dead end would spend the owner's attention on what the gate after it could
-have fixed. The stage label beside the stop names who acts once the bound is
-cleared.
+  a check or lost one, and a Clerk reading a condition no role implements
+  would be reading a machine that does not exist.
+
+A stage that labelled its own dead end would spend the owner's attention on
+what the gate after it could have fixed. The stage label beside the stop
+names who acts once it is cleared.
 
 ### The audit every fire owes
 
@@ -397,7 +412,7 @@ rewritten whole on every change. Comments are append-only records.
     <!-- pipeline-state: item=<id> review_rounds=<n> gate_bounces=<m> judge_rejects=<k> slices=<s> cr_rounds=<c> -->
     <!-- pipeline-claim: role=<role> state=held|released at=<UTC ISO-8601> -->
     <!-- pipeline-progress: slice=<n> slices_day=<YYYY-MM-DD> predelete=<sha|none> -->
-    <!-- pipeline-stop: role=<role> kind=<bound|condition> key=<12 hex> at=<UTC> -->
+    <!-- pipeline-stop: item=<id> kind=<bound|condition> key_kind=<spec-hash|tree-id|head-sha> key=<12 hex> at=<UTC> spent_at=<UTC|none> -->
     <!-- pipeline-done: role=spec-writer   hash=<12 hex> outcome=<accepted|rejected> at=<UTC> -->
     <!-- pipeline-done: role=spec-reviewer hash=<12 hex> outcome=<accepted|rejected> round=<n> at=<UTC> -->
     <!-- pipeline-done: role=gate          hash=<12 hex> outcome=<accepted|rejected> at=<UTC> -->
@@ -521,7 +536,8 @@ lost update: two fires editing one body, the second overwriting the first.
 
 A marker absent from the returned field is written once more. One that will
 not stay is a stop, recorded as one: the `pipeline-stop` marker with
-`kind=condition`, **in a comment of its own**, and one comment naming the
+`kind=condition` and the key that stage is judged on, **in a comment of its
+own**, and one comment naming the
 marker that would not stay, the object and the content. Posting a fresh
 comment is the write a route that cannot rewrite one can still make, which
 is why this stop can be found like every other. Whether that becomes `pipeline/stuck` is the Clerk's, like every
@@ -584,7 +600,10 @@ no content key and records no stop.
 2. **A bound is keyed on content, not on attempts.** Unchanged content at or
    past the bound is recorded and handed no further. It becomes
    `pipeline/stuck` when the Clerk's repairs do not move it. Changed content
-   grants one fresh round. The content is the spec hash for `review_rounds` and
+   grants one fresh round, and **one** is the whole of it: the round is
+   granted only where the owner has un-stuck the item since the stop was
+   recorded or last spent, and the stage writes `spent_at` on the stop when
+   it grants one. The content is the spec hash for `review_rounds` and
    `gate_bounces`, the tree id for `judge_rejects`, and the head sha for
    `cr_rounds` — the round is asked per head and its `pipeline-cr` marker
    stores that same head, so the bound and the marker read one identifier.

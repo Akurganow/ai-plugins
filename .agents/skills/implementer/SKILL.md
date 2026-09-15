@@ -64,9 +64,11 @@ hand you another routine's clock.
 A cap discovered after a push is a cap already broken, and a push cannot be
 taken back.
 
-**On the claim.** A claim never blocks you and never ends your fire. It is
-evidence that some fire reached this item, and nothing more. A `implementer` claim
-reading `state=held` is a fire that may have died before finishing: take it
+**On the claim.** A `implementer` claim reading `state=held` and still fresh by
+the law's claim-freshness bound is a fire that is running now: leave the item
+to it, report the fact, and end. You commit and push, so two of your fires on
+one branch is the race the lock exists for. A claim the bound calls stale is a
+fire that died, and a `state=released` claim never blocks: take either
 over under your own role, and go on to the audit the law owes. Another role's
 claim you leave exactly as it stands.
 
@@ -176,8 +178,9 @@ objected and you re-check.
 further.
 
 1. Set `gate_bounces=2` in the state block.
-2. Write the law's `pipeline-stop` marker with `kind=bound` and `key=` the
-   spec hash.
+2. Write the law's `pipeline-stop` marker with `kind=bound`,
+   `key_kind=spec-hash` and `key=` the spec hash. The gate judges the
+   specification, so its stop is keyed on the spec hash and not on the tree.
 3. Post both positions in one comment, naming the bound and that spec hash.
 4. Stop.
 
@@ -252,7 +255,7 @@ commit. The gate checked the specification. This checks the diff:
 
 Either pipeline printing anything is a hard stop. Unstage it. If the plan
 asked for it, record the stop the law's way: the `pipeline-stop` marker with
-`kind=condition` and `key=` the tree id, and one comment quoting the law, the
+`kind=condition`, `key_kind=tree-id` and `key=` the tree id, and one comment quoting the law, the
 label left where it is, and stop. The
 Clerk reads that comment on its sweep and decides whether the item is
 stuck.
@@ -409,7 +412,8 @@ Nothing is retitled and nothing is rewritten. The pull request keeps the
 Clerk's title and body until a verdict accepts the work.
 
 A second consecutive rejection keeps `spec/approved`, writes the law's
-`pipeline-stop` marker with `kind=bound` and `key=` the tree id, summarises
+`pipeline-stop` marker with `kind=bound`, `key_kind=tree-id` and `key=` the
+tree id, summarises
 both positions in one comment naming the bound and that tree id, and stops
 without re-entering. `judge_rejects` at 2 or above follows the
 law's bound rule: a changed tree id grants one more trio, an unchanged one is
@@ -432,7 +436,7 @@ accepted is the tree the code review and the owner will read.
 
    The remote head sha must equal your local `HEAD`. Either mismatch is a
    stop, recorded the law's way: the `pipeline-stop` marker with
-   `kind=condition` and `key=` the tree id, and one comment naming both
+   `kind=condition`, `key_kind=tree-id` and `key=` the tree id, and one comment naming both
    values, the label left where it is, and the fire ends there. The
    Clerk reads that comment on its sweep. Step 6 can send a fire
    back to step 4, which pushes a new commit and therefore a new tree, so

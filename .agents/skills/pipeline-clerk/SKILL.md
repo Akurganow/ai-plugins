@@ -49,20 +49,50 @@ List every open pull request whose head branch matches `pipeline/*` and whose
 body carries `<!-- pipeline-work-fingerprint:`. Both facts, per the law. That
 list is the whole of the machine's live state.
 
-Read each one's labels, body and comments. Then apply the first row that
-matches, and only the first:
+Read each one's labels, body and comments, **and its mergeability**.
+
+**One repair comes before the table and consumes no item: a head that does
+not merge with its base.** Resolve it under the law's rule. Merge
+`origin/main` into the branch. Take the base's side where the two sides
+decided the same question differently. Never rebase and never force-push.
+Push, and comment naming each file that conflicted, what each side held, and
+what the resolution chose. Then go on to the table, which still applies to
+that item unchanged. Count the resolution against the repair limit below: it
+is a push, not a field.
+
+The repair is yours because nobody else meets it. The stages are woken by
+labels, and no label is applied when a branch stops merging.
+
+**An item a stage is working now is not yours to touch.** That stage has the
+checkout and resolves its own conflict in the fire it is in. Two writers on
+one branch is a race this pipeline has no lock for. So skip the repair where
+the item carries a stage label **and** a claim that reads `state=held` and is
+fresh by the law's claim-freshness bound. Say so in the report. Skip it too
+on an item carrying `pipeline/hold` or `pipeline/stuck`.
+
+**A resolution on an item carrying `ready-for-human` moves a head the round
+already passed.** The label stays. No routine removes it, and your merge
+does not send the owner's item back into the machine. Read the check runs on
+the new head through the API, and write their state into the same comment as
+the resolution, so the owner reads one event rather than two. A check that
+now fails is named there. Do not ask for a fresh code-review round: that
+round is per head, and the head that moved is your own merge.
+
+Then apply the first row that matches, and only the first:
 
 | What you find | What you do |
 | :-- | :-- |
 | `pipeline/hold` | nothing at all, one report line. It is the owner's freeze |
-| `pipeline/stuck` | straighten it first, below; where it also carries `pipeline/code-review` or `ready-for-human`, take it out of draft; then one report line |
+| `pipeline/stuck` | straighten it first, below; then one report line. It is not flipped and no stage is re-entered on it |
 | `pipeline/code-review` | duty two, below, which takes it out of draft first |
 | `ready-for-human` | take it out of draft where it is still one, then one report line. The item is the owner's |
+| an `unlabeled` event removing `pipeline/stuck` or `pipeline/hold`, newer than the item's newest machine marker | the owner has settled it: re-enter the stage label the item still carries, and say which removal you acted on, by label and time |
+| a `pipeline-stop` marker whose `key=` equals the key its `key_kind=` names, computed now | the last-gate case, below: try your own repairs, and `pipeline/stuck` only where none of them moves it |
 | `spec/approved`, a claim released, and a `pipeline-progress` line with `slices` at 3 or above and `slices_day` before today | re-enter `spec/approved` |
 | exactly one stage label, and a claim `state=released` whose `at=` is older than twelve hours | re-enter that stage |
 | exactly one stage label, and a claim released or absent, younger than that | nothing, the stage owns it |
-| exactly one stage label, and a claim `state=held` older than two hours | re-enter that stage |
-| exactly one stage label, and a claim `state=held` younger than two hours | nothing, one report line, the fire that holds it is still running |
+| exactly one stage label, and a claim `state=held` that the law's claim-freshness bound calls stale | re-enter that stage |
+| exactly one stage label, and a claim `state=held` still fresh by that bound | nothing, one report line, the fire that holds it is still running |
 | no stage label and no terminal label | re-enter the stage the state block implies |
 | two or more stage labels | remove all but the one the state block implies, then re-enter it |
 
@@ -71,7 +101,9 @@ draft comes off in duty two, the moment the Implementer's work is done, so a
 fire that died before that write leaves an item whose implementation is
 written still sitting as a draft. Flip it and say so in the report. An item
 already out of draft is a report line and nothing else. No flip counts against
-the limit below: it is one field, not a repair of state.
+the limit below: it is one field, not a repair of state. A stuck item is
+never flipped: the pipeline stopping is its own branch, and the label is the
+signal.
 
 **Where no row matches, the item is left exactly as it is**, with one report
 line naming the labels and the claim you found. The table is the whole of your
@@ -87,12 +119,47 @@ sequence breaks that promise, with nothing else in the machine to notice.
 
 So on a stuck item, read the state block and the labels and fix only this:
 where no stage label stands, apply the one the state block implies; where two
-or more stand, remove all but that one; and where it carries
-`pipeline/code-review` or `ready-for-human`, the implementation is written, so
-take it out of draft as duty two would have. Never re-enter a stage on a stuck
-item — that would emit a wake event on work the owner has parked. Then one
-report line naming what the item carried and what you left it carrying, so the
-owner can clear it in one act as the law says he should.
+or more stand, remove all but that one. Nothing else — the draft field is not
+touched in either direction, and you never re-enter a stage on a stuck item,
+which would emit a wake event on work the owner has parked. Then one report line naming what the item carried and
+what you left it carrying, so the owner can clear it in one act as the law
+says he should.
+
+**The last-gate case, and the only one that ends in `pipeline/stuck`.** A
+stage that can carry an item no further does not label its own dead end. It
+records a stop, leaves its stage label where it is, and ends. The law names
+the two kinds and what each writes **beside the marker**: a **bound reached**
+moves a counter and writes a completion marker where the stopping role has
+one, and a **condition it cannot work around** writes neither, because no
+counter counts one. Both write the marker. Either way the item reads as a
+stage label, a released claim, and a `pipeline-stop`.
+
+Both kinds arrive here. A stop with no counter behind it is not a lesser
+stop: the Spec Writer meeting a source that is not a file, the Reviewer
+meeting a state block that will not parse, the Implementer meeting a
+forbidden path in its plan, and any role whose marker will not stay written
+all reach this row, and none of them has a bound to show.
+
+**Read the stop from its marker and never from the prose of a comment.** The
+newest `pipeline-stop` on the item carries `key_kind=` and `key=`. Compute
+the key that `key_kind=` names, and compare it with `key=`. Both fields are
+needed and neither is guessable from the other: a spec hash, a tree id and a
+head sha are all twelve hex characters, so a marker carrying the value alone
+would be compared against whichever key you happened to compute.
+
+Try your own repairs first and name each in the comment. A key that moved
+since the marker spends the stop, so re-enter the stage instead. A conflict
+you resolved above moves the tree id and the head sha and leaves the spec
+hash where it was, so it spends a stop keyed on either of those and none
+keyed on the spec hash. A counter the record contradicts is corrected from
+the record.
+
+Only where none of that moves the item do you apply `pipeline/stuck`, beside
+the stage label the item already carries, with one comment naming the bound,
+the content it was reached at, every repair you tried and what each returned,
+and the decision you need from the owner. You are the last gate before a
+person: every stick a repair of yours could have avoided is his attention
+spent on the machine's own mess.
 
 The slice-cap row below is the day's cap, not a dead fire. The Implementer
 stops there and does not re-enter itself, and the sweep is what brings it
@@ -120,8 +187,8 @@ line, by its `at=`:
 | `role=gate`, `outcome=rejected` | `spec/needs-work` |
 | `role=implementer` | `spec/approved` |
 
-A claim held for over two hours is a fire that died. Re-entering is what
-brings it back. Do not release another routine's claim: the stage's own
+A claim the law's claim-freshness bound calls stale is a fire that died.
+Re-entering is what brings it back. Do not release another routine's claim: the stage's own
 staleness rule is what lets it past.
 
 **You are the routine that repairs across roles.** Every routine now audits
@@ -136,10 +203,9 @@ sweep that keeps writing.
 
 ## Duty two: the code-review round
 
-The repository runs CodeRabbit. The law records what it does and what was
-measured. Two facts decide this duty: it does not review a draft
-automatically, which is one more reason the draft comes off here, and the
-command that asks it to is per head.
+The repository runs an automated reviewer, and the law says what this machine
+does with it. Two things decide this duty: the draft comes off before the
+round is asked for, and the round is asked per head.
 
 **Take the item out of draft, before anything else in this duty.**
 `pipeline/code-review` means the Implementer has finished: the work is
@@ -159,7 +225,10 @@ line and compare its `head=` with the pull request's current head:
 before you post rather than after:
 
 1. Write `pipeline-cr head=<12 hex> outcome=asking findings=0 at=<UTC>` into
-   the state block, increment `cr_rounds`, and read the body back.
+   the state block, **set `cr_rounds` to 1** — this head has had no round, and
+   the counter counts rounds on one head — and read the body back. Setting it
+   belongs to this case alone: a retry at a head the marker already names
+   increments instead, or the counter would never reach its bound.
 2. Post one comment whose whole body is `@coderabbitai review`. Nothing else
    may go in that body: the request is a command to a client, not a record.
 3. Rewrite the marker to `outcome=asked`, keeping `at=`, and read the body
@@ -178,12 +247,33 @@ landed: rewrite the marker to `outcome=asked` and post nothing. Where none is,
 post the request now and rewrite to `outcome=asked`. Either way `cr_rounds`
 stays as it is — that round is this head's, and it was counted once.
 
+**The same head, `outcome=returned` or `outcome=clean`.** This head has had
+its round and you routed it. The item is back under `pipeline/code-review`
+without the head moving, which means the Implementer answered the findings
+without a commit — it may, since a finding that widens the item is refused
+rather than worked. There is nothing to ask for and nothing new to read.
+
+- `outcome=returned`: the findings stand unanswered in code. Remove
+  `pipeline/code-review`, apply `spec/approved`, and comment naming the
+  findings the Implementer declined and that the head did not move. It
+  answers them on the record or the round comes back here.
+- `outcome=clean`: the round already passed. Remove `pipeline/code-review`,
+  apply `ready-for-human`, and stop, exactly as the clean branch below does.
+
+Without these two the item sits under `pipeline/code-review` matching no
+case, and row three sends it back to this duty on every fire, so no later row
+can ever reach it.
+
 **The same head, `outcome=asked`.** The round is in flight. Look for a review
 posted after that `at=`:
 
-- No review yet, and less than an hour has passed. Leave it. The free tier
-  allows one included review an hour, so this is ordinary.
-- No review yet, and more than a day has passed. Ask once more, as above.
+- No review yet, and less than an hour has passed. Leave it. A round takes
+  as long as it takes and an hour is not yet late.
+- No review yet, and more than a day has passed. **Test the bound below
+  first.** At `cr_rounds` of 3 or above this head has had its rounds and the
+  bound is reached; below it, ask once more — the same three writes as above,
+  except that you **increment** `cr_rounds` rather than setting it, because
+  this head has had rounds already and the counter counts them.
 - A review with at least one actionable finding. Write `outcome=returned
   findings=<n>`, remove `pipeline/code-review`, apply `spec/approved`. The
   Implementer works the findings.
@@ -198,14 +288,33 @@ finding about a file the diff does not touch are not actionable. Count only
 what is.
 
 **After you have asked**, finish the rest of this fire's work, then read the
-item's comments once more before you end. A round trip of about nine minutes
-was measured, so the answer often arrives inside one fire. Route it if it
-has. Leave it for tomorrow if it has not.
+item's comments once more before you end. The answer often arrives inside one
+fire. Route it if it has. Leave it for tomorrow if it has not.
 
-**The bound.** `cr_rounds` at 3 or above on an unchanged head is
-`pipeline/stuck` beside `pipeline/code-review`, with one comment saying how
-many rounds ran and what the last one said. A changed head grants a fresh
-round, per the law's bound rule.
+**The bound.** `cr_rounds` at 3 or above on an unchanged head is a bound
+reached. A changed head grants a fresh round, per the law's bound rule.
+
+Record it in the counter, in the law's `pipeline-stop` marker with
+`kind=bound`, `key_kind=head-sha` and `key=` the head sha it was reached at, and in one comment
+saying how many rounds ran and what the last one said. **You write no
+completion marker.** The law's role tokens are exactly four and the Clerk is
+not one of them, so a marker of yours would make your own implied-stage table
+return nothing for the item.
+
+Then take the item through the last-gate case above, whose repairs you have
+not yet tried here. The last gate is the same gate wherever a stop was
+reached.
+
+Where none of them moves the item, **apply `pipeline/stuck` first**, then
+remove `pipeline/code-review` and apply `spec/approved`, then name each
+repair in the comment. The order is the whole of it: `spec/approved` is the
+Implementer's wake, so applying it first would start a fire on an item you
+are one call away from parking. With the stop already on, a fire that wakes
+reads it at its own guard and exits. `pipeline/code-review`
+is not a stage label, so sticking the item beneath it would leave no stage
+label at all, and the owner's un-stick would have nothing to re-enter. The
+label you leave names the Implementer, who is who acts once the owner clears
+it.
 
 **`ready-for-human` is yours and only yours, and so is the flip out of
 draft.** No routine removes the label, no other routine ever flips a draft,
@@ -389,8 +498,9 @@ Writer which neighbouring work is deliberately not his. Omit the section
 otherwise rather than writing it empty.
 
 Seed the state block exactly like that, at the foot of the body, and read
-every line of it back. The `pipeline-done` and `pipeline-cr` lines are added
-by the routines that write them.
+every line of it back. The `pipeline-done`, `pipeline-cr` and `pipeline-stop`
+lines are added by the routines that write them, so a body without them is
+intact rather than damaged.
 
 Then:
 
@@ -458,7 +568,9 @@ brief.
   touch there, and only to remove it.
 - Never write a forbidden path. Never write anything in the tree except the
   skeleton under `.agents/specs/<N>-<slug>/`.
-- Never merge. Never put a pull request back into draft, whatever state it
+- Never merge a pull request — merging the base into an item branch to
+  resolve a conflict is not that merge. Never put a pull request back into
+  draft, whatever state it
   reaches and however a surface spells it.
 - Never post a pull-request review, and never post a review comment on the
   diff. That door is the owner's and the code review's.
@@ -468,4 +580,5 @@ brief.
 - Never open a second pipeline pull request while one is open.
 - Never rewrite pushed history. Never force-push. Never push to `main`.
 - Never create a label.
-- Never repair more than three items in one fire.
+- Never repair more than three items in one fire, a conflict resolution
+  counted as a repair like any other.

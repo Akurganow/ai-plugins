@@ -92,8 +92,8 @@ State every one of the nine in your report as run or not run, with what it
 printed. A pass is a result; a silence is not.
 
 1. **Front matter parses, everywhere.** Every `.agents/skills/*/SKILL.md` and
-   every `.claude/agents/*.md`. *Incident: on 2026-09-12 eighteen files broke
-   this at once — a `description` containing a colon and left unquoted — and
+   every `.claude/agents/*.md`. *Incident: eighteen files broke this at once,
+   each carrying a `description` with a colon in it and no quotes, and
    Claude Code silently skips an agent whose YAML does not parse, so the
    system loses a role with no error anywhere.*
 
@@ -123,8 +123,8 @@ printed. A pass is a result; a silence is not.
    from the collection where that counter's number is *stated* and where it is
    merely quoted. Two documents stating it, or a quote that disagrees with the
    statement, is the finding either way. *Reason: the owner raised one bound
-   from 3 to 5 on 2026-09-12 and it had to be applied by hand in more than one
-   file. Nothing but this read catches the file that was missed.*
+   from 3 to 5, and it had to be applied by hand in more than one file.
+   Nothing but this read catches the file that was missed.*
 
 7. **The counters the machine keeps and the bounds the law describes are the
    same set.** Take the state block's counters from the law, take the counters

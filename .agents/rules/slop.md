@@ -83,9 +83,7 @@ Never a finding:
 - **The claims discipline's sentences.** The statement of what was not
   verified, the per-fact source and its kind, a date and a tag beside a
   measurement. To an outside eye these read as hedging; each is a fact.
-- **House style.** Long paragraphs that argue a point through, em-dashes,
-  bold on the load-bearing clause, a section number beside every claim
-  about the specification.
+- **A section number beside every claim about the specification.**
 - **The vendored schema.** `tools/schemas/` is a verbatim copy; its text
   belongs to its publisher.
 - **The instructions.** `.agents/**`. Read, never judged.

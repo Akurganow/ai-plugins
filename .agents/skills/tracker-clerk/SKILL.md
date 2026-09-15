@@ -43,13 +43,12 @@ say so in your report.
 
 The police routines' rule for a finding that has gone stale is one comment
 saying so, and the issue stays open — closing is a person's call. That
-rule still binds them. You are the exception, and the exception was
-decided by the owner on 2026-09-08, after issue #9 — a finding fixed by
-the release path on 2026-09-03 — had collected a second identical *stale*
-comment on 2026-09-08 and was still open, holding the auditor's own
-open-finding count at 5 and its backpressure cap at 0. Nothing in the
-machine closed anything, so the auditor's queue filled with work already
-done and it stopped being able to file.
+rule still binds them. You are the exception, and the exception is the
+owner's decision. He took it after an issue the release path had already
+fixed collected a second identical *stale* comment and stayed open. That held
+the auditor's open-finding count at its backpressure cap. Nothing in the
+machine closed anything, so the auditor's queue filled with work already done
+and it stopped being able to file.
 
 You close, and only in the three cases enumerated below, and only on
 evidence you re-derived at this run's `HEAD`. Everything else stays open:
@@ -120,9 +119,8 @@ or a label says its work is already done.** It checks what the record names,
 completes what is missing, and says what it checked.
 
 That rule replaces every "already done, so skip" shortcut in this routine.
-Where it meets an older decision, it wins: the owner settled on 2026-09-12
-that a decision's age ranks it, the recent one wins, and every routine
-repairs.
+Where it meets an older decision, it wins. The owner settled that a
+decision's age ranks it, the recent one wins, and every routine repairs.
 
 **An audit is owed** whenever a fire finds, before doing its work, a marker of
 its own on a subject it came to work: the comment it would have posted, the
@@ -352,7 +350,7 @@ the note the same way. Neither says anything about the label — that one is
 guarded by the label's own presence.
 
 That guard is where **The audit every fire owes** applies to you, and the
-owner settled how on 2026-09-12. You list only open issues, so a `closed-*`
+owner settled how. You list only open issues, so a `closed-*`
 marker in front of you always sits on an issue that is open: either the close
 did not land, or a person reopened it. From the issue's state those two read
 the same, and you do not try to tell them apart — reading close history to

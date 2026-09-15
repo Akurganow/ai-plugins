@@ -39,8 +39,8 @@ bad one is whether a reader who acts on the new sentence is right to.
 2. Prove the item is yours by the law's two positive facts.
 3. Confirm it still carries `spec/approved`.
 4. Exit if it carries `pipeline/stuck` or `pipeline/hold`.
-5. Confirm `spec/needs-work`, `spec/approved`, `pipeline/code-review` and
-   `pipeline/stuck` exist.
+5. Confirm `spec/needs-work`, `spec/approved` and `pipeline/code-review`
+   exist.
 6. Read the state block from the pull-request body.
 7. Read `slices` and `slices_day`, and apply the day's cap below.
 8. Take the claim: rewrite the block with `role=implementer state=held`.
@@ -64,9 +64,11 @@ hand you another routine's clock.
 A cap discovered after a push is a cap already broken, and a push cannot be
 taken back.
 
-**On the claim.** A claim never blocks you and never ends your fire. It is
-evidence that some fire reached this item, and nothing more. A `implementer` claim
-reading `state=held` is a fire that may have died before finishing: take it
+**On the claim.** A `implementer` claim reading `state=held` and still fresh by
+the law's claim-freshness bound is a fire that is running now: leave the item
+to it, report the fact, and end. You commit and push, so two of your fires on
+one branch is the race the lock exists for. A claim the bound calls stale is a
+fire that died, and a `state=released` claim never blocks: take either
 over under your own role, and go on to the audit the law owes. Another role's
 claim you leave exactly as it stands.
 
@@ -172,25 +174,39 @@ Write the `role=gate` marker at the end either way and read it back.
 The Writer's revision returns straight to `spec/approved`, because you
 objected and you re-check.
 
-**A second gate failure** stops the item. The order matters: the stuck label
-goes on before the Writer's wake event, or the Writer starts a fire on an
-item you are about to park.
+**A second gate failure** is the bound. You record it and you hand it no
+further.
 
 1. Set `gate_bounces=2` in the state block.
-2. Apply `pipeline/stuck`.
-3. Remove `spec/approved`.
-4. Apply `spec/needs-work`.
-5. Post both positions in one comment.
-6. Stop.
+2. Write the law's `pipeline-stop` marker with `kind=bound`,
+   `key_kind=spec-hash` and `key=` the spec hash. The gate judges the
+   specification, so its stop is keyed on the spec hash and not on the tree.
+3. Post both positions in one comment, naming the bound and that spec hash.
+4. Stop.
+
+**Leave `spec/approved` where it is.** Applying `spec/needs-work` would wake
+the Writer on an item you have just stopped, and the law's **Exiting to a
+person is not a stage's own act** puts that decision one gate later. The
+label beside the bound names who acts once the Clerk clears it.
+
+You do not apply `pipeline/stuck`, here or anywhere. A bound is recorded, and
+the Clerk decides whether the machine has anything left to try.
 
 **`gate_bounces` already at 2** is only seen after an un-stick, and follows
 the law's bound rule. A changed spec hash grants one more gate. An unchanged
-one goes straight back to `pipeline/stuck`.
+one is the same bound recorded again, and the Clerk's to stick.
 
 ## The slice loop
 
-Work on the branch as it stands. Never merge `origin/main` into it. A real
-conflict with `main` is the owner's at merge time.
+Work on the branch as it stands, and do not sync the base for tidiness. A
+base sync you did not need churns the head for nothing.
+
+**An item that does not merge is yours to resolve, before the slice.** Read
+mergeability from the API at the start of the fire. Where the head does not
+merge cleanly, merge `origin/main` into the branch and resolve it under the
+law's rule. The base wins where the two sides decided the same question
+differently. Never rebase and never force-push. Then push and carry on with
+the slice.
 
 One bounded slice per waking. A slice is what you can carry to a green local
 verification inside this fire, typically one numbered plan step.
@@ -238,7 +254,11 @@ commit. The gate checked the specification. This checks the diff:
     git diff --cached -- 'plugins/*/plugin.json' | grep -n '^[+-].*"version"'
 
 Either pipeline printing anything is a hard stop. Unstage it. If the plan
-asked for it, apply `pipeline/stuck` with a comment quoting the law.
+asked for it, record the stop the law's way: the `pipeline-stop` marker with
+`kind=condition`, `key_kind=tree-id` and `key=` the tree id, and one comment quoting the law, the
+label left where it is, and stop. The
+Clerk reads that comment on its sweep and decides whether the item is
+stuck.
 
 The first pipeline is two commands on purpose. `grep -E` is POSIX extended
 regular expressions, which have no negative lookahead, so `(?!specs/)` inside
@@ -391,10 +411,13 @@ carrying the tree id you judged and the outcome, and read it back.
 Nothing is retitled and nothing is rewritten. The pull request keeps the
 Clerk's title and body until a verdict accepts the work.
 
-A second consecutive rejection keeps `spec/approved`, adds `pipeline/stuck`,
-summarises both positions, and stops without re-entering. `judge_rejects` at
-2 or above follows the law's bound rule: a changed tree id grants one more
-trio, an unchanged one goes back to `pipeline/stuck`. Any accepted verdict
+A second consecutive rejection keeps `spec/approved`, writes the law's
+`pipeline-stop` marker with `kind=bound`, `key_kind=tree-id` and `key=` the
+tree id, summarises
+both positions in one comment naming the bound and that tree id, and stops
+without re-entering. `judge_rejects` at 2 or above follows the
+law's bound rule: a changed tree id grants one more trio, an unchanged one is
+recorded again and left to the Clerk. Any accepted verdict
 resets `judge_rejects` to 0.
 
 You may not overrule the judge, soften a rejection, or hand off on anything
@@ -411,8 +434,11 @@ accepted is the tree the code review and the owner will read.
        git rev-parse HEAD^{tree} | cut -c1-12
        git rev-parse HEAD
 
-   The remote head sha must equal your local `HEAD`. Either mismatch is
-   `pipeline/stuck` with a comment naming both values. Step 6 can send a fire
+   The remote head sha must equal your local `HEAD`. Either mismatch is a
+   stop, recorded the law's way: the `pipeline-stop` marker with
+   `kind=condition`, `key_kind=tree-id` and `key=` the tree id, and one comment naming both
+   values, the label left where it is, and the fire ends there. The
+   Clerk reads that comment on its sweep. Step 6 can send a fire
    back to step 4, which pushes a new commit and therefore a new tree, so
    this is the only moment the value can be trusted.
 
@@ -469,10 +495,10 @@ accepted is the tree the code review and the owner will read.
 6. **Hand on the baton, last.** Re-read the labels. Remove `spec/approved`
    first and apply `pipeline/code-review` second. Read the label set back.
 
-`pipeline/code-review` wakes nothing. The Clerk's next sweep sees it, asks
-the automated review for a round on that head, and on the round after that
-either sends the findings back to you as `spec/approved` or applies
-`ready-for-human` and stops.
+`pipeline/code-review` wakes nothing. The Clerk's next sweep sees it and takes
+the item out of draft. It asks the automated code review for a round on that
+head. On the round after that it either sends the findings back to you as
+`spec/approved`, or applies `ready-for-human` and stops.
 
 You never apply `ready-for-human`, and you never take a pull request out of
 draft.
@@ -515,17 +541,20 @@ The law's table says which field to fetch for each kind of write.
   which you delete on the final slice.
 - Never apply `ready-for-human`. Never take a pull request out of draft,
   however a surface spells it. Both belong to the Clerk.
-- Never merge. Never close or reopen anything.
+- Never merge a pull request. Never close or reopen anything. Merging the
+  base into the item branch to resolve a conflict is not that merge.
 - Never post a pull-request review, and never post a review comment on the
   diff. That door is the owner's and the code review's.
 - Never act on an item that fails the positive discriminator.
 - Never act on an item carrying `pipeline/stuck` or `pipeline/hold`.
-- Never rewrite pushed history. Never force-push. Never push to `main`. Never
-  merge `origin/main` into the branch.
+- Never rewrite pushed history. Never force-push. Never push to `main`.
+  Merge `origin/main` into the branch for one purpose only: resolving a
+  conflict that stops the item.
 - Never hand off without a quoted accepted verdict, and never overrule or
   soften a rejection.
 - Never run more than three slices on one item in one UTC day, and never
   batch two slices into one fire.
-- Apply only `spec/needs-work`, `pipeline/code-review`, `pipeline/stuck`, and
-  `spec/approved` through the re-entry primitive on yourself. Remove only
+- Apply only `spec/needs-work`, `pipeline/code-review`, and `spec/approved`
+  through the re-entry primitive on yourself. Never `pipeline/stuck`, which
+  is the Clerk's alone. Remove only
   `spec/approved`. Never create a label.

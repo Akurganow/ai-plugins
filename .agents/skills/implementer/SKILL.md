@@ -250,8 +250,10 @@ commit. The gate checked the specification. This checks the diff:
     git diff --cached -- 'plugins/*/plugin.json' | grep -n '^[+-].*"version"'
 
 Either pipeline printing anything is a hard stop. Unstage it. If the plan
-asked for it, record it in one comment quoting the law and stop. The Clerk
-decides whether the item is stuck.
+asked for it, record the stop the law's way: one comment quoting the law and
+naming the tree id it was met at, the label left where it is, and stop. The
+Clerk reads that comment on its sweep and decides whether the item is
+stuck.
 
 The first pipeline is two commands on purpose. `grep -E` is POSIX extended
 regular expressions, which have no negative lookahead, so `(?!specs/)` inside
@@ -425,8 +427,10 @@ accepted is the tree the code review and the owner will read.
        git rev-parse HEAD^{tree} | cut -c1-12
        git rev-parse HEAD
 
-   The remote head sha must equal your local `HEAD`. Either mismatch is one
-   comment naming both values, and the fire ends there. Step 6 can send a fire
+   The remote head sha must equal your local `HEAD`. Either mismatch is a
+   stop, recorded the law's way: one comment naming both values and the tree
+   id it was met at, the label left where it is, and the fire ends there. The
+   Clerk reads that comment on its sweep. Step 6 can send a fire
    back to step 4, which pushes a new commit and therefore a new tree, so
    this is the only moment the value can be trusted.
 

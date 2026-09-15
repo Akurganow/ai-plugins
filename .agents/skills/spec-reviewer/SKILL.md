@@ -49,9 +49,11 @@ would break a correct implementation. Taste is dropped and never reported.
 
 **On the counter.** The bound turns on `review_rounds`, so you read it before
 anything else can spend it. A state block that is absent, or a
-`review_rounds` that will not parse is one comment saying so, the label left
-as it is, and a report line. A bound you cannot count is a bound you do not
-have. What happens to such an item is the Clerk's to decide.
+`review_rounds` that will not parse is a stop, recorded the law's way: one
+comment saying which of the two it is and the spec hash it was met at, the
+label left as it is, and a report line. A bound you cannot count is a bound
+you do not have. The Clerk reads that comment on its sweep and decides
+whether the item is stuck.
 
 **On the claim.** A claim never blocks you and never ends your fire. It is
 evidence that some fire reached this item, and nothing more. A `spec-reviewer` claim

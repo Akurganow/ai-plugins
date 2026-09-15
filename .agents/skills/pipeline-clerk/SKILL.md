@@ -83,10 +83,10 @@ Then apply the first row that matches, and only the first:
 | What you find | What you do |
 | :-- | :-- |
 | `pipeline/hold` | nothing at all, one report line. It is the owner's freeze |
-| `pipeline/stuck` | straighten it first, below; then one report line. It is not flipped, not re-entered, not relabelled |
+| `pipeline/stuck` | straighten it first, below; then one report line. It is not flipped and no stage is re-entered on it |
 | `pipeline/code-review` | duty two, below, which takes it out of draft first |
 | `ready-for-human` | take it out of draft where it is still one, then one report line. The item is the owner's |
-| a bound recorded at content that has not moved | the last-gate case, below: try your own repairs, and `pipeline/stuck` only where none of them moves it |
+| a stop recorded at content that has not moved | the last-gate case, below: try your own repairs, and `pipeline/stuck` only where none of them moves it |
 | `spec/approved`, a claim released, and a `pipeline-progress` line with `slices` at 3 or above and `slices_day` before today | re-enter `spec/approved` |
 | exactly one stage label, and a claim `state=released` whose `at=` is older than twelve hours | re-enter that stage |
 | exactly one stage label, and a claim released or absent, younger than that | nothing, the stage owns it |
@@ -125,20 +125,29 @@ what you left it carrying, so the owner can clear it in one act as the law
 says he should.
 
 **The last-gate case, and the only one that ends in `pipeline/stuck`.** A
-stage that reaches a bound does not label its own dead end: it records the
-bound — the counter, its completion marker, one comment naming which bound
-and at what content — leaves its stage label where it is, and ends. So the
-item reads as a stage label, a released claim, and a bound recorded at
-content that has not moved since.
+stage that can carry an item no further does not label its own dead end. It
+records a stop, leaves its stage label where it is, and ends. The law names
+the two kinds and what each writes: a **bound reached** carries a counter, a
+completion marker and a comment, and a **condition it cannot work around**
+carries a comment alone, because no counter counts one. Either way the item
+reads as a stage label, a released claim, and a stop comment naming the
+content it was met at.
 
-Try your own repairs first and name each in the comment. A bound is keyed on
-content, and each bound has its own key: the spec hash for `review_rounds`
-and `gate_bounces`, the tree id for `judge_rejects`. Compare the record
-against that key alone. A key that moved since the record spends the bound,
-so re-enter the stage instead. A conflict you resolved above moves the tree
-id and leaves the spec hash where it was, so it spends a `judge_rejects`
-bound and no other. A counter the record contradicts is corrected from the
-record.
+Both kinds arrive here. A stop with no counter behind it is not a lesser
+stop: the Spec Writer meeting a source that is not a file, the Reviewer
+meeting a state block that will not parse, the Implementer meeting a
+forbidden path in its plan, and any role whose marker will not stay written
+all reach this row, and none of them has a bound to show.
+
+Try your own repairs first and name each in the comment. A stop is keyed on
+content, and each has its own key: the spec hash for `review_rounds`,
+`gate_bounces` and any stop inside the specification stages; the tree id for
+`judge_rejects`, `cr_rounds` and any stop inside the implementation. Compare
+the record against that key alone. A key that moved since the record spends
+the stop, so re-enter the stage instead. A conflict you resolved above moves
+the tree id and leaves the spec hash where it was, so it spends the two
+bounds keyed on the tree id and no stop keyed on the spec hash. A counter the
+record contradicts is corrected from the record.
 
 Only where none of that moves the item do you apply `pipeline/stuck`, beside
 the stage label the item already carries, with one comment naming the bound,
@@ -189,10 +198,9 @@ sweep that keeps writing.
 
 ## Duty two: the code-review round
 
-The repository runs CodeRabbit. The law records what it does and what was
-measured. Two facts decide this duty: it does not review a draft
-automatically, which is one more reason the draft comes off here, and the
-command that asks it to is per head.
+The repository runs an automated reviewer, and the law says what this machine
+does with it. Two things decide this duty: the draft comes off before the
+round is asked for, and the round is asked per head.
 
 **Take the item out of draft, before anything else in this duty.**
 `pipeline/code-review` means the Implementer has finished: the work is
@@ -251,19 +259,29 @@ finding about a file the diff does not touch are not actionable. Count only
 what is.
 
 **After you have asked**, finish the rest of this fire's work, then read the
-item's comments once more before you end. A round trip of about nine minutes
-was measured, so the answer often arrives inside one fire. Route it if it
-has. Leave it for tomorrow if it has not.
+item's comments once more before you end. The answer often arrives inside one
+fire. Route it if it has. Leave it for tomorrow if it has not.
 
 **The bound.** `cr_rounds` at 3 or above on an unchanged head is a bound
 reached. A changed head grants a fresh round, per the law's bound rule.
 
-Record it the way every stage records one: the counter, the completion
-marker, and one comment saying how many rounds ran and what the last one
-said. Then take the item through the last-gate case above, whose repairs you
-have not yet tried here. Apply `pipeline/stuck` beside `pipeline/code-review`
-only where none of them moves the item, and name each repair in the comment.
-The last gate is the same gate wherever the bound was reached.
+Record it in the counter and in one comment saying how many rounds ran and
+what the last one said, naming the head it was reached at. **You write no
+completion marker.** The law's role tokens are exactly four and the Clerk is
+not one of them, so a marker of yours would make your own implied-stage table
+return nothing for the item.
+
+Then take the item through the last-gate case above, whose repairs you have
+not yet tried here. The last gate is the same gate wherever a stop was
+reached.
+
+Where none of them moves the item, **leave the item routable before you stick
+it**: remove `pipeline/code-review`, apply `spec/approved`, then apply
+`pipeline/stuck`, and name each repair in the comment. `pipeline/code-review`
+is not a stage label, so sticking the item beneath it would leave no stage
+label at all, and the owner's un-stick would have nothing to re-enter. The
+label you leave names the Implementer, who is who acts once the owner clears
+it.
 
 **`ready-for-human` is yours and only yours, and so is the flip out of
 draft.** No routine removes the label, no other routine ever flips a draft,

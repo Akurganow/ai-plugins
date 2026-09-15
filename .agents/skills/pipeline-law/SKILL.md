@@ -32,7 +32,7 @@ Where this file and a role disagree, this file wins.
 
 | Routine | Woken by | Writes |
 | :-- | :-- | :-- |
-| Clerk | a daily schedule | the skeleton branch, its draft pull request, the flip out of draft, the code-review round |
+| Clerk | a daily schedule | the skeleton branch, its draft pull request, the flip out of draft, the handover round |
 | Spec Writer | `spec/needs-work` applied | `spec.md` and `plan.md` |
 | Spec Reviewer | `spec/awaiting-review` applied | comments only |
 | Implementer | `spec/approved` applied | the implementation |
@@ -51,14 +51,14 @@ next item's branch would be cut from a `main` that does not carry it.
 
 No routine merges. The Clerk alone takes a pull request out of draft, and it
 does so the moment the Implementer is finished — when it first sees
-`pipeline/code-review` — not at the end of the review round. **The draft is
+`pipeline/handover` — not at the end of the review round. **The draft is
 for work the machine has not written yet, and nothing more.** Once the
 implementation is in, the owner can read the item whenever he looks, so he is
 never handed a draft. Nothing puts a pull request back into draft afterwards,
 whatever it goes on to carry, and **nothing that waits on a person is a
 draft**: a stuck item comes out for the same reason a finished one does,
 wherever in the pipeline it stopped, because an item he cannot see is an item
-that waits for ever. An item carrying `pipeline/code-review`,
+that waits for ever. An item carrying `pipeline/handover`,
 `ready-for-human` or `pipeline/stuck` while still a draft is a fire that died
 before that write, and the Clerk's sweep flips it. `spec.md` and `plan.md`
 live only on the branch. The Implementer's final slice deletes them, so they
@@ -75,7 +75,7 @@ moment it exists.
 | `spec/needs-work` | the Writer | the spec needs writing or revising |
 | `spec/awaiting-review` | the Reviewer | the spec is written and unread |
 | `spec/approved` | the Implementer | the spec passed, or findings came back |
-| `pipeline/code-review` | nothing | the implementation is written, the item is out of draft, the automated review has it |
+| `pipeline/handover` | nothing | the implementation is written, the item is out of draft, the Clerk's handover round has it |
 | `ready-for-human` | nothing | the machine is finished; the item came out of draft when the implementation landed |
 | `pipeline/stuck` | nothing | a bound was reached, a person must look, and the item is out of draft so that he can |
 | `pipeline/hold` | nothing | frozen by the owner |
@@ -108,7 +108,7 @@ that accumulates.
 | `spec/needs-work` | Clerk at promotion; Reviewer; the gate; the sweep | Writer, at the end of a revision; the sweep |
 | `spec/awaiting-review` | Writer; the sweep | Reviewer; the sweep |
 | `spec/approved` | Reviewer; Writer after a gate bounce; Implementer re-entering itself; Clerk returning findings; the sweep | Implementer; the gate; the sweep |
-| `pipeline/code-review` | Implementer, last, on an accepted verdict; the sweep | Clerk, when the review comes back |
+| `pipeline/handover` | Implementer, last, on an accepted verdict; the sweep | Clerk, when the handover round ends |
 | `ready-for-human` | Clerk, and only the Clerk | nobody; the owner alone |
 | `pipeline/stuck` | Reviewer; the gate; Implementer; any routine on a marker that will not stay written; the sweep | the owner |
 | `pipeline/hold` | the owner | the owner |

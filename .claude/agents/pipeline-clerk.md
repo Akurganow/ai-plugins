@@ -1,6 +1,6 @@
 ---
 name: pipeline-clerk
-description: "Caretake the delivery pipeline: sweep its open pull requests for dead fires and repair them, straighten a stuck item's labels, run the automated code-review round, and take one new finding into a skeleton branch and draft pull request. Use for the pipeline's scheduled run."
+description: "Caretake the delivery pipeline: sweep its open pull requests for dead fires and repair them, straighten a stuck item's labels, run the handover round, and take one new finding into a skeleton branch and draft pull request. Use for the pipeline's scheduled run."
 model: inherit
 skills: [pipeline-law, pipeline-clerk]
 ---

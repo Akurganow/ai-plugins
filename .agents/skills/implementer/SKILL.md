@@ -39,8 +39,8 @@ bad one is whether a reader who acts on the new sentence is right to.
 2. Prove the item is yours by the law's two positive facts.
 3. Confirm it still carries `spec/approved`.
 4. Exit if it carries `pipeline/stuck` or `pipeline/hold`.
-5. Confirm `spec/needs-work`, `spec/approved`, `pipeline/handover` and
-   `pipeline/stuck` exist.
+5. Confirm `spec/needs-work`, `spec/approved` and `pipeline/handover`
+   exist.
 6. Read the state block from the pull-request body.
 7. Read `slices` and `slices_day`, and apply the day's cap below.
 8. Take the claim: rewrite the block with `role=implementer state=held`.
@@ -177,15 +177,19 @@ goes on before the Writer's wake event, or the Writer starts a fire on an
 item you are about to park.
 
 1. Set `gate_bounces=2` in the state block.
-2. Apply `pipeline/stuck`.
-3. Remove `spec/approved`.
-4. Apply `spec/needs-work`.
-5. Post both positions in one comment.
-6. Stop.
+2. Remove `spec/approved`.
+3. Apply `spec/needs-work`.
+4. Post both positions in one comment, naming the bound and the spec hash it
+   was reached at.
+5. Stop.
+
+You do not apply `pipeline/stuck`, here or anywhere: a bound is recorded, and
+the Clerk — the last gate before a person — decides whether the machine has
+anything left to try.
 
 **`gate_bounces` already at 2** is only seen after an un-stick, and follows
 the law's bound rule. A changed spec hash grants one more gate. An unchanged
-one goes straight back to `pipeline/stuck`.
+one is the same bound recorded again, and the Clerk's to stick.
 
 ## The slice loop
 
@@ -245,7 +249,8 @@ commit. The gate checked the specification. This checks the diff:
     git diff --cached -- 'plugins/*/plugin.json' | grep -n '^[+-].*"version"'
 
 Either pipeline printing anything is a hard stop. Unstage it. If the plan
-asked for it, apply `pipeline/stuck` with a comment quoting the law.
+asked for it, record it in one comment quoting the law and stop; the Clerk
+decides whether the item is stuck.
 
 The first pipeline is two commands on purpose. `grep -E` is POSIX extended
 regular expressions, which have no negative lookahead, so `(?!specs/)` inside
@@ -398,10 +403,11 @@ carrying the tree id you judged and the outcome, and read it back.
 Nothing is retitled and nothing is rewritten. The pull request keeps the
 Clerk's title and body until a verdict accepts the work.
 
-A second consecutive rejection keeps `spec/approved`, adds `pipeline/stuck`,
-summarises both positions, and stops without re-entering. `judge_rejects` at
-2 or above follows the law's bound rule: a changed tree id grants one more
-trio, an unchanged one goes back to `pipeline/stuck`. Any accepted verdict
+A second consecutive rejection keeps `spec/approved`, summarises both
+positions in one comment naming the bound and the tree id it was reached at,
+and stops without re-entering. `judge_rejects` at 2 or above follows the
+law's bound rule: a changed tree id grants one more trio, an unchanged one is
+recorded again and left to the Clerk. Any accepted verdict
 resets `judge_rejects` to 0.
 
 You may not overrule the judge, soften a rejection, or hand off on anything
@@ -418,8 +424,8 @@ accepted is the tree the code review and the owner will read.
        git rev-parse HEAD^{tree} | cut -c1-12
        git rev-parse HEAD
 
-   The remote head sha must equal your local `HEAD`. Either mismatch is
-   `pipeline/stuck` with a comment naming both values. Step 6 can send a fire
+   The remote head sha must equal your local `HEAD`. Either mismatch is one
+   comment naming both values, and the fire ends there. Step 6 can send a fire
    back to step 4, which pushes a new commit and therefore a new tree, so
    this is the only moment the value can be trusted.
 
@@ -536,6 +542,7 @@ The law's table says which field to fetch for each kind of write.
   soften a rejection.
 - Never run more than three slices on one item in one UTC day, and never
   batch two slices into one fire.
-- Apply only `spec/needs-work`, `pipeline/handover`, `pipeline/stuck`, and
-  `spec/approved` through the re-entry primitive on yourself. Remove only
+- Apply only `spec/needs-work`, `pipeline/handover`, and `spec/approved`
+  through the re-entry primitive on yourself. Never `pipeline/stuck`, which
+  is the Clerk's alone. Remove only
   `spec/approved`. Never create a label.

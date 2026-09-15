@@ -40,8 +40,8 @@ may be written at all.
 2. Prove the item is yours by the law's two positive facts.
 3. Confirm it still carries `spec/needs-work`.
 4. Exit if it carries `pipeline/stuck` or `pipeline/hold`.
-5. Confirm `spec/awaiting-review`, `spec/approved` and `pipeline/stuck`
-   exist. A missing name is a hard stop.
+5. Confirm `spec/awaiting-review` and `spec/approved` exist. A missing name
+   is a hard stop.
 6. Read the state block from the pull-request body.
 7. Take the claim: rewrite the block with `role=spec-writer state=held`.
 8. Check out the branch, per your routine's clone sequence.
@@ -136,8 +136,9 @@ Three cases end an item here rather than in implementation:
 2. What they ask for is a forbidden path.
 3. What they ask for is not a file at all, such as a repository setting.
 
-Any of the three is `pipeline/stuck` beside `spec/needs-work`, with one
-comment naming which of the three it is.
+Any of the three is recorded in one comment naming which of the three it is,
+with `spec/needs-work` left where it is, and the fire ends there. The Clerk
+decides whether the item is stuck.
 
 Do not write a specification that changes nothing. The Implementer's diff
 check would fail on it, and its instruction on failure is to fix and push
@@ -291,9 +292,10 @@ second, and read the label set back.
 | a revision after a gate bounce | `spec/needs-work` | `spec/approved` |
 
 **The bound.** Read `review_rounds` from the state block. At 5 or above, do
-not hand on. Apply `pipeline/stuck` beside `spec/needs-work`. Post one
-comment setting out both positions: what the Reviewer keeps asking for, and
-why you have not written it.
+not hand on. Record the bound in one comment setting out both positions —
+what the Reviewer keeps asking for, why you have not written it, and the spec
+hash it was reached at — and stop. You never apply `pipeline/stuck`; the
+Clerk is the last gate and decides that.
 
 `spec/needs-work` stays, because it names you as the routine that acts once
 the owner has settled it.
@@ -325,8 +327,9 @@ the owner has settled it.
 - Never act on an item that fails the positive discriminator.
 - Never act on an item carrying `pipeline/stuck` or `pipeline/hold`.
 - Never rewrite pushed history. Never force-push. Never push to `main`.
-- Apply only `spec/awaiting-review`, `spec/approved` or `pipeline/stuck`.
-  Remove only `spec/needs-work`. Never create a label.
+- Apply only `spec/awaiting-review` or `spec/approved`. Never
+  `pipeline/stuck`, which is the Clerk's alone. Remove only
+  `spec/needs-work`. Never create a label.
 - Never increment `review_rounds`.
 - Never leave the item without a stage label, outside the one-call window
   inside the handoff.

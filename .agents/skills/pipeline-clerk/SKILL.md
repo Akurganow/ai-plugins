@@ -76,7 +76,7 @@ Then apply the first row that matches, and only the first:
 | What you find | What you do |
 | :-- | :-- |
 | `pipeline/hold` | nothing at all, one report line. It is the owner's freeze |
-| `pipeline/stuck` | straighten it first, below; take it out of draft wherever it stopped; then one report line |
+| `pipeline/stuck` | straighten it first, below; then one report line. It is not flipped, not re-entered, not relabelled |
 | `pipeline/handover` | duty two, below, which takes it out of draft first |
 | `ready-for-human` | take it out of draft where it is still one, then one report line. The item is the owner's |
 | `spec/approved`, a claim released, and a `pipeline-progress` line with `slices` at 3 or above and `slices_day` before today | re-enter `spec/approved` |
@@ -84,17 +84,18 @@ Then apply the first row that matches, and only the first:
 | exactly one stage label, and a claim released or absent, younger than that | nothing, the stage owns it |
 | exactly one stage label, and a claim `state=held` older than two hours | re-enter that stage |
 | exactly one stage label, and a claim `state=held` younger than two hours | nothing, one report line, the fire that holds it is still running |
+| a bound recorded at content that has not moved | the last-gate case, below: try your own repairs, and `pipeline/stuck` only where none of them moves it |
 | no stage label and no terminal label | re-enter the stage the state block implies |
 | two or more stage labels | remove all but the one the state block implies, then re-enter it |
 
 The draft flips in this table are the repairs that are not re-entries. The
 draft comes off in duty two, the moment the Implementer's work is done, so a
 fire that died before that write leaves an item whose implementation is
-written still sitting as a draft; and a stuck item comes off wherever it
-stopped, because it waits on the owner and he does not read drafts. Flip it
-and say so in the report. An item already out of draft is a report line and
-nothing else. No flip counts against the limit below: it is one field, not a
-repair of state.
+written still sitting as a draft. Flip it and say so in the report. An item
+already out of draft is a report line and nothing else. No flip counts against
+the limit below: it is one field, not a repair of state. A stuck item is
+never flipped: the pipeline stopping is its own branch, and the label is the
+signal.
 
 **Where no row matches, the item is left exactly as it is**, with one report
 line naming the labels and the claim you found. The table is the whole of your
@@ -110,13 +111,31 @@ sequence breaks that promise, with nothing else in the machine to notice.
 
 So on a stuck item, read the state block and the labels and fix only this:
 where no stage label stands, apply the one the state block implies; where two
-or more stand, remove all but that one; and where it is still a draft, take it
-out of draft — a stuck item waits on the owner, and the law's rule is that
-nothing waiting on a person is a draft, wherever in the pipeline it stopped.
-Never re-enter a stage on a stuck item — that would emit a wake event on work
-the owner has parked. Then one report line naming what the item carried and
+or more stand, remove all but that one. Nothing else — the draft field is not
+touched in either direction, and you never re-enter a stage on a stuck item,
+which would emit a wake event on work the owner has parked. Then one report line naming what the item carried and
 what you left it carrying, so the owner can clear it in one act as the law
 says he should.
+
+**The last-gate case, and the only one that ends in `pipeline/stuck`.** A
+stage that reaches a bound does not label its own dead end: it records the
+bound — the counter, its completion marker, one comment naming which bound
+and at what content — leaves its stage label where it is, and ends. So the
+item reads as a stage label, a released claim, and a bound recorded at
+content that has not moved since.
+
+Try your own repairs first and name each in the comment. A bound is keyed on
+content, so a spec hash or tree id that moved after the record spends it:
+re-enter the stage instead. A counter the record contradicts is corrected
+from the record. A head that does not merge is resolved before the table, and
+if it was, the content has moved and the bound is spent.
+
+Only where none of that moves the item do you apply `pipeline/stuck`, beside
+the stage label the item already carries, with one comment naming the bound,
+the content it was reached at, every repair you tried and what each returned,
+and the decision you need from the owner. You are the last gate before a
+person: every stick a repair of yours could have avoided is his attention
+spent on the machine's own mess.
 
 The slice-cap row below is the day's cap, not a dead fire. The Implementer
 stops there and does not re-enter itself, and the sweep is what brings it

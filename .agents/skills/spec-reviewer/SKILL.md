@@ -39,7 +39,7 @@ would break a correct implementation. Taste is dropped and never reported.
 2. Prove the item is yours by the law's two positive facts.
 3. Confirm it still carries `spec/awaiting-review`.
 4. Exit if it carries `pipeline/stuck` or `pipeline/hold`.
-5. Confirm `spec/needs-work`, `spec/approved` and `pipeline/stuck` exist.
+5. Confirm `spec/needs-work` and `spec/approved` exist.
 6. Read the state block from the pull-request body.
 7. Read `review_rounds` out of it.
 8. Take the claim: rewrite the block with `role=spec-reviewer state=held`.
@@ -49,9 +49,9 @@ would break a correct implementation. Taste is dropped and never reported.
 
 **On the counter.** The bound turns on `review_rounds`, so you read it before
 anything else can spend it. A state block that is absent, or a
-`review_rounds` that will not parse, is `pipeline/stuck` beside
-`spec/awaiting-review` with a report line. A bound you cannot count is a bound
-you do not have.
+`review_rounds` that will not parse is one comment saying so, the label left
+as it is, and a report line. A bound you cannot count is a bound you do not
+have, and what happens to such an item is the Clerk's to decide.
 
 **On the claim.** A claim never blocks you and never ends your fire. It is
 evidence that some fire reached this item, and nothing more. A `spec-reviewer` claim
@@ -120,8 +120,8 @@ What follows depends on the outcome recorded and on the counter:
 | `outcome=accepted` | remove `spec/awaiting-review`, apply `spec/approved`, one line, no increment |
 | `outcome=rejected`, the marker carries no `round=` | record the round: increment `review_rounds` by one, rewrite the marker with `round=<the new value>`, then remove `spec/awaiting-review` and apply `spec/needs-work` |
 | `outcome=rejected`, the marker carries `round=`, and no `spec-writer` marker at this hash is newer than it | the hand-back never landed. Remove `spec/awaiting-review`, apply `spec/needs-work`, and increment nothing: this content has spent its round |
-| `outcome=rejected`, the marker carries `round=`, and a `spec-writer` marker at this hash is newer than it | the Writer has returned this content unchanged. Apply `pipeline/stuck` beside `spec/awaiting-review`, and stop |
-| `review_rounds` at 5 or above, whatever else the marker says | apply `pipeline/stuck` beside `spec/awaiting-review`, and stop |
+| `outcome=rejected`, the marker carries `round=`, and a `spec-writer` marker at this hash is newer than it | the Writer has returned this content unchanged. Record the bound in one comment naming this spec hash, leave `spec/awaiting-review` where it is, and stop |
+| `review_rounds` at 5 or above, whatever else the marker says | record the bound in one comment naming this spec hash, leave `spec/awaiting-review` where it is, and stop |
 
 **`round=` is what bounds this shortcut.** The round is recorded on the content
 rather than counted per fire, so two fires reading the same hash reach the same
@@ -284,16 +284,18 @@ An approval says in one line what you checked and that it held. An approval
 with no reasoning is indistinguishable from a routine that did not read the
 file.
 
-**The bound.** At `review_rounds` of 5 or above, do not hand on. Apply
-`pipeline/stuck` beside `spec/awaiting-review`. Post the objections, and the
-Writer's standing answer to them where one exists.
+**The bound.** At `review_rounds` of 5 or above, do not hand on. Record the
+bound in one comment naming the spec hash it was reached at, with the
+objections and the Writer's standing answer to them where one exists, and
+stop.
 
-`spec/awaiting-review` stays, because it names you as the routine that acts
-once the owner has settled it.
+**You never apply `pipeline/stuck`.** A bound is recorded, and the Clerk —
+the last gate before a person — decides whether anything the machine has left
+can move the item. `spec/awaiting-review` stays either way, because it names
+you as the routine that acts once the bound is cleared.
 
 The law keys the bound on content. A changed spec hash after an un-stick
-grants one fresh round. An unchanged one goes straight back to
-`pipeline/stuck`.
+grants one fresh round. An unchanged one is the same bound recorded again.
 
 ## Report
 
@@ -324,7 +326,8 @@ grants one fresh round. An unchanged one goes straight back to
 - Never report an objection you could not demonstrate. Never report taste. A
   round that finds nothing is a normal round, stated in one line.
 - Never review the same spec hash twice. The marker is the record.
-- Apply only `spec/approved`, `spec/needs-work` or `pipeline/stuck`. Remove
-  only `spec/awaiting-review`. Never create a label.
+- Apply only `spec/approved` or `spec/needs-work`. Never `pipeline/stuck`,
+  which is the Clerk's alone. Remove only `spec/awaiting-review`. Never
+  create a label.
 - Never leave the item without a stage label, outside the one-call window
   inside the handoff.

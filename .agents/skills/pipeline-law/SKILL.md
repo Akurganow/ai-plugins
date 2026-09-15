@@ -55,12 +55,12 @@ does so the moment the Implementer is finished — when it first sees
 for work the machine has not written yet, and nothing more.** Once the
 implementation is in, the owner can read the item whenever he looks, so he is
 never handed a draft. Nothing puts a pull request back into draft afterwards,
-whatever it goes on to carry, and **nothing that waits on a person is a
-draft**: a stuck item comes out for the same reason a finished one does,
-wherever in the pipeline it stopped, because an item he cannot see is an item
-that waits for ever. An item carrying `pipeline/handover`,
-`ready-for-human` or `pipeline/stuck` while still a draft is a fire that died
-before that write, and the Clerk's sweep flips it. `spec.md` and `plan.md`
+whatever it goes on to carry. An item carrying `pipeline/handover` or
+`ready-for-human` while still a draft is a fire that died before that write,
+and the Clerk's sweep flips it. **A stuck item is outside all of this**: the
+pipeline stopping is a branch of its own rather than a state on the way to
+the owner, and nothing flips such an item in either direction — it stays
+exactly as the stop found it. `spec.md` and `plan.md`
 live only on the branch. The Implementer's final slice deletes them, so they
 never reach `main`.
 
@@ -77,7 +77,7 @@ moment it exists.
 | `spec/approved` | the Implementer | the spec passed, or findings came back |
 | `pipeline/handover` | nothing | the implementation is written, the item is out of draft, the Clerk's handover round has it |
 | `ready-for-human` | nothing | the machine is finished; the item came out of draft when the implementation landed |
-| `pipeline/stuck` | nothing | a bound was reached, a person must look, and the item is out of draft so that he can |
+| `pipeline/stuck` | nothing | the pipeline cannot go on without a person: every agent is out, and the Clerk has already tried to repair it |
 | `pipeline/hold` | nothing | frozen by the owner |
 
 Three of these are stage labels: `spec/needs-work`, `spec/awaiting-review`,
@@ -110,7 +110,7 @@ that accumulates.
 | `spec/approved` | Reviewer; Writer after a gate bounce; Implementer re-entering itself; Clerk returning findings; the sweep | Implementer; the gate; the sweep |
 | `pipeline/handover` | Implementer, last, on an accepted verdict; the sweep | Clerk, when the handover round ends |
 | `ready-for-human` | Clerk, and only the Clerk | nobody; the owner alone |
-| `pipeline/stuck` | Reviewer; the gate; Implementer; any routine on a marker that will not stay written; the sweep | the owner |
+| `pipeline/stuck` | the Clerk, and only the Clerk, after a repair it could not make | the owner |
 | `pipeline/hold` | the owner | the owner |
 
 "The sweep" is the Clerk's. It both adds and removes, because re-entry is a
@@ -254,8 +254,14 @@ Re-entering a stage is therefore one sequence: remove the label, then apply
 it. Two callers use it: the Clerk's sweep and the Implementer's slice loop.
 It is not a licence to re-hang a label anywhere else.
 
-Exiting to a person is `pipeline/stuck` beside the one stage label naming who
-acts once the owner has settled it.
+**Exiting to a person is not a stage's own act.** A stage that reaches a
+bound records it — its completion marker, its counter, one comment naming
+which bound and at what content — leaves its stage label where it is, and
+ends. `pipeline/stuck` goes on afterwards, by the Clerk, and only where the
+Clerk's own repairs cannot move the item: the Clerk is the last gate before
+a person, and a stage that labelled its own dead end would spend the owner's
+attention on something the gate after it could have fixed. The stage label
+beside it names who acts once the bound is cleared.
 
 ### The audit every fire owes
 
@@ -483,7 +489,9 @@ Checking every line of the state block after a body write is what catches a
 lost update: two fires editing one body, the second overwriting the first.
 
 A marker absent from the returned field is written once more. One that will
-not stay is `pipeline/stuck` with a comment naming the marker and the object.
+not stay is recorded in a comment naming the marker and the object, and the
+fire ends there. Whether that becomes `pipeline/stuck` is the Clerk's, like
+every other stop.
 
 ### The owner's control surface
 
@@ -509,14 +517,21 @@ owner's review comments as the worklist.
 **The review and the merge are his.** `ready-for-human` means the machine
 stopped. It never means the work is right.
 
-**The machine stops at his door and nowhere before it.** Two states put an
-item there, and both are visible without his going to look: `ready-for-human`,
-which says the machine has nothing left to do, and `pipeline/stuck` beside a
-stage label, which says a bound was reached and names what is wanted.
-Everything else — a conflict, a dead fire, a lost label, a marker that would
-not stay written — is the machine's own to carry, and an item in one of those
-states is an item some routine still owes work to. A stop nobody can see is
-the one failure this machine may not have.
+**The machine stops in two places, and they are not the same kind of stop.**
+`ready-for-human` is the finish: the work is written, the item came out of
+draft when it was, and his review and his merge are what remain.
+**`pipeline/stuck` is the pipeline itself stopping** — no agent can carry the
+item further, and the Clerk, the last gate before a person, has already tried
+the repairs it had. Such an item is not flipped, not handed over and never
+carries `ready-for-human`, because it is not ready for anything: it stays as
+the stop found it, and the label is the whole of the signal.
+
+Everything between the two — a conflict, a dead fire, a lost label, a marker
+that would not stay written — is the machine's own to carry, and an item in
+one of those states is an item some routine still owes work to. A bound
+reached is not one of them and is not a label either: the stage records it and
+ends, and what turns a recorded bound into `pipeline/stuck` is the Clerk
+having tried and failed.
 
 ### How every bound behaves
 
@@ -526,8 +541,9 @@ All four obey the same three rules.
 1. **The test is `>=`, never `==`.** A counter can arrive above its bound
    after an un-stick or a repair, and `==` would step straight past it.
 2. **A bound is keyed on content, not on attempts.** Unchanged content at or
-   past the bound is `pipeline/stuck`. Changed content grants one fresh
-   round. The content is the spec hash for `review_rounds` and
+   past the bound is recorded and handed no further — and becomes
+   `pipeline/stuck` when the Clerk's repairs do not move it. Changed content
+   grants one fresh round. The content is the spec hash for `review_rounds` and
    `gate_bounces`, and the tree id for `judge_rejects`.
 3. **State what resets it.** `judge_rejects` resets to 0 on any accepted
    verdict. `slices` resets when `slices_day` is not today. `review_rounds`
@@ -535,7 +551,9 @@ All four obey the same three rules.
    item close.
 
 Every round after an un-stick therefore costs the owner an action, and an
-unchanged hash goes straight back to `pipeline/stuck`.
+unchanged hash is the same bound reached again — recorded again by the stage,
+and made `pipeline/stuck` again by the Clerk when its repairs do not move
+it.
 
 ### What no routine writes
 

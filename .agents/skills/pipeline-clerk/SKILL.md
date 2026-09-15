@@ -86,12 +86,13 @@ Then apply the first row that matches, and only the first:
 | `pipeline/stuck` | straighten it first, below; then one report line. It is not flipped and no stage is re-entered on it |
 | `pipeline/code-review` | duty two, below, which takes it out of draft first |
 | `ready-for-human` | take it out of draft where it is still one, then one report line. The item is the owner's |
-| a stop recorded at content that has not moved | the last-gate case, below: try your own repairs, and `pipeline/stuck` only where none of them moves it |
+| a removal of `pipeline/stuck` or `pipeline/hold` newer than the item's newest machine marker | the owner has settled it: re-enter the stage label the item still carries, and say which removal you acted on |
+| a `pipeline-stop` marker whose `key=` equals that key computed now | the last-gate case, below: try your own repairs, and `pipeline/stuck` only where none of them moves it |
 | `spec/approved`, a claim released, and a `pipeline-progress` line with `slices` at 3 or above and `slices_day` before today | re-enter `spec/approved` |
 | exactly one stage label, and a claim `state=released` whose `at=` is older than twelve hours | re-enter that stage |
 | exactly one stage label, and a claim released or absent, younger than that | nothing, the stage owns it |
-| exactly one stage label, and a claim `state=held` older than two hours | re-enter that stage |
-| exactly one stage label, and a claim `state=held` younger than two hours | nothing, one report line, the fire that holds it is still running |
+| exactly one stage label, and a claim `state=held` that the law's claim-freshness bound calls stale | re-enter that stage |
+| exactly one stage label, and a claim `state=held` still fresh by that bound | nothing, one report line, the fire that holds it is still running |
 | no stage label and no terminal label | re-enter the stage the state block implies |
 | two or more stage labels | remove all but the one the state block implies, then re-enter it |
 
@@ -139,15 +140,20 @@ meeting a state block that will not parse, the Implementer meeting a
 forbidden path in its plan, and any role whose marker will not stay written
 all reach this row, and none of them has a bound to show.
 
-Try your own repairs first and name each in the comment. A stop is keyed on
-content, and each has its own key: the spec hash for `review_rounds`,
-`gate_bounces` and any stop inside the specification stages; the tree id for
-`judge_rejects`, `cr_rounds` and any stop inside the implementation. Compare
-the record against that key alone. A key that moved since the record spends
-the stop, so re-enter the stage instead. A conflict you resolved above moves
-the tree id and leaves the spec hash where it was, so it spends the two
-bounds keyed on the tree id and no stop keyed on the spec hash. A counter the
-record contradicts is corrected from the record.
+**Read the stop from its marker and never from the prose of a comment.** The
+newest `pipeline-stop` on the item carries the key it was met at; compute
+that same key now and compare the two. A stop is keyed on content, and each
+has its own key: the spec hash for `review_rounds`, `gate_bounces` and any
+stop inside the specification stages; the tree id for `judge_rejects` and any
+stop inside the implementation; the head sha for `cr_rounds`. The marker's
+`key=` says which was used, so there is nothing to infer.
+
+Try your own repairs first and name each in the comment. A key that moved
+since the marker spends the stop, so re-enter the stage instead. A conflict
+you resolved above moves the tree id and the head sha and leaves the spec
+hash where it was, so it spends a stop keyed on either of those and none
+keyed on the spec hash. A counter the record contradicts is corrected from
+the record.
 
 Only where none of that moves the item do you apply `pipeline/stuck`, beside
 the stage label the item already carries, with one comment naming the bound,
@@ -182,8 +188,8 @@ line, by its `at=`:
 | `role=gate`, `outcome=rejected` | `spec/needs-work` |
 | `role=implementer` | `spec/approved` |
 
-A claim held for over two hours is a fire that died. Re-entering is what
-brings it back. Do not release another routine's claim: the stage's own
+A claim the law's claim-freshness bound calls stale is a fire that died.
+Re-entering is what brings it back. Do not release another routine's claim: the stage's own
 staleness rule is what lets it past.
 
 **You are the routine that repairs across roles.** Every routine now audits
@@ -220,7 +226,8 @@ line and compare its `head=` with the pull request's current head:
 before you post rather than after:
 
 1. Write `pipeline-cr head=<12 hex> outcome=asking findings=0 at=<UTC>` into
-   the state block, increment `cr_rounds`, and read the body back.
+   the state block, **set `cr_rounds` to 1** — this head has had no round, and
+   the counter counts rounds on one head — and read the body back.
 2. Post one comment whose whole body is `@coderabbitai review`. Nothing else
    may go in that body: the request is a command to a client, not a record.
 3. Rewrite the marker to `outcome=asked`, keeping `at=`, and read the body
@@ -242,8 +249,8 @@ stays as it is — that round is this head's, and it was counted once.
 **The same head, `outcome=asked`.** The round is in flight. Look for a review
 posted after that `at=`:
 
-- No review yet, and less than an hour has passed. Leave it. The free tier
-  allows one included review an hour, so this is ordinary.
+- No review yet, and less than an hour has passed. Leave it. A round takes
+  as long as it takes and an hour is not yet late.
 - No review yet, and more than a day has passed. Ask once more, as above.
 - A review with at least one actionable finding. Write `outcome=returned
   findings=<n>`, remove `pipeline/code-review`, apply `spec/approved`. The
@@ -265,8 +272,9 @@ fire. Route it if it has. Leave it for tomorrow if it has not.
 **The bound.** `cr_rounds` at 3 or above on an unchanged head is a bound
 reached. A changed head grants a fresh round, per the law's bound rule.
 
-Record it in the counter and in one comment saying how many rounds ran and
-what the last one said, naming the head it was reached at. **You write no
+Record it in the counter, in the law's `pipeline-stop` marker with
+`kind=bound` and `key=` the head sha it was reached at, and in one comment
+saying how many rounds ran and what the last one said. **You write no
 completion marker.** The law's role tokens are exactly four and the Clerk is
 not one of them, so a marker of yours would make your own implied-stage table
 return nothing for the item.
@@ -275,9 +283,12 @@ Then take the item through the last-gate case above, whose repairs you have
 not yet tried here. The last gate is the same gate wherever a stop was
 reached.
 
-Where none of them moves the item, **leave the item routable before you stick
-it**: remove `pipeline/code-review`, apply `spec/approved`, then apply
-`pipeline/stuck`, and name each repair in the comment. `pipeline/code-review`
+Where none of them moves the item, **apply `pipeline/stuck` first**, then
+remove `pipeline/code-review` and apply `spec/approved`, then name each
+repair in the comment. The order is the whole of it: `spec/approved` is the
+Implementer's wake, so applying it first would start a fire on an item you
+are one call away from parking. With the stop already on, a fire that wakes
+reads it at its own guard and exits. `pipeline/code-review`
 is not a stage label, so sticking the item beneath it would leave no stage
 label at all, and the owner's un-stick would have nothing to re-enter. The
 label you leave names the Implementer, who is who acts once the owner clears

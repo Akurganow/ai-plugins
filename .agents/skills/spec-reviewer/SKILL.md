@@ -49,9 +49,10 @@ would break a correct implementation. Taste is dropped and never reported.
 
 **On the counter.** The bound turns on `review_rounds`, so you read it before
 anything else can spend it. A state block that is absent, or a
-`review_rounds` that will not parse is a stop, recorded the law's way: one
-comment saying which of the two it is and the spec hash it was met at, the
-label left as it is, and a report line. A bound you cannot count is a bound
+`review_rounds` that will not parse is a stop, recorded the law's way: the
+`pipeline-stop` marker with `kind=condition` and `key=` the spec hash, and
+one comment saying which of the two it is, the label left as it is, and a
+report line. A bound you cannot count is a bound
 you do not have. The Clerk reads that comment on its sweep and decides
 whether the item is stuck.
 
@@ -286,10 +287,11 @@ An approval says in one line what you checked and that it held. An approval
 with no reasoning is indistinguishable from a routine that did not read the
 file.
 
-**The bound.** At `review_rounds` of 5 or above, do not hand on. Record the
-bound in one comment naming the spec hash it was reached at, with the
-objections and the Writer's standing answer to them where one exists, and
-stop.
+**The bound.** At `review_rounds` of 5 or above, do not hand on. Record it
+the law's way: the `pipeline-stop` marker with `kind=bound` and `key=` the
+spec hash, your completion marker, and one comment naming that spec hash with
+the objections and the Writer's standing answer to them where one exists.
+Then stop.
 
 **You never apply `pipeline/stuck`.** A bound is recorded, and the Clerk
 decides whether anything the machine has left can move the item.

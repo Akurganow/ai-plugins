@@ -136,9 +136,10 @@ Three cases end an item here rather than in implementation:
 2. What they ask for is a forbidden path.
 3. What they ask for is not a file at all, such as a repository setting.
 
-Any of the three is a stop, recorded the law's way: one comment naming
-which of the three it is and the spec hash it was met at, with
-`spec/needs-work` left where it is, and the fire ends there. The Clerk reads
+Any of the three is a stop, recorded the law's way: the `pipeline-stop`
+marker with `kind=condition` and `key=` the spec hash, and one comment naming
+which of the three it is, with `spec/needs-work` left where it is, and the
+fire ends there. The Clerk reads
 that comment on its sweep and decides whether the item is stuck.
 
 Do not write a specification that changes nothing. The Implementer's diff
@@ -293,9 +294,11 @@ second, and read the label set back.
 | a revision after a gate bounce | `spec/needs-work` | `spec/approved` |
 
 **The bound.** Read `review_rounds` from the state block. At 5 or above, do
-not hand on. Record the bound in one comment setting out both positions: what
-the Reviewer keeps asking for, why you have not written it, and the spec hash
-it was reached at. Then stop. You never apply `pipeline/stuck`. The Clerk is
+not hand on. Record it the law's way: the `pipeline-stop` marker with
+`kind=bound` and `key=` the spec hash, and one comment setting out both
+positions — what the Reviewer keeps asking for, why you have not written it,
+and that spec hash. You write no completion marker and touch no counter; both
+are the Reviewer's. Then stop. You never apply `pipeline/stuck`. The Clerk is
 the last gate and decides that.
 
 `spec/needs-work` stays, because it names you as the routine that acts once

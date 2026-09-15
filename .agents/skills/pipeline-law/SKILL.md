@@ -255,21 +255,31 @@ item no further **records a stop** and ends. It leaves its stage label where
 it is. The Clerk applies `pipeline/stuck` afterwards, and only where its own
 repairs cannot move the item.
 
-Two kinds of stop exist and both are recorded the same way, because the Clerk
-reads them through one sweep row.
+**Every stop writes the same marker**, whatever its kind, because the Clerk
+finds a stop by that marker and by nothing else. A Clerk that had to
+recognise a stop from the prose of a comment would take an ordinary
+rejection for a stop and miss a real one:
 
-- **A bound reached** is recorded in three places: its completion marker, its
-  counter, and one comment naming which bound and at what content.
-- **A condition the stage cannot work around** is recorded in one comment
-  naming the condition and the content it was met at. The named conditions
-  are a source that is not a file, a forbidden path in a plan or a set of
-  sources, a state block that is absent or will not parse, and a marker that
-  will not stay written. No counter moves, because none counts them.
+    <!-- pipeline-stop: role=<role> kind=<bound|condition> key=<12 hex> at=<UTC> -->
 
-**Every stop comment carries the content it was met at**, spelled as the key
-that stop is judged on: the spec hash for a stop inside the specification
-stages, the tree id for one inside the implementation. That is what lets the
-Clerk tell a stop nothing has answered from one the tree has moved past. A stage that labelled its own
+`key=` is the content the stop was met at, spelled as the key that stop is
+judged on: the spec hash for a stop inside the specification stages, the tree
+id for one inside the implementation, the head sha for `cr_rounds`. That is
+what lets the Clerk tell a stop nothing has answered from one the content has
+moved past.
+
+What each kind records **beside** the marker differs, and no rule here claims
+otherwise.
+
+- **A bound reached** also moves its counter, and writes its completion
+  marker where the stopping role has one — the gate and the Implementer do,
+  and the Clerk does not, because the law's four role tokens do not include
+  it. It posts one comment naming which bound and at what content.
+- **A condition the stage cannot work around** posts one comment naming the
+  condition and the content. No counter moves, because none counts them.
+  **Which conditions those are is each role's to name**, beside the check
+  that meets one: a closed list here would go stale the moment a role gained
+  a check or lost one. A stage that labelled its own
 dead end would spend the owner's attention on what the gate after it could
 have fixed. The stage label beside the stop names who acts once the bound is
 cleared.
@@ -385,6 +395,7 @@ rewritten whole on every change. Comments are append-only records.
     <!-- pipeline-state: item=<id> review_rounds=<n> gate_bounces=<m> judge_rejects=<k> slices=<s> cr_rounds=<c> -->
     <!-- pipeline-claim: role=<role> state=held|released at=<UTC ISO-8601> -->
     <!-- pipeline-progress: slice=<n> slices_day=<YYYY-MM-DD> predelete=<sha|none> -->
+    <!-- pipeline-stop: role=<role> kind=<bound|condition> key=<12 hex> at=<UTC> -->
     <!-- pipeline-done: role=spec-writer   hash=<12 hex> outcome=<accepted|rejected> at=<UTC> -->
     <!-- pipeline-done: role=spec-reviewer hash=<12 hex> outcome=<accepted|rejected> round=<n> at=<UTC> -->
     <!-- pipeline-done: role=gate          hash=<12 hex> outcome=<accepted|rejected> at=<UTC> -->
@@ -425,8 +436,8 @@ claim reading `state=held` and younger than that is a fire still running, and
 nothing may take the item from it. Older than that is a fire that died. A
 `state=released` claim never blocks, and a claim older than the current
 application of the label it answers to is stale whatever its age, the label
-application being the newer fact. Every role applies that test and none
-restates the number, so raising it is one edit rather than four.
+application being the newer fact. Every role applies that test by naming this
+bound and never by restating the number, so raising it is one edit.
 
 A **completion marker** keys on the content judged, so a moved head does not
 burn a round. The Reviewer and the gate key on the spec hash. The
@@ -507,9 +518,11 @@ Checking every line of the state block after a body write is what catches a
 lost update: two fires editing one body, the second overwriting the first.
 
 A marker absent from the returned field is written once more. One that will
-not stay is a stop, recorded as one: a comment naming the marker, the object
-and the content it was met at, the stage label left where it is, and the fire
-ends there. Whether that becomes `pipeline/stuck` is the Clerk's, like every
+not stay is a stop, recorded as one: the `pipeline-stop` marker with
+`kind=condition`, **in a comment of its own**, and one comment naming the
+marker that would not stay, the object and the content. Posting a fresh
+comment is the write a route that cannot rewrite one can still make, which
+is why this stop can be found like every other. Whether that becomes `pipeline/stuck` is the Clerk's, like every
 other stop.
 
 ### The owner's control surface
@@ -570,12 +583,14 @@ no content key and records no stop.
    past the bound is recorded and handed no further. It becomes
    `pipeline/stuck` when the Clerk's repairs do not move it. Changed content
    grants one fresh round. The content is the spec hash for `review_rounds` and
-   `gate_bounces`, and the tree id for `judge_rejects` and for `cr_rounds` —
-   the code-review round is asked per head, so any push moves its key.
+   `gate_bounces`, the tree id for `judge_rejects`, and the head sha for
+   `cr_rounds` — the round is asked per head and its `pipeline-cr` marker
+   stores that same head, so the bound and the marker read one identifier.
 3. **State what resets it.** `judge_rejects` resets to 0 on any accepted
-   verdict. `cr_rounds` resets to 0 on a head the item has not been reviewed
-   at, which is what makes the owner's un-stick work: he clears the stop, the
-   next push moves the head, and the round starts from nothing. `slices`
+   verdict. `cr_rounds` counts rounds on one head, so the Clerk **sets it to
+   1** rather than incrementing it when it asks a round at a head no
+   `pipeline-cr` marker names; a new head therefore starts from nothing
+   without anybody remembering to reset it. `slices`
    resets when `slices_day` is not today. `review_rounds` and `gate_bounces`
    never reset. The owner clears them by hand, or lets the item close.
 

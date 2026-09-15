@@ -176,9 +176,10 @@ objected and you re-check.
 further.
 
 1. Set `gate_bounces=2` in the state block.
-2. Post both positions in one comment, naming the bound and the spec hash it
-   was reached at.
-3. Stop.
+2. Write the law's `pipeline-stop` marker with `kind=bound` and `key=` the
+   spec hash.
+3. Post both positions in one comment, naming the bound and that spec hash.
+4. Stop.
 
 **Leave `spec/approved` where it is.** Applying `spec/needs-work` would wake
 the Writer on an item you have just stopped, and the law's **Exiting to a
@@ -250,8 +251,9 @@ commit. The gate checked the specification. This checks the diff:
     git diff --cached -- 'plugins/*/plugin.json' | grep -n '^[+-].*"version"'
 
 Either pipeline printing anything is a hard stop. Unstage it. If the plan
-asked for it, record the stop the law's way: one comment quoting the law and
-naming the tree id it was met at, the label left where it is, and stop. The
+asked for it, record the stop the law's way: the `pipeline-stop` marker with
+`kind=condition` and `key=` the tree id, and one comment quoting the law, the
+label left where it is, and stop. The
 Clerk reads that comment on its sweep and decides whether the item is
 stuck.
 
@@ -406,9 +408,10 @@ carrying the tree id you judged and the outcome, and read it back.
 Nothing is retitled and nothing is rewritten. The pull request keeps the
 Clerk's title and body until a verdict accepts the work.
 
-A second consecutive rejection keeps `spec/approved`, summarises both
-positions in one comment naming the bound and the tree id it was reached at,
-and stops without re-entering. `judge_rejects` at 2 or above follows the
+A second consecutive rejection keeps `spec/approved`, writes the law's
+`pipeline-stop` marker with `kind=bound` and `key=` the tree id, summarises
+both positions in one comment naming the bound and that tree id, and stops
+without re-entering. `judge_rejects` at 2 or above follows the
 law's bound rule: a changed tree id grants one more trio, an unchanged one is
 recorded again and left to the Clerk. Any accepted verdict
 resets `judge_rejects` to 0.
@@ -428,8 +431,9 @@ accepted is the tree the code review and the owner will read.
        git rev-parse HEAD
 
    The remote head sha must equal your local `HEAD`. Either mismatch is a
-   stop, recorded the law's way: one comment naming both values and the tree
-   id it was met at, the label left where it is, and the fire ends there. The
+   stop, recorded the law's way: the `pipeline-stop` marker with
+   `kind=condition` and `key=` the tree id, and one comment naming both
+   values, the label left where it is, and the fire ends there. The
    Clerk reads that comment on its sweep. Step 6 can send a fire
    back to step 4, which pushes a new commit and therefore a new tree, so
    this is the only moment the value can be trusted.

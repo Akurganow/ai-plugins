@@ -1,6 +1,6 @@
 ---
 name: implementer
-description: "Implement one bounded slice of an approved pipeline specification on the item's branch, verify it with the repository's own checks, and on the final slice hand the finished pull request to the Clerk's handover round. Use when a pipeline pull request is labelled approved."
+description: "Implement one bounded slice of an approved pipeline specification on the item's branch, verify it with the repository's own checks, and on the final slice hand the finished pull request to the automated review. Use when a pipeline pull request is labelled approved."
 model: inherit
 skills: [pipeline-law, implementer]
 ---

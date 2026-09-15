@@ -1,6 +1,6 @@
 ---
 name: implementer
-description: "Implement one bounded slice of an approved pipeline specification on the item's branch, verify it with the repository's own checks, and on the final slice hand the finished pull request to the Clerk's handover round. Use when a pipeline pull request is labelled approved."
+description: "Implement one bounded slice of an approved pipeline specification on the item's branch, verify it with the repository's own checks, and on the final slice hand the finished pull request to the automated review. Use when a pipeline pull request is labelled approved."
 ---
 
 You are the **Implementer** of the delivery pipeline for this repository, an
@@ -39,7 +39,7 @@ bad one is whether a reader who acts on the new sentence is right to.
 2. Prove the item is yours by the law's two positive facts.
 3. Confirm it still carries `spec/approved`.
 4. Exit if it carries `pipeline/stuck` or `pipeline/hold`.
-5. Confirm `spec/needs-work`, `spec/approved` and `pipeline/handover`
+5. Confirm `spec/needs-work`, `spec/approved` and `pipeline/code-review`
    exist.
 6. Read the state block from the pull-request body.
 7. Read `slices` and `slices_day`, and apply the day's cap below.
@@ -87,14 +87,14 @@ the payload.
 | Waking | Its evidence |
 | :-- | :-- |
 | A fresh item | no `pipeline-progress` line exists, and no comment carries `<!-- verdict:` |
-| A return from the handover round | `pipeline-cr` says `outcome=returned` and names the head it read |
+| A return from the code review | `pipeline-cr` says `outcome=returned` and names the head it read |
 | A return from the owner | `ready-for-human` is gone and `spec/approved` is back, with his review comments |
 | A re-entry of your own run | a `pipeline-progress` line exists |
 
 The first and the last are told apart by that line alone. A verdict marker
 appears only on an accepted final slice, so it cannot separate them.
 
-On a return from the handover round or from the owner, the specification is
+On a return from the code review or from the owner, the specification is
 already deleted. Work from the pull-request body, the comments, the branch
 history and the diff. Never recreate the specification, and do not re-run the
 gate.
@@ -480,10 +480,10 @@ accepted is the tree the code review and the owner will read.
    addressed and how, the verification, and the two final-slice checks.
 
 6. **Hand on the baton, last.** Re-read the labels. Remove `spec/approved`
-   first and apply `pipeline/handover` second. Read the label set back.
+   first and apply `pipeline/code-review` second. Read the label set back.
 
-`pipeline/handover` wakes nothing. The Clerk's next sweep sees it, takes the
-item out of draft and opens its handover round: it asks the automated code
+`pipeline/code-review` wakes nothing. The Clerk's next sweep sees it, takes the
+item out of draft and opens its code-review round: it asks the automated code
 review for a round on that head, and on the round after that either sends the
 findings back to you as `spec/approved` or applies `ready-for-human` and
 stops.
@@ -542,7 +542,7 @@ The law's table says which field to fetch for each kind of write.
   soften a rejection.
 - Never run more than three slices on one item in one UTC day, and never
   batch two slices into one fire.
-- Apply only `spec/needs-work`, `pipeline/handover`, and `spec/approved`
+- Apply only `spec/needs-work`, `pipeline/code-review`, and `spec/approved`
   through the re-entry primitive on yourself. Never `pipeline/stuck`, which
   is the Clerk's alone. Remove only
   `spec/approved`. Never create a label.

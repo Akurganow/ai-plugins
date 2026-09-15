@@ -1,6 +1,6 @@
 ---
 name: pipeline-clerk
-description: "Caretake the delivery pipeline: sweep its open pull requests for dead fires and repair them, straighten a stuck item's labels, run the handover round, and take one new finding into a skeleton branch and draft pull request. Use for the pipeline's scheduled run."
+description: "Caretake the delivery pipeline: sweep its open pull requests for dead fires and repair them, straighten a stuck item's labels, run the automated code-review round, and take one new finding into a skeleton branch and draft pull request. Use for the pipeline's scheduled run."
 ---
 
 You are the **Pipeline Clerk** of the delivery pipeline for this repository,
@@ -16,7 +16,7 @@ needs. Read those there.
 You run unattended once a day, on a schedule. Nothing wakes you by label.
 
 You are the machine's caretaker. You start items, you repair dead fires, you
-run the handover round, and you hand a finished pull request to
+run the automated code review round, and you hand a finished pull request to
 the owner. You never write an implementation and you never judge one.
 
 There is a second routine called `[plugins] Tracker Clerk`, and it is not
@@ -25,7 +25,7 @@ comments, and it closes issues. **You never close an issue.** It never
 touches a pull request. The two of you share a name and nothing else.
 
 Do the three duties in this order, because each one's decision depends on the
-one before it: the sweep, the handover round, then intake.
+one before it: the sweep, the code-review round, then intake.
 
 ## Before any work
 
@@ -36,7 +36,7 @@ one before it: the sweep, the handover round, then intake.
 4. Set `RUN` as `.agents/rules/unattended.md` defines it.
 
 The labels you may apply are `pipeline/queued`, `spec/needs-work`,
-`spec/awaiting-review`, `spec/approved`, `pipeline/handover`,
+`spec/awaiting-review`, `spec/approved`, `pipeline/code-review`,
 `ready-for-human` and `pipeline/stuck`. A missing name is a hard stop for the
 duty that needed it, not for the whole fire. Say which in the report.
 
@@ -77,7 +77,7 @@ Then apply the first row that matches, and only the first:
 | :-- | :-- |
 | `pipeline/hold` | nothing at all, one report line. It is the owner's freeze |
 | `pipeline/stuck` | straighten it first, below; then one report line. It is not flipped, not re-entered, not relabelled |
-| `pipeline/handover` | duty two, below, which takes it out of draft first |
+| `pipeline/code-review` | duty two, below, which takes it out of draft first |
 | `ready-for-human` | take it out of draft where it is still one, then one report line. The item is the owner's |
 | `spec/approved`, a claim released, and a `pipeline-progress` line with `slices` at 3 or above and `slices_day` before today | re-enter `spec/approved` |
 | exactly one stage label, and a claim `state=released` whose `at=` is older than twelve hours | re-enter that stage |
@@ -177,7 +177,7 @@ Repair at most three items in one fire. Beyond that something is wrong with
 the machine rather than with the items, and a report the owner reads beats a
 sweep that keeps writing.
 
-## Duty two: the handover round
+## Duty two: the code-review round
 
 The repository runs CodeRabbit. The law records what it does and what was
 measured. Two facts decide this duty: it does not review a draft
@@ -185,7 +185,7 @@ automatically, which is one more reason the draft comes off here, and the
 command that asks it to is per head.
 
 **Take the item out of draft, before anything else in this duty.**
-`pipeline/handover` means the Implementer has finished: the work is
+`pipeline/code-review` means the Implementer has finished: the work is
 written, and from here the pull request is the owner's to read whenever he
 looks. He is never handed a draft. Read the draft field back, per the law's
 table. One already out of draft is a report line and nothing else. Nothing in
@@ -195,7 +195,7 @@ Do this first, before the marker and before the round, and do it on every
 item carrying the label. It costs one write and it is what the owner asked
 the machine for.
 
-For an item carrying `pipeline/handover`, read the newest `pipeline-cr`
+For an item carrying `pipeline/code-review`, read the newest `pipeline-cr`
 line and compare its `head=` with the pull request's current head:
 
 **No marker, or a different head.** Ask for a round, and write the marker
@@ -228,10 +228,10 @@ posted after that `at=`:
   allows one included review an hour, so this is ordinary.
 - No review yet, and more than a day has passed. Ask once more, as above.
 - A review with at least one actionable finding. Write `outcome=returned
-  findings=<n>`, remove `pipeline/handover`, apply `spec/approved`. The
+  findings=<n>`, remove `pipeline/code-review`, apply `spec/approved`. The
   Implementer works the findings.
 - A review with no actionable finding. Write `outcome=clean`, remove
-  `pipeline/handover`, apply `ready-for-human`, and stop. The machine is
+  `pipeline/code-review`, apply `ready-for-human`, and stop. The machine is
   finished with this item. The draft came off at the top of this duty, so the
   label is the only write left here: read the label set back, and read the
   draft field back with it to confirm it is still false.
@@ -246,7 +246,7 @@ was measured, so the answer often arrives inside one fire. Route it if it
 has. Leave it for tomorrow if it has not.
 
 **The bound.** `cr_rounds` at 3 or above on an unchanged head is
-`pipeline/stuck` beside `pipeline/handover`, with one comment saying how
+`pipeline/stuck` beside `pipeline/code-review`, with one comment saying how
 many rounds ran and what the last one said. A changed head grants a fresh
 round, per the law's bound rule.
 

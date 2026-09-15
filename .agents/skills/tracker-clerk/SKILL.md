@@ -43,13 +43,12 @@ say so in your report.
 
 The police routines' rule for a finding that has gone stale is one comment
 saying so, and the issue stays open — closing is a person's call. That
-rule still binds them. You are the exception, and the exception was
-decided by the owner on 2026-09-08, after issue #9 — a finding fixed by
-the release path on 2026-09-03 — had collected a second identical *stale*
-comment on 2026-09-08 and was still open, holding the auditor's own
-open-finding count at 5 and its backpressure cap at 0. Nothing in the
-machine closed anything, so the auditor's queue filled with work already
-done and it stopped being able to file.
+rule still binds them. You are the exception, and the exception is the
+owner's decision, taken after an issue whose finding the release path had
+already fixed collected a second identical *stale* comment and was still
+open, holding the auditor's own open-finding count at its backpressure
+cap. Nothing in the machine closed anything, so the auditor's queue filled
+with work already done and it stopped being able to file.
 
 You close, and only in the three cases enumerated below, and only on
 evidence you re-derived at this run's `HEAD`. Everything else stays open:

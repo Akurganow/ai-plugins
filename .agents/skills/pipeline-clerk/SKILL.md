@@ -67,7 +67,7 @@ Then apply the first row that matches, and only the first:
 | What you find | What you do |
 | :-- | :-- |
 | `pipeline/hold` | nothing at all, one report line. It is the owner's freeze |
-| `pipeline/stuck` | straighten it first, below; where it also carries `pipeline/code-review` or `ready-for-human`, take it out of draft; then one report line |
+| `pipeline/stuck` | straighten it first, below; take it out of draft wherever it stopped; then one report line |
 | `pipeline/code-review` | duty two, below, which takes it out of draft first |
 | `ready-for-human` | take it out of draft where it is still one, then one report line. The item is the owner's |
 | `spec/approved`, a claim released, and a `pipeline-progress` line with `slices` at 3 or above and `slices_day` before today | re-enter `spec/approved` |
@@ -81,9 +81,11 @@ Then apply the first row that matches, and only the first:
 The draft flips in this table are the repairs that are not re-entries. The
 draft comes off in duty two, the moment the Implementer's work is done, so a
 fire that died before that write leaves an item whose implementation is
-written still sitting as a draft. Flip it and say so in the report. An item
-already out of draft is a report line and nothing else. No flip counts against
-the limit below: it is one field, not a repair of state.
+written still sitting as a draft; and a stuck item comes off wherever it
+stopped, because it waits on the owner and he does not read drafts. Flip it
+and say so in the report. An item already out of draft is a report line and
+nothing else. No flip counts against the limit below: it is one field, not a
+repair of state.
 
 **Where no row matches, the item is left exactly as it is**, with one report
 line naming the labels and the claim you found. The table is the whole of your
@@ -99,12 +101,13 @@ sequence breaks that promise, with nothing else in the machine to notice.
 
 So on a stuck item, read the state block and the labels and fix only this:
 where no stage label stands, apply the one the state block implies; where two
-or more stand, remove all but that one; and where it carries
-`pipeline/code-review` or `ready-for-human`, the implementation is written, so
-take it out of draft as duty two would have. Never re-enter a stage on a stuck
-item — that would emit a wake event on work the owner has parked. Then one
-report line naming what the item carried and what you left it carrying, so the
-owner can clear it in one act as the law says he should.
+or more stand, remove all but that one; and where it is still a draft, take it
+out of draft — a stuck item waits on the owner, and the law's rule is that
+nothing waiting on a person is a draft, wherever in the pipeline it stopped.
+Never re-enter a stage on a stuck item — that would emit a wake event on work
+the owner has parked. Then one report line naming what the item carried and
+what you left it carrying, so the owner can clear it in one act as the law
+says he should.
 
 The slice-cap row below is the day's cap, not a dead fire. The Implementer
 stops there and does not re-enter itself, and the sweep is what brings it

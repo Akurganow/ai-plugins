@@ -86,9 +86,8 @@ or a label says its work is already done.** It checks what the record names,
 completes what is missing, and says what it checked.
 
 That rule replaces every "already done, so skip" shortcut in this routine.
-Where it meets an older decision, it wins: the owner settled on 2026-09-12
-that a decision's age ranks it, the recent one wins, and every routine
-repairs.
+Where it meets an older decision, it wins. The owner settled that a
+decision's age ranks it, the recent one wins, and every routine repairs.
 
 **An audit is owed** whenever a fire finds, before doing its work, a marker of
 its own on a subject it came to work: the comment it would have posted, the
@@ -163,13 +162,12 @@ distinguishes nothing.
 The repository auditor's own findings — the ones carrying an `audit:*`
 label and a `repo-audit-routine:` fingerprint — are in that queue like
 everything else, and so are the Slop Police's, carrying
-`slop-police-fingerprint:`. The auditor's were excluded until 2026-09-08,
-on the reasoning that a finding already carrying its evidence and a named
-rule gains nothing from a second automated opinion. The owner decided
-otherwise, and the record of why is that the exclusion left the court with
-nothing to try: of the six issues open on that date five were the
-auditor's, the last trial had been on 2026-08-26, and the day's run
-finished in 57 seconds having found an empty queue — so the findings a
+`slop-police-fingerprint:`. The auditor's were excluded once, on the
+reasoning that a finding already carrying its evidence and a named rule gains
+nothing from a second automated opinion. The owner decided otherwise. The
+record of why is that the exclusion left the court with nothing to try: five
+of the six open issues were the auditor's, and that day's run finished in 57
+seconds having found an empty queue — so the findings a
 reader is most likely to act on were the only ones getting no independent
 check.
 

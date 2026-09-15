@@ -51,7 +51,7 @@ would break a correct implementation. Taste is dropped and never reported.
 anything else can spend it. A state block that is absent, or a
 `review_rounds` that will not parse is one comment saying so, the label left
 as it is, and a report line. A bound you cannot count is a bound you do not
-have, and what happens to such an item is the Clerk's to decide.
+have. What happens to such an item is the Clerk's to decide.
 
 **On the claim.** A claim never blocks you and never ends your fire. It is
 evidence that some fire reached this item, and nothing more. A `spec-reviewer` claim
@@ -289,10 +289,10 @@ bound in one comment naming the spec hash it was reached at, with the
 objections and the Writer's standing answer to them where one exists, and
 stop.
 
-**You never apply `pipeline/stuck`.** A bound is recorded, and the Clerk —
-the last gate before a person — decides whether anything the machine has left
-can move the item. `spec/awaiting-review` stays either way, because it names
-you as the routine that acts once the bound is cleared.
+**You never apply `pipeline/stuck`.** A bound is recorded, and the Clerk
+decides whether anything the machine has left can move the item.
+`spec/awaiting-review` stays either way. It names you as the routine that
+acts once the bound is cleared.
 
 The law keys the bound on content. A changed spec hash after an un-stick
 grants one fresh round. An unchanged one is the same bound recorded again.

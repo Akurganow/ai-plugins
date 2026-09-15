@@ -292,10 +292,10 @@ second, and read the label set back.
 | a revision after a gate bounce | `spec/needs-work` | `spec/approved` |
 
 **The bound.** Read `review_rounds` from the state block. At 5 or above, do
-not hand on. Record the bound in one comment setting out both positions —
-what the Reviewer keeps asking for, why you have not written it, and the spec
-hash it was reached at — and stop. You never apply `pipeline/stuck`; the
-Clerk is the last gate and decides that.
+not hand on. Record the bound in one comment setting out both positions: what
+the Reviewer keeps asking for, why you have not written it, and the spec hash
+it was reached at. Then stop. You never apply `pipeline/stuck`. The Clerk is
+the last gate and decides that.
 
 `spec/needs-work` stays, because it names you as the routine that acts once
 the owner has settled it.

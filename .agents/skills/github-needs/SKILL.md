@@ -6,8 +6,7 @@ description: "What an unattended analysis run of this repository needs from GitH
 # What a run needs from GitHub
 
 This file is one file and the four analysis agents all read it: the Issue
-Court, the Tracker Clerk, the Repo Police and the Slop Police. It was four
-byte-identical copies inside four routine bodies until 2026-09-12.
+Court, the Tracker Clerk, the Repo Police and the Slop Police.
 
 It names **what** a run needs and never **how** it is reached.
 `.agents/rules/unattended.md` owns that rule: a run reaches GitHub through

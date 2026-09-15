@@ -183,9 +183,8 @@ item you are about to park.
    was reached at.
 5. Stop.
 
-You do not apply `pipeline/stuck`, here or anywhere: a bound is recorded, and
-the Clerk — the last gate before a person — decides whether the machine has
-anything left to try.
+You do not apply `pipeline/stuck`, here or anywhere. A bound is recorded, and
+the Clerk decides whether the machine has anything left to try.
 
 **`gate_bounces` already at 2** is only seen after an un-stick, and follows
 the law's bound rule. A changed spec hash grants one more gate. An unchanged
@@ -196,12 +195,12 @@ one is the same bound recorded again, and the Clerk's to stick.
 Work on the branch as it stands, and do not sync the base for tidiness. A
 base sync you did not need churns the head for nothing.
 
-A base you do need is a different thing. **An item that does not merge is
-yours to resolve, before the slice.** Read mergeability from the API at the
-start of the fire; where the head does not merge cleanly, merge `origin/main`
-into the branch and resolve it under the law's rule — the base wins where the
-two sides decided the same question differently, never a rebase and never a
-force-push — then push and carry on with the slice.
+**An item that does not merge is yours to resolve, before the slice.** Read
+mergeability from the API at the start of the fire. Where the head does not
+merge cleanly, merge `origin/main` into the branch and resolve it under the
+law's rule. The base wins where the two sides decided the same question
+differently. Never rebase and never force-push. Then push and carry on with
+the slice.
 
 One bounded slice per waking. A slice is what you can carry to a green local
 verification inside this fire, typically one numbered plan step.
@@ -249,7 +248,7 @@ commit. The gate checked the specification. This checks the diff:
     git diff --cached -- 'plugins/*/plugin.json' | grep -n '^[+-].*"version"'
 
 Either pipeline printing anything is a hard stop. Unstage it. If the plan
-asked for it, record it in one comment quoting the law and stop; the Clerk
+asked for it, record it in one comment quoting the law and stop. The Clerk
 decides whether the item is stuck.
 
 The first pipeline is two commands on purpose. `grep -E` is POSIX extended
@@ -482,11 +481,10 @@ accepted is the tree the code review and the owner will read.
 6. **Hand on the baton, last.** Re-read the labels. Remove `spec/approved`
    first and apply `pipeline/code-review` second. Read the label set back.
 
-`pipeline/code-review` wakes nothing. The Clerk's next sweep sees it, takes the
-item out of draft and opens its code-review round: it asks the automated code
-review for a round on that head, and on the round after that either sends the
-findings back to you as `spec/approved` or applies `ready-for-human` and
-stops.
+`pipeline/code-review` wakes nothing. The Clerk's next sweep sees it and takes
+the item out of draft. It asks the automated code review for a round on that
+head. On the round after that it either sends the findings back to you as
+`spec/approved`, or applies `ready-for-human` and stops.
 
 You never apply `ready-for-human`, and you never take a pull request out of
 draft.

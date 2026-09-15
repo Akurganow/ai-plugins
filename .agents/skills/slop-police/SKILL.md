@@ -38,9 +38,8 @@ or a label says its work is already done.** It checks what the record names,
 completes what is missing, and says what it checked.
 
 That rule replaces every "already done, so skip" shortcut in this routine.
-Where it meets an older decision, it wins: the owner settled on 2026-09-12
-that a decision's age ranks it, the recent one wins, and every routine
-repairs.
+Where it meets an older decision, it wins. The owner settled that a
+decision's age ranks it, the recent one wins, and every routine repairs.
 
 **An audit is owed** whenever a fire finds, before doing its work, a marker of
 its own on a subject it came to work: the comment it would have posted, the

@@ -52,24 +52,23 @@ list is the whole of the machine's live state.
 Read each one's labels, body and comments, **and its mergeability**.
 
 **One repair comes before the table and consumes no item: a head that does
-not merge with its base.** Resolve it under the law's rule — merge
-`origin/main` into the branch, the base's side where the two sides decided
-the same question differently, never a rebase and never a force-push — then
-push and comment naming each file that conflicted, what each side held, and
+not merge with its base.** Resolve it under the law's rule. Merge
+`origin/main` into the branch. Take the base's side where the two sides
+decided the same question differently. Never rebase and never force-push.
+Push, and comment naming each file that conflicted, what each side held, and
 what the resolution chose. Then go on to the table, which still applies to
-that item unchanged, and count the resolution against the repair limit
-below: it is a push, not a field.
+that item unchanged. Count the resolution against the repair limit below: it
+is a push, not a field.
 
-It is yours because a conflict on an item no stage is working is a conflict
-nobody else meets: the stages are woken by labels, and no label is applied
-when a branch stops merging. **The converse is the gate on it: an item a
-stage is working now is not yours to touch**, because that stage has the
-checkout and resolves its own conflict in the fire it is in, and two writers
-on one branch is the race this pipeline has no lock for. So skip the repair
-where the item carries a stage label **and** a claim that is `state=held`
-and fresh by the law's claim-freshness bound, and say so in the report. An
-item carrying `pipeline/hold` or `pipeline/stuck` is skipped too, untouched
-here as everywhere.
+The repair is yours because nobody else meets it. The stages are woken by
+labels, and no label is applied when a branch stops merging.
+
+**An item a stage is working now is not yours to touch.** That stage has the
+checkout and resolves its own conflict in the fire it is in. Two writers on
+one branch is a race this pipeline has no lock for. So skip the repair where
+the item carries a stage label **and** a claim that reads `state=held` and is
+fresh by the law's claim-freshness bound. Say so in the report. Skip it too
+on an item carrying `pipeline/hold` or `pipeline/stuck`.
 
 Then apply the first row that matches, and only the first:
 

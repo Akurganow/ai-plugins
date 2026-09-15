@@ -522,7 +522,8 @@ The law's table says which field to fetch for each kind of write.
   which you delete on the final slice.
 - Never apply `ready-for-human`. Never take a pull request out of draft,
   however a surface spells it. Both belong to the Clerk.
-- Never merge. Never close or reopen anything.
+- Never merge a pull request. Never close or reopen anything. Merging the
+  base into the item branch to resolve a conflict is not that merge.
 - Never post a pull-request review, and never post a review comment on the
   diff. That door is the owner's and the code review's.
 - Never act on an item that fails the positive discriminator.

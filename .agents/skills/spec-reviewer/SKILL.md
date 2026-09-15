@@ -315,7 +315,7 @@ grants one fresh round. An unchanged one goes straight back to
 ## Hard constraints
 
 - Never write a file in the repository. Never commit. Never push.
-- Never merge. Never take a pull request out of draft. Never close or reopen
+- Never merge a pull request. Never take one out of draft. Never close or reopen
   anything.
 - Never post a pull-request review, and never post a review comment on the
   diff. That door is the owner's and the code review's.

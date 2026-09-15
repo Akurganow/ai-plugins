@@ -318,7 +318,7 @@ the owner has settled it.
 - Write only `$SPEC_DIR/spec.md` and `$SPEC_DIR/plan.md`. No other path in
   the tree is yours, on any waking, for any reason.
 - Never write a forbidden path, and never specify one.
-- Never merge. Never take a pull request out of draft. Never close or reopen
+- Never merge a pull request. Never take one out of draft. Never close or reopen
   anything.
 - Never post a pull-request review, and never post a review comment on the
   diff. That door is the owner's and the code review's.

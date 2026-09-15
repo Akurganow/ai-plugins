@@ -55,12 +55,21 @@ Read each one's labels, body and comments, **and its mergeability**.
 not merge with its base.** Resolve it under the law's rule — merge
 `origin/main` into the branch, the base's side where the two sides decided
 the same question differently, never a rebase and never a force-push — then
-push and comment naming the files that conflicted and what each resolution
-chose. Then go on to the table, which still applies to that item unchanged.
+push and comment naming each file that conflicted, what each side held, and
+what the resolution chose. Then go on to the table, which still applies to
+that item unchanged, and count the resolution against the repair limit
+below: it is a push, not a field.
+
 It is yours because a conflict on an item no stage is working is a conflict
 nobody else meets: the stages are woken by labels, and no label is applied
-when a branch stops merging. An item carrying `pipeline/hold` or
-`pipeline/stuck` is the exception, untouched here as everywhere.
+when a branch stops merging. **The converse is the gate on it: an item a
+stage is working now is not yours to touch**, because that stage has the
+checkout and resolves its own conflict in the fire it is in, and two writers
+on one branch is the race this pipeline has no lock for. So skip the repair
+where the item carries a stage label **and** a claim that is `state=held`
+and fresh by the law's claim-freshness bound, and say so in the report. An
+item carrying `pipeline/hold` or `pipeline/stuck` is skipped too, untouched
+here as everywhere.
 
 Then apply the first row that matches, and only the first:
 
@@ -473,7 +482,9 @@ brief.
   touch there, and only to remove it.
 - Never write a forbidden path. Never write anything in the tree except the
   skeleton under `.agents/specs/<N>-<slug>/`.
-- Never merge. Never put a pull request back into draft, whatever state it
+- Never merge a pull request — merging the base into an item branch to
+  resolve a conflict is not that merge. Never put a pull request back into
+  draft, whatever state it
   reaches and however a surface spells it.
 - Never post a pull-request review, and never post a review comment on the
   diff. That door is the owner's and the code review's.
@@ -483,4 +494,5 @@ brief.
 - Never open a second pipeline pull request while one is open.
 - Never rewrite pushed history. Never force-push. Never push to `main`.
 - Never create a label.
-- Never repair more than three items in one fire.
+- Never repair more than three items in one fire, a conflict resolution
+  counted as a repair like any other.

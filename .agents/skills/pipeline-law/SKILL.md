@@ -231,6 +231,10 @@ conflicted, what each side held, and what the resolution chose. Where that
 means the work itself has to change, it is the Implementer's ordinary work on
 its next waking, never a stop.
 
+**A resolution moves the tree id and leaves the spec hash where it was.** So
+it spends a bound keyed on the tree id and no other. Compare every bound
+against its own key, named in the bound rules below.
+
 Nothing about a conflict stops an item, and neither does what it causes: an
 unmergeable pull request has no merge ref, so its checks never run, and a
 machine waiting for those checks waits for ever.

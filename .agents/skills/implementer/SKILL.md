@@ -172,16 +172,18 @@ Write the `role=gate` marker at the end either way and read it back.
 The Writer's revision returns straight to `spec/approved`, because you
 objected and you re-check.
 
-**A second gate failure** stops the item. The order matters: the stuck label
-goes on before the Writer's wake event, or the Writer starts a fire on an
-item you are about to park.
+**A second gate failure** is the bound. You record it and you hand it no
+further.
 
 1. Set `gate_bounces=2` in the state block.
-2. Remove `spec/approved`.
-3. Apply `spec/needs-work`.
-4. Post both positions in one comment, naming the bound and the spec hash it
+2. Post both positions in one comment, naming the bound and the spec hash it
    was reached at.
-5. Stop.
+3. Stop.
+
+**Leave `spec/approved` where it is.** Applying `spec/needs-work` would wake
+the Writer on an item you have just stopped, and the law's **Exiting to a
+person is not a stage's own act** puts that decision one gate later. The
+label beside the bound names who acts once the Clerk clears it.
 
 You do not apply `pipeline/stuck`, here or anywhere. A bound is recorded, and
 the Clerk decides whether the machine has anything left to try.

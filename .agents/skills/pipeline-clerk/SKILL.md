@@ -70,6 +70,14 @@ the item carries a stage label **and** a claim that reads `state=held` and is
 fresh by the law's claim-freshness bound. Say so in the report. Skip it too
 on an item carrying `pipeline/hold` or `pipeline/stuck`.
 
+**A resolution on an item carrying `ready-for-human` moves a head the round
+already passed.** The label stays. No routine removes it, and your merge
+does not send the owner's item back into the machine. Read the check runs on
+the new head through the API, and write their state into the same comment as
+the resolution, so the owner reads one event rather than two. A check that
+now fails is named there. Do not ask for a fresh code-review round: that
+round is per head, and the head that moved is your own merge.
+
 Then apply the first row that matches, and only the first:
 
 | What you find | What you do |
@@ -78,12 +86,12 @@ Then apply the first row that matches, and only the first:
 | `pipeline/stuck` | straighten it first, below; then one report line. It is not flipped, not re-entered, not relabelled |
 | `pipeline/code-review` | duty two, below, which takes it out of draft first |
 | `ready-for-human` | take it out of draft where it is still one, then one report line. The item is the owner's |
+| a bound recorded at content that has not moved | the last-gate case, below: try your own repairs, and `pipeline/stuck` only where none of them moves it |
 | `spec/approved`, a claim released, and a `pipeline-progress` line with `slices` at 3 or above and `slices_day` before today | re-enter `spec/approved` |
 | exactly one stage label, and a claim `state=released` whose `at=` is older than twelve hours | re-enter that stage |
 | exactly one stage label, and a claim released or absent, younger than that | nothing, the stage owns it |
 | exactly one stage label, and a claim `state=held` older than two hours | re-enter that stage |
 | exactly one stage label, and a claim `state=held` younger than two hours | nothing, one report line, the fire that holds it is still running |
-| a bound recorded at content that has not moved | the last-gate case, below: try your own repairs, and `pipeline/stuck` only where none of them moves it |
 | no stage label and no terminal label | re-enter the stage the state block implies |
 | two or more stage labels | remove all but the one the state block implies, then re-enter it |
 
@@ -124,10 +132,13 @@ item reads as a stage label, a released claim, and a bound recorded at
 content that has not moved since.
 
 Try your own repairs first and name each in the comment. A bound is keyed on
-content, so a spec hash or tree id that moved after the record spends it:
-re-enter the stage instead. A counter the record contradicts is corrected
-from the record. A head that does not merge is resolved before the table, and
-if it was, the content has moved and the bound is spent.
+content, and each bound has its own key: the spec hash for `review_rounds`
+and `gate_bounces`, the tree id for `judge_rejects`. Compare the record
+against that key alone. A key that moved since the record spends the bound,
+so re-enter the stage instead. A conflict you resolved above moves the tree
+id and leaves the spec hash where it was, so it spends a `judge_rejects`
+bound and no other. A counter the record contradicts is corrected from the
+record.
 
 Only where none of that moves the item do you apply `pipeline/stuck`, beside
 the stage label the item already carries, with one comment naming the bound,
@@ -244,10 +255,15 @@ item's comments once more before you end. A round trip of about nine minutes
 was measured, so the answer often arrives inside one fire. Route it if it
 has. Leave it for tomorrow if it has not.
 
-**The bound.** `cr_rounds` at 3 or above on an unchanged head is
-`pipeline/stuck` beside `pipeline/code-review`, with one comment saying how
-many rounds ran and what the last one said. A changed head grants a fresh
-round, per the law's bound rule.
+**The bound.** `cr_rounds` at 3 or above on an unchanged head is a bound
+reached. A changed head grants a fresh round, per the law's bound rule.
+
+Record it the way every stage records one: the counter, the completion
+marker, and one comment saying how many rounds ran and what the last one
+said. Then take the item through the last-gate case above, whose repairs you
+have not yet tried here. Apply `pipeline/stuck` beside `pipeline/code-review`
+only where none of them moves the item, and name each repair in the comment.
+The last gate is the same gate wherever the bound was reached.
 
 **`ready-for-human` is yours and only yours, and so is the flip out of
 draft.** No routine removes the label, no other routine ever flips a draft,

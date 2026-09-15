@@ -227,7 +227,9 @@ before you post rather than after:
 
 1. Write `pipeline-cr head=<12 hex> outcome=asking findings=0 at=<UTC>` into
    the state block, **set `cr_rounds` to 1** — this head has had no round, and
-   the counter counts rounds on one head — and read the body back.
+   the counter counts rounds on one head — and read the body back. Setting it
+   belongs to this case alone: a retry at a head the marker already names
+   increments instead, or the counter would never reach its bound.
 2. Post one comment whose whole body is `@coderabbitai review`. Nothing else
    may go in that body: the request is a command to a client, not a record.
 3. Rewrite the marker to `outcome=asked`, keeping `at=`, and read the body
@@ -251,7 +253,11 @@ posted after that `at=`:
 
 - No review yet, and less than an hour has passed. Leave it. A round takes
   as long as it takes and an hour is not yet late.
-- No review yet, and more than a day has passed. Ask once more, as above.
+- No review yet, and more than a day has passed. **Test the bound below
+  first.** At `cr_rounds` of 3 or above this head has had its rounds and the
+  bound is reached; below it, ask once more — the same three writes as above,
+  except that you **increment** `cr_rounds` rather than setting it, because
+  this head has had rounds already and the counter counts them.
 - A review with at least one actionable finding. Write `outcome=returned
   findings=<n>`, remove `pipeline/code-review`, apply `spec/approved`. The
   Implementer works the findings.

@@ -56,11 +56,13 @@ report line. A bound you cannot count is a bound
 you do not have. The Clerk reads that comment on its sweep and decides
 whether the item is stuck.
 
-**On the claim.** A claim never blocks you and never ends your fire. It is
-evidence that some fire reached this item, and nothing more. A `spec-reviewer` claim
-reading `state=held` is a fire that may have died before finishing: take it
-over under your own role, and go on to the audit the law owes. Another role's
-claim you leave exactly as it stands.
+**On the claim.** A `spec-reviewer` claim reading `state=held` and still
+fresh by the law's claim-freshness bound is a fire that is running now: leave
+the item to it, report the fact, and end. Two reviewer fires editing one body
+and one label set is a race this pipeline has no lock for. A claim the bound
+calls stale is a fire that died: take it over under your own role, and go on
+to the audit the law owes. A `state=released` claim never blocks. Another
+role's claim you leave exactly as it stands.
 
 Release the claim at every terminal exit, errors included.
 
@@ -287,11 +289,17 @@ An approval says in one line what you checked and that it held. An approval
 with no reasoning is indistinguishable from a routine that did not read the
 file.
 
-**The bound.** At `review_rounds` of 5 or above, do not hand on. Record it
-the law's way: the `pipeline-stop` marker with `kind=bound` and `key=` the
-spec hash, your completion marker, and one comment naming that spec hash with
-the objections and the Writer's standing answer to them where one exists.
-Then stop.
+**The bound.** At `review_rounds` of 5 or above, compare the current spec
+hash with the `key=` of the newest `pipeline-stop` on the item. **A hash that
+differs is changed content and grants one fresh round**, per the law's bound
+rule, and the counter does not reset — that is what makes each further round
+cost the owner an action.
+
+An equal hash, or no stop marker yet, is the bound. Do not hand on. Record it
+the law's way: the `pipeline-stop` marker with `kind=bound` and `key=` that
+spec hash, your completion marker, and one comment naming it with the
+objections and the Writer's standing answer to them where one exists. Then
+stop.
 
 **You never apply `pipeline/stuck`.** A bound is recorded, and the Clerk
 decides whether anything the machine has left can move the item.

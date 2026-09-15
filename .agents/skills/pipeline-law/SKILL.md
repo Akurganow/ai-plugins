@@ -222,10 +222,12 @@ conflicted, what each side held, and what the resolution chose. Where that
 means the work itself has to change, it is the Implementer's ordinary work on
 its next waking, never a stop.
 
-**A resolution moves the tree id and leaves the spec hash where it was.** So
-it spends every bound keyed on the tree id — `judge_rejects` and `cr_rounds`
-both — and no bound keyed on the spec hash. Compare every bound against its
-own key, named in the bound rules below.
+**A resolution moves the tree id and the head sha, and leaves the spec hash
+where it was.** So it spends `judge_rejects`, keyed on the tree id, and
+`cr_rounds`, keyed on the head sha, and no bound keyed on the spec hash.
+Compare every bound against its own key, named in the bound rules below. The
+two are not interchangeable: a commit can carry a tree its parent already
+had, so a head that moved is not always a tree that moved.
 
 Nothing about a conflict stops an item, and neither does what it causes: an
 unmergeable pull request has no merge ref, so its checks never run, and a

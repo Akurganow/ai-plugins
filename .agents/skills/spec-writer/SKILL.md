@@ -293,9 +293,12 @@ second, and read the label set back.
 | a revision after review | `spec/needs-work` | `spec/awaiting-review` |
 | a revision after a gate bounce | `spec/needs-work` | `spec/approved` |
 
-**The bound.** Read `review_rounds` from the state block. At 5 or above, do
-not hand on. Record it the law's way: the `pipeline-stop` marker with
-`kind=bound` and `key=` the spec hash, and one comment setting out both
+**The bound.** Read `review_rounds` from the state block. At 5 or above,
+compare the current spec hash with the `key=` of the newest `pipeline-stop`
+on the item. A hash that differs grants one fresh round, per
+the law's bound rule. An equal hash, or no stop marker yet, is the bound: do
+not hand on. Record it the law's way, with the `pipeline-stop` marker at
+`kind=bound` and `key=` that spec hash, and one comment setting out both
 positions — what the Reviewer keeps asking for, why you have not written it,
 and that spec hash. You write no completion marker and touch no counter; both
 are the Reviewer's. Then stop. You never apply `pipeline/stuck`. The Clerk is

@@ -44,9 +44,20 @@ Each routine does one unit of work per fire. With nothing to do it exits
 cheaply — but never on a record alone: a fire told its work was already done
 owes the audit below before it may exit.
 
-**One pipeline pull request is in flight at a time.** The Clerk's intake is
-the throttle. A pull request waiting on the owner still holds the slot: the
+**One live pipeline pull request is in flight at a time.** The Clerk's intake
+is the throttle. A pull request waiting on the owner still holds the slot: the
 next item's branch would be cut from a `main` that does not carry it.
+
+**An item carrying `pipeline/stuck` or `pipeline/hold` is parked, and a parked
+item holds no slot.** Intake passes over both and counts neither. The reason
+the slot exists does not reach them: a branch cut from a `main` a parked item
+never reached meets a conflict with the base, and a conflict is the machine's
+own to resolve in the fire that meets it. Against that stands what holding the
+slot costs — neither kind of parked item is promised to merge at all, so a slot
+one holds is the whole queue waiting on a single item, and every finding behind
+it waits on a decision nobody took. **Freezing an item is not freezing the
+pipeline.** Neither label was ever a throttle, and a routine that reads either
+as one has stopped work the owner never stopped.
 
 No routine merges. The Clerk alone takes a pull request out of draft, and it
 does so the moment the Implementer is finished — when it first sees
@@ -83,8 +94,11 @@ moment it exists.
 Three of these are stage labels: `spec/needs-work`, `spec/awaiting-review`,
 `spec/approved`. The other five are not.
 
-`pipeline/stuck` reads exactly like `pipeline/hold` everywhere. An item
-carrying either is out of every stage's input, not only out of the sweep.
+`pipeline/stuck` reads like `pipeline/hold` almost everywhere: an item carrying
+either is out of every stage's input, out of the sweep's re-entries, and out of
+intake's count, so neither holds the queue. They part in one place, and it is
+the Clerk's: a stuck item is un-stuck by the Clerk below the `unsticks` bound,
+where a held one is the owner's alone to release.
 
 **There is no guard.** No script in this machine is deterministic, and the
 draft flip is not one either: it says the implementation is written and
@@ -110,7 +124,7 @@ that accumulates.
 | `spec/approved` | Reviewer; Writer after a gate bounce; Implementer re-entering itself; Clerk returning findings; the sweep | Implementer; the gate; the sweep |
 | `pipeline/code-review` | Implementer, last, on an accepted verdict | Clerk, when the code-review round ends, whichever way it ends |
 | `ready-for-human` | Clerk, and only the Clerk | nobody; the owner alone |
-| `pipeline/stuck` | the Clerk, and only the Clerk, after a repair it could not make | the owner |
+| `pipeline/stuck` | the Clerk, and only the Clerk, after a repair it could not make | the owner; the Clerk, on an un-stick below the `unsticks` bound |
 | `pipeline/hold` | the owner | the owner |
 
 "The sweep" is the Clerk's. It both adds and removes, because re-entry is a
@@ -324,7 +338,8 @@ a handoff its own previous fire left half done.
 
 **An audit may never** post a second comment on the same content; create a
 label; remove or work around `pipeline/stuck`, `pipeline/hold` or
-`ready-for-human`; spend a bound a marker at this content already records as
+`ready-for-human` — the Clerk's un-stick is its own duty and not an audit act,
+which is why it is written where the Clerk reads it and not here; spend a bound a marker at this content already records as
 spent; release another role's claim; or push, open a pull request or rewrite a
 body wholesale on the audit's authority alone. It never acts on an item that
 fails the positive discriminator.
@@ -409,7 +424,7 @@ rewritten whole on every change. Comments are append-only records.
 **The state block**, last thing in the body, in this order:
 
     <!-- pipeline-work-fingerprint: <slug> sources=#a,#b -->
-    <!-- pipeline-state: item=<id> review_rounds=<n> gate_bounces=<m> judge_rejects=<k> slices=<s> cr_rounds=<c> -->
+    <!-- pipeline-state: item=<id> review_rounds=<n> gate_bounces=<m> judge_rejects=<k> slices=<s> cr_rounds=<c> unsticks=<u> -->
     <!-- pipeline-claim: role=<role> state=held|released at=<UTC ISO-8601> -->
     <!-- pipeline-progress: slice=<n> slices_day=<YYYY-MM-DD> predelete=<sha|none> -->
     <!-- pipeline-stop: item=<id> kind=<bound|condition> key_kind=<spec-hash|tree-id|head-sha> key=<12 hex> at=<UTC> spent_at=<UTC|none> -->
@@ -547,8 +562,9 @@ other stop.
 
 Everything the owner does is state.
 
-**`pipeline/hold`** freezes an item where it stands. At a limit of one that
-freezes the pipeline. Accept it. Do not work around it.
+**`pipeline/hold`** freezes an item where it stands, and that item alone. It
+holds no intake slot, so the queue goes on around it. Accept the freeze on the
+item: do not work it, do not re-enter it, and do not lift it.
 
 **Closing a pull request unmerged is a rejection, and it is final.** Nothing
 is retried. The sources stay closed. The fingerprint in the closed body stops
@@ -559,6 +575,11 @@ One label off and nothing else. The next daily sweep re-enters the stage
 label the item still carries, so the wake comes the next morning rather than
 at once. Every stuck path leaves exactly one stage label, which is what makes
 that recoverable.
+
+He is not the only hand on `pipeline/stuck`. The Clerk clears one below the
+`unsticks` bound, and what reaches him is a stop two of its un-sticks did not
+get past. His own removal resets that counter, so taking the label off is also
+granting the item two more. `pipeline/hold` is his alone at every count.
 
 **Sending a finished pull request back** is `ready-for-human` off and
 `spec/approved` on. That returns it to the implementation loop with the
@@ -578,6 +599,15 @@ the repairs it had. Such an item is not flipped, not handed over and never
 carries `ready-for-human`. It stays as the stop found it, and the label is
 the whole of the signal.
 
+**It is not where the machine stops trying.** The Clerk returns to a stuck item
+on every sweep and re-runs the last gate's repairs on it, because a stop is a
+judgement made at one moment against one content and the tree moves underneath
+it. Where a repair moves the item, or where the stop names a worklist a stage
+can still work, the Clerk un-sticks it and sends that worklist back.
+`unsticks` bounds this at two: a stop the machine cannot get past costs two
+sweeps and then waits for the owner, which is what keeps a label the machine
+can remove from becoming a loop that removes it for ever.
+
 Everything between the two is the machine's own to carry: a conflict, a dead
 fire, a lost label, a marker that would not stay written. An item in one of
 those states is an item some routine still owes work to. A stop recorded is
@@ -595,15 +625,23 @@ three the Implementer stops without re-entering itself, and the Clerk's sweep
 re-fires the item the next day. Nothing about it reaches a person, so it has
 no content key and records no stop.
 
+`unsticks` is the sixth and is not one of the four either. It counts the
+Clerk's un-sticks of this item, and it is keyed on the item rather than on a
+content because two consecutive stops on one item are stops at two contents by
+construction: the work the un-stick sent back is what moved the first. At two
+the Clerk leaves the stick standing and the item is the owner's. Only his own
+removal of the label resets it, which is the whole of the difference between
+his un-stick and the machine's.
+
 1. **The test is `>=`, never `==`.** A counter can arrive above its bound
    after an un-stick or a repair, and `==` would step straight past it.
 2. **A bound is keyed on content, not on attempts.** Unchanged content at or
    past the bound is recorded and handed no further. It becomes
    `pipeline/stuck` when the Clerk's repairs do not move it. Changed content
    grants one fresh round, and **one** is the whole of it: the round is
-   granted only where the owner has un-stuck the item since the stop was
-   recorded or last spent, and the stage writes `spent_at` on the stop when
-   it grants one. The content is the spec hash for `review_rounds` and
+   granted only where the item has been un-stuck since the stop was recorded
+   or last spent — by the owner, or by the Clerk below the `unsticks` bound —
+   and the stage writes `spent_at` on the stop when it grants one. The content is the spec hash for `review_rounds` and
    `gate_bounces`, the tree id for `judge_rejects`, and the head sha for
    `cr_rounds` — the round is asked per head and its `pipeline-cr` marker
    stores that same head, so the bound and the marker read one identifier.

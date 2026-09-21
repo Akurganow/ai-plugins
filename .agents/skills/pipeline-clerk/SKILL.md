@@ -68,7 +68,10 @@ checkout and resolves its own conflict in the fire it is in. Two writers on
 one branch is a race this pipeline has no lock for. So skip the repair where
 the item carries a stage label **and** a claim that reads `state=held` and is
 fresh by the law's claim-freshness bound. Say so in the report. Skip it too
-on an item carrying `pipeline/hold` or `pipeline/stuck`.
+on an item carrying `pipeline/hold`, which is the owner's freeze. A stuck item
+is **not** skipped: resolving its conflict is one of the repairs the un-stick
+below re-runs, and an unmergeable head is the one state that guarantees no
+check ever runs on it again.
 
 **A resolution on an item carrying `ready-for-human` moves a head the round
 already passed.** The label stays. No routine removes it, and your merge
@@ -83,7 +86,7 @@ Then apply the first row that matches, and only the first:
 | What you find | What you do |
 | :-- | :-- |
 | `pipeline/hold` | nothing at all, one report line. It is the owner's freeze |
-| `pipeline/stuck` | straighten it first, below; then one report line. It is not flipped and no stage is re-entered on it |
+| `pipeline/stuck` | straighten it first, below, then try the un-stick, below. It is not flipped, and a stage is re-entered on it only by that un-stick |
 | `pipeline/code-review` | duty two, below, which takes it out of draft first |
 | `ready-for-human` | take it out of draft where it is still one, then one report line. The item is the owner's |
 | an `unlabeled` event removing `pipeline/stuck` or `pipeline/hold`, newer than the item's newest machine marker | the owner has settled it: re-enter the stage label the item still carries, and say which removal you acted on, by label and time |
@@ -124,6 +127,50 @@ touched in either direction, and you never re-enter a stage on a stuck item,
 which would emit a wake event on work the owner has parked. Then one report line naming what the item carried and
 what you left it carrying, so the owner can clear it in one act as the law
 says he should.
+
+**Un-sticking.** A stop is a judgement made at one moment, against one content,
+by one fire. The tree moves underneath it — the base gains commits, a sibling
+pull request lands the fix a repair needed, a stop's own comment turns out to
+name work a stage can still do — and nothing in the machine re-opens that
+judgement unless you do. So you return to every stuck item on every sweep, and
+a sweep that reads a stuck item and tries nothing is the defect this section
+exists against: the item's whole cost then falls on the owner noticing it.
+
+Straighten it first, above, so what you re-enter is routable. Then re-run the
+last-gate repairs below, on this item, exactly as if the stop had just been
+recorded. Where one of them moves the item, the stop is spent and the item
+goes back to work.
+
+Where none of them moves it, read the stop's own comment for a **worklist**: a
+list of changes named there, each one a change to this repository that the
+stage carrying the item could make. The judge's `must_change` is one; a
+reviewer's findings are another. A stop whose comment names no such list — a
+source that is not a file, a decision only the owner can take, a credential the
+environment does not have — is not un-stuck by you, and saying which of the two
+you found is a line of the report.
+
+With a worklist in hand and `unsticks` below two:
+
+1. Rewrite the state block with `unsticks` raised by one. Do this **first**:
+   the stage label you are about to re-enter is a wake, and a fire that starts
+   before the counter moves would read the item as never un-stuck.
+2. Remove `pipeline/stuck`.
+3. Re-enter the stage label the item carries, by the law's re-entry primitive.
+4. Post one comment naming every repair you re-ran and what it returned, the
+   worklist you are sending back and the comment you read it from, and the
+   counter before and after.
+
+At `unsticks` of two or more the label stays on and the item is the owner's.
+Say so in one report line, with the two un-sticks and what came back from each,
+because that line is the evidence his attention is now the only thing left.
+**Never un-stick an item also carrying `pipeline/hold`**: his freeze outranks
+your repair, and the two labels together mean he has already looked.
+
+The bound is two rather than none because a stop the machine can get past is
+common — the record shows stops spent by a conflict resolved and by a counter
+corrected from the record — and a stop it cannot is common too, and an un-stick
+that never gave up would re-enter the second kind every morning for ever, which
+is the fire this pipeline pays for and learns nothing from.
 
 **The last-gate case, and the only one that ends in `pipeline/stuck`.** A
 stage that can carry an item no further does not label its own dead end. It
@@ -328,11 +375,19 @@ can review, and the tracker Clerk is under the same rule.
 
 Do this last, and only when the machine has room.
 
-**One pipeline pull request is in flight at a time.** If duty one listed any
-open pipeline pull request, there is no intake this fire. Say so in one line
-and stop. A pull request waiting on the owner still holds the slot.
+**One live pipeline pull request is in flight at a time.** If duty one listed
+any open pipeline pull request **carrying neither `pipeline/stuck` nor
+`pipeline/hold`**, there is no intake this fire. Say so in one line and stop.
 
-With the slot free, build the candidate list:
+A pull request waiting on the owner's review still holds the slot: it is going
+to merge, and the next branch should be cut from a `main` that carries it. A
+parked one holds nothing — the law says why — so a fire that has just stuck an
+item, or that found one held, goes on to intake in the same fire and names both
+in the report. Count the parked ones in one line so the owner can see how many
+are waiting on him while the queue moves.
+
+With the slot free — no live item, whatever is parked — build the candidate
+list:
 
 1. List open issues carrying `pipeline/intake`. That label says a finding
    should be built. Two hands apply it: the tracker Clerk, on a
@@ -543,6 +598,11 @@ brief.
 2. **Repairs**: each re-entry, what it was repairing, the label set read
    back, and the count against the limit of three; and each stuck item you
    straightened, what it carried and what you left it carrying.
+   **Un-sticks**: per stuck item, every repair you re-ran and what each
+   returned, `unsticks` before and after, whether the label came off, the
+   worklist you sent back and where you read it, and the label set read back.
+   A stuck item you left stuck says which of the two reasons it was —
+   the bound, or no worklist a stage can work.
 3. **Code review**: per item, the draft field before and after, the marker
    before and after, whether a round was asked, what came back, how many
    findings were actionable, where the item went, and the label set as you
@@ -574,10 +634,13 @@ brief.
   reaches and however a surface spells it.
 - Never post a pull-request review, and never post a review comment on the
   diff. That door is the owner's and the code review's.
-- Never remove `pipeline/stuck` or `pipeline/hold`, and never re-enter a
-  stage on an item carrying either.
+- Never remove `pipeline/hold`, and never re-enter a stage on an item
+  carrying it. `pipeline/stuck` you remove only through the un-stick, only
+  below its bound, and never on an item also carrying `pipeline/hold`.
 - Never remove `ready-for-human`, and never apply it to an issue.
-- Never open a second pipeline pull request while one is open.
+- Never open a second pipeline pull request while a live one is open. An
+  item carrying `pipeline/stuck` or `pipeline/hold` is not live and is not
+  what this counts.
 - Never rewrite pushed history. Never force-push. Never push to `main`.
 - Never create a label.
 - Never repair more than three items in one fire, a conflict resolution

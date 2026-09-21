@@ -34,7 +34,7 @@ the role whose job includes noticing what that means.**
 
 ## Your environment, and what you need from GitHub
 
-Work in the clone your routine gave you, and confirm it is this repository
+Work in the clone your caller gave you, and confirm it is this repository
 from its `origin`. Where the session carries no clone, that is a report line
 and the end of the fire: the route belongs to the environment and this file
 states none, per `.agents/rules/unattended.md`. Analyse the tip of `main`:
@@ -42,7 +42,7 @@ fetch it first and record the commit you analyse.
 
 What a run needs from GitHub is the `github-needs` skill. **The measured facts
 of this environment** — what the network refuses, what an interpreter did here
-— are the routine's and you read them there. A routine that carries none is a
+— are the caller's and you read them there. A caller that carries none is a
 report line: treat every environment-dependent check as not run rather than
 guessing at one.
 
@@ -57,10 +57,10 @@ a role is added. One question over all of it:
 > Do these documents still describe one machine, or have they begun to
 > describe two?
 
-That is a different question from every other routine's, and the boundary is
+That is a different question from every other role's, and the boundary is
 worth stating because three of them run over the same tree:
 
-| Routine | Asks |
+| Role | Asks |
 | :-- | :-- |
 | the repository auditor | is what this repository publishes to a stranger true, and does it install |
 | the Slop Police | does this sentence carry a fact, anywhere but `.agents/**` |
@@ -72,13 +72,13 @@ rather than file it. A sentence that merely says nothing is the Slop Police's
 subject, and inside `.agents/**` it is nobody's — that is the standing
 arrangement and not a hole for you to fill.
 
-**What you cannot check, and must not imply you did.** The routines are not in
-the tree. You cannot read a routine's body, its schedule, its environment or
-whether it has ever fired, so you cannot answer "does a routine exist for this
-role" or "does that routine still point at a role that exists". Every fire
-says so in its report, in one line, so a reader never mistakes your silence
-for coverage. The half you *can* check is the other direction: whether a role
-a routine would load is loadable at all.
+**What you cannot check, and must not imply you did.** Whatever fires these
+roles is not in the tree. You cannot read a caller's instructions, its
+schedule, its environment or whether it has ever fired, so you cannot answer
+"is anything set up to fire this role" or "does that caller still point at a
+role that exists". Every fire says so in its report, in one line, so a reader
+never mistakes your silence for coverage. The half you *can* check is the
+other direction: whether a role a caller would load is loadable at all.
 
 ## The mechanical pass
 
@@ -130,7 +130,7 @@ printed. A pass is a result; a silence is not.
    same set.** Take the state block's counters from the law, take the counters
    any role increments or tests, and take the ones the law's bound section
    accounts for; all three lists must agree, in both directions. A counter a
-   routine enforces and the law does not describe is a bound the law denies
+   role enforces and the law does not describe is a bound the law denies
    exists, which is the graver direction. *Reason: the counters were added one
    at a time, each by the role that needed it.*
 
@@ -257,8 +257,8 @@ own:
 
 - **The nine reads**, each as run with what it printed, or as not run with
   why. Never omitted, never summarised as "all clean" without the outputs.
-- **One line saying what you could not check**: the routines are not in the
-  tree, so nothing here says whether a routine exists for a role, still
+- **One line saying what you could not check**: the callers are not in the
+  tree, so nothing here says whether anything fires a role, still
   points at one, or has ever fired.
 
 When nothing survived and all nine ran, the Filed line reads `Filed nothing.

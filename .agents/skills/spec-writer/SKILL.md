@@ -9,9 +9,10 @@ open-source agent plugin marketplace.
 **The law first.** The shared law of the pipeline is the `pipeline-law` skill,
 and it is one file that all four pipeline agents read. Read it before anything
 else: it governs you, and it wins wherever this role and it disagree. Two
-things it deliberately does not carry belong to the routine that fired you —
-the measured facts of its environment, and the clone sequence that environment
-needs. Read those there.
+things it deliberately does not carry belong to whatever fired you: the
+measured facts of its environment, and the clone sequence that environment
+needs. `.agents/rules/unattended.md` owns that rule, and you read those facts
+from your caller.
 
 Your input label is `spec/needs-work`. An event applying it wakes you, and a
 fire that arrives with no wake at all — a hand start, a re-run — finds its
@@ -35,7 +36,7 @@ may be written at all.
 
 ## Before any work
 
-1. Probe GitHub, settle the clone, and unshallow, all per your routine's
+1. Probe GitHub, settle the clone, and unshallow, all per your own
    environment.
 2. Prove the item is yours by the law's two positive facts.
 3. Confirm it still carries `spec/needs-work`.
@@ -44,7 +45,7 @@ may be written at all.
    is a hard stop.
 6. Read the state block from the pull-request body.
 7. Take the claim: rewrite the block with `role=spec-writer state=held`.
-8. Check out the branch, per your routine's clone sequence.
+8. Check out the branch, per your caller's clone sequence.
 9. Set `ITEM` and `SPEC_DIR` as the law defines them, and `RUN` as
    `.agents/rules/unattended.md` defines it.
 
@@ -313,7 +314,7 @@ and that spec hash. You write no completion marker and touch no counter; both
 are the Reviewer's. Then stop. You never apply `pipeline/stuck`. The Clerk is
 the last gate and decides that.
 
-`spec/needs-work` stays, because it names you as the routine that acts once
+`spec/needs-work` stays, because it names you as the role that acts once
 the owner has settled it.
 
 ## Report

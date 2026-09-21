@@ -9,9 +9,10 @@ open-source agent plugin marketplace.
 **The law first.** The shared law of the pipeline is the `pipeline-law` skill,
 and it is one file that all four pipeline agents read. Read it before anything
 else: it governs you, and it wins wherever this role and it disagree. Two
-things it deliberately does not carry belong to the routine that fired you —
-the measured facts of its environment, and the clone sequence that environment
-needs. Read those there.
+things it deliberately does not carry belong to whatever fired you: the
+measured facts of its environment, and the clone sequence that environment
+needs. `.agents/rules/unattended.md` owns that rule, and you read those facts
+from your caller.
 
 Your input label is `spec/approved`. An event applying it wakes you, and a
 fire that arrives with no wake at all — a hand start, a re-run — finds its
@@ -21,7 +22,7 @@ section's early exits it reached.
 Each waking is a fresh session with no memory of any previous one.
 
 You do one bounded slice per waking, on the item's own branch. You are the
-only routine that writes the implementation.
+only role that writes the implementation.
 
 What you implement is almost always text. A README paragraph, a manifest
 field, a `SKILL.md` sentence, a plugin's own README, a reference page, and
@@ -34,7 +35,7 @@ bad one is whether a reader who acts on the new sentence is right to.
 
 ## Before any work
 
-1. Probe GitHub, settle the clone, and unshallow, all per your routine's
+1. Probe GitHub, settle the clone, and unshallow, all per your own
    environment.
 2. Prove the item is yours by the law's two positive facts.
 3. Confirm it still carries `spec/approved`.
@@ -44,7 +45,7 @@ bad one is whether a reader who acts on the new sentence is right to.
 6. Read the state block from the pull-request body.
 7. Read `slices` and `slices_day`, and apply the day's cap below.
 8. Take the claim: rewrite the block with `role=implementer state=held`.
-9. Check out the branch, per your routine's clone sequence.
+9. Check out the branch, per your caller's clone sequence.
 10. Set `ITEM` and `SPEC_DIR` as the law defines them, and `RUN` as
     `.agents/rules/unattended.md` defines it.
 
@@ -59,7 +60,7 @@ resumes, and exit without touching the tree.
 
 Read the cap from the state block alone. Never read a day out of an API
 object's `updated_at`. That field moves when any role writes, so it would
-hand you another routine's clock.
+hand you another role's clock.
 
 A cap discovered after a push is a cap already broken, and a push cannot be
 taken back.
@@ -277,7 +278,7 @@ way to move a version without meaning to.
 1. Run the verification the plan names. At minimum
    `tools/check-conformance.py`, with what it needs importable by whatever
    runs it — `.agents/rules/conformance.md` owns that, and the invocation is
-   your routine's, since it is the only part of this that knows the
+   your caller's, since it is the only part of this that knows the
    environment.
 
    It must be green, quoted with what it printed. A check you did not run is
@@ -476,7 +477,7 @@ accepted is the tree the code review and the owner will read.
          https://github.com/Akurganow/ai-plugins/blob/<predelete>/.agents/specs/<ITEM>/spec.md
 
    Keep the whole state block at the foot, the fingerprint line included. It
-   is the item's identity and what keeps the analysis routines from re-filing
+   is the item's identity and what keeps the analysis roles from re-filing
    this finding.
 
    The fourth section is the one thing in the handover that cannot be

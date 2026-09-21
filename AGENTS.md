@@ -38,8 +38,8 @@ Four pipeline roles share `pipeline-law`; four analysis roles share
 `github-needs`; the ninth patrols the other eight. `.agents/manifest.yaml`
 declares the set and records why each arrangement is what it is.
 
-**The routines that fire them are not in this repository and never will be.** A
-routine carries the measured facts of its own environment and the clone
+**Whatever fires them is not in this repository and never will be.** The
+caller carries the measured facts of its own environment and the clone
 sequence that environment needs, because another person cloning this repository
 works in an environment of their own. `unattended.md` owns that rule.
 

@@ -9,9 +9,10 @@ open-source agent plugin marketplace.
 **The law first.** The shared law of the pipeline is the `pipeline-law` skill,
 and it is one file that all four pipeline agents read. Read it before anything
 else: it governs you, and it wins wherever this role and it disagree. Two
-things it deliberately does not carry belong to the routine that fired you —
-the measured facts of its environment, and the clone sequence that environment
-needs. Read those there.
+things it deliberately does not carry belong to whatever fired you: the
+measured facts of its environment, and the clone sequence that environment
+needs. `.agents/rules/unattended.md` owns that rule, and you read those facts
+from your caller.
 
 Your input label is `spec/awaiting-review`. An event applying it wakes you,
 and a fire that arrives with no wake at all — a hand start, a re-run — finds
@@ -35,7 +36,7 @@ would break a correct implementation. Taste is dropped and never reported.
 
 ## Before any work
 
-1. Probe GitHub, per your routine's environment.
+1. Probe GitHub, per your environment.
 2. Prove the item is yours by the law's two positive facts.
 3. Confirm it still carries `spec/awaiting-review`.
 4. Exit if it carries `pipeline/stuck` or `pipeline/hold`.
@@ -81,7 +82,7 @@ That file says everything a run writes goes under its own `$RUN` directory,
 never into the working tree.
 
 So do not check out the branch in the session's tree. Fetch the head through
-the clone your routine gave you — call it `$CLONE` — and read it in a
+the clone your caller gave you — call it `$CLONE` — and read it in a
 throwaway worktree under `$RUN`:
 
     git -C "$CLONE" fetch --depth 1 origin "$HEAD_REF"
@@ -92,7 +93,7 @@ throwaway worktree under `$RUN`:
 The route to GitHub is that clone's `origin` and this file states no URL of
 its own: the route belongs to the environment, per
 `.agents/rules/unattended.md`, and a session carrying no clone is a report
-line and the end of the fire. Your routine's longer clone sequence is for the
+line and the end of the fire. Your caller's longer clone sequence is for the
 stages that push: its checkout of the item's branch is not yours, and you run
 only as much of it as makes the clone present and its `origin` fetchable. You
 read no history, so a depth of one is what you want, and its still-shallow stop
@@ -258,7 +259,7 @@ because it carries objections.
 
 ## Routing
 
-**`review_rounds` is yours alone.** No other routine increments it. Two
+**`review_rounds` is yours alone.** No other role increments it. Two
 writers on one counter make the bound fire early, so the increment is keyed to
 content and never to the fire: spend a round only where no marker of yours at
 this spec hash already carries `round=`, and write the new value into the
@@ -288,7 +289,7 @@ second, and read the label set back.
 | an objection that survived | `spec/awaiting-review` | `spec/needs-work` | plus one |
 
 An approval says in one line what you checked and that it held. An approval
-with no reasoning is indistinguishable from a routine that did not read the
+with no reasoning is indistinguishable from a role that did not read the
 file.
 
 **The bound.** At `review_rounds` of 5 or above, compare the current spec
@@ -308,7 +309,7 @@ stop.
 
 **You never apply `pipeline/stuck`.** A bound is recorded, and the Clerk
 decides whether anything the machine has left can move the item.
-`spec/awaiting-review` stays either way. It names you as the routine that
+`spec/awaiting-review` stays either way. It names you as the role that
 acts once the bound is cleared.
 
 The law keys the bound on content. A changed spec hash after an un-stick

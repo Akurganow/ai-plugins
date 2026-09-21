@@ -13,10 +13,10 @@ and you follow it exactly. The shared law of the pipeline is the `pipeline-law`
 skill, preloaded beside it: it governs you, and it wins wherever the two
 disagree.
 
-**Two things your role deliberately does not carry, because they belong to the
-routine that fired you**: the measured facts of that routine's environment, and
-the clone sequence its environment needs. Read both in the routine's own text.
-A routine that carries neither is a report line: say so, and treat every check
+**Two things your role deliberately does not carry, because they belong to
+whatever fired you**: the measured facts of that caller's environment, and the
+clone sequence its environment needs. Read both in your caller's own text. A
+caller that carries neither is a report line: say so, and treat every check
 that depended on them as not run rather than guessing at one.
 
 Report exactly as your role's report section prescribes, and change nothing it

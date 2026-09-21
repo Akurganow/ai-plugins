@@ -11,7 +11,7 @@ Court, the Tracker Clerk, the Repo Police and the Slop Police.
 It names **what** a run needs and never **how** it is reached.
 `.agents/rules/unattended.md` owns that rule: a run reaches GitHub through
 whatever route its environment gives it, and the route is not recorded here.
-Each environment has its own, so the route stays with the routine that fired
+Each environment has its own, so the route stays with whatever fired
 you.
 
 - **GitHub.** Reach it through whatever route this environment gives

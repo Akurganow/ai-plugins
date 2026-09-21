@@ -160,8 +160,7 @@ comment-based control channel, and that holds here as everywhere.
 **One level.** GitHub's own documentation allows eight levels of nesting and
 100 sub-issues per parent. That is `github/docs`, file
 `content/issues/tracking-your-work-with-issues/using-issues/adding-sub-issues.md`,
-read from `raw.githubusercontent.com` on 2026-09-08. The site was read from
-the repository because `docs.github.com` is blocked from this network.
+read from `raw.githubusercontent.com` on 2026-09-08.
 
 This machine uses one level and at most four parts. A part that is itself
 too big is a report line, never a second split.

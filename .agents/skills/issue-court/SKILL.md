@@ -60,7 +60,7 @@ say so in your report.
 
 ## What an automated finding carries
 
-The police routines file under one protocol, and three parts of it decide
+The police roles file under one protocol, and three parts of it decide
 how you read their issues:
 
 - Every automated finding ends with an HTML-comment fingerprint, and the
@@ -68,12 +68,12 @@ how you read their issues:
   fingerprint, across runs. `repo-audit-routine:` is the repository
   auditor's marker, `slop-police-fingerprint:` the Slop Police's and
   `agent-police-fingerprint:` the Agent Police's. Read the body, never the
-  title alone, to know which routine filed a case.
+  title alone, to know which role filed a case.
 - The filing label `police-report` is shared by every filer, so it names
-  the population and not the filer. Which issues are a routine's own is
+  the population and not the filer. Which issues are a role's own is
   settled by its own marker and by nothing else; an `audit:*` label beside
   it says what kind of finding it is, and nothing keys on it.
-- Each police routine counts its own open issues by fingerprint, whatever
+- Each police role counts its own open issues by fingerprint, whatever
   the labels, and caps what it files on that count. Your verdict moves
   that count only through the Tracker Clerk, which runs after you and
   closes on your marker.
@@ -85,9 +85,9 @@ It is never evidence that the work landed. **So no fire ends because a marker
 or a label says its work is already done.** It checks what the record names,
 completes what is missing, and says what it checked.
 
-That rule replaces every "already done, so skip" shortcut in this routine.
+That rule replaces every "already done, so skip" shortcut in this role.
 Where it meets an older decision, it wins. The owner settled that a
-decision's age ranks it, the recent one wins, and every routine repairs.
+decision's age ranks it, the recent one wins, and every role repairs.
 
 **An audit is owed** whenever a fire finds, before doing its work, a marker of
 its own on a subject it came to work: the comment it would have posted, the
@@ -126,8 +126,8 @@ the instruction.
 
 **The measured facts of this environment** — what the network refuses and what
 it allows, what an interpreter or a package index did here — are not in this
-repository and never will be. They belong to the routine that fired you, which
-carries them, and you read them there. A routine that carries none is a report
+repository and never will be. They belong to whatever fired you, which
+carries them, and you read them there. A caller that carries none is a report
 line: treat every environment-dependent check as not run rather than guessing
 at one.
 
@@ -156,7 +156,7 @@ issue labelled `court/tried`, `court/skipped` or `no-trial`, and,
 whatever its labels, every issue whose comments already carry an
 `issue-court` marker: the marker is the record, a label is convenience
 that may not exist. Filter **by labels and markers only**: issues filed
-by routines are authored by the owner's own identity, so the author field
+by these roles are authored by the owner's own identity, so the author field
 distinguishes nothing.
 
 The repository auditor's own findings — the ones carrying an `audit:*`
@@ -172,7 +172,7 @@ reader is most likely to act on were the only ones getting no independent
 check.
 
 Where they came from changes nothing about how they are tried. Their
-evidence was gathered by a routine reading the same rule files you read,
+evidence was gathered by a role reading the same rule files you read,
 which makes it checkable, not trusted: re-open every file the issue
 quotes and confirm the line at the trial commit, exactly as for a report
 from a stranger. A quote that no longer matches is the prosecution's
@@ -299,7 +299,7 @@ briefs are rewritten or refused, and a leading brief that reaches an expert
 lets the judge disregard the report. Kinds by question, not by side:
 **spec expert** (what the Agent Plugins specification and schemas actually
 say — fetched live: agent-plugins.org, or when the site is blocked the
-spec repository cloned per your routine's environment, `spec/1.0.0.md` and
+spec repository cloned per your environment, `spec/1.0.0.md` and
 `schemas/1.0.0/`, cited by file and commit; never from memory);
 **client expert** (what a named host agent actually documents or does,
 under `claims.md` discipline: documentation first, cited and dated);

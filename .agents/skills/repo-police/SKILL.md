@@ -75,7 +75,7 @@ decisions made in it:
   landed complete. Check that `police-report` stands on each of them, and
   apply it where it is missing and the name is on the repository's label
   list, because that label is what the next run's listing finds and an issue
-  without it is invisible to every routine but this check. Say in the report
+  without it is invisible to every role but this check. Say in the report
   which issues you checked and which you repaired. Nothing here files
   anything.
 - An open issue covers the same file and the same rule under different
@@ -104,7 +104,7 @@ run:
 
 When the cap is 0, a light pass still happens so the report is honest, but
 nothing is filed. The count is by fingerprint and never by `police-report`:
-the label is shared, and counting by it would fold every routine's backlog
+the label is shared, and counting by it would fold every role's backlog
 into yours for reasons that have nothing to do with your findings.
 
 **The one exception to the backpressure cap**: a published claim that is
@@ -178,9 +178,9 @@ It is never evidence that the work landed. **So no fire ends because a marker
 or a label says its work is already done.** It checks what the record names,
 completes what is missing, and says what it checked.
 
-That rule replaces every "already done, so skip" shortcut in this routine.
+That rule replaces every "already done, so skip" shortcut in this role.
 Where it meets an older decision, it wins. The owner settled that a
-decision's age ranks it, the recent one wins, and every routine repairs.
+decision's age ranks it, the recent one wins, and every role repairs.
 
 **An audit is owed** whenever a fire finds, before doing its work, a marker of
 its own on a subject it came to work: the comment it would have posted, the
@@ -219,8 +219,8 @@ the instruction.
 
 **The measured facts of this environment** — what the network refuses and what
 it allows, what an interpreter or a package index did here — are not in this
-repository and never will be. They belong to the routine that fired you, which
-carries them, and you read them there. A routine that carries none is a report
+repository and never will be. They belong to whatever fired you, which
+carries them, and you read them there. A caller that carries none is a report
 line: treat every environment-dependent check as not run rather than guessing
 at one.
 
@@ -278,7 +278,7 @@ README links the root: bidirectional, no orphans.
 check, `tools/check-conformance.py`, and quote its output. It must exit 0.
 
 `conformance.md` owns what it decides and what it needs importable; the
-invocation is your routine's, because that is the only part of this that
+invocation is your caller's, because that is the only part of this that
 knows the environment. Where the run cannot install what the check imports,
 that is the check not run, reported as not run.
 
@@ -425,7 +425,7 @@ file.
 labels are for review feedback on a diff, where a reader has to know whether
 a comment blocks a merge. A filed issue has no merge to block, and the
 `Priority` line already carries that weight. The Issue Court declines them
-on the same ground, so the two routines agree on purpose.
+on the same ground, so the two roles agree on purpose.
 
 ## Report
 
@@ -450,7 +450,7 @@ The sites are the sources of record; most of them are blocked here
 with the repository that
 publishes the same text where one exists, and with the one file to read
 where one file is enough. Try the site; fall through to the repository
-the way your routine's environment allows — a single file is read from
+the way your environment allows — a single file is read from
 `https://raw.githubusercontent.com/<owner>/<repo>/<ref>/<path>`, with
 `<ref>` that repository's default-branch head, read from GitHub, the
 copy kept under `$RUN` and cited by file and

@@ -22,7 +22,7 @@ it, and file a GitHub issue for the few clusters a maintainer would clear
 in an afternoon and be glad of. Whether a claim is TRUE for a reader who
 acts on it belongs to your neighbour, the repository auditor.
 
-Work in the clone your routine gave you; any other repository clone in
+Work in the clone your caller gave you; any other repository clone in
 the session is not your subject. Confirm it is this one with `git remote
 get-url origin`. Where the session carries no clone, that is a report
 line and the end of the fire: the route to GitHub belongs to the
@@ -37,9 +37,9 @@ It is never evidence that the work landed. **So no fire ends because a marker
 or a label says its work is already done.** It checks what the record names,
 completes what is missing, and says what it checked.
 
-That rule replaces every "already done, so skip" shortcut in this routine.
+That rule replaces every "already done, so skip" shortcut in this role.
 Where it meets an older decision, it wins. The owner settled that a
-decision's age ranks it, the recent one wins, and every routine repairs.
+decision's age ranks it, the recent one wins, and every role repairs.
 
 **An audit is owed** whenever a fire finds, before doing its work, a marker of
 its own on a subject it came to work: the comment it would have posted, the
@@ -78,8 +78,8 @@ the instruction.
 
 **The measured facts of this environment** — what the network refuses and what
 it allows, what an interpreter or a package index did here — are not in this
-repository and never will be. They belong to the routine that fired you, which
-carries them, and you read them there. A routine that carries none is a report
+repository and never will be. They belong to whatever fired you, which
+carries them, and you read them there. A caller that carries none is a report
 line: treat every environment-dependent check as not run rather than guessing
 at one.
 
@@ -132,7 +132,7 @@ before any analysis, with these decisions made in it:
   landed complete. Check that `police-report` stands on each of them, and
   apply it where it is missing and the name is on the repository's label
   list, because that label is what the next run's listing finds and an issue
-  without it is invisible to every routine but this check. Say in the report
+  without it is invisible to every role but this check. Say in the report
   which issues you checked and which you repaired. Nothing here files
   anything.
 - An open issue covers the same file and the same rule under different
@@ -162,7 +162,7 @@ the run:
 When the cap is 0, a light pass still happens so the report is honest, but
 nothing is filed. Nothing overrides the cap. The count is by fingerprint
 and never by `police-report`: the label is shared, and counting by it
-would fold every routine's backlog into yours — one noisy week of the
+would fold every role's backlog into yours — one noisy week of the
 auditor's would silence the slop review for reasons that have nothing to
 do with slop.
 
@@ -208,7 +208,7 @@ reports that share a shape can be compared across weeks:
    `git status --porcelain` result.
 
 Triage is the section a run with independent triage inserts into the
-five-part shape every routine shares; the other five are the same for all.
+five-part shape every role shares; the other five are the same for all.
 Filing nothing is stated in one line, without apology or hedging. The
 report is the deliverable of a quiet week; it is not a failed run.
 
@@ -228,7 +228,7 @@ report is the deliverable of a quiet week; it is not a failed run.
   everything that check would have decided is reported as not checked,
   not as clean.
 
-## Where the routines part
+## Where the roles part
 
 Route every candidate before spending a minute on it. If it belongs to a
 neighbour, one line in your report — never an issue, not even "from a
@@ -244,7 +244,7 @@ different angle":
   exits non-zero at the analysed commit, that is a report line and the
   auditor's finding, not yours;
 - a **design question** about the check's shape → a report line; no
-  routine takes it;
+  role takes it;
 - **text** that carries no fact, or contradicts the tree beside it; a
   name that misleads; a check or a step that cannot fail; residue of the
   process → yours.
@@ -404,7 +404,7 @@ It receives only: the path of its candidate file; the analysed commit;
 the paths of `.agents/rules/slop.md`, `.agents/rules/claims.md` and
 `.agents/rules/conformance.md` in the clone; and a brief that carries,
 verbatim, the paragraph under **The check's territory is not yours**
-and the routing line for claims from **Where the routines part** — the
+and the routing line for claims from **Where the roles part** — the
 first bullet, from "a **false or unsourced claim**" to "so it is never
 yours". It never receives your reasoning or your preferred answer. The
 verifier re-derives the kind and the measurement itself from the

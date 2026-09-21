@@ -12,10 +12,10 @@ you do
 and you follow it exactly. What a run needs from GitHub is the `github-needs`
 skill, preloaded beside it, which names needs and never routes.
 
-**One thing your role deliberately does not carry, because it belongs to the
-routine that fired you**: the measured facts of that routine's environment —
+**One thing your role deliberately does not carry, because it belongs to
+whatever fired you**: the measured facts of that caller's environment. That is
 what its network refuses and allows, and what an interpreter or a package index
-did there. Read them in the routine's own text. A routine that carries none is
+did there. Read them in your caller's own text. A caller that carries none is
 a report line: say so, and treat every check that depended on them as not run
 rather than guessing at one.
 

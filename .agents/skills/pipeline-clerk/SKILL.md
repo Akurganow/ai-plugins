@@ -128,57 +128,40 @@ which would emit a wake event on work the owner has parked. Then one report line
 what you left it carrying, so the owner can clear it in one act as the law
 says he should.
 
-**Un-sticking.** A stop is a judgement made by one fire, at one moment, against
-one content. The tree then moves underneath it. The base gains commits. A
-sibling pull request lands the fix a repair needed. A stop's own comment turns
-out to name work a stage can still do.
+**Un-sticking.** Run this on every stuck item, on every sweep. A stop judges
+one content, and the content moves.
 
-Nothing in the machine re-opens that judgement unless you do. So you return to
-every stuck item on every sweep. A sweep that reads a stuck item and tries
-nothing is the defect this section exists against. The item's whole cost then
-falls on the owner noticing it.
+1. Straighten the item, above, so it is routable.
+2. Re-run the last-gate repairs below, as if the stop had just been recorded.
+3. Where a repair moves the item, the stop is spent. Re-enter the stage.
+4. Where none moves it, read the stop's comment for a worklist.
 
-Straighten it first, above, so what you re-enter is routable. Then re-run the
-last-gate repairs below, on this item, exactly as if the stop had just been
-recorded. Where one of them moves the item, the stop is spent. The item goes
-back to work.
-
-Where none of them moves it, read the stop's own comment for a **worklist**.
-That is a list of changes named there. Each one must be a change to this
-repository that the stage carrying the item could make. The judge's
-`must_change` is one such list. A reviewer's findings are another.
-
-Some stops name no such list, and you un-stick none of those. Three examples:
+A worklist lists changes the stage carrying the item could make. The judge's
+`must_change` is one. A reviewer's findings are another. Some stops name none:
 
 - a source that is not a file,
 - a decision only the owner can take,
-- a credential the environment does not have.
+- a credential the environment lacks.
 
-Say in the report which of the two cases you found.
+Un-stick none of those, and say in the report which case you found.
 
-With a worklist in hand and `unsticks` below two:
+With a worklist and `unsticks` below two:
 
-1. Rewrite the state block with `unsticks` raised by one. Do this **first**.
-   The stage label you re-enter next is a wake, and a fire starting before the
-   counter moves would read the item as never un-stuck.
+1. Raise `unsticks` by one in the state block. Do this **first**, because the
+   stage label is a wake.
 2. Remove `pipeline/stuck`.
-3. Re-enter the stage label the item carries, by the law's re-entry primitive.
-4. Post one comment. Name every repair you re-ran and what it returned. Name
-   the worklist you are sending back and the comment you read it from. Give
-   the counter before and after.
+3. Re-enter the stage label the item carries, by the re-entry primitive.
+4. Post one comment. Name the repairs and what each returned, the worklist and
+   where you read it, and the counter before and after.
 
-At `unsticks` of two or more the label stays on, and the item is the owner's.
-Say so in one report line, with the two un-sticks and what came back from each.
-That line is the evidence that his attention is now the only thing left.
+At two or more the label stays on. Report both un-sticks and what each
+returned.
 
 **Never un-stick an item also carrying `pipeline/hold`.** His freeze outranks
-your repair. The two labels together mean he has already looked.
+your repair.
 
-The bound is two rather than none, because both kinds of stop are common. The
-record shows stops spent by a conflict resolved and by a counter corrected. It
-also shows stops nothing gets past. An un-stick that never gave up would
-re-enter the second kind every morning for ever. That is the fire this pipeline
-pays for and learns nothing from.
+The bound is two because stops of both kinds are common. Without it the machine
+would re-enter an unworkable stop every morning.
 
 **The last-gate case, and the only one that ends in `pipeline/stuck`.** A
 stage that can carry an item no further does not label its own dead end. It

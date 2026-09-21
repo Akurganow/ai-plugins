@@ -60,8 +60,7 @@ timetable. A slot one holds stops the whole queue. Every finding behind it then
 waits on a decision nobody took.
 
 **Freezing an item is not freezing the pipeline.** Neither label was ever a
-throttle. A routine that reads one as a throttle stops work the owner never
-stopped.
+throttle.
 
 No routine merges. The Clerk alone takes a pull request out of draft, and it
 does so the moment the Implementer is finished — when it first sees
@@ -622,8 +621,7 @@ Two cases un-stick the item. A repair moved it. Or the stop names a worklist a
 stage can still work, and the Clerk sends that worklist back.
 
 `unsticks` bounds this at two. A stop the machine cannot get past costs two
-sweeps, then waits for the owner. The bound keeps a removable label from
-becoming a loop that removes it for ever.
+sweeps, then waits for the owner.
 
 Everything between the two is the machine's own to carry: a conflict, a dead
 fire, a lost label, a marker that would not stay written. An item in one of
@@ -648,8 +646,7 @@ because two consecutive stops on one item stand at two contents by
 construction. The work the first un-stick sent back is what moved the content.
 
 At two the Clerk leaves the stick standing, and the item is the owner's. Only
-his own removal of the label resets the counter. That reset is the whole
-difference between his un-stick and the machine's.
+his own removal of the label resets the counter.
 
 **An `unsticks=` absent from a state block reads as 0.** The next write of that
 block carries the field. Every item open when this counter arrived has no such

@@ -145,23 +145,15 @@ A worklist lists changes the stage carrying the item could make. The judge's
 
 Un-stick none of those, and say in the report which case you found.
 
-With a worklist and `unsticks` below two:
+With a worklist in hand:
 
-1. Raise `unsticks` by one in the state block. Do this **first**, because the
-   stage label is a wake.
-2. Remove `pipeline/stuck`.
-3. Re-enter the stage label the item carries, by the re-entry primitive.
-4. Post one comment. Name the repairs and what each returned, the worklist and
-   where you read it, and the counter before and after.
-
-At two or more the label stays on. Report both un-sticks and what each
-returned.
+1. Remove `pipeline/stuck`.
+2. Re-enter the stage label the item carries, by the re-entry primitive.
+3. Post one comment. Name the repairs and what each returned, and the worklist
+   with where you read it.
 
 **Never un-stick an item also carrying `pipeline/hold`.** His freeze outranks
 your repair.
-
-The bound is two because stops of both kinds are common. Without it the machine
-would re-enter an unworkable stop every morning.
 
 **The last-gate case, and the only one that ends in `pipeline/stuck`.** A
 stage that can carry an item no further does not label its own dead end. It
@@ -591,10 +583,9 @@ brief.
    back, and the count against the limit of three; and each stuck item you
    straightened, what it carried and what you left it carrying.
    **Un-sticks**: per stuck item, every repair you re-ran and what each
-   returned. Then `unsticks` before and after, and whether the label came off.
-   Then the worklist you sent back, where you read it, and the label set read
-   back. For a stuck item you left stuck, name the reason. It is the bound, or
-   no worklist a stage can work.
+   returned, whether the label came off, the worklist you sent back and where
+   you read it, and the label set read back. For a stuck item you left stuck,
+   say that no worklist named work a stage can do.
 3. **Code review**: per item, the draft field before and after, the marker
    before and after, whether a round was asked, what came back, how many
    findings were actionable, where the item went, and the label set as you

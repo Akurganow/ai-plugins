@@ -633,6 +633,11 @@ the Clerk leaves the stick standing and the item is the owner's. Only his own
 removal of the label resets it, which is the whole of the difference between
 his un-stick and the machine's.
 
+**An `unsticks=` absent from a state block reads as 0**, and the next write of
+that block carries the field. Every item open when this counter was added has
+no such field, and reading it as anything else would park each of them for good
+on a counter nothing ever wrote.
+
 1. **The test is `>=`, never `==`.** A counter can arrive above its bound
    after an un-stick or a repair, and `==` would step straight past it.
 2. **A bound is keyed on content, not on attempts.** Unchanged content at or

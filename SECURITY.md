@@ -29,9 +29,8 @@ than navigate:
 
 <https://github.com/Akurganow/ai-plugins/security/advisories/new>
 
-**That URL is the one thing on this page nobody checked.** It was not opened
-from the environment that wrote this file, and GitHub documents no address for
-the form anywhere: at commit `078b583` of
+**That URL was not opened from the environment that wrote this file**, and
+GitHub documents no address for the form anywhere: at commit `078b583` of
 [`github/docs`](https://github.com/github/docs/tree/078b5832caa5cde591c2babb389ef447a0ef66eb/content),
 GitHub's documentation in source form, no file under `content/` carries the
 string `advisories/new`. If the link does not open a report form, that settles
@@ -46,11 +45,13 @@ reporting process by following the instructions in the security policy for the
 repository, or by creating an issue asking the maintainers for a preferred
 security contact" — the same page, read the same day.
 
-Private vulnerability reporting was on for this repository on 2026-09-14, read
-as `{"enabled": true}` from GitHub's API, authenticated as the repository
-owner — which establishes the setting and not what a signed-out reader is
-shown. Nothing rewrites this file if it is switched off, so trust what the
-repository shows you over this paragraph.
+Private vulnerability reporting was on for this repository on 2026-09-22, read
+as `{"enabled": true}` from
+`https://api.github.com/repos/Akurganow/ai-plugins/private-vulnerability-reporting`,
+GitHub's API, authenticated as the repository owner — which establishes the
+setting and not what a signed-out reader is shown. Nothing rewrites this file
+if it is switched off, so trust what the repository shows you over this
+paragraph.
 
 Include what you have:
 
@@ -69,8 +70,23 @@ its digests relate to `binaries.json`; this file keeps no second copy of that.
 
 ## What belongs elsewhere
 
-The `hp` binary is built and released from `Akurganow/how-possible`. A defect
-in the program itself belongs there, and so does a wrong version, digest or
-target in `binaries.json`, which that release job writes and nobody here edits
-by hand. The exception is an archive whose digest looks tampered with rather
-than stale: report that here, privately.
+The `hp` binary is built and released from `Akurganow/how-possible`, which
+[`plugins/howp/binaries.json`](plugins/howp/binaries.json) names in its
+`source_repository` field — the release job's own record rather than a
+sentence kept in step by hand.
+
+**That repository is private**, read as `"private": true` from
+`https://api.github.com/repos/Akurganow/how-possible`, GitHub's API,
+authenticated as the repository owner, on 2026-09-22. Unless its owner has
+given you access it does not open for you, so nothing here asks you to file
+anything there. Report both of these through this repository instead, by the
+routes above:
+
+- **A defect in the `hp` program itself.** Use the advisory form if it is a
+  vulnerability; open a public issue if it is not.
+- **A wrong version, digest or target in `binaries.json`.** Open a public
+  issue — unless the digest recorded there looks tampered with rather than
+  stale, which is a vulnerability report and belongs in the advisory form.
+  Nobody can correct the file here: `.agents/rules/conformance.md` holds that
+  it is written by the release job "and by nothing else", so what a report
+  here achieves is reaching the person who runs that job.

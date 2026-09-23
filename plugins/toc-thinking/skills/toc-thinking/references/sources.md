@@ -29,7 +29,9 @@ and what was not read. Dates are the day of reading.
 ## Not read
 
 The following are named in TOC literature and were not opened from the
-network this was written on. Nothing in this skill is quoted from them.
+network this was written on. Nothing in this skill is quoted from them, and
+no claim about the effectiveness of the Thinking Processes is made here,
+because the published evaluations could not be read either.
 
 - Eliyahu M. Goldratt, *It's Not Luck*, North River Press, 1994. The
   Thinking Processes in narrative form.
@@ -39,6 +41,11 @@ network this was written on. Nothing in this skill is quoted from them.
   describes itself as a rewrite of it.
 - Lisa J. Scheinkopf, *Thinking for a Change: Putting the TOC Thinking
   Processes to Use*, St. Lucie Press, 1999.
+- Seonmin Kim, Victoria J. Mabin and John Davies, "The theory of
+  constraints thinking processes: retrospect and prospect", *International
+  Journal of Operations & Production Management* 28(2), 2008. The review
+  of the evidence on the Thinking Processes. Its findings are not
+  reported here because the paper could not be opened.
 
 ## What the skill adds on its own
 

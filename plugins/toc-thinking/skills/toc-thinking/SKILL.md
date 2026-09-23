@@ -7,8 +7,8 @@ description: >
   symptoms are many and the cause is unclear, when the same failure keeps
   returning, when two requirements block each other, when a migration or
   refactoring needs a plan, or when a proposed change needs checking before
-  it is built. Five logic trees, and a published set of reservations that
-  every cause-and-effect link must survive.
+  it is built. Five logic trees, and the published reservations for
+  scrutinising them.
 license: MIT
 ---
 
@@ -72,11 +72,14 @@ user in one sentence.
    first, then existence of entity and causality, then the rest. Show each
    reservation and fix the wording with the user.
 4. Look for a loop: an effect that feeds a cause below it, so the situation
-   reinforces itself. Draw it, and mark it. Breaking a loop is usually the
-   change with the largest effect.
+   reinforces itself. Draw it, and mark it. Dettmer counts removing the root
+   cause behind such a loop among the most powerful changes there are.
 5. Keep building down until a cause has no cause the user can change. That
    is a root cause. Several may exist. The one whose branches reach most of
-   the UDEs, including the most serious, is the core problem.
+   the UDEs, including the most serious, is the core problem. TOCICO's
+   guideline is that one to three core problems account for over 70% of
+   the UDEs. Dettmer reports the 70% figure as Goldratt's and rejects it,
+   because UDEs are not equally serious. Weigh the UDEs, do not count them.
 6. State the core problem to the user and ask whether it matches what they
    see in the code. Do not continue until they confirm or correct it.
 
@@ -109,14 +112,17 @@ cloud makes the conflict precise.
 ## Step 4: Future Reality Tree
 
 1. Put the injection at the bottom. Build sufficiency chains upward: *if*
-   injection *then* effect, until each UDE from Step 2 is replaced by its
-   desired effect.
+   injection *then* effect, until the majority of the UDEs from Step 2 are
+   replaced by desired effects.
 2. Look for negative branches: a chain from the injection to a new
    undesirable effect. Write each one out as a Negative Branch Reservation.
 3. Trim each negative branch with a second injection at the point where the
-   branch turns negative. If a branch cannot be trimmed, the main injection
-   is rejected.
-4. Scrutinise every link with `references/clr.md`.
+   branch turns negative. When the new effect is serious and no trimming
+   injection can be found, reconsider the main injection.
+4. Scrutinise every link with `references/clr.md`. Dettmer sets one
+   reservation aside in this tree: additional cause does not matter here,
+   because the question is whether the injection produces the effect, not
+   whether something else also could.
 
 ## Step 5: Prerequisite Tree
 
@@ -132,7 +138,8 @@ cloud makes the conflict precise.
 ## Step 6: Transition Tree
 
 For each intermediate objective, in the order from Step 5, write the five
-elements Goldratt's tree carries:
+elements of the tree in the form Dettmer reports from Goldratt. The
+original tree had four, without the rationale.
 
 1. The existing reality: the condition now.
 2. The need: why the next state is wanted.

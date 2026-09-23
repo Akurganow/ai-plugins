@@ -81,15 +81,20 @@ run unattended, then a defect reaches production undetected."
 ### 5. Additional cause
 
 TOCICO: "used ... to question whether the stated cause(s) is(are) sufficient
-to fully account for the stated effect." The addition is an independent
-cause of the same effect, joined with *or*: "eliminating only one of
-multiple independent causes will not overcome the effect entirely." Dettmer's
-test: "If I eliminate the stated cause, is there any other circumstance
-under which the same degree of effect would occur?"
+to fully account for the stated effect." The addition is a second,
+independent cause of the same effect: "eliminating only one of multiple
+independent causes will not overcome the effect entirely." The two sources
+draw it differently. TOCICO draws the two causes as "a magnitudinal 'and'
+connector", each adding to the size of the effect. Dettmer draws them as
+alternatives, and his test reads: "If I eliminate the stated cause, is there
+any other circumstance under which the same degree of effect would occur?"
+Dettmer also sets this reservation aside when scrutinising a Future Reality
+Tree, where only the injection's own effect matters.
 
 Software example. "If the connection pool is exhausted then p95 exceeds 2
 seconds" may be true and still not the whole story: an N+1 query pattern or
-a missing index produces the same effect on its own.
+a missing index produces the same effect on its own, and removing the pool
+problem alone leaves part of the latency in place.
 
 ### 6. Cause-effect reversal
 
@@ -108,9 +113,12 @@ Tree).
 TOCICO: "used to challenge either an entity's existence or the existence of
 a causal relationship on the basis of the absence of an inevitable effect
 that would have to exist if the entity or the proposed causal relationship
-really existed." Dettmer: "If the proposed cause genuinely exists, it will
-produce other effects besides the one in front of you." Name such an effect
-and check for it.
+really existed." Dettmer: "Predicted effect existence means that if a
+proposed cause-effect relationship is valid, some other unstated effect
+would also be expected." His example is appendicitis offered as the cause
+of abdominal pain: a fever and a raised white cell count would also be
+expected, and their absence refutes the cause. Name such an effect and
+check for it.
 
 Software example. Claimed cause: "a memory leak in the image handler." If
 so, heap use must rise with the number of images processed and fall after a
@@ -120,9 +128,10 @@ cause is refuted.
 ### 8. Tautology
 
 Dettmer: "The effect is offered as a rationale for the existence of the
-cause." His example: "The Dodgers lost because they played poorly. How do
-you know? They lost, didn't they?" TOCICO treats this as the same
-reservation as cause-effect reversal.
+cause." His example statement is "The Dodgers lost the game because they
+played poorly", and the tautology is asking how the poor play is known and
+answering that they lost. TOCICO treats this as the same reservation as
+cause-effect reversal.
 
 Software example. Fails: "Quality is low because the software has defects."
 Ask what produces the defects: no review, no tests, unclear requirements.

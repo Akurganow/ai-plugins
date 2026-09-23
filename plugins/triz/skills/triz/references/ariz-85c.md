@@ -4,8 +4,13 @@ The algorithm Altshuller published in 1985, in the order and the wording he
 gave it, with a gloss for software work under each step. The Russian text is
 quoted where the wording is the instrument: the mini-problem, the two ideal
 final results and the physical contradiction are formulas, and their words
-carry the method. `sources.md` says which copy the text was read from and
-which pages could not be opened.
+carry the method. `sources.md` says which copies the text was read from,
+one Russian and one English, and which pages could not be opened.
+
+The English text opens with a warning worth repeating: "ARIZ is a
+complicated tool. Do not apply it to solve new practical problems without
+at least 80 academic hours of preliminary study." The walk in this skill
+is guided, and the user should know what the author asked of a solver.
 
 ## The name
 
@@ -19,8 +24,9 @@ not stand for "complete".
 The algorithm has nine parts and forty steps. Part 5 names the instruments
 it applies: the standard solutions, problems solved before, the table of
 typical transformations for a physical contradiction, and the pointer to
-physical effects. It does not name the 40 principles or the contradiction
-matrix. That is why this skill treats the matrix route and the ARIZ route
+physical effects. It names the 40 principles once, in step 9.2, as a record
+to compare the finished solution against, and the contradiction matrix not
+at all. That is why this skill treats the matrix route and the ARIZ route
 as two routes rather than one.
 
 ## Vocabulary
@@ -172,12 +178,46 @@ the resources refined in Part 4.
 **5.2** Try analogy with non-standard problems solved earlier by ARIZ.
 
 **5.3** Try the typical transformations for removing a physical
-contradiction, which the algorithm keeps in its Table 2. The four
-transformations taught most often are in `SKILL.md`: separation in space,
-in time, on condition, and between the parts and the whole.
+contradiction, which the algorithm keeps in its Table 2, "Principles for
+Eliminating Physical Contradictions". The eleven, in the English text's
+wording:
 
-**5.4** Apply the pointer to physical effects and phenomena. The wording of
-this step was not read from the text (`sources.md`).
+1. Separation of conflicting properties in space.
+2. Separation of conflicting properties in time.
+3. System transition 1a: combination of homogeneous or heterogeneous
+   systems into a super-system.
+4. System transition 1b: transition from a system to an anti-system, or
+   combination of a system with an anti-system.
+5. System transition 1c: the entire system has a property X while its
+   parts have a property opposite to X.
+6. System transition 2: transition to a system that works on the
+   micro-level.
+7. Phase transition 1: substitution of the phase state of a system's part
+   or external environment.
+8. Phase transition 2: dual phase state of a system part.
+9. Phase transition 3: using phenomena associated with phase transitions.
+10. Phase transition 4: substitution of a mono-phase substance with a
+    dual-phase state.
+11. Physical-chemical transition: substance appearance and disappearance
+    through decomposition and combination, ionisation and recombination.
+
+The rule beside this step: "Only solution concepts that completely match
+the IFR or come close to it are acceptable." The four separations in
+`SKILL.md` Step 4 are the later teaching compression of this table, and
+`principles.md` says whose.
+
+Software gloss: 3 to 6 are the system-level moves, a cluster of services
+as one system, a service and its inverse, a rigid whole made of loose
+parts, a move to a finer grain. 7 to 11 are changes of state: a
+representation that switches with the conditions, a resource that exists
+only while it is needed.
+
+**5.4** Apply the Pointer to Physical Effects and Phenomena: "Consider the
+possibility of resolving the Physical contradiction using the Pointer to
+Physical Effects and Phenomena." The pointer is a catalogue of physical
+effects indexed by the function wanted. In software the counterpart is a
+catalogue of known mechanisms: the algorithms, data structures and
+protocols that provide a function.
 
 ## Part 6. Changing or replacing the problem
 
@@ -194,8 +234,13 @@ level of the supersystem. Repeat as needed.
 
 ## Part 7. Analysis of the way the physical contradiction was removed
 
-**7.1** Check the solution concept. The wording of this step was not read
-from the text (`sources.md`).
+**7.1** Check the solution concept: "Consider each introduced substance and
+field. Is it possible to apply available or derived SFRs instead of
+introducing the substances/fields? Can self-controlled substances be
+applied? Correct obtained technical solution accordingly." In software:
+for each component or interaction the solution adds, ask whether a
+resource listed in 2.3 does the same job, and whether a part can change
+its own state in response to conditions instead of being driven.
 
 **7.2** Assess the solution with four questions. Does it meet the main
 requirement of IFR-1, that the element does it itself? Which physical
@@ -228,6 +273,11 @@ system's size goes to zero and to infinity.
 **9.1** Compare the real course of the solution with the theoretical one
 and write down the deviations.
 
-**9.2** Compare the answer with the information fund. If the principle is
-new, record it. The wording of this step was not read from the text
-(`sources.md`).
+**9.2** Compare the solution with the knowledge base: "Compare the
+obtained solution concept to the information in the TRIZ knowledge base
+(Inventive Principles, Inventive Standards, and Pointer to Physical Effects
+and Phenomena). If the knowledge base does not include a principle that
+applies to the obtained solution concept, document this principle in the
+preliminary knowledge base." This is the one step in the algorithm that
+names the inventive principles, and it names them as a record to compare
+against, after the solution.

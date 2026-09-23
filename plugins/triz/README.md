@@ -64,9 +64,11 @@ None. Removing the plugin removes the skill.
   direction survives.
 - A problem with no trade-off in it is not a TRIZ problem.
 - The software readings of the parameters and the principles are this
-  skill's own, and `sources.md` says so. Altshuller's text is the Russian
-  formulas quoted in `ariz-85c.md` and the sub-items paraphrased in
-  `principles.md`.
+  skill's own, and `sources.md` says so. No published mapping of the 39
+  parameters to software was found, and no study that measures the classic
+  matrix on software problems. Altshuller's text is the Russian formulas
+  quoted in `ariz-85c.md`, the English text of its Table 2 and three steps,
+  and the sub-items paraphrased in `principles.md`.
 - A tangle of symptoms with no trade-off in sight belongs to the
   `toc-thinking` package from this marketplace, and the skill says so when
   it is installed.

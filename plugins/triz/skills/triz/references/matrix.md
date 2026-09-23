@@ -16,21 +16,32 @@ improving 9 (speed) at the cost of 27 (reliability):
 ## Provenance
 
 This is Altshuller's classic 39-by-39 matrix, not Matrix 2003 or Matrix
-2010. It was not copied from one file. Two transcriptions of unknown
-printed sources, an English spreadsheet dated 2007 that circulates in
-several public repositories and a Russian CSV titled "Таблица применения
-приёмов разрешения технических противоречий", were compared cell by cell.
-They agree on 1,208 cells. The 40 cells where they differ were settled by
-majority against a third transcription and, for two cells, a fourth. A
-reading that repeats a principle number, which the matrix never does, was
-treated as a transcription error and got no vote. The result has 1,248
-non-empty cells and 234 empty ones. The figure of 1,263 that is often
-quoted for the classic matrix was not confirmed: no copy that could be
-reached has more than 1,248. `sources.md` names the copies, the commits
-they were read at and the date.
+2010. It was not copied from one file. Two transcriptions were compared
+cell by cell:
 
-The 40 disputed cells are listed after the data, with every reading, so
-that a reader with a printed edition can check them.
+- an English spreadsheet, dated 2007 in its own metadata, that circulates
+  in several public repositories;
+- the table on the Altshuller Foundation's site, at
+  <https://www.altshuller.ru/triz/technique2.asp>, as transcribed by two
+  projects that do not share code and agree on every cell. The page itself
+  could not be opened from the network this was written on.
+
+They agree on 1,208 cells. The 40 cells where they differ were settled by
+majority against a third transcription, and for two cells a fourth, both
+of unknown printed origin. A reading that repeats a principle number,
+which the matrix never does, was treated as a transcription error and got
+no vote. On 29 of the 40 the Foundation's transcription stands alone, and
+on 11 it wins. Whether those 29 are typing errors on the page or
+differences between printed editions is not settled here: one project
+labels the spreadsheet "Matrix 1985" and the Foundation's table "Matrix
+1971", on its own authority. Every disputed cell is listed after the data
+with every reading, so that a reader who prefers the Foundation's table can
+take its column.
+
+The result has 1,248 non-empty cells and 234 empty ones. The figure of
+1,263 that is often quoted for the classic matrix was not confirmed: no
+copy that could be reached has more than 1,248. `sources.md` names the
+copies, the commits they were read at and the date.
 
 ## Cells
 
@@ -1289,10 +1300,10 @@ that a reader with a printed edition can check them.
 ## Disputed cells
 
 The cell, the reading kept, and the readings of the transcriptions that
-differ from it. "L1" is the English spreadsheet, "L2" the Russian CSV,
-"L3" the third transcription, "L4" the fourth, which covers only rows 1
-to 8 and columns 1 to 15. "Order only" means the same principles in a
-different order.
+differ from it. "L1" is the English spreadsheet, "L2" the Altshuller
+Foundation's table, "L3" the third transcription, "L4" the fourth, which
+covers only rows 1 to 8 and columns 1 to 15. "Order only" means the same
+principles in a different order.
 
 | Cell | Kept | L1 | L2 | L3 | L4 | Note |
 | --- | --- | --- | --- | --- | --- | --- |

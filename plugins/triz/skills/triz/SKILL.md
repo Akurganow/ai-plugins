@@ -67,7 +67,9 @@ read." The sentence is a direction, not a solution. Keep it in view.
 
 ## Step 4: separate the opposite properties
 
-Four ways to hold both properties, each with software forms:
+Four ways to hold both properties, as later TRIZ teaching compresses
+Altshuller's own lists. `principles.md` says whose list this is and what
+Altshuller published. Each with software forms:
 
 1. **In time.** The property holds at one moment and its opposite at
    another. Lazy and eager phases, a feature flag, a build-time check that
@@ -136,15 +138,19 @@ Say why you are escalating.
 Read `references/ariz-85c.md` and walk the nine parts in order with the
 user. Do not skip a part and do not compress two into one. The value is in
 the formulations, so write each one out in the wording the reference gives
-and fill it from the user's system.
+and fill it from the user's system. Tell the user what the reference
+records: Altshuller's text asks for about 80 hours of study before the
+algorithm is used on a new problem, and the walk here is a guided
+substitute for that, not the same thing.
 
 - Parts 1 to 3 produce the mini-problem, the conflicting pair, the
   intensified conflict, the operative zone and time, the resource list,
   the two ideal final results and the physical contradiction.
 - Parts 4 and 5 produce the solution directions from the resources and
-  from the information fund. Step 5.3 is where Step 4 of this skill
-  returns, and the 40 principles may be read there too, with a note that
-  the algorithm as published does not name them.
+  from the information fund. Step 5.3 applies the algorithm's own table of
+  eleven transformations, which Step 4 of this skill compresses to four.
+  The 40 principles may be read there too, with a note that the algorithm
+  names them only in step 9.2, as a record to compare against.
 - Part 6 restates the problem when nothing came out.
 - Parts 7 to 9 check the solution, generalise it and record what the walk
   taught.

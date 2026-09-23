@@ -322,10 +322,14 @@ a component built from parts with different properties.
 
 ## Separation principles for a physical contradiction
 
-The four separations the skill uses in Step 4 are the ones Zlotin and
-Zusman teach: in space, in time, on condition, and between the parts and
-the whole. Litvin's set names them in space, in time, in relation and at
-the system level, and adds two other methods, satisfy and bypass.
-Authors also attach lists of the 40 principles to each separation, and the
-lists differ between authors, so this skill attaches none. `sources.md`
-names the transcription both sets were read from.
+The four separations the skill uses in Step 4, in space, in time, on
+condition, and between the parts and the whole, are the set later teaching
+texts give: the MATRIZ glossary of 2014 and the TETRIS handbook of 2009,
+among others. Altshuller's own lists are different. In 1979, in ARIZ-77,
+he gave four: in space, in time, through transitional states in which the
+opposite properties coexist or alternate, and by restructuring so that the
+parts have one property and the whole the other. In ARIZ-85C he gave the
+eleven of its Table 2, which `ariz-85c.md` lists under step 5.3. "On
+condition" is in neither of his lists. Authors also attach lists of the 40
+principles to each separation, and the lists differ between authors, so
+this skill attaches none. `sources.md` names where each list was read.

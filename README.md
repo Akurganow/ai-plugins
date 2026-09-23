@@ -288,6 +288,8 @@ different operation that the standard does not describe — see
 |---|---|---|
 | `howp` | Personal probability dashboard: interests → measurable questions → prediction-market probabilities → a local Markdown dashboard of what became more or less likely | working. The skill reads [`plugins/howp/binaries.json`](plugins/howp/binaries.json) for the release, the targets and what an archive holds — that file is the record, not this cell — downloads the archive for a target it names, verifies it against the digest recorded there, and drives one binary, `hp`; it stops on any platform the file does not name. `hp` opens no socket and reads no clock: the agent fetches each market body itself and passes the moment in, and every judgement is the agent's. The published `howp-v0.3.1` binary archive was installed and run by the skill's own procedure on Linux `x86_64` on 2026-09-03 — the package itself through no client — and nothing has been run on macOS |
 | `prose-discipline` | An engineering prose standard for everything an agent writes: sentence structure, plain vocabulary, comment hygiene, artifact formats and slop pruning, each stated as a rule a reader can check | working. The standard is three files a reader can open — [`rules/prose-discipline.md`](plugins/prose-discipline/rules/prose-discipline.md) for the mandatory core, the skill for the protocol, and its references for the depth, the substitution table and a calibration corpus. It reaches a session three ways, and which one a client takes is that client's business: a rule file carrying `alwaysApply: true`, a `SessionStart` hook that prints the core for the host to inject, and the skill itself at the fixed `skills/` location. Nothing here has been installed or observed working from this repository as published, and the upstream checks the package was assembled from are not reproduced. The vendor manifests are symlinks to the root manifest, so a client that reads components only from vendor manifest fields finds the skill and not the rule file or the hook |
+| `toc-thinking` | Goldratt's Theory of Constraints Thinking Processes for software systems: a Current Reality Tree to the core problem, an Evaporating Cloud to the conflict that keeps it in place, a Future Reality Tree to check the injection, a Prerequisite Tree and a Transition Tree to plan it | not installed from here. One skill and three references, checked against the TOCICO Dictionary and Dettmer's *The Logical Thinking Process*, read from public copies that [`references/sources.md`](plugins/toc-thinking/skills/toc-thinking/references/sources.md) names by commit. The Categories of Legitimate Reservation are given as Dettmer's eight, with TOCICO's count of seven noted. Nothing has been installed or observed working from this repository as published |
+| `triz` | TRIZ for engineering trade-offs in software: the classic contradiction matrix with the 39 parameters and the 40 principles for a trade-off that can be named, the separation principles for a physical contradiction, and ARIZ-85C for a problem the matrix did not crack | not installed from here. One skill and five references. The matrix has 1,248 non-empty cells, the majority reading of public transcriptions compared cell by cell. [`references/matrix.md`](plugins/triz/skills/triz/references/matrix.md) lists every disputed cell. The four ARIZ formulas are quoted from a public copy of the Russian text, and Table 2 and three steps from a public English text. [`references/sources.md`](plugins/triz/skills/triz/references/sources.md) names each copy by commit and what could not be opened. Nothing has been installed or observed working from this repository as published |
 
 ## Layout
 
@@ -300,12 +302,14 @@ plugins/<name>/
   plugin.json                      the manifest — Agent Plugins 1.0.0, at the plugin root
   .claude-plugin/plugin.json       symlink → ../plugin.json, Claude's documented manifest
                                    path; it holds no content of its own
-  binaries.json                    the released binary set: tag, targets, archives,
-                                   download URLs and their sha256 digests. Written by
-                                   the release path; the skill reads it and nothing
-                                   duplicates it
+  README.md                        every package but howp: what it does, what ships,
+                                   what has and has not been verified
+  binaries.json                    howp only. The released binary set: tag, targets,
+                                   archives, download URLs and their sha256 digests.
+                                   Written by the release path. The skill reads it and
+                                   nothing duplicates it
   skills/<name>/SKILL.md           the skill, per the Agent Skills specification
-  skills/<name>/references/*.md    the skill's own bundled references, loaded by the
+  skills/<name>/references/*       the skill's own bundled references, loaded by the
                                    agent when a procedure needs them
 tools/check-conformance.py         the conformance check
 tools/schemas/                     the official manifest schema, vendored
@@ -313,12 +317,14 @@ tools/schemas/                     the official manifest schema, vendored
                                    requests
 ```
 
-A plugin's `version`, its `binaries.json` and its skill's
+`howp`'s `version`, its `binaries.json` and its skill's
 `references/commands.md` are written by the release that publishes its
 binaries, and by nothing here — `.agents/rules/conformance.md` carries the
-rule.
+rule. The other packages have no release job, and their `version` moves by
+hand in the change that alters the package.
 
-That has a consequence worth stating rather than working around. The standard
+For `howp`, that has a consequence worth stating rather than working
+around. The standard
 does not require a client to care about `version` — §10.2 says only that
 clients "MAY use `version` to determine whether updates are available and
 whether caches are stale" — but Claude Code does: "If set (here or in

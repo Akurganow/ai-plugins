@@ -2,13 +2,15 @@
 
 ## Supported versions
 
-Two packages are published from this repository, and they are versioned
-differently.
+Four packages are published from this repository. A release versions one
+of them. The other three are supported as they stand on `main`.
 
 | Package | What is supported |
 | :-- | :-- |
 | `howp` | the release recorded in [`plugins/howp/binaries.json`](plugins/howp/binaries.json) |
 | `prose-discipline` | the state of `main` |
+| `toc-thinking` | the state of `main` |
+| `triz` | the state of `main` |
 
 There are no backports. `plugins/howp/binaries.json` is written by the release
 and never by hand, and is the record of which release and which targets exist;
@@ -72,10 +74,10 @@ its digests relate to `binaries.json`; this file keeps no second copy of that.
 
 ## What belongs elsewhere
 
-The `hp` binary is not built here. `README.md` states that a plugin's
+The `hp` binary is not built here. `README.md` states that `howp`'s
 `version`, its `binaries.json` and its skill's `references/commands.md` are
-"written by the release that publishes its binaries, and by nothing here", and
-**the repository it is built from is private** — this repository's own `howp`
+"written by the release that publishes its binaries, and by nothing here".
+**The repository it is built from is private.** This repository's own `howp`
 skill says so where it forbids a build from source:
 [`plugins/howp/skills/howp/SKILL.md`](plugins/howp/skills/howp/SKILL.md),
 "never a build from source: that repository is private". Unless its owner has

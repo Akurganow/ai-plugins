@@ -13,6 +13,14 @@
     {
       "name": "prose-discipline",
       "source": "./plugins/prose-discipline"
+    },
+    {
+      "name": "toc-thinking",
+      "source": "./plugins/toc-thinking"
+    },
+    {
+      "name": "triz",
+      "source": "./plugins/triz"
     }
   ]
 }

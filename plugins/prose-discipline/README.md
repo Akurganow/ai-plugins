@@ -38,7 +38,8 @@ and in a diff only added lines count.
 | `rules/prose-discipline.md` | the core rules, one file, the whole mandatory part |
 | `skills/prose-discipline/SKILL.md` | the skill, per the Agent Skills specification |
 | `skills/prose-discipline/references/*.md` | the depth behind each rule, plus a calibration corpus |
-| `hooks/hooks.json`, `hooks/session-rules.sh` | a SessionStart hook that prints the core rules for a host to inject |
+| `hooks/hooks.json`, `hooks/session-rules.sh` | a SessionStart hook that prints the core rules for a host to inject; the script is run through `sh` and carries no execute bit |
+| `README.md` | this file |
 | `.claude-plugin/`, `.codex-plugin/` | vendor discovery paths, each a symlink to the root manifest |
 
 ## How the standard reaches a session

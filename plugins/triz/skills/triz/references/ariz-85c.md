@@ -1,33 +1,40 @@
 # ARIZ-85C, part by part
 
-The algorithm Altshuller published in 1985, in the order and the wording he
-gave it, with a gloss for software work under each step. The Russian text is
-quoted where the wording is the instrument: the mini-problem, the two ideal
-final results and the physical contradiction are formulas, and their words
-carry the method. `sources.md` says which copies the text was read from,
-one Russian and one English, and which pages could not be opened.
+The algorithm Altshuller published in 1985, in his order of parts and
+steps. The steps are paraphrased in English, with a gloss for software
+work under each. The text is quoted where the wording is the instrument.
+The mini-problem, the two ideal final results and the physical
+contradiction are formulas, and their words carry the method. `sources.md`
+says which copies the text was read from, one Russian and one English,
+and which pages could not be opened.
 
-The English text opens with a warning worth repeating: "ARIZ is a
-complicated tool. Do not apply it to solve new practical problems without
-at least 80 academic hours of preliminary study." The walk in this skill
-is guided, and the user should know what the author asked of a solver.
+The English text opens with a warning: "ARIZ is a complicated tool. Do not
+apply it to solve new practical problems without at least 80 academic
+hours of preliminary study." The walk in this skill is guided, and the
+user should know what the author asked of a solver.
 
 ## The name
 
 ARIZ is the Russian acronym for Algorithm of Inventive Problem Solving.
-Versions are named by year. In 1985 three modifications followed each other,
-lettered with the first three letters of the Russian alphabet, and the third
-is ARIZ-85-В. English texts write the Cyrillic В either by its position, C,
-or by its sound, V. "ARIZ-85C" and "ARIZ-85V" are the same text. The C does
-not stand for "complete".
+Versions are named by year. In 1985 three modifications followed each
+other, lettered with the first three letters of the Russian alphabet, and
+the third is ARIZ-85-В. English texts write the Cyrillic В either by its
+position, C, or by its sound, V. "ARIZ-85C" and "ARIZ-85V" are the same
+text. The C does not stand for "complete". `sources.md` says what this
+naming rests on.
 
 The algorithm has nine parts and forty steps. Part 5 names the instruments
-it applies: the standard solutions, problems solved before, the table of
-typical transformations for a physical contradiction, and the pointer to
-physical effects. It names the 40 principles once, in step 9.2, as a record
-to compare the finished solution against, and the contradiction matrix not
-at all. That is why this skill treats the matrix route and the ARIZ route
-as two routes rather than one.
+it applies:
+
+- the standard solutions
+- problems solved before
+- the table of typical transformations for a physical contradiction
+- the pointer to physical effects
+
+It names the 40 principles once, in step 9.2, as a record to compare the
+finished solution against. It does not name the contradiction matrix. That
+is why this skill treats the matrix route and the ARIZ route as two routes
+rather than one.
 
 ## Vocabulary
 
@@ -52,10 +59,12 @@ as two routes rather than one.
 
 **1.1** Write the mini-problem without special terms, in this form:
 
-> Техническая система для (назначение) включает (основные части).
-> ТП-1: ЕСЛИ ..., ТО ..., НО ...
-> ТП-2: ЕСЛИ ..., ТО ..., НО ...
-> Необходимо при минимальных изменениях в системе (результат).
+> Техническая система: для (указать назначение) включает (перечислить
+> основные части системы).
+> Техническое противоречие 1 (ТП-1): ЕСЛИ ..., ТО ... , НО ...
+> Техническое противоречие 2 (ТП-2): ЕСЛИ ..., ТО ... , НО ...
+> Необходимо при минимальных изменениях в системе (указать результат,
+> который должен быть получен).
 
 The English text's pattern: "A technical system for <state the purpose of
 the system> includes <list the main parts of the system>. Technical
@@ -105,10 +114,12 @@ system's main function.
 conflict, and what the X-element must do. What it must keep, and what it
 must remove, improve or provide.
 
-**1.7** Check whether a standard solution resolves the model. If not, go to
-Part 2. If it does, Part 7 may follow, and the algorithm still recommends
-going on with Part 2. This package does not carry the 76 standard
-solutions. Say so to the user at this step and go on to Part 2.
+**1.7** Check whether a standard solution resolves the model.
+
+- If not, go to Part 2.
+- If it does, Part 7 may follow. The algorithm still recommends Part 2.
+- This package does not carry the 76 standard solutions. Say so, and go
+  on to Part 2.
 
 ## Part 2. Analysis of the problem model
 
@@ -126,19 +137,19 @@ polls.
 **3.1** Write IFR-1:
 
 > икс-элемент, абсолютно не усложняя систему и не вызывая вредных явлений,
-> устраняет (вредное действие) в течение оперативного времени в пределах
-> оперативной зоны, сохраняя способность инструмента совершать (полезное
-> действие).
+> устраняет (указать вредное действие) в течение оперативного времени
+> (ОВ) в пределах оперативной зоны (ОЗ), сохраняя способность инструмента
+> совершать (указать полезное действие).
 
 The English text's pattern: "The X-element, without complication of the
 system and without harmful side effects, eliminates <indicate the harmful
 action> during the <Operational Time> inside the <Operational Zone>,
 keeping the ability of the tool to provide <indicate the useful action>."
 
-**3.2** Strengthen IFR-1: no new substances and no new fields may be brought
-in. The solution uses the resources listed in 2.3. In software: no new
-service, no new store, no new protocol, before the existing ones have been
-tried.
+**3.2** Strengthen IFR-1 with one added requirement. No new substances and
+no new fields may be brought in. The solution uses the resources listed in
+2.3. In software: no new service, store or protocol before the existing
+ones have been tried.
 
 **3.3** Write the physical contradiction at the macro level. The English
 text's pattern: "the <Operational zone>, during the <Operational time>,
@@ -146,10 +157,11 @@ has to... <indicate physical macro-state, for example 'hot'> in order to
 perform <indicate one of the conflicting actions> and has to... <indicate
 the opposite physical macro-state, for example 'cold'> to perform
 <indicate another conflicting action or requirement>." Both halves are
-positive: the zone must be hot for one action and must be cold for the
+positive. The zone must be hot for one action and must be cold for the
 other. The Russian copy this reference was read from writes the second
-half as «и не должна (противоположное макросостояние)», which read
-literally states no contradiction. Use the English form.
+half as «и не должна (указать противоположное физическое макросостояние,
+например "быть холодной")». Read literally, that states no contradiction.
+Use the English form.
 
 **3.4** Write the physical contradiction at the micro level. The English
 text's pattern: "There should be particles of a substance <indicate their
@@ -161,8 +173,9 @@ records, requests or cells that make up the zone.
 
 **3.5** Write IFR-2:
 
-> оперативная зона в течение оперативного времени должна сама обеспечивать
-> (противоположные макро- или микросостояния).
+> оперативная зона (указать) в течение оперативного времени (указать)
+> должна сама обеспечивать (указать противоположные физические макро- или
+> микросостояния).
 
 The English text's pattern: "The Operational Zone <indicate> has to
 provide <indicate the opposite macro- or micro-states> itself during the
@@ -178,8 +191,8 @@ are not carried here: say so and go on to Part 4.
 agents, redraw it so that they act without conflict, then translate the
 drawing back into a technical scheme.
 
-**4.2** When the finished system is known and the problem is how to reach
-it, take a step back from the IFR: draw the finished system and make the
+**4.2** Take a step back from the IFR, when the finished system is known
+and the problem is how to reach it. Draw the finished system. Make the
 smallest change that breaks it.
 
 **4.3** Check whether a mixture of resource substances solves the problem.
@@ -222,26 +235,28 @@ wording:
 4. System transition 1b: transition from a system to an anti-system, or
    combination of a system with an anti-system.
 5. System transition 1c: the entire system has a property X while its
-   parts have a property opposite to X.
+   parts have a property opposite to X (anti-X).
 6. System transition 2: transition to a system that works on the
    micro-level.
 7. Phase transition 1: substitution of the phase state of a system's part
    or external environment.
-8. Phase transition 2: dual phase state of a system part.
+8. Phase transition 2: dual phase state of a system part (using
+   substances capable of converting from one phase to another according
+   to the operating conditions).
 9. Phase transition 3: using phenomena associated with phase transitions.
 10. Phase transition 4: substitution of a mono-phase substance with a
     dual-phase state.
-11. Physical-chemical transition: substance appearance and disappearance
-    through decomposition and combination, ionisation and recombination.
+11. Physical-chemical transition: substance appearance-disappearance as
+    a result of decomposition-combination, ionization-recombination.
 
 The rule beside this step: "Only solution concepts that completely match
 the IFR or come close to it are acceptable." The four separations in
-`SKILL.md` Step 4 are the later teaching compression of this table, and
-`principles.md` says whose.
+`SKILL.md` Step 4 come from later teaching texts, and `principles.md`
+names them.
 
-Software gloss: 3 to 6 are the system-level moves, a cluster of services
-as one system, a service and its inverse, a rigid whole made of loose
-parts, a move to a finer grain. 7 to 11 are changes of state: a
+Software gloss. Items 3 to 6 are the system-level moves: a cluster of
+services as one system, a service and its inverse, a rigid whole made of
+loose parts, a move to a finer grain. Items 7 to 11 are changes of state: a
 representation that switches with the conditions, a resource that exists
 only while it is needed.
 
@@ -275,11 +290,14 @@ for each component or interaction the solution adds, ask whether a
 resource listed in 2.3 does the same job, and whether a part can change
 its own state in response to conditions instead of being driven.
 
-**7.2** Assess the solution with four questions. Does it meet the main
-requirement of IFR-1, that the element does it itself? Which physical
-contradiction did it remove, and did it? Does the system contain at least
-one well-controlled element, and how is it controlled? Does a solution
-found for one cycle hold under many cycles?
+**7.2** Assess the solution with four questions.
+
+- Does it meet the main requirement of IFR-1, that the element does it
+  itself?
+- Which physical contradiction did it remove, and did it?
+- Does the system contain at least one well-controlled element, and how
+  is it controlled?
+- Does a solution found for one cycle hold under many cycles?
 
 **7.3** Check the formal novelty of the solution against patent data. In
 software: against the published designs and the libraries that already
@@ -296,10 +314,13 @@ change.
 **8.2** Check whether the changed system, or the supersystem, can be used
 in a new way.
 
-**8.3** Use the answer for other problems. State the principle in general
-form, apply it directly to other problems, try its inverse, build a
-morphological table of its variants, and see how it changes as the
-system's size goes to zero and to infinity.
+**8.3** Use the answer for other problems.
+
+- State the principle in general form.
+- Apply it directly to other problems.
+- Try its inverse.
+- Build a morphological table of its variants.
+- See how it changes as the system's size goes to zero and to infinity.
 
 ## Part 9. Analysis of the course of the solution
 

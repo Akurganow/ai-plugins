@@ -5,19 +5,24 @@ and what was not read. Dates are the day of reading.
 
 ## Read
 
-- **TOCICO Dictionary, second edition.** Cox, Boyd, Sullivan, Reid and
-  Cartier (eds.), McGraw-Hill, 2012. The publisher's site was not reachable
+- **TOCICO Dictionary, second edition, 2012.** The editors and the
+  publisher are as bookseller listings give them, Cox, Boyd, Sullivan, Reid
+  and Cartier, McGraw-Hill, because the publisher's site was not reachable
   from the network this was written on. The entries were read from a public
   copy of the dictionary's text, entry by entry, at
   <https://github.com/comm644/tocdic/tree/b9fada8c978d38cb803f7d900fa82df6cdad3da6>
-  on 2026-09-23. The entries used: *change question sequence*, *thinking
-  processes*, *sufficiency-based logic*, *necessity-based logic*,
-  *undesirable effect*, *current reality tree*, *root cause*, *core
-  problem*, *evaporating cloud*, *requirement*, *prerequisite*,
-  *assumption*, *injection*, *three-cloud approach*, *future reality tree*,
-  *negative branch reservation*, *prerequisite tree*, *obstacle*,
-  *intermediate objective*, *transition tree*, *strategy and tactics tree*,
-  *categories of legitimate reservation* and the entry for each reservation.
+  on 2026-09-23. The entries used:
+  - *change question sequence*, *thinking processes*
+  - *sufficiency-based logic*, *necessity-based logic*
+  - *undesirable effect*, *current reality tree*, *root cause*, *core
+    problem*
+  - *evaporating cloud*, *requirement*, *prerequisite*, *assumption*,
+    *injection*, *three-cloud approach*
+  - *future reality tree*, *negative branch reservation*
+  - *prerequisite tree*, *obstacle*, *intermediate objective*
+  - *transition tree*, *strategy and tactics tree*
+  - *categories of legitimate reservation* and the entry for each
+    reservation
 - **H. William Dettmer, *The Logical Thinking Process: A Systems Approach to
   Complex Problem Solving*.** ASQ Quality Press, 2007, ISBN
   978-0-87389-723-5. Read from a Markdown conversion of the book in a public
@@ -35,24 +40,30 @@ because the published evaluations could not be read either.
 
 - Eliyahu M. Goldratt, *It's Not Luck*, North River Press, 1994. The
   Thinking Processes in narrative form.
-- Eliyahu M. Goldratt and Jeff Cox, *The Goal*, North River Press, 1984.
-- H. William Dettmer, *Goldratt's Theory of Constraints: A Systems Approach
-  to Continuous Improvement*, ASQ Quality Press, 1997. The 2007 book above
-  describes itself as a rewrite of it.
-- Lisa J. Scheinkopf, *Thinking for a Change: Putting the TOC Thinking
-  Processes to Use*, St. Lucie Press, 1999.
+- Eliyahu M. Goldratt and Jeff Cox, *The Goal*, North River Press.
+  Dettmer's bibliography cites the second edition of 1992.
+- H. William Dettmer, *Goldratt's Theory of Constraints*, 1997. The 2007
+  book's copyright page names it as the book it rewrites. Its subtitle and
+  publisher were not verified.
+- Lisa J. Scheinkopf, *Thinking for a Change*, 1999. Dettmer's endnote
+  gives its subtitle as "Putting the TOC Thinking Processes to Work".
+  Bookseller listings give "to Use".
 - Seonmin Kim, Victoria J. Mabin and John Davies, "The theory of
   constraints thinking processes: retrospect and prospect", *International
-  Journal of Operations & Production Management* 28(2), 2008. The review
-  of the evidence on the Thinking Processes. Its findings are not
-  reported here because the paper could not be opened.
+  Journal of Operations & Production Management*, 2008. The review of the
+  evidence on the Thinking Processes. Its findings are not reported here
+  because the paper could not be opened.
 
 ## What the skill adds on its own
 
-Two things in `SKILL.md` are this skill's adaptation for software work and
-not TOC as published:
+These parts of `SKILL.md` are this skill's adaptation for software work
+and not TOC as published:
 
 - The classification in Step 1, which picks a starting tool from the shape
   of the user's description.
+- The rule in Step 2 to report separate root causes when branches do not
+  meet.
+- The bridge in Step 3 from the core problem to the boxes D and D'.
 - The observation line in Step 6, which names the command, test or metric
   that shows a step's expected effect.
+- Every software example in `clr.md`.

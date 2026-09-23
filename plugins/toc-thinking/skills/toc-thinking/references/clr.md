@@ -48,21 +48,21 @@ structure (one idea, no *if-then* inside it) and validity (it exists and can
 be evidenced).
 
 Software example. Fails: "Tight coupling exists." Passes: "OrderService
-imports five internal classes of ShippingService, and both write the same
-table."
+imports five internal classes of ShippingService." One idea per entity: the
+shared table is a second entity.
 
 ### 3. Causality existence
 
 TOCICO: "used to question whether or not the proposed causal relationship
 between two entities really exists." Causation is separated from
-correlation "by the verifiability of a causal relationship." Dettmer: read
-the link aloud as "If [cause], then [effect]" and say how the cause produces
-the effect.
+correlation "by the verifiability of a causal relationship." Dettmer reads
+the link aloud in *if-then* form and asks how the cause produces the
+effect.
 
 Software example. Fails: "If we added caching then users see stale data."
-Passes: "If the status cache keeps an entry for five minutes and the payment
-service writes the database without invalidating the cache, then a status
-read within five minutes returns the old value."
+The mechanism is missing. Passes: "If the status cache keeps an entry for
+five minutes without invalidation on write, then a status read within five
+minutes of a write returns the old value."
 
 ## Level III
 
@@ -92,9 +92,10 @@ Dettmer also sets this reservation aside when scrutinising a Future Reality
 Tree, where only the injection's own effect matters.
 
 Software example. "If the connection pool is exhausted then p95 exceeds 2
-seconds" may be true and still not the whole story: an N+1 query pattern or
-a missing index produces the same effect on its own, and removing the pool
-problem alone leaves part of the latency in place.
+seconds" may be true and still not the whole story. An N+1 query pattern
+also raises p95. Under TOCICO's reading the two add up, and removing the
+pool problem alone leaves part of the latency. Under Dettmer's, either
+alone produces the effect.
 
 ### 6. Cause-effect reversal
 
@@ -133,5 +134,8 @@ played poorly", and the tautology is asking how the poor play is known and
 answering that they lost. TOCICO treats this as the same reservation as
 cause-effect reversal.
 
-Software example. Fails: "Quality is low because the software has defects."
-Ask what produces the defects: no review, no tests, unclear requirements.
+Software example. "The deploy failed because the team was careless." How
+is the carelessness known? "The deploy failed." The effect is the only
+evidence offered for the cause. Ask for a predicted effect of carelessness
+that can be observed on its own: skipped checks in the log, a missing
+review.

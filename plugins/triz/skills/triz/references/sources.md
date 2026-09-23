@@ -12,55 +12,59 @@ and the disagreements settled by majority against a third and a fourth, as
 `matrix.md` describes. All are public repositories, read on 2026-09-23 at
 the commits linked.
 
-- The English spreadsheet, dated 2007 in its own metadata, as it appears in
+- The English spreadsheet, as it appears in
   <https://github.com/kamil-szczepanik/TRIZ-Agents/tree/23d5deb78a892a3dbb256b8c563a1b3c6f4a3fe2>
-  and, byte for byte the same table, in three other repositories. One of
-  its cells repeats a principle number, which the matrix never does. The
-  WUMM project, below, labels this table "Matrix 1985".
+  and, cell for cell the same table, in three other repositories. That
+  copy's metadata carries an author name and a creation date in 1997. One
+  of its cells repeats a principle number, which the matrix never does.
+  The WUMM project, below, labels this table "Matrix 1985".
 - The Altshuller Foundation's table, at
   <https://www.altshuller.ru/triz/technique2.asp>, which could not be
-  opened. Two transcriptions of it were read and agree on every cell: a
-  Russian CSV in
+  opened. One transcription of it was read in two public repositories,
+  which agree on every cell and share the same two corrupt cells and the
+  same missing one: a Russian CSV in
   <https://github.com/Meekl-e/workshop6_TRIZ/tree/9503eb38d2b9df126c3a84cce4aa85d69fd7c568>,
-  and `Matrix/Matrix1971.json` in
+  which names no source, and `Matrix/Matrix1971.json` in
   <https://github.com/wumm-project/RDFData/tree/305000d4646e29d7170e4ddc0254502d4742fba4>,
   whose README names the Foundation's page as its source and labels the
-  table "Matrix 1971". The transcription lacks one cell and holds two
-  corrupt ones.
+  table "Matrix 1971".
 - The third transcription is known only through the twenty-nine
   disagreements with the spreadsheet that
   <https://github.com/The-Leach/triz/blob/f83ab4647d9e714d8cbbdfd03468307de2d6bd09/data/matrix-crosscheck.md>
   records against "an independently published copy".
-- The fourth is a fragment, rows 1 to 8 and columns 1 to 15, transcribed
-  from lecture notes in
+- The fourth is a fragment, rows 1 to 8, a truncated row 9, and columns 1
+  to 15, transcribed from lecture notes in
   <https://github.com/cowdedroyal/Creative_thinking/tree/1687f559a051d261a34dabd2da7ed303c4b88e46>.
 
 None of the four is a scan of a printed edition. The parameter and
 principle names are the wording those transcriptions share, with the
 variants noted in the references.
 
-What Altshuller said of the table's origin, read in the Russian original of
-«Творчество как точная наука» (М.: Советское радио, 1979) from the copy at
+Altshuller describes the table's origin in «Творчество как точная наука»
+(М.: Советское радио, 1979), read in the Russian original from the copy at
 <https://github.com/wumm-project/OpenDiscovery/blob/eff06517637079619c97d598135cd5c9a409f615/Sources/Altshuller_GS/Altshuller-1979-ru.pdf>
-on 2026-09-23: about forty thousand descriptions of selected higher-level
-inventions were analysed for the table, it was then corrected for three
-years with "prognostic corrections", and it holds both the most frequent
-principles and principles that are rare but give strong solutions. The
-data behind it was never published: Darrell Mann and Simon Dewulf,
-"Updating the Contradiction Matrix" (2003), read from the copy at
-<https://github.com/arvindvenkatadri/teachingtriz/blob/e10f20c61a4907b453fd8863a8cff7bd98247a73/content/TRIZ/Modules/400-TRIZ-References/TRIZ-Related/Updating_the_Contradiction_Matrix.pdf>,
-say so, and say that the classic parameters do not fit software, which is
-why they built a separate software matrix. No published mapping of the 39
-parameters to software was found, and no study that measures the classic
-matrix on software problems. That is why the software readings in
-`parameters.md` and `principles.md` are this skill's own and say so.
+on 2026-09-23. About forty thousand descriptions of selected higher-level
+inventions were analysed for the table. It was then corrected for three
+years with "prognostic corrections". It holds both the most frequent
+principles and rare ones that give strong solutions.
+
+Darrell Mann and Simon Dewulf, "Updating the Contradiction Matrix" (2003),
+was read from the copy at
+<https://github.com/arvindvenkatadri/teachingtriz/blob/e10f20c61a4907b453fd8863a8cff7bd98247a73/content/TRIZ/Modules/400-TRIZ-References/TRIZ-Related/Updating_the_Contradiction_Matrix.pdf>.
+They write of a "lack of data concerning the detailed make-up of the
+classical Matrix". They also write that the classic parameters do not fit
+software, which is why they built a separate software matrix. No published
+mapping of the 39 parameters to software was found. No study that measures
+the classic matrix on software problems was found either. That is why the
+software readings in `parameters.md` and `principles.md` are this skill's
+own and say so.
 
 Copyright. The transcriptions that say anything on the point assert that
 the classic matrix, the 39 parameters and the 40 principles are in the
 public domain. No legal source for that assertion was read. The matrix
 carried here is the majority reading across the copies and not a copy of
-any one file. Matrix 2003 and Matrix 2010 are separate works and nothing
-from them is carried here.
+any one file. Matrix 2003 and Matrix 2010 are separate works. Nothing from
+them is carried here.
 
 ## The 40 principles
 
@@ -93,16 +97,16 @@ Two copies were read on 2026-09-23.
   steps 5.4, 7.1 and 9.2. The Russian formulas quoted in `ariz-85c.md` are
   from it.
 - An English text, "Algorithm of Inventive Problem Solving, © G.S.
-  Altshuller, 1956-1985", 33 pages, translator not named, whose own
+  Altshuller, 1956-1985", 33 pages, translator not named. Its own
   references are «Правила игры без правил» (Petrozavodsk: Karelia, 1989,
-  pp. 11–50) and Ideation International's *Tools of Classical TRIZ* (1999).
-  Read from
+  pp. 11–50), Ideation International's *Tools of Classical TRIZ* (1999)
+  and Invention Machine's TechOptimizer 2.51. Read from
   <https://github.com/arvindvenkatadri/teachingtriz/blob/e10f20c61a4907b453fd8863a8cff7bd98247a73/content/TRIZ/Modules/400-TRIZ-References/TRIZ-Related/ariz85c_en.pdf>.
   Steps 5.4, 7.1 and 9.2, Table 2 and the opening warning quoted in
   `ariz-85c.md` are from it.
 
 The Foundation's pages, including Table 1 and Table 2 in Russian, were not
-reachable, and neither was the English translation MATRIZ publishes at
+reachable. Neither was the English translation MATRIZ publishes at
 <https://matriz.org/wp-content/uploads/2025/09/Altshuller_ARIZ-85-C_en.pdf>.
 
 The naming of the version, 85-А, 85-Б, 85-В, and the count of forty steps
@@ -111,8 +115,8 @@ opened, Vladimir Petrov's history of ARIZ and the entry "Как устроен
 АРИЗ-85В" at <https://triz.org.ua/works/ws89.html>, and on counting the
 steps in the copies above.
 
-Printed editions of the algorithm, not opened: Г. С. Альтшуллер, «Найти
-идею», Новосибирск: Наука, 1986; Г. С. Альтшуллер, «АРИЗ — значит
+Two printed editions of the algorithm were not opened. Г. С. Альтшуллер,
+«Найти идею», Новосибирск: Наука, 1986. Г. С. Альтшуллер, «АРИЗ — значит
 победа», in «Правила игры без правил», Петрозаводск: Карелия, 1989, pp.
 11–50.
 
@@ -124,8 +128,8 @@ network this was written on. Nothing in this skill is quoted from them.
 - Genrich Altshuller, *40 Principles: TRIZ Keys to Technical Innovation*,
   Technical Innovation Center, 1997.
 - Genrich Altshuller, *The Innovation Algorithm*, Technical Innovation
-  Center, 1999. Translation of «Алгоритм изобретения», 1973, where the
-  39-by-39 table was first printed.
+  Center, 1999. Translation of «Алгоритм изобретения», second edition,
+  1973. The 1979 book cites that edition for the printed table.
 - Genrich Altshuller, *Creativity as an Exact Science*, Gordon and Breach,
   1984, the English translation of the 1979 book read in Russian above.
 - Г. Альтов, «И тут появился изобретатель», М.: Детская литература,

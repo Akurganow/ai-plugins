@@ -18,7 +18,7 @@ tree.
 
 TOCICO, *necessity-based logic*: "A type of logic in which each entity at the
 tail of an arrow must exist in order for the entity at the head of the arrow
-to exist." Read from the head: "In order to have B, we must have D." The
+to exist." Read from the head, in order to have B we must have D. The
 diagrams that use it: evaporating cloud and prerequisite tree. "The validity
 of the connections is scrutinized by questioning the validity of the
 assumptions underlying the relationship between the two entities."
@@ -53,9 +53,9 @@ Two terms at the bottom of the tree:
   causes." Several can exist.
 - *core problem* (TOCICO): "There may be one or more core problems, however,
   generally one to three core problems will account for over 70% of the UDEs
-  in an environment." A root cause "that results in the majority of the
-  UDEs including the most significant ones ... may be labeled as the core
-  problem."
+  in an environment." The *root cause* entry adds: "If a root cause results
+  in the majority of the UDEs including the most significant ones, it may
+  be labeled as the core problem."
 
 Loops: Dettmer, chapter 4, describes the negative reinforcing loop, an effect
 that "actually reinforces the cause that produced it", and says that

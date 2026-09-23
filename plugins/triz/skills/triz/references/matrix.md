@@ -19,16 +19,16 @@ This is Altshuller's classic 39-by-39 matrix, not Matrix 2003 or Matrix
 2010. It was not copied from one file. Two transcriptions were compared
 cell by cell:
 
-- an English spreadsheet, dated 2007 in its own metadata, that circulates
-  in several public repositories;
+- an English spreadsheet that circulates in several public repositories,
+  cell for cell the same table in each
 - the table on the Altshuller Foundation's site, at
-  <https://www.altshuller.ru/triz/technique2.asp>, as transcribed by two
-  projects that do not share code and agree on every cell. The page itself
-  could not be opened from the network this was written on.
+  <https://www.altshuller.ru/triz/technique2.asp>, as one transcription of
+  it that two public repositories carry. The page itself could not be
+  opened from the network this was written on.
 
 They agree on 1,208 cells. The 40 cells where they differ were settled by
-majority against a third transcription, and for two cells a fourth, both
-of unknown printed origin. A reading that repeats a principle number,
+majority against a third transcription, and for three cells a fourth,
+both of unknown printed origin. A reading that repeats a principle number,
 which the matrix never does, was treated as a transcription error and got
 no vote. On 29 of the 40 the Foundation's transcription stands alone, and
 on 11 it wins. Whether those 29 are typing errors on the page or
@@ -39,8 +39,9 @@ with every reading, so that a reader who prefers the Foundation's table can
 take its column.
 
 The result has 1,248 non-empty cells and 234 empty ones. The figure of
-1,263 that is often quoted for the classic matrix was not confirmed: no
-copy that could be reached has more than 1,248. `sources.md` names the
+1,263 that is often quoted for the classic matrix was not confirmed. No
+transcription of the classic matrix that could be reached has more than
+1,248. `sources.md` names the
 copies, the commits they were read at and the date.
 
 ## Cells
@@ -1302,7 +1303,7 @@ copies, the commits they were read at and the date.
 The cell, the reading kept, and the readings of the transcriptions that
 differ from it. "L1" is the English spreadsheet, "L2" the Altshuller
 Foundation's table, "L3" the third transcription, "L4" the fourth, which
-covers only rows 1 to 8 and columns 1 to 15. "Order only" means the same
+covers only rows 1 to 8, a truncated row 9, and columns 1 to 15. "Order only" means the same
 principles in a different order.
 
 | Cell | Kept | L1 | L2 | L3 | L4 | Note |
@@ -1348,7 +1349,7 @@ principles in a different order.
 | 39 30 | 22 35 13 24 | 22 35 13 24 | 22 35 13 14 | 22 35 13 24 |  |  |
 | 39 33 | 1 28 7 19 | 1 28 7 10 | 1 28 7 19 | 1 28 7 19 |  |  |
 
-Eighteen further cells are ones where the third transcription alone differs
-from the first two, which agree; the agreed reading is kept. They are 1 17,
+In eighteen further cells the third transcription alone differs from the
+first two, which agree. The agreed reading is kept. They are 1 17,
 9 26, 10 3, 10 17, 11 5, 11 6, 16 4, 16 39, 18 35, 20 13, 22 33, 24 22,
 36 2, 36 7, 37 5, 37 16, 37 23 and 39 31.

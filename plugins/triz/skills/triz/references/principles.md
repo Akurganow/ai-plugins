@@ -1,13 +1,13 @@
 # The 40 inventive principles
 
-Numbered as the matrix numbers them. Each entry gives the name in the
-wording the transcriptions in `sources.md` share, the variants a reader
-will meet elsewhere, Altshuller's sub-items in a short paraphrase, and a
-software reading. The sub-items follow the MIT-licensed transcription by
-Robert Adunka that `sources.md` names. The software readings are this
-skill's own, written for the adaptation step, and are not Altshuller's
-text. Read a principle as a direction and state what it would mean in the
-user's system.
+Numbered as the matrix numbers them. Each entry gives four things. The
+name, in the wording the transcriptions in `sources.md` share. The
+variants a reader will meet elsewhere. The sub-items, paraphrased from the
+MIT-licensed transcription by Robert Adunka that `sources.md` names, which
+follows Altshuller's structure and adds items of its own. A software
+reading, which is this skill's own, written for the adaptation step, and
+not Altshuller's text. Read a principle as a direction and state what it
+would mean in the user's system.
 
 ## 1. Segmentation
 
@@ -322,14 +322,21 @@ a component built from parts with different properties.
 
 ## Separation principles for a physical contradiction
 
-The four separations the skill uses in Step 4, in space, in time, on
-condition, and between the parts and the whole, are the set later teaching
-texts give: the MATRIZ glossary of 2014 and the TETRIS handbook of 2009,
-among others. Altshuller's own lists are different. In 1979, in ARIZ-77,
-he gave four: in space, in time, through transitional states in which the
-opposite properties coexist or alternate, and by restructuring so that the
-parts have one property and the whole the other. In ARIZ-85C he gave the
-eleven of its Table 2, which `ariz-85c.md` lists under step 5.3. "On
-condition" is in neither of his lists. Authors also attach lists of the 40
-principles to each separation, and the lists differ between authors, so
-this skill attaches none. `sources.md` names where each list was read.
+The skill uses four separations in Step 4: in space, in time, on
+condition, and between the parts and the whole. That set comes from later
+teaching texts, among them the MATRIZ glossary of 2014 and the TETRIS
+handbook of 2009. Altshuller's own lists are different. In 1979, in
+ARIZ-77, he gave four:
+
+- in space
+- in time
+- through transitional states in which the opposite properties coexist or
+  alternate
+- by restructuring, so that the parts have one property and the whole the
+  other
+
+In ARIZ-85C he gave the eleven of its Table 2, which `ariz-85c.md` lists
+under step 5.3. "On condition" is in neither of his lists. Authors also
+attach lists of the 40 principles to each separation. The lists differ
+between authors, so this skill attaches none. `sources.md` names where
+each list was read.

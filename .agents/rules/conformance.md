@@ -6,14 +6,19 @@ that difference visible.
 
 ## The check
 
-```
-pip install jsonschema pyyaml
-python3 tools/check-conformance.py
-```
+The check is `tools/check-conformance.py`, and it must exit 0.
 
-It must exit 0. `.github/workflows/conformance.yml` runs it in CI, so a
-change that breaks it does not merge. Run it locally before saying a package
-conforms; "it looks right" is not a result the check produced.
+It imports `jsonschema`, which validates the manifest against the schema
+vendored in `tools/schemas/`, and `yaml`, which reads `SKILL.md` front
+matter. Both have to be importable by whatever runs the script. **How they
+get there is not recorded here, and neither is the invocation**: those are
+facts about an environment, and `.agents/rules/unattended.md` keeps them with
+whoever runs in one. An environment that writes its own down is
+`.github/workflows/conformance.yml`, which is also where CI runs this same
+check, so a change that breaks it does not merge.
+
+Run it before saying a package conforms; "it looks right" is not a result the
+check produced.
 
 ## What the check is allowed to be
 
@@ -108,13 +113,11 @@ The rules that decide whether a client loads a package at all:
 `version` in `plugins/howp/plugin.json`, the whole of
 `plugins/howp/binaries.json` and
 `plugins/howp/skills/howp/references/commands.md` are written by the release
-job in `Akurganow/how-possible` and by nothing else. **Nobody edits any of the
-three by hand, ever.** The owner decided it on 2026-09-03: «вручную бампать
-версии строжайше запрещено … никто и никогда не имеет права руками менять
-версии» — *bumping versions by hand is strictly forbidden … nobody, ever, has
-the right to change versions by hand*. Quoted rather than only translated,
-because a decision is evidence and a translation is a paraphrase. **The
-catalogue index carries no version at all**: `.claude-plugin/marketplace.json`
+job that builds and publishes the binaries, and by nothing else. **Nobody
+edits any of the three by hand, ever.** Each is a claim about a released
+artifact: a hand edit asserts a version, a digest or a target that no
+release produced, and the next release overwrites it without noticing.
+**The catalogue index carries no version at all**: `.claude-plugin/marketplace.json`
 has no top-level `version`, none under `metadata`, and no `version` in a
 plugin entry, because a version no machine writes is a version somebody moves
 by hand.

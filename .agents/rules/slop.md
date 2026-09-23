@@ -75,9 +75,6 @@ Never a finding:
   `conformance.md` argues the two checks that duplicate the schema, the
   workflow's comments say why a commit sha and not a tag. Other reviews
   read these as evidence.
-- **The owner's decision, quoted.** `conformance.md` quotes the version
-  rule in the owner's own words and language. A quotation is evidence, and
-  its language is part of the evidence.
 - **What a release writes.** `version` in `plugins/howp/plugin.json`,
   `plugins/howp/binaries.json` and
   `plugins/howp/skills/howp/references/commands.md` are machine-written,
@@ -86,9 +83,7 @@ Never a finding:
 - **The claims discipline's sentences.** The statement of what was not
   verified, the per-fact source and its kind, a date and a tag beside a
   measurement. To an outside eye these read as hedging; each is a fact.
-- **House style.** Long paragraphs that argue a point through, em-dashes,
-  bold on the load-bearing clause, a section number beside every claim
-  about the specification.
+- **A section number beside every claim about the specification.**
 - **The vendored schema.** `tools/schemas/` is a verbatim copy; its text
   belongs to its publisher.
 - **The instructions.** `.agents/**`. Read, never judged.
@@ -101,18 +96,7 @@ front matter say, decided against the published schema and against the
 clause quoted beside each hand check. Nothing keys on vocabulary, and
 nothing should — words have legitimate readings, and the sentence
 `claims.md` protects would be the first casualty of a hedge filter.
-Anything the check names cannot exist on a green `main`; a report of it is
+Anything the check names cannot exist on a green `main`; a finding of it is
 a misread. Slop is judged strictly above it: text that passes the check and
 still says nothing. A tell that recurs and could be named by a pattern is a
-proposal, recorded in a review's report — not a check added on the spot.
-
-## Neighbours
-
-A false or unsourced claim about a client, an install command or a
-released artifact is a claims defect under `claims.md`, the graver kind: it
-is what a reader acts on, and it is judged first. Missing community files,
-discoverability, a specification clause the check does not reach — those
-are repository-audit matters with a checklist of their own. A conformance
-failure is the check's. Slop names the text that says nothing, or that
-contradicts the tree beside it; where one sentence is both a lie about the
-tree and a false claim to a reader, it is a claims defect, never both.
+proposal to the maintainer, not a check added on the spot.

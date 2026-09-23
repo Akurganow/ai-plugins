@@ -2,89 +2,57 @@
 
 How an **analysis run** works in this repository when nobody is present to
 answer: any unattended run whose whole job is reading, judging and
-reporting. An autonomous session that *implements* a change is a different
-animal: it commits and pushes by design, and this file does not govern it.
+reporting, and that leaves the tree as it found it. An autonomous session
+that *implements* a change is a different animal: it commits and pushes by
+design, and this file does not govern it.
 
 The other rule files say what is true of this repository; this one says
-what is true of running in it alone. It names what a run needs and how a
-run behaves when a need is not met. Which tool reaches GitHub from a given
+what is true of running in it alone. Which tool reaches GitHub from a given
 environment, which hosts its network passes, what is installed — those are
 facts about the environment, and they belong with whoever runs the
 analysis there, not in a public repository that other people clone into
 environments of their own.
 
-## GitHub: what a run needs, and probe it
+## GitHub: probe what is needed
 
-A run reads and writes the tracker through whatever route its environment
-gives it. This file does not name the route; it names the needs, so that a
-run can tell before analysing anything whether its environment serves
-them:
+A run reaches GitHub through whatever route its environment gives it; the
+route is not recorded here. Take the repository from the clone, never from
+an API call: it is `owner/repo`, the last two path segments of the clone's
+`origin` URL, without a `.git` suffix. Read that URL with `git`, which the
+clone gives you, and reduce it with whatever this environment has — nothing
+here names the tool, because a run that must install one to learn its own
+name is a run that can be stopped by a package index.
 
-- the repository's metadata — description, topics, homepage, license;
-- its releases and tags;
-- its issues carrying a given label, open and closed, **with full
-  bodies** — the fingerprint at the foot of a body is an issue's identity,
-  and a listing that returns titles alone cannot build the do-not-report
-  list `.agents/rules/tracker.md` requires;
-- the comments on an issue;
-- finding an issue by a fingerprint in its body, whatever its labels and
-  whatever its state — the identity that survives when a label could not
-  be applied;
-- filing an issue with a title, a body and labels; commenting on one;
-  adding a label to one;
-- whether a label exists on the repository.
-
-Take the repository from the clone, never from an API call:
-
-    # two substitutions on purpose: ERE has no lazy quantifier, so a single
-    # pattern with an optional `(\.git)?` tail lets the greedy class swallow
-    # the suffix and returns "owner/repo.git" for SSH-style remotes.
-    R=$(git remote get-url origin | sed -E 's#\.git$##; s#.*[:/]([^/]+/[^/]+)$#\1#')
+Both halves of that reduction are load-bearing, and an SSH-style remote is
+where a careless one shows: `git@host:owner/repo.git` has to lose the host
+and the suffix both, and a single greedy pass over it returns
+`owner/repo.git`, which matches nothing and silently sends every read
+somewhere that does not exist.
 
 Then **probe the thing actually needed** — the cheapest read that touches
 this repository — before any analysis. Never gate a run on an
 authentication status command: such a command answers about a credential,
 not about access, and an unattended run that stops on it has spent itself
-on nothing. If the probe fails, stop and say so in the final report; a
-need the environment cannot serve at all is reported as not served, and
-whatever depended on it as not checked.
-
-Three things a route may do differently, and what the run does about each:
-
-- A listing of issues may return pull requests among them. Filter them
-  out; a pull request is never a case, a finding or a fingerprint.
-- Labels are checked before their first use — every name a run intends to
-  apply, before the analysis rather than after it. A name applied without
-  checking may create the label silently, which is a change to the
-  repository nobody decided on. Where the route can create a label, create
-  it first, and treat "already exists" as success.
-- Where the route cannot create one, the missing name is a line in the
-  report, and the issue is filed without it **only where the fingerprint
-  search above is served**. `tracker.md` reaches an issue two ways — the
-  label, and the fingerprint in its body — and an unlabeled issue is left
-  with the second alone: without it the run's cap stops counting that
-  issue and the next run's do-not-report list loses it once it closes,
-  which is how a finding gets filed twice. Where neither the label nor the
-  search is served, the finding stays in the report and is not filed: an
-  issue the next run cannot recognise costs more than one not filed.
+on nothing. A need the environment cannot serve is reported as not served,
+and whatever depended on it as not checked.
 
 ## The network is allowlisted
 
-The session's egress may pass through a proxy with an allowlist. A
+The session's egress may pass through a proxy with an allowlist, and a
 reference source this repository's checks lean on — a specification site,
 a style guide, a vendor's documentation — may simply be unreachable. A
-blocked source is reported as blocked, with the reply the environment
-gave, and the checks that depend on it are reported as not run — never
-guessed at. `.agents/rules/claims.md` owns what a claim may rest on;
-nothing about a blocked fetch loosens it.
+blocked source is reported as blocked, with the reply the environment gave,
+and the checks that depend on it as not run — never guessed at.
+`.agents/rules/claims.md` owns what a claim may rest on; nothing about a
+blocked fetch loosens it.
 
 A source blocked as a site may be published a second way — the same text
 in a public repository, the same page as a raw file — and that way may be
 open when the site is not. `claims.md` already calls such a copy
-documentation and reads it first; here it is also the route. Read it from
-the copy, keep the copy under `$RUN`, and cite the file and the commit the
-copy was at, never the blocked page. A source with no such copy stays
-blocked, and the checks that lean on it stay not run.
+documentation and reads it first; here it is also the route: read the copy,
+keep it under `$RUN`, and cite the file and the commit it was at, never the
+blocked page. A source with no such copy stays blocked, and the checks that
+lean on it stay not run.
 
 The conformance check's own dependencies come over the same network. A
 transient failure installing them — a timeout, a reset — is retried once;
@@ -93,8 +61,8 @@ so, with the output.
 
 ## The clone may be shallow
 
-A session's clone may be truncated (`.git/shallow` exists when it
-is). Before anything that reads history — `git log`, `git blame`, tag
+A session's clone may be truncated (`.git/shallow` exists when it is).
+Before anything that reads history — `git log`, `git blame`, tag
 archaeology — run:
 
     git fetch --unshallow --quiet || true
@@ -109,12 +77,11 @@ history-based conclusion as drawn from truncated history, because it was.
 
 Long unattended runs get their context compacted, and a compaction can drop
 exactly the thing that mattered at the last step. Anything that must still
-be true at the end — a do-not-report list, collected findings, verdicts —
-goes to disk the moment it is learned, outside the working tree. The state
-directory is **per-run, never a fixed shared path**, so that two concurrent
-runs cannot overwrite each other's state:
-
-    RUN=$(mktemp -d /tmp/run.XXXXXX)
+be true at the end — collected findings, verdicts — goes to disk the moment
+it is learned, outside the working tree. The state directory is **per-run,
+never a fixed shared path**, so that two concurrent runs cannot overwrite
+each other's state. Make one the way this environment makes a temporary
+directory, and call it `$RUN`; every path below is relative to it.
 
 Re-read those files immediately before acting on them, and hand a subagent
 the path to a long record rather than its text.
@@ -126,16 +93,15 @@ files are all allowed. A check that reads the tree in place — the
 conformance check does — runs in place; everything a run *writes* goes
 under its own `$RUN` directory, never into the working tree. An analysis
 run must not commit, stage, push, or leave any modification behind: it
-finishes with `git status --porcelain` empty and says so in its report. A run whose whole job is analysis has no business
-changing what it analysed.
+finishes with `git status --porcelain` empty and says so in its report.
 
 ## Report honestly
 
 Name the command and show what it printed; quote a file with its path and
 line. A check that was not run — a blocked source, a missing tool — is
 reported as not run, not as passing, and not omitted. The conformance check
-is `python3 tools/check-conformance.py` and `.agents/rules/conformance.md`
-owns what it does and does not prove; "it looks right" is not a result the
+is `tools/check-conformance.py`, and `.agents/rules/conformance.md` owns what
+it does and does not prove; "it looks right" is not a result the
 check produced. Unattended this matters twice over, because nobody was
 watching: the report is the only record that the run did what it claims.
 Never invent a path, a line number or command output.

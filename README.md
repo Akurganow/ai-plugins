@@ -61,13 +61,12 @@ Nothing below has been installed from this repository as published. Every
 instruction is read off that client's own documentation first, and its own
 source only where the documentation does not answer; each says which, and
 where a statement comes from running a client's own code, it says that too.
-Only Claude's documentation site is reachable from the network this was
-written on, and it was read directly. Hermes' and Oh-My-Pi's are blocked, and
-both publish the same pages as Markdown in their own repositories, which is
-what was read instead. Codex's is blocked as well and its repository carries
-no replacement — `docs/skills.md` there is a three-line stub pointing back at
-the blocked page — so its claims come from its own source, install commands
-included, which is where Codex keeps its command help. Every citation into a
+Claude's documentation site was read directly. Hermes' and Oh-My-Pi's could
+not be read, so the same pages published as Markdown in their own repositories
+were read instead. Codex's could not be read either, and its repository
+carries no replacement: `docs/skills.md` there is a three-line stub pointing
+back at that page. Its claims therefore come from its own source, install
+commands included, which is where Codex keeps its command help. Every citation into a
 repository below is a commit permalink, so it names the revision the claim
 was read at rather than whatever the branch says next.
 
@@ -316,8 +315,8 @@ tools/schemas/                     the official manifest schema, vendored
 
 A plugin's `version`, its `binaries.json` and its skill's
 `references/commands.md` are written by the release that publishes its
-binaries, in `Akurganow/how-possible`, and by nothing here —
-`.agents/rules/conformance.md` carries the rule.
+binaries, and by nothing here — `.agents/rules/conformance.md` carries the
+rule.
 
 That has a consequence worth stating rather than working around. The standard
 does not require a client to care about `version` — §10.2 says only that
@@ -377,10 +376,11 @@ but it is a warning in a mandatory client that the arrangement causes.
 
 ## Checking conformance
 
-```
-pip install jsonschema pyyaml
-python3 tools/check-conformance.py
-```
+The check is `tools/check-conformance.py`, and it must exit 0. It verifies the
+parts of Agent Plugins 1.0.0 this repository is responsible for.
 
-It verifies the parts of Agent Plugins 1.0.0 this repository is responsible
-for. The same check runs in CI on pushes to `main` and on every pull request.
+It imports `jsonschema` and `yaml`, so both have to be importable by whatever
+runs it. Installing them is a fact about your machine rather than of this
+repository, so no command for it is stated here; one environment's way of
+doing it, pinned, is in `.github/workflows/conformance.yml`, which is also
+where the same check runs in CI on pushes to `main` and on every pull request.

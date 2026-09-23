@@ -13,7 +13,7 @@ than asserted.
 
 ## The two things that make a change unmergeable
 
-- `python3 tools/check-conformance.py` does not exit 0.
+- `tools/check-conformance.py` does not exit 0.
 - A claim about a client is stated without naming where it was read.
 
 The first is mechanical and CI enforces it. The second is not mechanical,

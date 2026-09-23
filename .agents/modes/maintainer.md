@@ -11,13 +11,12 @@ plugin, editing a skill, extending the conformance check, correcting the
 README.
 
 The work is small and the standard of proof is high. Read the clause you are
-relying on before you rely on it; run `python3 tools/check-conformance.py`
+relying on before you rely on it; run `tools/check-conformance.py`
 before you claim a package conforms; source every statement about a client —
 its documentation first and its source only where the documentation does not
 answer (`.agents/rules/claims.md`), saying per fact which of the two it was.
 
 Topic rules sit in `.agents/rules/`: what conformance means here and how it
 is checked, the sourcing standard for claims, how an unattended analysis
-run works alone, the discipline for filing issues from one, and what
-generator residue looks like in the text. They are additions to this mode,
-not a summary of it.
+run works alone, and what generator residue looks like in the text. They
+are additions to this mode, not a summary of it.

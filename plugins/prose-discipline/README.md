@@ -69,18 +69,6 @@ fields will therefore find the skill, which sits at the fixed location, and
 not the rule file or the hook, which the root manifest names only inside
 `extensions`.
 
-There is no `.codex-plugin/plugin.json` here, and the reason is Codex's own
-loader. `find_plugin_manifest_path` in
-[`codex-rs/utils/plugins/src/plugin_namespace.rs`](https://github.com/openai/codex/blob/30fc6864cc1318121eca1843c217fe00ce1212f1/codex-rs/utils/plugins/src/plugin_namespace.rs)
-reads the root `plugin.json` first and returns it when its `$schema` is
-under `agent-plugins.org`, which this manifest's is. The vendor paths it
-lists, `.codex-plugin/plugin.json` among them, are tried only when no such
-root manifest exists, and a vendor path that is not a regular file returns
-nothing: the test `rejects_symlinked_legacy_plugin_manifest_before_lower_precedence_manifest`
-in the same file pins that. A symlink there could never be read by Codex.
-From source, not documentation: Codex publishes no plugins document. The
-link is a commit permalink.
-
 Codex is the one client where that reading can be checked against a
 published field guide, so it is worth stating separately. Codex's manifest
 reader accepts `skills`, `hooks`, `mcpServers`, `apps` and `interface`.

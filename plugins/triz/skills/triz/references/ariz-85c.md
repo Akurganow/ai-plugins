@@ -57,9 +57,12 @@ as two routes rather than one.
 > ТП-2: ЕСЛИ ..., ТО ..., НО ...
 > Необходимо при минимальных изменениях в системе (результат).
 
-The system, its purpose, its main parts. Two technical contradictions, each
-as *if* a state of the tool *then* a good effect *but* a bad one. The result
-that must be reached with minimal change.
+The English text's pattern: "A technical system for <state the purpose of
+the system> includes <list the main parts of the system>. Technical
+contradiction 1 (TC-1): (identify). Technical contradiction 2 (TC-2):
+(identify). It is necessary, with minimum changes to the system, to <state
+the required result>." Each contradiction reads *if* a state of the tool
+*then* a good effect *but* a bad one.
 
 Software gloss: the tool is the component whose setting or behaviour is in
 question, and the product is what it acts on. "If the cache holds an entry
@@ -70,7 +73,27 @@ is saturated."
 **1.2** Name the conflicting pair: the product and the tool.
 
 **1.3** Draw the schemes of TC-1 and TC-2 using Table 1 of the algorithm,
-which lists the typical conflict shapes.
+"Typical Graphic Models of Technical Contradictions". Its nine shapes, in
+the English text's names, with A the tool and B the product:
+
+1. Counteraction: A acts usefully on B, and at some stage B acts back on A
+   harmfully.
+2. Conjugated action: A's useful action on B also harms B.
+3. Conjugated action: A's useful action on one part of B harms another
+   part of B.
+4. Conjugated action: A's useful action on B harms C, a third part of the
+   system.
+5. Conjugated action: A's useful action on B harms A itself.
+6. Incompatible action: A's useful action on B is incompatible with C's
+   useful action on B.
+7. Incomplete action or inaction: A gives one useful action where two are
+   required, or does not act on B at all.
+8. "Silence": there is no information about A, B or their interaction.
+9. Unregulated action: the action of A on B is uncontrollable where a
+   controllable one is required.
+
+Name the shape each contradiction has. In a software problem A and B are
+components or data and the actions are calls, writes, reads and events.
 
 **1.4** Of the two, choose the contradiction whose good effect is the
 system's main function.
@@ -84,7 +107,8 @@ must remove, improve or provide.
 
 **1.7** Check whether a standard solution resolves the model. If not, go to
 Part 2. If it does, Part 7 may follow, and the algorithm still recommends
-going on with Part 2.
+going on with Part 2. This package does not carry the 76 standard
+solutions. Say so to the user at this step and go on to Part 2.
 
 ## Part 2. Analysis of the problem model
 
@@ -106,38 +130,47 @@ polls.
 > оперативной зоны, сохраняя способность инструмента совершать (полезное
 > действие).
 
-The X-element, without complicating the system and without causing harm,
-removes the harmful action during the operative time within the operative
-zone, while keeping the tool's useful action.
+The English text's pattern: "The X-element, without complication of the
+system and without harmful side effects, eliminates <indicate the harmful
+action> during the <Operational Time> inside the <Operational Zone>,
+keeping the ability of the tool to provide <indicate the useful action>."
 
 **3.2** Strengthen IFR-1: no new substances and no new fields may be brought
 in. The solution uses the resources listed in 2.3. In software: no new
 service, no new store, no new protocol, before the existing ones have been
 tried.
 
-**3.3** Write the physical contradiction at the macro level:
+**3.3** Write the physical contradiction at the macro level. The English
+text's pattern: "the <Operational zone>, during the <Operational time>,
+has to... <indicate physical macro-state, for example 'hot'> in order to
+perform <indicate one of the conflicting actions> and has to... <indicate
+the opposite physical macro-state, for example 'cold'> to perform
+<indicate another conflicting action or requirement>." Both halves are
+positive: the zone must be hot for one action and must be cold for the
+other. The Russian copy this reference was read from writes the second
+half as «и не должна (противоположное макросостояние)», which read
+literally states no contradiction. Use the English form.
 
-> оперативная зона в течение оперативного времени должна (макросостояние),
-> чтобы выполнять (одно конфликтующее действие), и не должна
-> (противоположное макросостояние), чтобы выполнять (другое).
-
-The operative zone, during the operative time, must be in one state to do
-one of the conflicting actions and must not be in it to do the other.
-
-**3.4** Write the physical contradiction at the micro level: the same
-requirement stated for the parts of the zone rather than the zone as a
-whole.
+**3.4** Write the physical contradiction at the micro level. The English
+text's pattern: "There should be particles of a substance <indicate their
+physical state or action> in the Operational Zone in order to provide
+<indicate the macro-state according to step 3.3> and there should not be
+the particles (or particles should have the opposite state or action)" to
+provide the opposite macro-state. In software the particles are the
+records, requests or cells that make up the zone.
 
 **3.5** Write IFR-2:
 
 > оперативная зона в течение оперативного времени должна сама обеспечивать
 > (противоположные макро- или микросостояния).
 
-The operative zone itself, during the operative time, provides both
-opposite states.
+The English text's pattern: "The Operational Zone <indicate> has to
+provide <indicate the opposite macro- or micro-states> itself during the
+Operational Time <indicate it>."
 
 **3.6** Check whether a standard solution resolves the physical problem as
-IFR-2 states it. If not, go to Part 4.
+IFR-2 states it. If not, go to Part 4. As at 1.7, the standard solutions
+are not carried here: say so and go on to Part 4.
 
 ## Part 4. Mobilising and applying the resources
 

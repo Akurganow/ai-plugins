@@ -6,12 +6,12 @@ recommends for that pair, in the order the matrix gives them. A pair with
 no line is a cell the matrix leaves empty. The diagonal has no cells. The
 numbers are the ones in `parameters.md` and `principles.md`.
 
-To read a cell, find the line that starts with the two numbers. For
-improving 9 (speed) at the cost of 27 (reliability):
-
-```
-9 27: 11 35 27 28
-```
+To read a cell, search for the line that begins with the two numbers and
+the colon, and do not read the file whole. For improving 9 (speed) at the
+cost of 27 (reliability), the search is for the prefix `9 27:` and the
+line found reads `9 27: 11 35 27 28`. A line that ends in `(disputed)` is a
+cell the transcriptions disagree on, listed with every reading in the last
+section.
 
 ## Provenance
 
@@ -66,7 +66,7 @@ copies, the commits they were read at and the date.
 1 24: 10 24 35
 1 25: 10 35 20 28
 1 26: 3 26 18 31
-1 27: 3 11 1 27
+1 27: 3 11 1 27 (disputed)
 1 28: 28 27 35 26
 1 29: 28 35 26 18
 1 30: 22 21 18 27
@@ -89,7 +89,7 @@ copies, the commits they were read at and the date.
 2 14: 28 2 10 27
 2 16: 2 27 19 6
 2 17: 28 19 32 22
-2 18: 19 32 35
+2 18: 19 32 35 (disputed)
 2 20: 18 19 28 1
 2 21: 15 19 18 22
 2 22: 18 19 28 15
@@ -99,7 +99,7 @@ copies, the commits they were read at and the date.
 2 26: 19 6 18 26
 2 27: 10 28 8 3
 2 28: 18 26 28
-2 29: 10 1 35 17
+2 29: 10 1 35 17 (disputed)
 2 30: 2 19 22 37
 2 31: 35 22 1 39
 2 32: 28 1 9
@@ -150,7 +150,7 @@ copies, the commits they were read at and the date.
 4 12: 13 14 15 7
 4 13: 39 37 35
 4 14: 15 14 28 26
-4 16: 1 40 35
+4 16: 1 40 35 (disputed)
 4 17: 3 35 38 18
 4 18: 3 25
 4 21: 12 8
@@ -174,7 +174,7 @@ copies, the commits they were read at and the date.
 5 7: 7 14 17 4
 5 9: 29 30 4 34
 5 10: 19 30 35 2
-5 11: 10 15 36 28
+5 11: 10 15 36 28 (disputed)
 5 12: 5 34 29 4
 5 13: 11 2 13 39
 5 14: 3 15 40 14
@@ -229,7 +229,7 @@ copies, the commits they were read at and the date.
 6 38: 23
 6 39: 10 15 17 7
 7 1: 2 26 29 40
-7 3: 1 7 4 35
+7 3: 1 7 4 35 (disputed)
 7 5: 1 7 4 17
 7 9: 29 4 38 34
 7 10: 15 35 36 37
@@ -239,7 +239,7 @@ copies, the commits they were read at and the date.
 7 14: 9 14 15 7
 7 15: 6 35 4
 7 17: 34 39 10 18
-7 18: 2 13 10
+7 18: 2 13 10 (disputed)
 7 19: 35
 7 21: 35 6 13 18
 7 22: 7 15 13 16
@@ -283,7 +283,7 @@ copies, the commits they were read at and the date.
 8 36: 1 31
 8 37: 2 17 26
 8 39: 35 37 10 2
-9 1: 2 28 13 38
+9 1: 2 28 13 38 (disputed)
 9 3: 13 14 8
 9 5: 29 30 34
 9 7: 7 29 34
@@ -303,7 +303,7 @@ copies, the commits they were read at and the date.
 9 26: 10 19 29 38
 9 27: 11 35 27 28
 9 28: 28 32 1 24
-9 29: 10 28 32 25
+9 29: 10 28 32 25 (disputed)
 9 30: 1 28 35 23
 9 31: 2 24 35 21
 9 32: 35 13 8 1
@@ -391,13 +391,13 @@ copies, the commits they were read at and the date.
 12 8: 7 2 35
 12 9: 35 15 34 18
 12 10: 35 10 37 40
-12 11: 34 15 10 14
+12 11: 34 15 10 14 (disputed)
 12 13: 33 1 18 4
 12 14: 30 14 10 40
 12 15: 14 26 9 25
 12 17: 22 14 19 32
 12 18: 13 15 32
-12 19: 2 6 34 14
+12 19: 2 6 34 14 (disputed)
 12 21: 4 6 2
 12 22: 14
 12 23: 35 29 3 5
@@ -432,7 +432,7 @@ copies, the commits they were read at and the date.
 13 15: 13 27 10 35
 13 16: 39 3 35 23
 13 17: 35 1 32
-13 18: 32 3 27 15
+13 18: 32 3 27 15 (disputed)
 13 19: 13 19
 13 20: 27 4 29 18
 13 21: 32 35 27 31
@@ -442,7 +442,7 @@ copies, the commits they were read at and the date.
 13 26: 15 32 35
 13 28: 13
 13 29: 18
-13 30: 35 24 30 18
+13 30: 35 24 30 18 (disputed)
 13 31: 35 40 27 39
 13 32: 35 19
 13 33: 32 35 30
@@ -481,10 +481,10 @@ copies, the commits they were read at and the date.
 14 30: 18 35 37 1
 14 31: 15 35 22 2
 14 32: 11 3 10 32
-14 33: 32 40 28 2
+14 33: 32 40 28 2 (disputed)
 14 34: 27 11 3
 14 35: 15 3 32
-14 36: 2 13 28
+14 36: 2 13 28 (disputed)
 14 37: 27 3 15 40
 14 38: 15
 14 39: 29 35 10 14
@@ -515,7 +515,7 @@ copies, the commits they were read at and the date.
 15 33: 12 27
 15 34: 29 10 27
 15 35: 1 35 13
-15 36: 10 4 29 15
+15 36: 10 4 29 15 (disputed)
 15 37: 19 29 39 35
 15 38: 6 10
 15 39: 35 17 14 19
@@ -560,7 +560,7 @@ copies, the commits they were read at and the date.
 17 19: 19 15 3 17
 17 21: 2 14 17 25
 17 22: 21 17 35 38
-17 23: 21 36 29 31
+17 23: 21 36 29 31 (disputed)
 17 25: 35 28 21 18
 17 26: 3 17 30 39
 17 27: 19 35 3 10
@@ -591,7 +591,7 @@ copies, the commits they were read at and the date.
 18 19: 32 1 19
 18 20: 32 35 1 15
 18 21: 32
-18 22: 19 16 1 6
+18 22: 19 16 1 6 (disputed)
 18 23: 13 1
 18 24: 1 6
 18 25: 19 1 26 17
@@ -612,7 +612,7 @@ copies, the commits they were read at and the date.
 19 3: 12 28
 19 5: 15 19 25
 19 7: 35 13 18
-19 9: 8 15 35
+19 9: 8 15 35 (disputed)
 19 10: 16 26 21 2
 19 11: 23 14 25
 19 12: 12 2 29
@@ -661,7 +661,7 @@ copies, the commits they were read at and the date.
 21 9: 15 35 2
 21 10: 26 2 36 35
 21 11: 22 10 35
-21 12: 29 14 2 40
+21 12: 29 14 2 40 (disputed)
 21 13: 35 32 15 31
 21 14: 26 10 28
 21 15: 19 35 10 38
@@ -670,7 +670,7 @@ copies, the commits they were read at and the date.
 21 18: 16 6 19
 21 19: 16 6 19 37
 21 22: 10 35 38
-21 23: 28 27 18 38
+21 23: 28 27 18 38 (disputed)
 21 24: 10 19
 21 25: 35 20 10 6
 21 26: 4 34 19
@@ -780,7 +780,7 @@ copies, the commits they were read at and the date.
 25 2: 10 20 26 5
 25 3: 15 2 29
 25 4: 30 24 14 5
-25 5: 26 4 5 16
+25 5: 26 4 5 16 (disputed)
 25 6: 10 35 17 4
 25 7: 2 5 34 10
 25 8: 35 16 32 18
@@ -835,12 +835,12 @@ copies, the commits they were read at and the date.
 26 24: 24 28 35
 26 25: 35 38 18 16
 26 27: 18 3 28 40
-26 28: 13 2 28
+26 28: 13 2 28 (disputed)
 26 29: 33 30
 26 30: 35 33 29 31
 26 31: 3 35 40 39
 26 32: 29 1 35 27
-26 33: 35 29 25 10
+26 33: 35 29 25 10 (disputed)
 26 34: 2 32 10 25
 26 35: 15 3 29
 26 36: 3 13 27 10
@@ -908,7 +908,7 @@ copies, the commits they were read at and the date.
 28 26: 2 6 32
 28 27: 5 11 1 23
 28 30: 28 24 22 26
-28 31: 3 33 39 10
+28 31: 3 33 39 10 (disputed)
 28 32: 6 35 25 18
 28 33: 1 13 17 34
 28 34: 1 32 13 11
@@ -923,7 +923,7 @@ copies, the commits they were read at and the date.
 29 4: 2 32 10
 29 5: 28 33 29 32
 29 6: 2 29 18 36
-29 7: 32 28 2
+29 7: 32 28 2 (disputed)
 29 8: 25 10 35
 29 9: 10 28 32
 29 10: 28 19 34 36
@@ -936,7 +936,7 @@ copies, the commits they were read at and the date.
 29 18: 3 32
 29 19: 32 2
 29 21: 32 2
-29 22: 13 32 2
+29 22: 13 32 2 (disputed)
 29 23: 35 31 10 24
 29 25: 32 26 28 18
 29 26: 32 30
@@ -1020,7 +1020,7 @@ copies, the commits they were read at and the date.
 32 1: 28 29 15 16
 32 2: 1 27 36 13
 32 3: 1 29 13 17
-32 4: 15 17 27
+32 4: 15 17 27 (disputed)
 32 5: 13 1 26 12
 32 6: 16 40
 32 7: 13 29 1 40
@@ -1099,7 +1099,7 @@ copies, the commits they were read at and the date.
 34 11: 13
 34 12: 1 13 2 4
 34 13: 2 35
-34 14: 11 1 2 9
+34 14: 11 1 2 9 (disputed)
 34 15: 11 29 28 27
 34 16: 1
 34 17: 4 10
@@ -1150,9 +1150,9 @@ copies, the commits they were read at and the date.
 35 33: 15 34 1 16
 35 34: 1 16 7 4
 35 36: 15 29 37 28
-35 37: 1
+35 37: 1 (disputed)
 35 38: 27 34 35
-35 39: 35 28 6 37
+35 39: 35 28 6 37 (disputed)
 36 1: 26 30 34 36
 36 2: 2 26 35 39
 36 3: 1 19 26 24
@@ -1162,7 +1162,7 @@ copies, the commits they were read at and the date.
 36 7: 34 26 6
 36 8: 1 16
 36 9: 34 10 28
-36 10: 26 16
+36 10: 26 16 (disputed)
 36 11: 19 1 35
 36 12: 29 13 28 15
 36 13: 2 22 17 19
@@ -1187,7 +1187,7 @@ copies, the commits they were read at and the date.
 36 35: 29 15 28 37
 36 37: 15 10 37 28
 36 38: 15 1 24
-36 39: 12 17 28
+36 39: 12 17 28 (disputed)
 37 1: 27 26 28 13
 37 2: 6 13 28 1
 37 3: 16 17 26 24
@@ -1197,18 +1197,18 @@ copies, the commits they were read at and the date.
 37 7: 29 1 4 16
 37 8: 2 18 26 31
 37 9: 3 4 16 35
-37 10: 36 28 40 19
+37 10: 36 28 40 19 (disputed)
 37 11: 35 36 37 32
 37 12: 27 13 1 39
 37 13: 11 22 39 30
 37 14: 27 3 15 28
-37 15: 19 29 39 25
+37 15: 19 29 39 25 (disputed)
 37 16: 25 34 6 35
 37 17: 3 27 35 16
 37 18: 2 24 26
 37 19: 35 38
 37 20: 19 35 16
-37 21: 19 1 16 10
+37 21: 19 1 16 10 (disputed)
 37 22: 35 3 15 19
 37 23: 1 18 10 24
 37 24: 35 33 27 22
@@ -1227,7 +1227,7 @@ copies, the commits they were read at and the date.
 37 39: 35 18
 38 1: 28 26 18 35
 38 2: 28 26 35 10
-38 3: 14 13 17 28
+38 3: 14 13 17 28 (disputed)
 38 4: 23
 38 5: 17 14 13
 38 7: 35 13 16
@@ -1285,11 +1285,11 @@ copies, the commits they were read at and the date.
 39 26: 35 38
 39 27: 1 35 10 38
 39 28: 1 10 34 28
-39 29: 18 10 32 1
-39 30: 22 35 13 24
+39 29: 18 10 32 1 (disputed)
+39 30: 22 35 13 24 (disputed)
 39 31: 35 22 18 39
 39 32: 35 28 2 24
-39 33: 1 28 7 19
+39 33: 1 28 7 19 (disputed)
 39 34: 1 32 10 25
 39 35: 1 35 28 37
 39 36: 12 17 28 24

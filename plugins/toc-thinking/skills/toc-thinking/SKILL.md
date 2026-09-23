@@ -74,12 +74,15 @@ user in one sentence.
 4. Look for a loop: an effect that feeds a cause below it, so the situation
    reinforces itself. Draw it, and mark it. Dettmer counts removing the root
    cause behind such a loop among the most powerful changes there are.
-5. Keep building down until a cause has no cause the user can change. That
-   is a root cause. Several may exist. The one whose branches reach most of
-   the UDEs, including the most serious, is the core problem. TOCICO's
-   guideline is that one to three core problems account for over 70% of
-   the UDEs. Dettmer reports the 70% figure as Goldratt's and rejects it,
-   because UDEs are not equally serious. Weigh the UDEs, do not count them.
+5. Keep building down to the lowest cause that the user, or someone within
+   their reach, has the authority to change. That is a root cause. Several
+   may exist. The one whose branches reach most of the UDEs, including the
+   most serious, is the core problem. TOCICO's guideline is that one to
+   three core problems account for over 70% of the UDEs. Dettmer reports
+   the 70% figure as Goldratt's and rejects it, because UDEs are not equally
+   serious. Weigh the UDEs as well as counting them. When the branches do
+   not meet, say so and report separate root causes instead of inventing a
+   common one.
 6. State the core problem to the user and ask whether it matches what they
    see in the code. Do not continue until they confirm or correct it.
 
@@ -99,7 +102,10 @@ cloud makes the conflict precise.
    ```
 
    Read each arrow from its head: "to have A, we must have B", "to have B,
-   we must have D". The conflict is between D and D'.
+   we must have D". The conflict is between D and D'. To build the cloud
+   from Step 2, put the practice the core problem describes, the way things
+   are done now, in D, and the opposite practice in D'. Then name what each
+   practice is there to satisfy, as B and C, and what both serve, as A.
 2. Write the assumption under each of the five arrows, A-B, A-C, B-D, C-D'
    and D-D'. Each reads "because ...". An arrow with no assumption the user
    can state is a clarity problem in the cloud.

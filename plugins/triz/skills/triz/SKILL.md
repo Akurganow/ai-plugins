@@ -52,6 +52,11 @@ Restate the user's problem as one of two kinds and ask them to confirm it.
 A technical contradiction often hides a physical one, and the physical one
 is the sharper statement. Write both when you can.
 
+If no second parameter gets worse and no element needs two opposite
+properties, there is no contradiction, and this skill has nothing to add.
+Say so. An algorithmic question or a library limitation is answered by
+reading and measuring.
+
 ## Step 2: state the ideal final result
 
 Write what the outcome looks like if the contradiction did not exist: the
@@ -90,18 +95,22 @@ one: the two routes give different directions.
 
 ## Step 5: map to parameters
 
-Read `references/parameters.md`. Pick the parameter that improves and the
-parameter that worsens. Present two or three candidates for each with a
-sentence on why, and ask the user to choose. The parameters describe
+Read `references/parameters.md`. The improving parameter is the one the
+user wants better. The worsening parameter is the one that degrades when
+they get it. Pick a candidate for each. Present two or three candidates
+for each with a sentence on why, and ask the user to choose. The parameters describe
 physical systems, and the software readings in the reference are a guide
 to which one carries the same role in the user's system.
 
 ## Step 6: read the matrix
 
-Open `references/matrix.md`. Each line is one cell of the classic matrix:
-the improving parameter's number, the worsening parameter's number, and
-the principles recommended for that pair in the order the matrix gives
-them. Find the line for the chosen pair.
+Each line of `references/matrix.md` is one cell of the classic matrix: the
+improving parameter's number, a space, the worsening parameter's number, a
+colon, and the principles recommended for that pair in the order the
+matrix gives them. Search the file for the line that begins with the two
+numbers and the colon, for example `9 27:`. Do not read the file whole. A
+line that ends in `(disputed)` is a cell the transcriptions disagree on,
+and the file's last section lists every reading of it.
 
 A pair with no line has no recommendation in the classic matrix. Then:
 
@@ -164,8 +173,8 @@ say which parts were not walked.
   They are not a guarantee. When a direction contradicts what the user
   knows about their system, the user's knowledge wins and the direction is
   dropped.
-- A problem with no trade-off in it is not a TRIZ problem. An algorithmic
-  question or a library limitation is answered by reading and measuring.
+- A problem with no trade-off in it is not a TRIZ problem, and Step 1
+  says so before any lookup.
 - A root cause hidden behind many symptoms belongs to the `toc-thinking`
   skill from the same marketplace, which builds the cause-and-effect tree.
   Hand over when the user's problem is a tangle of symptoms rather than a

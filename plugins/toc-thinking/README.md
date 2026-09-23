@@ -18,9 +18,10 @@ in order, and keeps the user in the loop at every step:
 | What to change to? | Evaporating Cloud, then Future Reality Tree with negative-branch reservations |
 | How to cause the change? | Prerequisite Tree, then Transition Tree |
 
-Every cause-and-effect link is checked against the Categories of Legitimate
-Reservation before it stays in a tree. The agent asks for facts it does not
-have instead of guessing the system's structure.
+Every link in a sufficiency tree is scrutinised with the Categories of
+Legitimate Reservation, and every arrow of the cloud by the assumption
+under it. The agent asks for facts it does not have instead of guessing the
+system's structure.
 
 ## What ships here
 

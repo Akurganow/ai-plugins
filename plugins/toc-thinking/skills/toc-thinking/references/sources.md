@@ -21,7 +21,7 @@ and what was not read. Dates are the day of reading.
 - **H. William Dettmer, *The Logical Thinking Process: A Systems Approach to
   Complex Problem Solving*.** ASQ Quality Press, 2007, ISBN
   978-0-87389-723-5. Read from a Markdown conversion of the book in a public
-  repository, chapters 1, 2, 4, 5 and 7, at
+  repository, chapters 1, 2, 4, 5, 6 and 7, at
   <https://github.com/life-itself/reasoncommons/tree/74e50e4cc2c949b7be67212b99461fee03e1a954/library/logical-thinking-process-dettmer>
   on 2026-09-23. The copyright page in that copy carries the publisher and
   the ISBN above.

@@ -70,14 +70,18 @@ its digests relate to `binaries.json`; this file keeps no second copy of that.
 
 ## What belongs elsewhere
 
-The `hp` binary is built and released from `Akurganow/how-possible`, which
+The `hp` binary is built from `Akurganow/how-possible`, which
 [`plugins/howp/binaries.json`](plugins/howp/binaries.json) names in its
-`source_repository` field — the release job's own record rather than a
-sentence kept in step by hand.
+`source_repository` field. **Its release assets are published from this
+repository, not from that one**: every `url` under that file's `targets` names
+a release of `Akurganow/ai-plugins`. Both are the release job's own record
+rather than a sentence kept in step by hand, so a report about an asset you
+downloaded belongs here whichever repository built it.
 
-**That repository is private**, read as `"private": true` from
-`https://api.github.com/repos/Akurganow/how-possible`, GitHub's API,
-authenticated as the repository owner, on 2026-09-22. Unless its owner has
+**That repository is private**, as this repository's own `howp` skill states
+where it forbids a build from source:
+[`plugins/howp/skills/howp/SKILL.md`](plugins/howp/skills/howp/SKILL.md) —
+"never a build from source: that repository is private". Unless its owner has
 given you access it does not open for you, so nothing here asks you to file
 anything there. Report both of these through this repository instead, by the
 routes above:

@@ -31,11 +31,13 @@ than navigate:
 
 **That URL was not opened from the environment that wrote this file**, and
 GitHub documents no address for the form anywhere: at commit `078b583` of
-[`github/docs`](https://github.com/github/docs/tree/078b5832caa5cde591c2babb389ef447a0ef66eb/content),
-GitHub's documentation in source form, no file under `content/` carries the
-string `advisories/new`. If the link does not open a report form, that settles
-nothing about this repository's settings — use the **Report a vulnerability**
-control described above and disregard the link.
+[`github/docs`](https://github.com/github/docs/tree/078b5832caa5cde591c2babb389ef447a0ef66eb),
+GitHub's documentation in source form, no file in the repository carries the
+string `advisories/new` — not under `content/`, and not in the
+`data/reusables/` files the navigation above is assembled from. If the link
+does not open a report form, that settles nothing about this repository's
+settings — use the **Report a vulnerability** control described above and
+disregard the link.
 
 **Do not open a public issue describing a vulnerability.** If neither route
 reaches a private form, open a public issue asking for a security contact and

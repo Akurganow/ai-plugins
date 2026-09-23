@@ -11,8 +11,8 @@ differently.
 | `prose-discipline` | the state of `main` |
 
 There are no backports. `plugins/howp/binaries.json` is written by the release
-job in `Akurganow/how-possible` and is the record of which release and which
-targets exist; this file does not restate what it holds.
+and never by hand, and is the record of which release and which targets exist;
+this file does not restate what it holds.
 
 ## Reporting a vulnerability
 
@@ -70,27 +70,27 @@ its digests relate to `binaries.json`; this file keeps no second copy of that.
 
 ## What belongs elsewhere
 
-The `hp` binary is built from `Akurganow/how-possible`, which
-[`plugins/howp/binaries.json`](plugins/howp/binaries.json) names in its
-`source_repository` field. **Its release assets are published from this
-repository, not from that one**: every `url` under that file's `targets` names
-a release of `Akurganow/ai-plugins`. Both are the release job's own record
-rather than a sentence kept in step by hand, so a report about an asset you
-downloaded belongs here whichever repository built it.
-
-**That repository is private**, as this repository's own `howp` skill states
-where it forbids a build from source:
-[`plugins/howp/skills/howp/SKILL.md`](plugins/howp/skills/howp/SKILL.md) —
+The `hp` binary is not built here. `README.md` states that a plugin's
+`version`, its `binaries.json` and its skill's `references/commands.md` are
+"written by the release that publishes its binaries, and by nothing here", and
+**the repository it is built from is private** — this repository's own `howp`
+skill says so where it forbids a build from source:
+[`plugins/howp/skills/howp/SKILL.md`](plugins/howp/skills/howp/SKILL.md),
 "never a build from source: that repository is private". Unless its owner has
 given you access it does not open for you, so nothing here asks you to file
-anything there. Report both of these through this repository instead, by the
-routes above:
+anything there.
+
+**Where each archive is published is `binaries.json`'s to say and not this
+paragraph's**: read the `url` of the target you downloaded, because a release
+rewrites those URLs and cannot rewrite a sentence here. Wherever it points,
+the report still comes here, by the routes above:
 
 - **A defect in the `hp` program itself.** Use the advisory form if it is a
   vulnerability; open a public issue if it is not.
 - **A wrong version, digest or target in `binaries.json`.** Open a public
   issue — unless the digest recorded there looks tampered with rather than
   stale, which is a vulnerability report and belongs in the advisory form.
-  Nobody can correct the file here: `.agents/rules/conformance.md` holds that
-  it is written by the release job "and by nothing else", so what a report
-  here achieves is reaching the person who runs that job.
+  Nobody can correct the file here: `.agents/rules/conformance.md`, this
+  repository's own rule file, holds that it is written by the release job
+  "and by nothing else", so what a report here achieves is reaching the person
+  who runs that job.

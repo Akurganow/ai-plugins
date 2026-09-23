@@ -40,7 +40,7 @@ and in a diff only added lines count.
 | `skills/prose-discipline/references/*.md` | the depth behind each rule, plus a calibration corpus |
 | `hooks/hooks.json`, `hooks/session-rules.sh` | a SessionStart hook that prints the core rules for a host to inject; the script is run through `sh` and carries no execute bit |
 | `README.md` | this file |
-| `.claude-plugin/`, `.codex-plugin/` | vendor discovery paths, each a symlink to the root manifest |
+| `.claude-plugin/plugin.json` | a symlink to the root manifest, at the manifest path Claude Code documents. The root README cites the documentation |
 
 ## How the standard reaches a session
 
@@ -61,13 +61,25 @@ working from this copy. The mechanisms are stated from the files, which are
 in this directory and can be read; the behaviour of any particular client is
 not stated at all.
 
-One thing is worth knowing before installing: **the vendor manifests here
-are symlinks to the root manifest**, because `.agents/rules/conformance.md`
+One thing is worth knowing before installing: **the vendor manifest here
+is a symlink to the root manifest**, because `.agents/rules/conformance.md`
 in this repository forbids a second copy, citing Agent Plugins 1.0.0 §5.1.
 A client that discovers components only through vendor-specific manifest
 fields will therefore find the skill, which sits at the fixed location, and
 not the rule file or the hook, which the root manifest names only inside
 `extensions`.
+
+There is no `.codex-plugin/plugin.json` here, and the reason is Codex's own
+loader. `find_plugin_manifest_path` in
+[`codex-rs/utils/plugins/src/plugin_namespace.rs`](https://github.com/openai/codex/blob/30fc6864cc1318121eca1843c217fe00ce1212f1/codex-rs/utils/plugins/src/plugin_namespace.rs)
+reads the root `plugin.json` first and returns it when its `$schema` is
+under `agent-plugins.org`, which this manifest's is. The vendor paths it
+lists, `.codex-plugin/plugin.json` among them, are tried only when no such
+root manifest exists, and a vendor path that is not a regular file returns
+nothing: the test `rejects_symlinked_legacy_plugin_manifest_before_lower_precedence_manifest`
+in the same file pins that. A symlink there could never be read by Codex.
+From source, not documentation: Codex publishes no plugins document. The
+link is a commit permalink.
 
 Codex is the one client where that reading can be checked against a
 published field guide, so it is worth stating separately. Codex's manifest

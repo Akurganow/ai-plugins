@@ -166,8 +166,9 @@ effect is observed: a command, a test or a metric. Say so when you add it.
 
 ## Boundaries
 
-- The procedure works on facts. Every UDE is observable in logs, metrics or
-  tests. An interpretation is reworded into the condition behind it.
+- The procedure works on facts. State each UDE as a condition someone has
+  observed, with the evidence named: what the user saw, a log, a metric, a
+  test. Reword an interpretation into the condition behind it.
 - Iterate on the cloud with the user rather than moving on with a vague
   one.
 - A tree whose links have not been scrutinised is not finished.

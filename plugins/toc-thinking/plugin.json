@@ -1,8 +1,8 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "toc-thinking",
-  "version": "0.1.0",
-  "description": "Theory of Constraints (TOC) Thinking Processes: find root causes, resolve dilemmas, plan changes step by step.",
+  "version": "0.2.0",
+  "description": "Goldratt's Theory of Constraints Thinking Processes, applied to software systems and their architecture. The skill answers three questions in order: what to change (Current Reality Tree), what to change to (Evaporating Cloud, Future Reality Tree with negative-branch reservations) and how to cause the change (Prerequisite Tree, Transition Tree). Every cause-and-effect link is checked against the Categories of Legitimate Reservation before it is kept, and the user confirms each step. The skill carries the procedure; the depth behind each tool and the categories sits in references beside it, each with its source. No script, no network, no credentials.",
   "author": {
     "name": "Alexander Kurganov",
     "url": "https://github.com/Akurganow"
@@ -14,8 +14,10 @@
     "toc",
     "theory-of-constraints",
     "thinking-processes",
-    "evaporating-cloud",
     "current-reality-tree",
-    "conflict-resolution"
+    "evaporating-cloud",
+    "root-cause",
+    "goldratt",
+    "agent-skills"
   ]
 }

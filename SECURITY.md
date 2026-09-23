@@ -2,13 +2,15 @@
 
 ## Supported versions
 
-Two packages are published from this repository, and they are versioned
-differently.
+Four packages are published from this repository. One is versioned by a
+release; the other three are text and are supported as they stand on `main`.
 
 | Package | What is supported |
 | :-- | :-- |
 | `howp` | the release recorded in [`plugins/howp/binaries.json`](plugins/howp/binaries.json) |
 | `prose-discipline` | the state of `main` |
+| `toc-thinking` | the state of `main` |
+| `triz` | the state of `main` |
 
 There are no backports. `plugins/howp/binaries.json` is written by the release
 and never by hand, and is the record of which release and which targets exist;

@@ -300,12 +300,14 @@ plugins/<name>/
   plugin.json                      the manifest — Agent Plugins 1.0.0, at the plugin root
   .claude-plugin/plugin.json       symlink → ../plugin.json, Claude's documented manifest
                                    path; it holds no content of its own
-  binaries.json                    the released binary set: tag, targets, archives,
-                                   download URLs and their sha256 digests. Written by
-                                   the release path; the skill reads it and nothing
-                                   duplicates it
+  README.md                        the package's own README: what it does, what ships,
+                                   what has and has not been verified
+  binaries.json                    howp only: the released binary set: tag, targets,
+                                   archives, download URLs and their sha256 digests.
+                                   Written by the release path; the skill reads it and
+                                   nothing duplicates it
   skills/<name>/SKILL.md           the skill, per the Agent Skills specification
-  skills/<name>/references/*.md    the skill's own bundled references, loaded by the
+  skills/<name>/references/*       the skill's own bundled references, loaded by the
                                    agent when a procedure needs them
 tools/check-conformance.py         the conformance check
 tools/schemas/                     the official manifest schema, vendored
@@ -313,10 +315,11 @@ tools/schemas/                     the official manifest schema, vendored
                                    requests
 ```
 
-A plugin's `version`, its `binaries.json` and its skill's
+`howp`'s `version`, its `binaries.json` and its skill's
 `references/commands.md` are written by the release that publishes its
 binaries, and by nothing here — `.agents/rules/conformance.md` carries the
-rule.
+rule. The other packages hold text only, and their `version` moves by hand
+in the change that alters the package.
 
 That has a consequence worth stating rather than working around. The standard
 does not require a client to care about `version` — §10.2 says only that

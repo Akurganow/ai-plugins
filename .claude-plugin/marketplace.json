@@ -19,16 +19,8 @@
       "source": "./plugins/toc-thinking"
     },
     {
-      "name": "triz-ariz",
-      "source": "./plugins/triz-ariz"
-    },
-    {
-      "name": "triz-evolution",
-      "source": "./plugins/triz-evolution"
-    },
-    {
-      "name": "triz-matrix",
-      "source": "./plugins/triz-matrix"
+      "name": "triz",
+      "source": "./plugins/triz"
     }
   ]
 }

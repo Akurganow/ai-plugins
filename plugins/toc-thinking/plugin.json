@@ -1,0 +1,21 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "toc-thinking",
+  "version": "0.1.0",
+  "description": "Theory of Constraints (TOC) Thinking Processes: find root causes, resolve dilemmas, plan changes step by step.",
+  "author": {
+    "name": "Alexander Kurganov",
+    "url": "https://github.com/Akurganow"
+  },
+  "homepage": "https://github.com/Akurganow/ai-plugins/tree/main/plugins/toc-thinking",
+  "repository": "https://github.com/Akurganow/ai-plugins",
+  "license": "MIT",
+  "keywords": [
+    "toc",
+    "theory-of-constraints",
+    "thinking-processes",
+    "evaporating-cloud",
+    "current-reality-tree",
+    "conflict-resolution"
+  ]
+}

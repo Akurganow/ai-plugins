@@ -1,0 +1,20 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "triz-evolution",
+  "version": "0.1.0",
+  "description": "TRIZ evolution laws: predict how systems, processes, and architectures naturally develop.",
+  "author": {
+    "name": "Alexander Kurganov",
+    "url": "https://github.com/Akurganow"
+  },
+  "homepage": "https://github.com/Akurganow/ai-plugins/tree/main/plugins/triz-evolution",
+  "repository": "https://github.com/Akurganow/ai-plugins",
+  "license": "MIT",
+  "keywords": [
+    "triz",
+    "evolution-laws",
+    "system-evolution",
+    "s-curve",
+    "architecture-planning"
+  ]
+}

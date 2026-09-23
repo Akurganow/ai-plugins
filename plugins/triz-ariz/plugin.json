@@ -1,0 +1,20 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "triz-ariz",
+  "version": "0.1.0",
+  "description": "ARIZ-85C: structured algorithm for complex technical problems and inventive contradictions.",
+  "author": {
+    "name": "Alexander Kurganov",
+    "url": "https://github.com/Akurganow"
+  },
+  "homepage": "https://github.com/Akurganow/ai-plugins/tree/main/plugins/triz-ariz",
+  "repository": "https://github.com/Akurganow/ai-plugins",
+  "license": "MIT",
+  "keywords": [
+    "triz",
+    "ariz",
+    "ariz-85c",
+    "inventive-problem-solving",
+    "contradictions"
+  ]
+}

@@ -1,8 +1,10 @@
 # Handoff: marketplace quality rework
 
 **Temporary folder.** It exists so a later session can continue this work without
-repeating the research or the decisions. Delete the whole `docs/superpowers/handoff/`
-tree before the pull request merges; nothing in the repository references it.
+repeating the research or the decisions. **Mandatory cleanup:** delete the whole
+`docs/superpowers/` tree (this folder, the spec, any plan) once the work is done **and
+verified** (spec §10 acceptance met, CI green, the owner has confirmed), before the pull
+request merges. Nothing in the repository references it.
 
 ## What this is
 
@@ -24,7 +26,8 @@ assistant in a **local** session on the owner's machine.
 
 ## Process state (superpowers)
 
-- Path: architectural. Stage reached: **spec written, not yet reviewed by the owner.**
+- Path: architectural. Stage reached: **spec written with every decision closed (spec §8),
+  not yet reviewed by the owner.** No question is open; do not re-ask any of them.
 - Next: owner reviews the spec → `superpowers:writing-plans` → execute on this branch.
 - The owner answers questions through a proper choice prompt (AskUserQuestion), one
   question per message, each with the context it needs to be understood by someone who
@@ -38,7 +41,11 @@ assistant in a **local** session on the owner's machine.
 - The nine-role agent system under `.agents/` stays in composition; its rules may change.
 - Any copy of a file is generated on CI from one source, never kept by hand. Version
   bumps and tags are automatic. Ready-made tools over home-grown scripts ("no bicycles").
-- No paid tests: no `claude plugin eval`, no trigger tests, nothing that calls a model.
+- No paid tests: no `claude plugin eval`, no trigger tests, nothing that calls a model
+  (deferred to issue #62, human-filed).
+- No blocking gates on the agent and no repetition of what is already in context: the
+  standard is recommended insistently, once per context, never enforced by a hook.
+- No Python or any other code module in a package; text and shell hooks only.
 - Pipelines are private. Public docs never mention the agent roles. Agents never touch
   issues filed by people. Machine issues carry `police-report` and a fingerprint marker.
 - Support of all four declared harnesses (Claude Code, Codex, Hermes, Oh-My-Pi) is

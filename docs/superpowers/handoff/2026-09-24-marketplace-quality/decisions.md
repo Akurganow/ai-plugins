@@ -117,3 +117,17 @@ components -> M9 extensions -> L1-L6.
   with the issue link until upstream closes it.
 - Behavioural evals: deferred, not dropped. A human-filed issue (no police-report label) holds the
   requirements and sources; the owner will look at cost next week; if cheap enough, considered.
+
+## Closed at the end of the session (no open questions remain)
+- Claude Code enforcement: NONE. No blocking Stop/SubagentStop hook ("a harmful gate"), no
+  UserPromptSubmit reminder (repetition is noise). SessionStart + SubagentStart injection only,
+  re-injected where the client dropped it (compact/clear/resume).
+- Oh-My-Pi: no TTSR rule files (same gate). rules/ with alwaysApply stays.
+- Hermes: NO Python, no native plugin. README Hermes section and the first lines of the prose
+  skill recommend `skills.auto_load`; Hermes surfaces it itself when the skill loads. Spike
+  verifies the qualified-name form.
+- Categories: howp Data & Analytics; prose-discipline Productivity; design-review,
+  cognitive-load, toc-thinking, triz Developer Tools.
+- Skill names, one word: forecast, contradiction, review, root-cause, load, prose.
+- MANDATORY CLEANUP: docs/superpowers/ (spec, handoff, plans) is deleted after the work is done
+  AND verified (acceptance met, CI green, owner confirmed), before merge.

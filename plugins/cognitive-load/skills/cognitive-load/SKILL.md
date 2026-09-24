@@ -170,11 +170,13 @@ changes the task is a different conversation, outside this skill.
 ## Step 7: verify, and hand over
 
 The check is the reader from Step 1, not the author. Ask the user to have
-a newcomer do the task after the change. Ask them to record, the same way
-as in Step 2, the time to complete it, whether the result was correct,
-and the minutes of continuous confusion. Say that this is the only test
-the skill has. Say also that one newcomer is an anecdote, and that the
-same person doing the task twice has learned from the first time.
+a reader of that kind do the task after the change: a newcomer when Step
+1 chose one, otherwise a reader who holds what Step 1 said the reader
+holds. Ask them to record, the same way as in Step 2, the time to complete
+it, whether the result was correct, and the minutes of continuous
+confusion. Say that this is the only test the skill has. Say also that one
+reader is an anecdote, and that the same person doing the task twice has
+learned from the first time.
 
 Close with what the diagnosis did not cover:
 

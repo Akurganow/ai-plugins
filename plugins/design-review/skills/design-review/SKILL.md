@@ -55,8 +55,8 @@ write them down before any judgement.
    quality, complexity. Where the user names two, such as performance
    against test isolation, the trade-off between them goes to Step 8.
 
-When the user brings one question, start at its step and run Steps 7 and
-8 after it.
+When the user brings one question, establish the frame above first. Then
+start at the question's step, and run Steps 7 and 8 after it.
 
 - "Is this abstraction right?": Step 3.
 - "Should I split or merge?": Step 5.
@@ -69,7 +69,9 @@ When the user brings one question, start at its step and run Steps 7 and
 ## Step 2: locate the complexity
 
 For each complaint the user brought, name the symptom and the cause, in
-the book's terms.
+the book's terms. A review with no complaint starts with an empty list
+here, and every finding a later step produces is classified the same way
+when it is found.
 
 - Symptom: change amplification, cognitive load, or unknown unknowns. The
   book calls the third the worst.
@@ -100,7 +102,7 @@ Read the deep and shallow section of `references/principles.md`.
 
 Read `references/red-flags.md`. Walk the fourteen against the design. For
 each that fires, quote the place in the design, name the flag with the
-book's name, and state the cause from Step 2. A flag is a symptom, and the
+book's name, and state the cause in Step 2's terms. A flag is a symptom, and the
 book's own sentence says so. When the user gives a reason for the
 structure, record it beside the finding. Drop the finding only when the
 user confirms the reason outweighs the flag.

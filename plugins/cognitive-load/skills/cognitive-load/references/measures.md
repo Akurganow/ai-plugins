@@ -3,8 +3,9 @@
 Two published ways to put a number on a unit of code, and the studies of
 programmers that were read. `sources.md` names each copy and says which
 were read whole, which as abstracts, and which not at all. Nothing here
-was measured by this skill. Every number below is a tool's default or an
-author's recommendation, and is named as such.
+was measured by this skill. Every metric default, threshold or
+recommendation below is named as such. Study counts and findings are
+reported as the cited abstracts state them.
 
 ## Cognitive Complexity
 

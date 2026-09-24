@@ -34,7 +34,7 @@ will never be seen is almost as good as eliminating the complexity
 entirely" (§2.1, 1e). The formula itself is typeset as an image in the
 copy read, so it is not reproduced here. The book calls the formula crude.
 The review uses it for one thing: ranking findings by how often the part
-is touched.
+is touched, times how much it costs to touch.
 
 ## Three symptoms
 

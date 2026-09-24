@@ -43,7 +43,7 @@ and states no threshold of its own.
 
 No script, no hook, no rule file, no network, no credentials. The skill is
 discovered from the fixed `skills/` location every Agent Plugins 1.0.0
-client reads. That is the only route the package has.
+client that supports skills reads. That is the only route the package has.
 
 ## What the references are
 

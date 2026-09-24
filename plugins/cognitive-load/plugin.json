@@ -1,0 +1,21 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "cognitive-load",
+  "version": "0.1.0",
+  "description": "Cognitive Load Theory analysis: assess and reduce unnecessary complexity in systems, interfaces, and processes.",
+  "author": {
+    "name": "Alexander Kurganov",
+    "url": "https://github.com/Akurganow"
+  },
+  "homepage": "https://github.com/Akurganow/ai-plugins/tree/main/plugins/cognitive-load",
+  "repository": "https://github.com/Akurganow/ai-plugins",
+  "license": "MIT",
+  "keywords": [
+    "cognitive-load",
+    "sweller",
+    "complexity",
+    "code-review",
+    "onboarding",
+    "comprehensibility"
+  ]
+}

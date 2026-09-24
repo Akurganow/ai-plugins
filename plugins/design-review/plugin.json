@@ -1,0 +1,21 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "design-review",
+  "version": "0.1.0",
+  "description": "Design review through the lens of complexity management: 14 red flags, 15 design principles, error elimination strategies, and deep-vs-shallow analysis.",
+  "author": {
+    "name": "Alexander Kurganov",
+    "url": "https://github.com/Akurganow"
+  },
+  "homepage": "https://github.com/Akurganow/ai-plugins/tree/main/plugins/design-review",
+  "repository": "https://github.com/Akurganow/ai-plugins",
+  "license": "MIT",
+  "keywords": [
+    "design-review",
+    "complexity",
+    "software-design",
+    "deep-modules",
+    "information-hiding",
+    "red-flags"
+  ]
+}

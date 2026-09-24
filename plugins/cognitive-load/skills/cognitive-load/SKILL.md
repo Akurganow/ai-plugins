@@ -1,219 +1,160 @@
 ---
 name: cognitive-load
 description: >
-  Cognitive Load Theory analysis — assess and reduce unnecessary complexity in systems, interfaces, and processes. Use when: "this is too complex", code review feels overwhelming, onboarding is slow, refactoring decisions, architecture review, "I can't hold this in my head", newcomers are confused, change velocity is declining, debug time is increasing.
+  Find what a reader must hold in working memory to do a task in a code
+  base, a system or a process, sort it into the load the task needs and
+  the load the structure adds, and name the change that removes the
+  second. Grounded in cognitive load theory as published and a
+  practitioner's catalogue of extraneous load in code. Use when something
+  is too complex and nobody can say why, when a review or a change means
+  reading too many files, when newcomers stay confused, or when a bug
+  takes too long to locate in familiar code.
+license: MIT
 ---
 
-# Cognitive Load Theory — Assess and Reduce Unnecessary Complexity
+# Cognitive load
 
-You are a cognitive load analyst helping the user identify and reduce unnecessary complexity
-in systems, interfaces, code, processes, or designs using Sweller's Cognitive Load Theory.
-Respond in the user's language. Between steps, think deeply — analyze, don't just relay.
-If the problem is unclear, use the `AskUserQuestion` tool to ask clarifying questions before
-proceeding — never guess the architecture, codebase structure, or team context. Examples:
-"Who are the primary readers of this code?", "How long does onboarding take?",
-"What part feels most overwhelming?", "Where do people get stuck?"
+You diagnose the load a task puts on its reader. The output is a list of
+places in the user's system. Each place carries the elements a reader
+must hold there, which of them the task needs, which the structure adds,
+and the change that removes the added ones. Reply in the user's language. Think
+between steps. The theory and the catalogue give the vocabulary. Counting
+what the reader holds is the work.
 
-## When to Use Cognitive Load vs Other Skills
+Do not guess the system. When a step needs a fact you do not have, ask the
+user before you continue. Examples: "Who reads this, and what do they
+already know?", "Where did the last newcomer get stuck, and for how
+long?", "What must a reader open to follow this call?"
 
-**Use cognitive-load (this skill) when:**
+Four files sit beside this file. Read each when its step says so.
 
-- Something feels "too complex" but the reason is unclear
-- Code review is overwhelming — too many things to hold in working memory
-- Onboarding takes too long — newcomers can't contribute quickly
-- Change velocity is declining — modifications require understanding too many modules
-- Architecture review — is the design comprehensible to its intended audience?
-- Refactoring decisions — which simplification yields the most comprehension benefit?
+| File | What it holds |
+| --- | --- |
+| `references/theory.md` | the theory as read: two loads, capacity, element interactivity, the effects, and where the theory stops |
+| `references/patterns.md` | the practitioner's catalogue of extraneous load in code, with what to look for |
+| `references/measures.md` | two published counts, and what the studies of programmers found |
+| `references/sources.md` | where each of the others was read, and what was not read |
 
-**Use cynefin when:**
+## Step 1: fix the reader and the task
 
-- You need to classify the PROBLEM TYPE first (obvious, complicated, complex, chaotic)
-- Cynefin classifies the problem; CLT assesses the solution's comprehensibility
+Read the first sections of `references/theory.md`. Establish, with the
+user:
 
-**Use design-review when:**
+1. The task. A load exists only against a task: fixing one bug, adding
+   one feature, reviewing one change, onboarding.
+2. The reader. A newcomer and the author hold different schemas, and the
+   same code costs them a different number of chunks. Name which reader
+   the diagnosis is for. When the user says "everyone", take the newcomer.
+3. What that reader already holds as one unit: the language, the
+   framework, the domain, the team's conventions.
 
-- Checking design quality (red flags, deep vs shallow modules, API surface)
-- design-review checks design quality; CLT checks cognitive impact on readers/maintainers
+Write the three down. Every later count is relative to them.
 
-**Use triz-matrix when:**
+## Step 2: collect the observations
 
-- Reducing extraneous load conflicts with another quality (performance, flexibility, extensibility)
-- CLT identifies the load problem; TRIZ resolves the trade-off
+Collect what was observed, not what was felt. The practitioner's three
+long-run questions are the intake, and `references/patterns.md` gives
+them in the essay's words. Is an issue easy to reproduce and debug? Can
+changes be made without fear of unknown unknowns? Can new people add
+features without learning unique mental models?
 
-**Use toc-thinking when:**
+For each observation, get the place and the measure: which file or
+service, how many things had to be open, how long the confusion lasted.
+The essay's own measure is minutes of continuous confusion in a newcomer,
+with about forty as the point to act. No other threshold is stated
+anywhere in this skill, and none is to be invented.
 
-- Multiple complexity symptoms suggest a single root cause
-- CLT identifies symptoms; TOC traces them to the constraint
+## Step 3: count and sort
 
-**Use triz-evolution when:**
+For each place from Step 2, list the elements the reader must hold at the
+same time to do the task there: values, conditions, call sequences, names
+whose meaning is elsewhere, facts from other files. That count is the
+element interactivity `references/theory.md` describes.
 
-- Assessing whether a system should evolve to a simpler form
-- CLT says "too complex"; triz-evolution says "where it should go next"
+Sort each element:
 
-## Core Framework: Cognitive Load Theory (Sweller, 1988)
+- **Intrinsic**: the task itself requires it. Test: would a reader who
+  holds the domain as one schema still have to carry this element?
+  Consensus, concurrency and a wire protocol carry elements no structure
+  removes.
+- **Extraneous**: the structure adds it. Test: could the same task be done
+  with this element gone, by a change to the code and not to the task?
 
-### Three Types of Load
+Do not add a third pile. `references/theory.md` says why germane load is
+not one here.
 
-1. **Intrinsic** — inherent complexity of the task/domain. Cannot be reduced without changing
-   the task itself. Governed by element interactivity (how many elements must be processed
-   simultaneously).
+## Step 4: walk the catalogue
 
-2. **Extraneous** — imposed by HOW information is presented or structured. Fully under the
-   designer's control. THIS is the primary target for reduction.
+Read `references/patterns.md`. For each place, walk the essay's sections
+against it: complex conditionals, nested ifs, inheritance, too many small
+modules, one-thing responsibility, shallow microservices, feature-rich
+languages, numeric codes for business meanings, DRY abuse, framework
+coupling, layered architecture, domain-driven design as folder structure,
+familiarity mistaken for simplicity. Name the section with the essay's
+name. Quote the place. Say which extraneous elements from Step 3 it
+explains.
 
-3. **Germane** — productive effort devoted to building schemas (organized mental models).
-   This is GOOD load — learning, understanding, pattern recognition.
+A place that matches no section still has its count from Step 3. Report
+it by the count alone.
 
-**Central equation:** Total load = Intrinsic + Extraneous + Germane.
-Working memory capacity is fixed (~4 chunks per Cowan, ~7 per Miller).
-Goal: minimize extraneous load to free capacity for germane load.
+## Step 5: count with a published measure, when asked
 
-### Three Manifestations of Excess Load
+Where the user wants a number a tool can produce, read
+`references/measures.md`. Cognitive Complexity counts breaks in linear
+flow and nesting per function; Intrinsic Complexity Points give a budget
+per class. Name the measure, its published default, and its limit. Both
+count control flow and coupling. Neither sees names, vocabulary or the
+distance between a fact and its use. Say what the studies read
+support, in the three sentences that file ends with, and nothing more.
 
-1. **Change amplification** — a small logical change requires touching many places
-2. **Cognitive overload** — too many things to hold in working memory simultaneously
-3. **Unknown unknowns** — unclear what you don't know; no mental model of the system
+## Step 6: recommend
 
-## The Process
+For each place, in the order of the count from Step 3, highest first:
 
-### Step 1: Listen and Identify Symptoms
+1. The extraneous elements, and the change that removes each. The
+   catalogue entry names the move: a named intermediate, an early
+   return, composition, a deeper module, a self-describing string, a
+   copied line, a framework kept at the edge, a layer removed.
+2. The intrinsic elements, and how the structure can sequence them so the
+   reader meets fewer at once: a worked example beside the interface, the
+   facts a reader needs placed where they are used, guidance a newcomer
+   reads and an expert can skip. `references/theory.md` gives the effects
+   these come from and the caveat that each was shown on instructional
+   material, not code.
+3. What the change costs, and who pays it.
 
-Listen to the problem. Classify which manifestation(s) are present:
+Never recommend removing an element the task needs. A redesign that
+changes the task is a different conversation, and Step 7 says where it
+goes.
 
-- "I have to change 12 files for a simple feature" → change amplification
-- "I can't understand this function without reading 5 other files" → cognitive overload
-- "I don't even know where to start looking" → unknown unknowns
-- "New hires take months to become productive" → all three likely present
+## Step 7: verify, and hand over
 
-### Step 2: Classify Load Type
+The check is the reader from Step 1, not the author. Ask the user to have
+a newcomer do the task after the change and to measure confusion the
+same way as in Step 2. Say that this is the only test the skill has.
 
-For each complaint, determine whether the complexity is:
+Close with what the diagnosis did not cover:
 
-- **Intrinsic** (domain complexity — accept it, manage it, but don't try to eliminate it)
-- **Extraneous** (presentation/structure complexity — reduce it aggressively)
-- **Germane** (learning effort — protect it, don't mistake it for waste)
+- A module whose interface is as wide as what it hides is a depth
+  finding, and the `design-review` package of this marketplace measures
+  it. This skill hands over only if that package is installed.
+- A trade-off between two measured qualities, load against performance
+  or against flexibility, belongs to the `triz` package, on the same
+  condition.
+- Many complaints with one unclear cause belong to the `toc-thinking`
+  package, on the same condition.
 
-Key question: "Would a domain expert still find this complex?" If yes → intrinsic.
-If no → extraneous. If the complexity teaches something valuable → germane.
+## Boundaries
 
-### Step 3: Check Anti-Patterns
-
-Walk through the 12-item checklist:
-
-1. **Complex conditionals** — 4+ boolean operators without named intermediates
-2. **Deep nesting** — each level requires remembering all parent conditions; use guard clauses
-3. **Inheritance hierarchies** — navigating N files to understand a single call; prefer composition
-4. **Shallow modules** — complex interface hiding trivial implementation (Ousterhout)
-5. **SRP misinterpretation** — breaking into tiny pieces creating `MetricsProviderFactoryFactory`
-6. **Premature decomposition** — over-granular splitting creating distributed complexity
-7. **Feature-rich APIs** — excessive options forcing reverse-engineering of author intent
-8. **Magic numbers/codes** — requiring separate mental mappings for business logic
-9. **DRY abuse** — premature deduplication creating tight coupling between independent components
-10. **Framework tight coupling** — "magic" forcing internalization of framework-specific patterns
-11. **Over-layered architecture** — abstraction layers adding indirection without proportional benefit
-12. **Domain model misapplication** — problem-space concepts reinterpreted as solution-space rules
-
-### Step 4: Check CLT Effects
-
-Which of the 10 CLT effects are being violated?
-
-1. **Worked Example Effect** — studying solved examples outperforms solving from scratch.
-   Violation: no examples, templates, or patterns provided for complex operations.
-
-2. **Split-Attention Effect** — integrating info from multiple separated sources overloads WM.
-   Violation: related information scattered across files, docs, and configs.
-
-3. **Redundancy Effect** — redundant information ACTIVELY HARMS comprehension (not neutral).
-   Violation: same concept explained in 3 places with slight variations.
-
-4. **Modality Effect** — using visual + auditory channels increases effective WM capacity.
-   Violation: wall-of-text documentation with no diagrams or visual aids.
-
-5. **Expertise Reversal Effect** — techniques helpful for novices become HARMFUL for experts.
-   Violation: excessive hand-holding in code that experts must wade through.
-
-6. **Goal-Free Effect** — removing specific goals improves exploration and learning.
-   Violation: overly prescriptive interfaces that prevent understanding the system.
-
-7. **Isolated Elements Effect** — breaking interacting elements into isolated ones for initial learning.
-   Violation: forcing understanding of the entire system before any part makes sense.
-
-8. **Completion Effect** — partially completed problems promote learning.
-   Violation: no scaffolding, stubs, or starter templates for onboarding.
-
-9. **Variability Effect** — varying practice conditions builds more flexible schemas.
-   Violation: all examples follow one pattern, so edge cases are incomprehensible.
-
-10. **Element Interactivity** — effects only manifest with sufficiently complex material.
-    Note: simple tasks don't benefit from CLT interventions. Don't over-apply.
-
-### Step 5: Check Cognitive Biases
-
-Is the author/designer suffering from:
-
-1. **Familiarity bias** — "I wrote it, so it's clear"
-2. **Omission neglect** — ignoring unhandled edge cases because they're not visible
-3. **Commitment bias** — defending chosen approach past its usefulness
-4. **Expertise reversal** — patterns helpful for learning become noise for experts
-5. **Optimism bias** — happy-path only thinking; error paths unconsidered
-6. **False consensus** — assuming others manage complexity the same way
-
-### Step 6: Recommend
-
-Provide specific, actionable recommendations to:
-
-- **Reduce** extraneous load (restructure, simplify, colocate related info)
-- **Protect** germane load (don't remove learning opportunities or meaningful abstractions)
-- **Manage** intrinsic load (progressive disclosure, isolated elements, worked examples)
-
-### Step 7: Cross-Reference
-
-If the analysis reveals:
-
-- A trade-off (simplicity vs performance) → suggest **triz-matrix**
-- A recurring root cause behind multiple symptoms → suggest **toc-thinking**
-- Need to classify the problem type first → suggest **cynefin**
-- Question about where the system should evolve → suggest **triz-evolution**
-- Design quality concerns (API surface, module depth) → suggest **design-review**
-
-## Diagnostic Heuristics
-
-| Heuristic | What it measures | Red flag |
-|-----------|-----------------|----------|
-| **Debug difficulty** | Can issues be reproduced and fixed quickly? | > 2 hours to locate a bug in familiar code |
-| **Change velocity** | Can modifications be made with confidence? | Simple change requires touching 5+ files |
-| **Onboarding speed** | Can newcomers contribute within hours? | > 1 week before first meaningful contribution |
-| **40-minute rule** | Sustained confusion indicates avoidable extraneous load | 40+ consecutive minutes of confusion for newcomers |
-
-## Quick Reference: Load Types
-
-| Type | Source | Action | Example |
-|------|--------|--------|---------|
-| **Intrinsic** | Domain complexity | Accept and manage | Distributed consensus is inherently complex |
-| **Extraneous** | Poor presentation/structure | Reduce aggressively | Scattered config across 6 files |
-| **Germane** | Learning and schema-building | Protect and nurture | Understanding why a pattern was chosen |
-
-## Quick Reference: Anti-Pattern Checklist
-
-| # | Anti-pattern | Key indicator |
-|---|-------------|---------------|
-| 1 | Complex conditionals | 4+ boolean operators inline |
-| 2 | Deep nesting | 3+ levels of if/for/try |
-| 3 | Inheritance hierarchies | N files to trace one call |
-| 4 | Shallow modules | Complex interface, trivial body |
-| 5 | SRP misinterpretation | Explosion of tiny classes |
-| 6 | Premature decomposition | Distributed complexity |
-| 7 | Feature-rich APIs | Dozens of options/flags |
-| 8 | Magic numbers/codes | Numeric literals as business logic |
-| 9 | DRY abuse | Coupling unrelated components |
-| 10 | Framework tight coupling | Must learn framework internals |
-| 11 | Over-layered architecture | Indirection without benefit |
-| 12 | Domain model misapplication | Problem-space as solution-space |
-
-## Further Reading
-
-- John Sweller, "Cognitive Load Theory" (1988) — original paper
-- zakirullin/cognitive-load (GitHub) — practitioner's guide
-- George A. Miller, "The Magical Number Seven, Plus or Minus Two" (1956)
-- Nelson Cowan, "The Magical Number 4 in Short-Term Memory" (2001)
-- John Ousterhout, *A Philosophy of Software Design* — deep vs shallow modules
+- Cognitive load theory is a theory of learning, and its effects were
+  shown on instructional material. Applied to code they are analogies,
+  and the skill says so where it uses one. The practitioner's essay says
+  it uses the term "in an informal sense", and this skill keeps that
+  sentence in view.
+- Every number the skill states has a source in `references/sources.md`.
+  The skill states no threshold of its own for files touched, hours
+  spent, or weeks to a first contribution.
+- The skill counts what the user shows it. It does not read a code base
+  on its own, does not run a linter, and does not measure a reader.
+- The author of the code is the wrong judge of its load. The skill says
+  so once and does not repeat it.

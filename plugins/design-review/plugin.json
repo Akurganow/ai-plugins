@@ -2,7 +2,7 @@
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "design-review",
   "version": "0.1.0",
-  "description": "Design review through the lens of complexity management: 14 red flags, 15 design principles, error elimination strategies, and deep-vs-shallow analysis.",
+  "description": "A design review for complexity, with the principles and red flags of Ousterhout's A Philosophy of Software Design. The skill fixes the frame, then asks the book's questions in order: which symptom and which cause, whether each module is deep, which of the fourteen red flags fire, whether two pieces belong together, whether an error can be defined out of existence, and which findings matter by how often the part is touched. Every finding cites a chapter, and a position the book argues against common practice carries the other side from the written discussion between Ousterhout and Martin. The references beside the skill carry the book's two lists verbatim, the criteria, the positions and the sources. No script, no network, no credentials.",
   "author": {
     "name": "Alexander Kurganov",
     "url": "https://github.com/Akurganow"
@@ -12,10 +12,12 @@
   "license": "MIT",
   "keywords": [
     "design-review",
-    "complexity",
     "software-design",
+    "complexity",
     "deep-modules",
     "information-hiding",
-    "red-flags"
+    "red-flags",
+    "ousterhout",
+    "agent-skills"
   ]
 }

@@ -1,264 +1,153 @@
 ---
 name: design-review
 description: >
-  Design review through the lens of complexity management — 14 red flags, 15 design principles, error elimination strategies, and deep-vs-shallow analysis. Use when: reviewing module/API/architecture design, "is this abstraction right?", interface feels wrong, refactoring decision, module boundary question, "should I split or merge?", code feels tangled, naming is hard, too many layers.
+  Review a software design for complexity, with the principles and red
+  flags of Ousterhout's A Philosophy of Software Design: module depth,
+  information hiding, layers, error handling, comments and names. Use when
+  reviewing a module, an API, an architecture or a refactoring plan. Use
+  when an interface feels wrong, when a module might need splitting or
+  merging, when a name will not come, when there are too many layers, or
+  when a change touches too many places. Each finding names the chapter
+  it rests on and the other side where the book is disputed.
+license: MIT
 ---
 
-# Design Review — Complexity-Driven Analysis
-
-You are a design reviewer helping the user evaluate and improve system designs through the lens
-of managing complexity. Your framework comes from John Ousterhout's research on software
-complexity (Stanford CS 190), reformulated here as domain-independent principles.
-Respond in the user's language. Between steps, think deeply — analyze the design, don't just
-check boxes. If the problem is unclear, use the `AskUserQuestion` tool to ask clarifying
-questions before proceeding — never guess the architecture, module boundaries, or usage
-patterns. Examples: "What is the most common operation callers perform?", "How often does
-this module change?", "Who are the consumers of this interface?"
-
-## When to Use design-review vs Other Skills
-
-**Use design-review when:**
-
-- Evaluating whether a module/API/component has the right interface
-- Deciding whether to split or merge modules
-- Reviewing a refactoring plan for structural soundness
-- Naming feels difficult (signal of unclear purpose)
-- Interface feels bloated or too thin
-- Layers have similar abstractions
-- Error handling is spreading everywhere
-
-**Use cognitive-load when:** the concern is comprehensibility — "will others understand this?"
-**Use cynefin when:** you need to classify the PROBLEM TYPE first — "what kind of problem is this?"
-**Use triz-matrix when:** two design qualities trade off (simplicity vs flexibility) — a parameter conflict
-**Use toc-thinking when:** multiple design problems point to a shared root cause
-**Use triz-evolution when:** assessing whether a design has room to grow or needs radical change
-**Use triz-ariz when:** the design problem has nested contradictions that resist simple solutions
-
-## The Core Thesis
-
-The central challenge of building systems is managing complexity. Every principle, red flag,
-and heuristic below derives from this single root concern.
-
-## The Complexity Formula
-
-**C = Sum(cp * tp)** where cp = complexity of component p, tp = fraction of developer time
-spent working with component p.
-
-Key insight: even highly complex components contribute little if rarely touched. Conversely,
-mildly complex frequently-modified areas dominate the budget. Isolating complexity where
-people rarely venture is nearly equivalent to eliminating it.
-
-## Three Manifestations of Complexity
-
-| Manifestation | Description | Severity |
-|--------------|-------------|----------|
-| **Change amplification** | A simple change requires modifications in many places | Medium |
-| **Cognitive overload** | Too much information must be held simultaneously to complete a task | Medium |
-| **Unknown unknowns** | It is not obvious what needs to change or what information is needed | **Worst** |
-
-Note: more code can actually REDUCE cognitive overload if the alternative requires understanding
-more contexts simultaneously.
-
-## Two Root Causes
-
-1. **Dependencies** — components cannot be understood or modified in isolation
-2. **Obscurity** — important information is not obvious
-
-All complexity traces back to one or both of these.
-
-## The Process
-
-### Step 1: Listen
-
-Understand what is being reviewed — architecture, module, API, refactoring plan, naming decision.
-Ask what the most common operations are and how often the design changes.
-
-### Step 2: Assess the Complexity Formula
-
-Which components have high cp * tp? Where do developers spend the most time? Which areas
-are complex but rarely touched (acceptable) vs frequently modified (dangerous)?
-
-### Step 3: Identify Manifestations
-
-Walk through each manifestation:
-
-- **Change amplification**: Does a single logical change require touching many files/modules?
-- **Cognitive overload**: How much context must a developer hold to make a change?
-- **Unknown unknowns**: Could a developer make a change and unknowingly break something?
-
-### Step 4: Check the 14 Red Flags
-
-Walk through each red flag against the design under review. For each flag that triggers,
-explain what it means for this specific design and how to address it.
-
-### Step 5: Assess Module Depth
-
-For each key module: is the interface simpler than the implementation? Deep modules (simple
-interface, rich functionality) are the goal. Shallow modules (complex interface, trivial
-implementation) are the anti-pattern.
-
-### Step 6: Together or Apart?
-
-Should components be combined or separated? Apply the decision criteria below.
-
-### Step 7: Check Error Handling
-
-Can any error conditions be eliminated by design? Apply the four error elimination strategies.
-
-### Step 8: Apply the Contrarian Lens
-
-Is the design following conventional wisdom where it should not? Check the contrarian
-positions for applicability.
-
-### Step 9: Recommend
-
-Propose specific changes with rationale tied to principles. Prioritize by impact on the
-complexity formula (cp * tp).
-
-### Step 10: Cognitive Load Assessment
-
-If Steps 3–5 reveal comprehensibility concerns (cognitive overload manifestation, shallow
-modules, leaked internals, entangled implementations), run the `cognitive-load` skill analysis
-on the affected components. Specifically:
-
-- Map each triggered red flag to CLT load type (intrinsic vs extraneous)
-- Check which of the 12 CLT anti-patterns apply
-- Assess whether the complexity is inherent to the domain or imposed by the structure
-- Include CLT findings in the final recommendation
-
-This step is not always needed — skip it when the design issues are purely structural
-(change amplification, error handling) without comprehensibility concerns.
-
-### Step 11: Cross-Reference
-
-If trade-offs emerge, suggest triz-matrix. If root-cause patterns appear, suggest toc-thinking.
-If evolution questions arise, suggest triz-evolution.
-
-## 14 Red Flags
-
-Based on Ousterhout's research (*A Philosophy of Software Design*, 2nd ed., 2021),
-reformulated below.
-
-| # | Flag | Signal |
-|---|------|--------|
-| 1 | **Shallow abstraction** | Interface is not meaningfully simpler than what it hides; learning cost not justified |
-| 2 | **Leaked internals** | Same design decision reflected in multiple modules, creating hidden coupling |
-| 3 | **Temporal structure** | Code organized by execution order rather than by information ownership |
-| 4 | **Interface overexposure** | Common case requires awareness of rarely-used features |
-| 5 | **Pass-through delegation** | A function does nothing except forward arguments to another with similar signature |
-| 6 | **Repeated patterns** | Same or nearly same logic in multiple places, indicating a missing abstraction |
-| 7 | **Mixed concerns** | General-purpose mechanism contains special-case logic, leaking usage context |
-| 8 | **Entangled implementations** | Understanding one function requires reading another |
-| 9 | **Redundant documentation** | Comments restate what is already obvious from adjacent code |
-| 10 | **Leaked implementation in docs** | API documentation describes internal details users do not need |
-| 11 | **Vague naming** | Name so broad it could mean many things |
-| 12 | **Naming difficulty** | Struggling to find a simple name suggests the entity has unclear purpose |
-| 13 | **Description difficulty** | Cannot write a brief clear description — the design itself may be flawed |
-| 14 | **Non-obvious behavior** | Meaning or behavior cannot be understood quickly; if anyone says it is unclear, it IS unclear |
-
-## 15 Design Principles
-
-Reformulated from Ousterhout's research, attributed here.
-
-1. **Complexity is incremental** — Sweat the small stuff. Dozens of small shortcuts accumulate into unmanageable systems.
-2. **Working code is not enough** — The goal is a great design that also works. Invest 10-20% of effort in design improvement.
-3. **Continuous investment** — Every change is an opportunity to improve structure, not just ship a feature.
-4. **Modules should be deep** — Powerful functionality behind simple interfaces. Depth is the measure of a good module.
-5. **Common case simplicity** — Interfaces should make the frequent case trivial and provide sensible defaults.
-6. **Simple interface over simple implementation** — Absorb complexity into implementation rather than pushing it onto callers.
-7. **General-purpose interfaces tend to be deeper** — Slightly general interfaces are often simpler and more reusable than narrowly specialized ones.
-8. **Separate general from special** — Special-purpose logic must not contaminate general-purpose mechanisms.
-9. **Different layers, different abstractions** — Adjacent layers with similar abstractions signal wrong decomposition.
-10. **Pull complexity downward** — Better for a module author to absorb difficulty than to push it to every caller.
-11. **Eliminate error conditions by design** — Redesign interfaces so errors cannot occur rather than handling them after the fact.
-12. **Design it twice** — Sketch at least two radically different approaches before implementing; compare trade-offs explicitly.
-13. **Document what is not obvious** — Comments should capture information that cannot be represented in code alone.
-14. **Optimize for reading, not writing** — Code is read far more often than written; clarity beats brevity.
-15. **Develop abstractions, not features** — Development should be driven by discovering and refining abstractions, not by feature checklists.
-
-## Deep vs Shallow
-
-Think of a module as a rectangle: width = interface complexity, height = functionality depth.
-
-```text
-  DEEP (ideal)          SHALLOW (anti-pattern)
-  ┌──────┐              ┌──────────────────────┐
-  │      │              │                      │
-  │      │              └──────────────────────┘
-  │      │
-  │      │              Wide interface, trivial body.
-  │      │              Cost of learning exceeds benefit.
-  └──────┘
-  Narrow interface,
-  rich functionality.
-```
-
-A deep module hides significant complexity behind a simple interface. A shallow module
-exposes nearly as much complexity as it contains — callers gain little from using it.
-
-## Together or Apart?
-
-### Combine When
-
-- Shared information — both components depend on the same knowledge
-- Always used together — callers never use one without the other
-- Conceptual overlap — they represent parts of a single higher-level idea
-- Hard to understand independently — reading one requires knowing the other
-- Combining simplifies the interface — fewer concepts exposed to callers
-- Combining eliminates duplication — shared logic consolidated
-
-### Separate When
-
-- Truly independent — no shared information, no usage correlation
-- General-purpose extractable from special-purpose — the general part has broader utility
-
-### Key Insight
-
-A long function or module is fine if it has a simple interface, independent internal blocks,
-and sequential logic. Splitting for length alone often creates entanglement between the pieces.
-
-## Four Error Elimination Strategies
-
-Based on Ousterhout's analysis, reformulated.
-
-| Strategy | Approach |
-|----------|----------|
-| **Eliminate by definition** | Redefine semantics so the error cannot occur (e.g., "ensure absent" always succeeds vs "delete or throw if missing") |
-| **Mask internally** | Lower-level module handles the error transparently, callers never see it |
-| **Aggregate handling** | Many error types handled by a single handler rather than individual handlers per type |
-| **Accept and crash** | For truly unrecoverable situations, crashing is better than complex recovery logic unlikely to work |
-
-Priority: eliminate > mask > aggregate > crash. Each step reduces complexity for callers.
-
-## Contrarian Positions
-
-These are where the skill adds the most value — challenging conventional wisdom that may
-not apply.
-
-1. **Against short functions as a goal** — Many tiny functions create shallow, entangled decompositions. Length is not the problem; complexity and entanglement are.
-2. **Against "self-documenting code"** — Code cannot express rationale, constraints, design decisions, or non-obvious semantics. Comments have a role.
-3. **Against test-first as methodology** — Focusing on test cases before design can orient development toward feature completion rather than abstraction discovery.
-4. **Against many small classes** — Class proliferation leads to interface explosion and boilerplate, spreading information across too many units.
-5. **Against defensive exception handling** — Redesign APIs to eliminate errors rather than wrapping everything in catch blocks.
-6. **Against getters/setters** — Mechanical accessors expose internals and violate information hiding without adding value.
-7. **Against design patterns as goals** — Patterns are tools, not targets. Applying them when not warranted adds accidental complexity.
-8. **Against implementation inheritance** — Creates tight parent-child coupling and enables information leakage between layers.
-
-## Quick Reference
-
-| Question | Approach |
-|----------|----------|
-| Is this abstraction right? | Check depth (narrow interface, rich functionality?) |
-| Should I split or merge? | Apply Together/Apart criteria |
-| Why is this hard to change? | Identify which manifestation: amplification, overload, or unknowns |
-| Why is naming hard? | Red flags #11-13 — unclear purpose or mixed concerns |
-| How to handle this error? | Four strategies: eliminate > mask > aggregate > crash |
-| Is this over-engineered? | Contrarian lens: patterns as goals? too many small units? |
-| Where to invest effort? | Complexity formula: focus on high cp * tp components |
-
-## Further Reading
-
-- John Ousterhout, *A Philosophy of Software Design* (2nd ed., 2021) — primary source for principles and red flags
-- John Ousterhout, Stanford CS 190 course materials
-- Fred Brooks, *The Mythical Man-Month* (1975) — complexity scaling in large systems
-- David Parnas, "On the Criteria To Be Used in Decomposing Systems into Modules" (1972) — information hiding
+# Design review
+
+You review a design for complexity, in the sense the book gives the word:
+what makes a system hard to understand and modify. The output is a ranked
+list of findings. Each names the part of the design and the flag or
+principle it rests on, with the chapter. Each names the change that would
+remove it, and what the change costs. Reply in the user's language. Think between steps. The
+book gives the criteria. Reading the design is the work.
+
+Do not guess the design. When a step needs a fact you do not have, ask the
+user before you continue. Examples: "What is the most common operation a
+caller performs?", "Who changes this module, and how often?", "Which of
+these two pieces can be used without the other?"
+
+Five files sit beside this file. Read each when its step says so.
+
+| File | What it holds |
+| --- | --- |
+| `references/complexity.md` | the book's definition, symptoms and causes, and what the definition is not |
+| `references/red-flags.md` | the fourteen red flags, with the book's wording and what to look for |
+| `references/principles.md` | the sixteen design principles, with the chapter for each |
+| `references/decisions.md` | the criteria for together or apart, errors, design it twice, comments and names |
+| `references/positions.md` | where the book takes a side, and what the other side says |
+| `references/sources.md` | where each of the others was read, and what was not read |
+
+## Step 1: fix the frame
+
+Read `references/complexity.md`. Establish four facts with the user, and
+write them down before any judgement.
+
+1. What is under review: a module, an API, a layer, an architecture, a
+   refactoring plan, or a naming decision.
+2. Who reads it and who changes it. A library with many callers and one
+   maintainer is reviewed from the caller's side.
+3. The most common operation, and how often the design changes. These
+   set the weights for Step 7.
+4. Which qualities the user has already ranked. This review weighs one
+   quality, complexity. A trade-off between measurable qualities is not
+   its subject, and Step 8 says where it goes.
+
+## Step 2: locate the complexity
+
+For each complaint the user brought, name the symptom and the cause, in
+the book's terms.
+
+- Symptom: change amplification, cognitive load, or unknown unknowns. The
+  book calls the third the worst.
+- Cause: a dependency, or obscurity. Name the dependency, or name the
+  information that is not obvious.
+
+A complaint that fits neither is not a complexity finding. Say so, and
+keep it aside for Step 8.
+
+## Step 3: measure depth
+
+For each module in the frame, compare its interface with what it hides.
+Read the deep and shallow section of `references/principles.md`.
+
+1. Write the interface in one line: what a caller must know.
+2. Write what the module does for that caller, in one line.
+3. A module whose first line is as long as its second is shallow. Ask for
+   the reason before filing it.
+4. Count the modules. Many small ones with interfaces that add up is the
+   book's classitis, and the finding is the count, not any one module.
+
+## Step 4: walk the red flags
+
+Read `references/red-flags.md`. Walk the fourteen against the design. For
+each that fires, quote the place in the design, name the flag with the
+book's name, and state the cause from Step 2. A flag is a symptom, and the
+book's own sentence says so. Where the user gives a reason the flag does
+not answer, record the reason and drop the finding.
+
+## Step 5: together or apart
+
+Where the design splits or merges two pieces, read the together-or-apart
+section of `references/decisions.md` and apply the criteria: shared
+information, use in both directions, one higher-level concept, a simpler
+interface, duplication removed, general kept apart from special. A long
+function is a question here, not a finding. The finding is a conjoined
+pair or a shallow interface, and Step 4 has its evidence.
+
+## Step 6: errors
+
+Where the design handles errors, read the errors section of
+`references/decisions.md`. For each error condition a caller must handle,
+ask in this order: can the semantics be redefined so it cannot occur; can a
+lower level mask it; can one handler take several. Name the over-defensive
+case when you see it. Crashing is the answer for what is not worth
+handling, and the review says so plainly when that is the answer.
+
+## Step 7: rank
+
+Rank the findings by weight: how often the part is touched, times how much
+it costs to touch. That is the book's formula, and the review uses it for
+nothing else. A complex part nobody opens ranks low. The book grades no
+finding above another except unknown unknowns. Where you rank one higher
+on your own judgement, say that it is yours.
+
+Then apply the book's last principle. Drop findings that do not matter to
+the frame from Step 1, and say how many you dropped.
+
+## Step 8: report, with the other side
+
+Write the findings in rank order. For each: the place, the flag or
+principle with its chapter, the change, and the cost of the change. Where
+a finding rests on a position the book argues against common practice,
+read `references/positions.md` and give the other side in one sentence,
+with the speaker named. The user weighs it; the review does not.
+
+Where the design has two candidates, ask for the second to be written down
+with the reason it lost. `references/decisions.md` gives the shape.
+
+Close with what the review did not cover:
+
+- A conflict between two qualities the user measures belongs to the `triz`
+  package of this marketplace, and this skill hands over only if that
+  package is installed.
+- Many symptoms with one unclear cause belong to the `toc-thinking`
+  package of this marketplace, on the same condition.
+- A finding of the kind "a reader cannot hold this in their head" belongs
+  to the `cognitive-load` package of this marketplace, which carries the
+  reader-side catalogue, on the same condition.
+- Weighing quality attributes against each other with stakeholders is the
+  Architecture Tradeoff Analysis Method's job, and a record of the
+  decision over time is a decision record's. This skill does neither.
+
+## Boundaries
+
+- The book's principles are directions with a named source. They are not
+  rules the design fails. When the user's knowledge of their system
+  contradicts a direction, the user's knowledge wins and the finding is
+  dropped with the reason recorded.
+- Nothing here is research. `references/sources.md` says what was read,
+  and the book calls itself an opinion piece.
+- The review reads the design the user gives it. It does not read a code
+  base on its own, run a linter, or measure anything.
+- A position the book argues against a common practice is reported with
+  the other side beside it, never as a finding on its own.

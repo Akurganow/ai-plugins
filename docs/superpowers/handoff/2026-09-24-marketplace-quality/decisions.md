@@ -110,3 +110,10 @@ components -> M9 extensions -> L1-L6.
 - M9: prose paragraphs leave `extensions`; howp keeps a machine-readable hosts array as the
   single source (L6); Codex namespace is the only vendor extension.
 - Reading order for the next session is in README.md of this folder.
+- Skills may be split: a plugin may hold several skills; at plan time each skill is assessed and
+  oversized/over-broad ones are split into several skills of the same plugin, names proposed to owner.
+- Codex: design for the documented behaviour (hooks via extensions["com.openai"]), never for the
+  upstream defect; the defect is recorded here only; CI's Codex hook assertion allowed-to-fail
+  with the issue link until upstream closes it.
+- Behavioural evals: deferred, not dropped. A human-filed issue (no police-report label) holds the
+  requirements and sources; the owner will look at cost next week; if cheap enough, considered.

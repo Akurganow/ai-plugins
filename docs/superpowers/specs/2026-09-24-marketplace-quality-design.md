@@ -120,7 +120,7 @@ it must change; nothing in this spec depends on it.
 
 ### 5.1 README template, one for all six (H2, L3)
 
-standard-readme order, English, sentences ≤ 26 words, no maintainer diary:
+standard-readme order, English, sentences ≤ 25 words, no maintainer diary:
 
 1. `# <name>` and the one-line description (identical to `plugin.json` — generated into
    the README between markers by the §4.1 mechanism, so it is one source).
@@ -199,7 +199,7 @@ what differs); **Plugins** (generated table: name, one line, link to package REA
 own headings, the explanations that are now inline: what conformance buys, per-client
 notes (Hermes depth-2 and `plugins/howp` suffix, Codex marketplace name, Oh-My-Pi
 providers), Windows and the symlink, the conformance check. The "Nothing below has been
-installed…" paragraph and every "not verified" sentence are removed. Sentences ≤ 26 words;
+installed…" paragraph and every "not verified" sentence are removed. Sentences ≤ 25 words;
 the result is checked with the `prose-discipline` skill before commit.
 
 ### 6.2 SECURITY.md (H1)

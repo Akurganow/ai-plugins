@@ -1,9 +1,8 @@
 # Marketplace quality rework — design spec
 
-Date 2026-09-24. Branch `claude/marketplace-plugin-quality-review-b5tbjh`. Status: **written,
-all decisions closed, awaiting the owner's review** (superpowers brainstorming,
-architectural path). After approval: `superpowers:writing-plans`, then execution on this
-branch.
+Date 2026-09-24. Branch `claude/marketplace-plugin-quality-review-b5tbjh`. Status: **approved by the owner on 2026-09-24**, section by section (superpowers
+brainstorming, architectural path). Next: `superpowers:writing-plans`, then execution on
+this branch.
 
 Evidence and reasons live in `../handoff/2026-09-24-marketplace-quality/` (decisions,
 review, research). This file says what will be built. No decision is left open; §8 lists
@@ -267,6 +266,8 @@ cosign signature. Spikes before writing it (§9). No evals, no model calls anywh
    verified, before merge.
 
 ## 9. Spikes (run first, in the local session)
+
+Where a spike needs a clean run, run it in a fresh environment that matches what CI can reach: no authentication, no paid calls. The owner's own installs of the four clients, with the packages already installed and authorised, serve every spike that does not need a clean run. CI asserts the clean behaviour: without authentication wherever a client allows it, and without cost.
 
 1. Claude Code: install the package with `--plugin-dir`, confirm SessionStart stdout appears
    in context and survives `/compact`; confirm SubagentStart delivery.

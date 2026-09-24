@@ -26,9 +26,11 @@ assistant in a **local** session on the owner's machine.
 
 ## Process state (superpowers)
 
-- Path: architectural. Stage reached: **spec written with every decision closed (spec §8),
-  not yet reviewed by the owner.** No question is open; do not re-ask any of them.
-- Next: owner reviews the spec → `superpowers:writing-plans` → execute on this branch.
+- Path: architectural. Stage reached: **spec approved by the owner on 2026-09-24, section by
+  section.** Changes made at review: skill names `audit` (cognitive-load) and `standard`
+  (prose-discipline) replace `load` and `prose`; sentence limit 25 words; spikes run in a
+  clean environment where a clean run is needed (spec §9). No question is open.
+- Next: `superpowers:writing-plans` → spikes (spec §9) → execute on this branch.
 - The owner answers questions through a proper choice prompt (AskUserQuestion), one
   question per message, each with the context it needs to be understood by someone who
   does not see the assistant's context. Options equally weighted; no strawmen; no

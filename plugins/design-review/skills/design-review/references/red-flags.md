@@ -2,14 +2,18 @@
 
 The book's "Summary of Red Flags" lists fourteen, unnumbered, in the order
 below. Each entry gives the book's name and its one-line definition
-verbatim, the chapter where it is argued, and what to look for in a review.
-The last part is this skill's own. The page numbers in the book's list are
-the second edition's. `sources.md` names the copies read.
+verbatim, the chapter where it is argued, and what to look for in a
+review. The last part is this skill's own. The page numbers in the
+book's list are the second edition's. A section number below is the
+second edition's, and "1e" or "2e" after a quotation names the edition
+whose wording is quoted. `sources.md` names the copies read.
 
-The book introduces the list with one sentence: "The presence of any of
-these symptoms in a system suggests that there is a problem with the
-system's design." A flag is a symptom, and a symptom can have a reason. Ask
-for the reason before filing the finding.
+The book introduces the list with two sentences: "Here are a few of of
+the most important red flags discussed in this book. The presence of any
+of these symptoms in a system suggests that there is a problem with the
+system's design." The list is the book's selection, and the chapters name
+others. A flag is a symptom, and a symptom can have a reason. Ask for the
+reason before filing the finding.
 
 ## Shallow Module
 
@@ -87,8 +91,8 @@ Look for: reading one function and having to open another to follow it.
 Ousterhout's test, from the discussion with Martin: "If you've ever found
 yourself flipping back and forth between the implementations of two
 methods as you read code, that's a red flag that the methods might be
-entangled." The book's rule: "It should be possible to understand each
-method independently" (§9.7, 1e).
+entangled" (`aposd-vs-clean-code`, Method Length). The book's rule: "It
+should be possible to understand each method independently" (§9.7, 1e).
 
 ## Comment Repeats Code
 
@@ -133,7 +137,7 @@ be long." Chapter 15, §15.3.
 
 Look for: an interface comment that needs three paragraphs. The book: "If
 a method or variable requires a long comment, it is a red flag that you
-don't have a good abstraction" (§15.3, 2e).
+don't have a good abstraction" (§15.3, 1e).
 
 ## Nonobvious Code
 

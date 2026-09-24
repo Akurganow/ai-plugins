@@ -1,11 +1,12 @@
 # The catalogue of extraneous load in code
 
 The sections of Artem Zakirullin's "Cognitive load is what matters", a
-practitioner's essay published under the Creative Commons Attribution 4.0
-licence, in the essay's own order and wording. `sources.md` names the
-copy and its commit. Each entry gives the essay's point, a short
-quotation, and what to look for in the user's system. The last part is
-this skill's own.
+practitioner's essay, in the essay's own order and wording. Copyright
+(c) 2023 Artem Zakirullin, Creative Commons Attribution 4.0 International,
+<https://creativecommons.org/licenses/by/4.0/>. The quotations are
+unchanged. `sources.md` names the copy and its commit. Each entry gives
+the essay's point, a short quotation, and what to look for in the user's
+system. The last part is this skill's own.
 
 The essay defines its subject as "how much a developer needs to think in
 order to complete a task", and its model as "🧠: fresh working memory,
@@ -50,9 +51,13 @@ powerful functionality yet have a simple interface." Its own sentence:
 project. Not only do we have to keep in mind each module's
 responsibilities, but also all their interactions."
 
+In this skill's terms: a deep module keeps the task's elements behind its
+interface. A shallow one hands them to every caller as extraneous elements
+to hold.
+
 Look for: modules whose names and interfaces take longer to learn than
 their bodies take to read. The `design-review` package of this
-marketplace, when installed, measures depth for each module. This skill
+marketplace, when installed, judges depth for each module. This skill
 counts what the reader must hold.
 
 ## Responsible for one thing
@@ -77,12 +82,11 @@ Look for: a change that crosses a network boundary it did not need to.
 
 ## Feature-rich languages
 
-The essay is about languages, not APIs: "You not only have to understand
-this complicated program, you have to understand why a programmer decided
-this was the way to approach a problem from the features that are
-available." Its rule: "Reduce cognitive load by limiting the number of
-choices." And: "Language features are OK, as long as they are orthogonal
-to each other."
+The essay quotes Rob Pike: "You not only have to understand this
+complicated program, you have to understand why a programmer decided this
+was the way to approach a problem from the features that are available."
+Its rule: "Reduce cognitive load by limiting the number of choices." And:
+"Language features are OK, as long as they are orthogonal to each other."
 
 Look for: a construct the reader must look up, where a plainer one would
 have served.
@@ -164,12 +168,3 @@ The essay's test for an architecture, in place of how it feels:
 The essay attaches no threshold to any of the three. Neither does this
 skill. And: "Involve junior developers in architecture reviews, they will
 help you to identify the mentally demanding areas."
-
-## What is not in the essay
-
-A reader who met this catalogue through another summary may expect items
-the essay does not carry: a list of cognitive biases, a count of boolean
-operators, a nesting depth, an hours-to-find-a-bug threshold, a
-files-per-change threshold, a weeks-to-first-contribution threshold, or
-"feature-rich APIs". None of those is in the essay, and this skill does
-not state them.

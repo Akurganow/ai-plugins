@@ -5,7 +5,9 @@ items, with the chapter that argues each. The page numbers are the book's
 own. The first edition lists fifteen: items 1 to 15 below, with item 11
 worded "Define errors (and special cases) out of existence". Item 16
 belongs to chapter 21, which the second edition added. `sources.md` names
-the copies read and how they were compared.
+the copies read and how they were compared. A section number below is the
+second edition's, and "1e" or "2e" after a quotation names the edition
+whose wording is quoted.
 
 The book calls these "the most important software design principles
 discussed in this book" and nothing more. A principle is a direction the
@@ -64,16 +66,24 @@ The counterweight is Google's reviewer guide, which asks reviewers to be
 "especially vigilant about over-engineering" and adds: "Encourage
 developers to solve the problem they know needs to be solved now, not the
 problem that the developer speculates might need to be solved in the
-future." This skill reads principle 7 as
-bounded by that line: general in interface, not speculative in features.
+future." This skill reads principle 7 as bounded by that line: general in
+interface, not speculative in features. That reading is the skill's own.
 
 ## Pull complexity downward
 
 Chapter 8's opening: "Most modules have more users than developers, so it
 is better for the developers to suffer than the users" and "it is more
 important for a module to have a simple interface than a simple
-implementation" (§8, 2e). Principles 6 and 10 are the same idea seen from
-the interface and from the implementation.
+implementation" (§8, 2e). The same opening names the cost of the easy way
+out: "if a class throws an exception, every caller of the class will have
+to deal with it" (§8, 1e). Principles 6 and 10 are, in this skill's
+reading, the same idea seen from the interface and from the
+implementation.
+
+The book's own example is configuration: "Configuration parameters are an
+example of moving complexity upwards instead of down" (§8.2, 1e). Its test
+before adding one: "will users (or higher-level modules) be able to
+determine a better value than we can determine here?" (§8.2, 1e).
 
 ## Abstractions, not features
 

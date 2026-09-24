@@ -2,8 +2,9 @@
 
 Four decisions the book argues, with its criteria, for the steps of the
 procedure that make them. Quotations marked with a section number are
-from *A Philosophy of Software Design*; `sources.md` says which edition
-each was read in.
+from *A Philosophy of Software Design*. A section number is the second
+edition's. "1e" or "2e" after it names the edition whose wording is
+quoted, and `sources.md` names the copy each was read in.
 
 ## Together or apart
 
@@ -18,6 +19,8 @@ Chapter 9 opens with signs that two pieces of code are related (§9, 1e):
   the two stay separate.
 - "They overlap conceptually, in that there is a simple higher-level
   category that includes both of the pieces of code."
+- "It is hard to understand one of the pieces of code without looking at
+  the other."
 
 The chapter's four sections are the criteria: "Bring together if
 information is shared" (§9.1), "Bring together if it will simplify the
@@ -51,17 +54,20 @@ The test for a split that went too far is the Conjoined Methods flag
 ## Errors
 
 Chapter 10 gives three techniques for reducing the places where an
-exception must be handled, and one honest answer for the rest.
+exception must be handled, and one answer for the rest.
 
 1. **Define errors out of existence.** "The best way to eliminate
    exception handling complexity is to define your APIs so that there are
    no exceptions to handle: define errors out of existence" (§10.3, 1e).
    The book's example is Tcl's `unset`: rather than deleting a variable
    and failing when it is absent, "unset should ensure that a variable no
-   longer exists". The same move applies to other special cases: "special
-   cases should be eliminated wherever possible. The best way to do this
-   is by designing the normal case in a way that automatically handles the
-   special cases without any extra code" (§10, 1e).
+   longer exists". The same move applies to other special cases, which
+   the second edition treats in chapter 6: "Special cases can result in
+   code that is riddled with if statements, which make the code hard to
+   understand and are prone to bugs. Thus, special cases should be
+   eliminated wherever possible. The best way to do this is by designing
+   the normal case in a way that automatically handles the edge conditions
+   without any extra code" (§6.8, 2e).
 2. **Mask exceptions.** "An exceptional condition is detected and handled
    at a low level in the system, so that higher levels of software need
    not be aware of the condition" (§10.6, 1e). The book's example is TCP
@@ -98,8 +104,8 @@ important consideration for an interface is ease of use for higher level
 software" (§11, 2e).
 
 A review can ask for the second design to be written down. Nygard's
-decision-record template has four sections: Title, Status, Context ("What
-is the issue that we're seeing that is motivating this decision or
+decision-record template has a title and four sections: Status, Context
+("What is the issue that we're seeing that is motivating this decision or
 change?"), Decision, Consequences ("What becomes easier or more difficult
 to do because of this change?"). `sources.md` says where the template was
 read. The review does not require the format. It asks that the alternative
@@ -134,7 +140,7 @@ heading.
 
 Chapter 16 gives the standing rule for any change: "if you invest a little
 extra time to refactor and improve the system design, you'll end up with
-a cleaner system" (§16, 1e). A finding names the change that would do
+a cleaner system" (§16.1, 1e). A finding names the change that would do
 that, the flag or principle it rests on, and the part's weight in the
 formula. Chapter 21's rule decides how many findings to report: separate
 what matters from what does not (`principles.md`, item 16).

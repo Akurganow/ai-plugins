@@ -3,7 +3,8 @@
 Two published ways to put a number on a unit of code, and the studies of
 programmers that were read. `sources.md` names each copy and says which
 were read whole, which as abstracts, and which not at all. Nothing here
-was measured by this skill.
+was measured by this skill. Every number below is a tool's default or an
+author's recommendation, and is named as such.
 
 ## Cognitive Complexity
 
@@ -18,11 +19,13 @@ copy. Its three rules:
 > 2. Increment (add one) for each break in the linear flow of the code
 > 3. Increment when flow-breaking structures are nested
 
-The paper's Appendix B lists the increments: `if`, `else if`, `else`, the
-ternary operator, `switch`, loops, `catch`, labelled jumps, "sequences of
-binary logical operators", and each method in a recursion cycle; and a
-nesting increment for each level a flow-breaking structure sits inside
-another. "Thus, Cognitive Complexity does not increment for methods."
+The paper's Appendix B lists the increments. There is one for `if`,
+`else if`, `else`, the ternary operator, `switch`, loops, `catch`,
+labelled jumps, "sequences of binary logical operators", and each method
+in a recursion cycle. There is a nesting increment for each level a
+flow-breaking structure sits inside another. Extracting code into a
+method adds nothing, because the paper treats a method call as shorthand:
+"Thus, Cognitive Complexity does not increment for methods."
 
 PMD's rule description restates it independently: "Code that contains a
 break in the control flow is more complex, whereas the use of language
@@ -34,9 +37,10 @@ rule text for the metric claims nothing about validation: "Cognitive
 Complexity is a measure of how hard the control flow of a method is to
 understand."
 
-Two implementations read here default to a threshold of 15 per function:
-PMD's rule, and SonarSource's ESLint plugin. The number is a default,
-not a finding.
+Two implementations read here carry 15 per function as their default.
+PMD "reports methods with a complexity of 15 or more". SonarSource's
+ESLint plugin says "The maximum authorized complexity can be provided.
+Default is 15." The number is a default, not a finding.
 
 Validation: Muñoz Barón, Wyrich and Wagner, "An Empirical Validation of
 Cognitive Complexity as a Measure of Source Code Understandability", ESEM
@@ -45,7 +49,8 @@ understandability evaluations of 427 code snippets ... Cognitive
 Complexity positively correlates with comprehension time and subjective
 ratings of understandability. The metric showed mixed results for the
 correlation with the correctness of comprehension tasks and with
-physiological measures." The paper was not opened.
+physiological measures." Its replication package describes the work as a
+meta-analysis over data from earlier studies. The paper was not opened.
 
 Use: a per-function count the user can run with a linter, for the
 "complex conditionals" and "nested ifs" entries of `patterns.md`. It
@@ -61,22 +66,27 @@ called Cognitive-Driven Development (CDD) that is based on cognitive
 complexity measurements and Cognitive Load Theory. This strategy can
 reduce the cognitive overload of the developers through the limitation of
 intrinsic complexity points from source code." Its grounding, in its
-words: "Experimental studies performed by Miller have suggested that
-humans are generally able to hold only seven plus or minus two units of
-information in short-term memory."
+words: "Experimental studies performed by Miller ... have suggested
+that humans are generally able to hold only seven plus or minus two units
+of information in short-term memory."
 
 Its table of points per element: `if`-`else` 2, `case` 1,
 `try`-`catch`-`finally` 3, contextual coupling 1, a function passed as an
 argument 1, crosscutting infrastructure 0. "Elements depicted here are not
 limited, developers are free to include additional elements that they
-consider interesting." Its limit: "five plus or minus two points, where
+consider interesting." Its limits: "five plus or minus two points, where
 seven would be the limit" for web applications and mixed teams, and "ten
 and twelve points for each implementation unit" for frameworks and
-libraries. The paper says "Experimental studies are currently being
+libraries. It offers them as "recommendations based on the experiences
+aforementioned". The paper says "Experimental studies are currently being
 conducted to evaluate the CDD." The later papers were not opened.
 
-Use: a budget per class the user sets and counts by hand. The budget is
-the team's choice, and the paper says so.
+Use: a budget per implementation unit, a class in the paper's example,
+counted by hand. Two cautions. The paper's "intrinsic" is not cognitive
+load theory's: it counts branches and coupling, which this skill's Step 3
+would often sort as extraneous. And its grounding treats Miller's span of
+chunks as a budget of weighted syntax points, which neither Miller nor
+Cowan measured.
 
 ## Studies of programmers
 
@@ -90,8 +100,12 @@ Read as abstracts from public mirrors, unless said otherwise.
   comprehension, fMRI allowed us to gain insights into why some code
   properties are difficult to process. In particular, a code's textual
   size drives programmers' attention, and vocabulary size burdens
-  programmers' working memory." The authors' replication package was also
-  read; the scan data are not public.
+  programmers' working memory." The authors conclude: "Our results
+  provide neuro-scientific evidence supporting warnings of prior research
+  questioning the validity of code complexity metrics." The
+  working-memory reading rests on brain activation in nineteen people,
+  not on a behavioural measure of memory. The authors' replication
+  package was also read. The scan data are not public.
 - **Hansen, Goldstone and Lumsdaine, "What Makes Code Hard to
   Understand?", 2013.** "We present an experiment in which participants
   with programming experience predict the exact output of ten small Python
@@ -113,17 +127,22 @@ Read as abstracts from public mirrors, unless said otherwise.
   conducted a systematic mapping study of 95 source code comprehension
   experiments published between 1979 and 2019." A map of study designs.
 - **Fakhoury, Ma, Arnaoudova and Adesope, "The Effect of Poor Source Code
-  Lexicon and Readability on Developers' Cognitive Load", ICPC 2018.**
-  Only the replication package's README and a truncated abstract were
-  read. The often-quoted result, that poor naming raised measured load
-  where structural changes did not, was not verified and is not stated
-  here.
+  Lexicon on Developers' Cognitive Load", ICPC 2018.** The title is as
+  the replication package gives it. Only that package's README and a
+  truncated abstract were read. The README gives the design: a control
+  group and three treatments, "LA, Structural, LA & Structural", fifteen
+  participants, and twenty-five in the journal extension. Its result was
+  not read and is not stated here.
 
 None of these measures intrinsic, extraneous or germane load as such.
-They measure time, correctness, ratings and physiological signals. What
-they support, as read: vocabulary and textual size cost working memory;
-notation changes that look small are not; a metric of control flow
-explains part of comprehension and not the rest.
+They measure time, correctness, ratings and physiological signals.
+
+What they support, as read. In one fMRI study, vocabulary size went with
+working-memory load and textual size with attention. Small notational
+changes can change correctness and response time, and experience can hurt
+when code violates the reader's expectations. A control-flow metric
+correlates with comprehension time and rated understandability, with
+mixed results for correctness.
 
 ## A size that reviewers use
 

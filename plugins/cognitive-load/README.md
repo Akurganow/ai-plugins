@@ -1,12 +1,15 @@
 # cognitive-load
 
-What a reader must hold in working memory to do a task in a code base, a
-system or a process. One skill that sorts it into the load the task needs
+A diagnosis, for an engineer whose code base, system or process has
+become hard to read, of what a reader must keep in mind at the same time
+to do a task there. One skill that sorts it into the load the task needs
 and the load the structure adds, and names the change that removes the
-second. It rests on cognitive load theory as published and on a
-practitioner's catalogue of extraneous load in code.
+second. It draws its terms from cognitive load theory, read mostly as
+abstracts and applied to code by analogy, and from a practitioner's
+catalogue of extraneous load in code.
 
-Part of the [`ai-plugins` marketplace](../../README.md).
+Part of the [`ai-plugins` marketplace](../../README.md). Installing: the
+per-client sections of the [root README](../../README.md#installing).
 
 ## What it does
 
@@ -16,14 +19,14 @@ against both. Then it works in this order.
 | Step | Question | Source of the vocabulary |
 | --- | --- | --- |
 | Observe | Where was the confusion, how long, how many things open? | the essay's three long-run questions and its measure of newcomer confusion |
-| Count and sort | Which elements must be held at once, and does the task or the structure require each? | element interactivity; intrinsic and extraneous load |
-| Catalogue | Which of the essay's sections explains the added elements? | the twelve sections of "Cognitive load is what matters" |
-| Measure | Which published count fits, and what does it miss? | Cognitive Complexity; Intrinsic Complexity Points |
-| Recommend | Which change removes the added element, and what does it cost? | the catalogue's moves; the theory's effects, as analogies |
-| Verify | Did a newcomer do the task with less confusion? | the essay's measure again |
+| Count and sort | Which elements must be held at once, and does the task or the structure require each? | element interactivity, intrinsic and extraneous load |
+| Catalogue | Which of the essay's sections explains the added elements? | the thirteen sections of "Cognitive load is what matters" |
+| Measure | Which published count fits, and what does it miss? | Cognitive Complexity, Intrinsic Complexity Points |
+| Recommend | Which change removes the added element, and what does it cost? | the catalogue's moves, and the theory's effects as analogies |
+| Verify | Did a newcomer do the task with less confusion? | the essay's measure again, with time and correctness beside it |
 
 The agent asks for facts it does not have instead of guessing the system,
-and states no threshold that no source states.
+and states no threshold of its own.
 
 ## What ships here
 
@@ -48,11 +51,10 @@ The essay is Artem Zakirullin's "Cognitive load is what matters", under
 the Creative Commons Attribution 4.0 licence, read whole at the commit
 `sources.md` names. The theory was read mostly as abstracts: the
 publishers' sites were not reachable, and `sources.md` says for each paper
-whether its abstract, its full text or nothing was opened. Two things the
-references say that a reader may not expect: the three kinds of load are
-not from Sweller's 1988 paper, and the theory's own authors have since
-folded the third kind into the first. The references carry those
-corrections with their sources.
+whether its abstract, its full text or nothing was opened. The references
+say where each kind of load is attributed, that Sweller's 1988 abstract
+names none of the three, and that the theory's authors now define germane
+load in terms of intrinsic load.
 
 **Nothing here has been installed from this repository as published.** The
 references have been checked against the sources they cite. No client has

@@ -156,5 +156,14 @@ with the client listing facts beside them.
 - F7 accepted: spec §4.1 (`tools/regenerate.sh`, CI runs it then `git diff --exit-code`),
   §5.2, §7.3, and `conformance.md` "Text only".
 - F8 declined: the owner weighed it and kept the allowed-to-fail job as specified.
-- F1–F4: pending the clean-room web research (Claude Code hooks keys; skill naming in
-  Oh-My-Pi, Codex, Hermes; Hermes `skills.auto_load`).
+- F1 accepted, rules file stays the source: the skill body gets a generated region
+  (spec §5.5). Research: `research/08-hermes-auto-load.md`.
+- F2 resolved by defining the problem away: one shell-form `hooks.json`, no Codex key, a
+  CI-checked size bound on the rules file; SubagentStart output corrected to JSON
+  (spec §5.5). Research: `research/09-claude-codex-hooks.md`.
+- F3 accepted: the naming rule adds "distinctive without the plugin prefix"; `review`,
+  `audit`, `standard` became `red-flags`, `extraneous`, `house-style` (spec §5.4, §8).
+  Research: `research/07-skill-names.md`.
+- F4 resolved by generation: the Hermes qualified name is a function of `plugin.json`'s
+  `name`, computed by `tools/regenerate.sh` into the README (spec §5.5).
+- Windows symlink (§4.2, recorded-reason flag): preliminary research pending.

@@ -11,7 +11,10 @@ the ones the owner closed last.
 **Mandatory cleanup.** `docs/superpowers/` in its entirety (this spec, the handoff folder,
 any plan written later) is temporary. It is deleted once the work is done **and verified**
 (acceptance in §10 met, CI green, the owner has confirmed), before the pull request merges.
-The history stays in git and in the pull request.
+Before the deletion, what outlives this task moves into `docs/` as finished documents:
+how each client loads a package and what was measured there (the facts behind §5.5 and
+§9), and the decisions with their reasons. Task state (process, handoff, plan) does not
+move. The history stays in git and in the pull request.
 
 ## 1. Purpose and success
 
@@ -116,8 +119,8 @@ those sources is a finding of a new kind, `external-disagreement`, filed like th
 - **One entry point regenerates every copy.** `tools/regenerate.sh` runs, in order, every
   generator this spec names: the catalogue and the README table (jq), the description and
   Install regions of the package READMEs (§5.1), the package LICENSEs (§5.2, `cp` from the
-  root), the TOCs (§5.4, `doctoc`), and the rules region of the prose-discipline skill
-  (§5.5). It calls ready-made tools and contains no logic of its own beyond their order.
+  root), the TOCs (§5.4, `doctoc`), the rules region of the prose-discipline skill and the
+  Hermes `skills.auto_load` snippet in its README (§5.5). It calls ready-made tools and contains no logic of its own beyond their order.
   `CONTRIBUTING.md` documents that one command. CI runs the same command and then
   `git diff --exit-code`; the step's failure message names the command to run. No other
   step compares a generated file. `.agents/rules/conformance.md` "Text only" names the
@@ -178,24 +181,36 @@ entry point (§4.1) and proven equal by CI the same way as every other copy.
 - All six descriptions in imperative voice, key use case first, "Use when …" with the
   trigger words users say; ≤ 1024 characters. `license: MIT` in all six front matters.
 - A plugin may carry several skills (Agent Plugins §6.1: every immediate child of `skills/` with a `SKILL.md`). At plan time every skill is assessed for size and breadth; a skill that is too long, too wordy or takes on too much is split into several skills of the same plugin (candidates: howp install vs forecast vs interview; triz matrix route vs ARIZ; toc-thinking per tree). Splits are proposed to the owner with the names below.
-- Skill directories renamed, one word each, never repeating the plugin name:
-  `howp/skills/forecast`, `triz/skills/contradiction`, `design-review/skills/review`,
-  `toc-thinking/skills/root-cause`, `cognitive-load/skills/audit`,
-  `prose-discipline/skills/standard`. A skill split off at plan time gets a one-word name
-  by the same rule. Every link in READMEs and the root README follows.
+- Skill directories renamed. The rule: a name is distinctive without the plugin prefix,
+  because Oh-My-Pi shows the bare skill name, dedupes on it across every source and drops
+  the later duplicate with a `name collision` warning (`docs/skills.md` line 98 and
+  `claude-plugins.ts` 249–253 at `ba56afb`, research `research/07-skill-names.md`), and
+  it never repeats the plugin name. One word, or one compound like `root-cause`:
+  `howp/skills/forecast`, `triz/skills/contradiction`, `design-review/skills/red-flags`,
+  `toc-thinking/skills/root-cause`, `cognitive-load/skills/extraneous`,
+  `prose-discipline/skills/house-style`. A skill split off at plan time is named by the
+  same rule. Every link in READMEs and the root README follows.
 
 ### 5.5 prose-discipline: every documented always-on route per harness (M8)
 
 Single source of the core rules: `plugins/prose-discipline/rules/prose-discipline.md`
-(3,385 characters today). All other carriers either
-read it at run time or are generated from it on CI.
+(3,385 characters today). Every other carrier either reads it at run time (the hook, the
+Oh-My-Pi rule loader) or is generated from it by `tools/regenerate.sh` (§4.1): the body of
+`skills/house-style/SKILL.md` carries the rules between markers, front matter stripped,
+because Hermes loads nothing else from the package (its portable loader reads only
+`plugin.json`, `skills/` and `mcp.json`; `agent_plugins.py` at `749220ef`, research
+`research/08-hermes-auto-load.md`). In Claude Code and Oh-My-Pi the rules then sit in
+context twice when the skill is invoked; that cost was weighed and accepted. The rules
+file stays under 8,000 characters, and CI checks the bound: it keeps the injected text
+under Codex's default 2,500-token spill threshold (`learn.chatgpt.com/docs/hooks.md`
+536–553), so no client-specific size key is needed anywhere.
 
 | Harness | Documented route (research `06-*`) | What ships |
 | :-- | :-- | :-- |
-| **Claude Code** | `hooks/hooks.json` `SessionStart` (no matcher; plain stdout is added as context; re-injected after `compact`, `clear`, resume); `SubagentStart` with `additionalContext`; `Stop`/`SubagentStop` may return `{"decision":"block","reason":…}`; `PreToolUse` on writes may deny. Plugin `rules/`, `CLAUDE.md` are not loaded. | `hooks/hooks.json` with `SessionStart` and `SubagentStart` entries in exec form (`command` + `args`, `${CLAUDE_PLUGIN_ROOT}`), running `hooks/print-rules.sh`, which is `sed` over the rules file (front matter stripped) — **no `node`**. Text starts with a heading, never `{`. **No enforcement hook and no per-turn reminder** (owner: a blocking gate is harmful, and repeating what was already said is noise). The package recommends insistently, once per context: at session start and at subagent start, re-injected only where Claude Code has dropped it (compaction, clear, resume). |
-| **Codex** | Hooks are declared in the root manifest under `extensions["com.openai"].hooks` (Claude-compatible `hooks.json`; SessionStart stdout becomes developer-role context; `additionalContextLimit: 0` avoids truncation); hooks run after the user's one-time trust. Skills are listed in every session with "must use that skill" wording when a task matches. | `extensions["com.openai"].hooks: "./hooks/hooks.json"` in `plugin.json`, the same `hooks.json` as for Claude Code, with `additionalContextLimit: 0` on the SessionStart entry. The package README describes this documented route. **Design targets the documented behaviour, not today's defect** (owner): Codex currently drops every hook of a package with an Agent Plugins root manifest (`loader.rs` 950–952; upstream issues #39895, #47925); that fact stays in the handoff, not in the package. The Codex job of the integration matrix asserts the hook and is marked allowed-to-fail with the issue link until upstream closes it. |
+| **Claude Code** | `hooks/hooks.json` `SessionStart` (no matcher; plain stdout is added as context; re-injected after `compact`, `clear`, resume); `SubagentStart` with `additionalContext`; `Stop`/`SubagentStop` may return `{"decision":"block","reason":…}`; `PreToolUse` on writes may deny. Plugin `rules/`, `CLAUDE.md` are not loaded. | `hooks/hooks.json` with `SessionStart` (matcher `startup|resume|clear|compact|fork`) and `SubagentStart` entries in **shell form**, `"sh \"${CLAUDE_PLUGIN_ROOT}/hooks/print-rules.sh\""` with the placeholder quoted (exec form with `args` is Claude Code only, `hooks.md` 458–472; Codex ignores an unknown handler key, so `args` there would leave `sh` with no script). `print-rules.sh` is `sed` and `awk` over the rules file, front matter stripped — **no `node`**. For SessionStart it prints plain text starting with a heading, never `{` (plain stdout is context for that event, `hooks.md` 810). For SubagentStart, invoked with `--json`, it prints `{"hookSpecificOutput":{"hookEventName":"SubagentStart","additionalContext":…}}` with the text JSON-escaped in `awk`, because plain stdout is not documented to reach a subagent and `additionalContext` is (`hooks.md` 2382–2395); Claude Code injects it once per subagent context and again only after compaction dropped it. **No enforcement hook and no per-turn reminder** (owner: a blocking gate is harmful, and repeating what was already said is noise). The package recommends insistently, once per context: at session start and at subagent start, re-injected only where Claude Code has dropped it (compaction, clear, resume). |
+| **Codex** | Hooks are declared in the root manifest under `extensions["com.openai"].hooks` (Claude-compatible `hooks.json`; SessionStart stdout becomes developer-role context; `additionalContextLimit: 0` avoids truncation); hooks run after the user's one-time trust. Skills are listed in every session with "must use that skill" wording when a task matches. | `extensions["com.openai"].hooks: "./hooks/hooks.json"` in `plugin.json` (documented at `developers.openai.com/plugins/build/plugins.md` 766–769), the same `hooks.json` as for Claude Code, with **no Codex-specific key**: the rules stay under the 2,500-token spill threshold (see the size bound above), so `additionalContextLimit` is not written and Claude Code sees no unknown key. Codex sets `CLAUDE_PLUGIN_ROOT` for compatibility (`hooks.md` 392–397). The package README describes this documented route. **Design targets the documented behaviour, not today's defect** (owner): Codex currently drops every hook of a package with an Agent Plugins root manifest (`loader.rs` 950–952; upstream issues #39895, #47925); that fact stays in the handoff, not in the package. The Codex job of the integration matrix asserts the hook and is marked allowed-to-fail with the issue link until upstream closes it. |
 | **Oh-My-Pi** | The `claude-plugins` provider loads `<root>/rules/*.md` from marketplace installs even for standard roots; `alwaysApply: true` puts the full body into the system prompt on every request, subagents included. A second rule file with `condition:` (TTSR) interrupts the model on a regex match. Claude-style hooks are not read. | `rules/prose-discipline.md` stays (distinctive name kept: `prose-discipline`). No TTSR rule files: a TTSR `condition` interrupts the model and forces a retry, which is the same gate the owner rejected for Claude Code. |
-| **Hermes** | Portable subset loads `plugin.json`, `skills/`, `mcp.json` only; `hooks/`, `rules/` ignored; portable skills are not listed in the system prompt. The documented user-side route is `skills.auto_load` in the Hermes config (`cli.md` 297–310): the named skill is pinned in full into the stable tier of the system prompt with Hermes's own "treat its instructions as active guidance" wrapper. Native Python plugins can register a system-prompt section, but that is code in the tree. | **No Python, no native plugin** (owner). The package README's Hermes section and the first lines of `skills/standard/SKILL.md` say: in Hermes, add this skill to `skills.auto_load` so the standard is active in every session, with the exact config key. Because the skill body is what Hermes loads, Hermes itself surfaces the recommendation the first time the skill is used. Whether `skills.auto_load` accepts a plugin skill's qualified name (`agent-plugin-<slug>-<hash>:<skill>`) is from source only; spike 4 in §9 verifies it and the README states the working form. |
+| **Hermes** | Portable subset loads `plugin.json`, `skills/`, `mcp.json` only; `hooks/`, `rules/` ignored; portable skills are not listed in the system prompt. The documented user-side route is `skills.auto_load` in the Hermes config (`cli.md` 297–310): the named skill is pinned in full into the stable tier of the system prompt with Hermes's own "treat its instructions as active guidance" wrapper. Native Python plugins can register a system-prompt section, but that is code in the tree. | **No Python, no native plugin** (owner). The package README's Hermes section and the first lines of `skills/house-style/SKILL.md` say: in Hermes, add this skill to `skills.auto_load` so the standard is active in every session, and show the exact `config.yaml` lines. `skills.auto_load` resolves a plugin skill by its qualified name through the same `skill_view` lookup as a manual load (`agent/skill_commands.py` 165–192 and `tools/skills_tool.py` 573–590 at `749220ef`; from source, the documentation says only "each entry is a skill name"). The namespace is `agent-plugin-<slug>-<sha256(key)[:8]>` where, for `hermes plugins install`, `key` is exactly `plugin.json`'s `name` (`plugins_manifest.py` 455–467), so the qualified name is a function of the manifest: `tools/regenerate.sh` computes it with `shasum -a 256` and writes the snippet into the README between markers; nothing is copied from a Hermes session. No CLI command prints that name and plugin skills are absent from the `<available_skills>` index (documented, `developer-guide/plugins/index.md` 845); spike 4 in §9 confirms the auto-load at run time. |
 
 Manifest: `plugin.json` `extensions["io.github.akurganow.ai-plugins"].components` is
 deleted (no client reads it); the Codex namespace above is the only vendor extension.
@@ -269,8 +284,8 @@ cosign signature. Spikes before writing it (§9). No evals, no model calls anywh
 
 ## 8. Decisions the owner closed last (no open questions remain)
 
-1. Skill names: one word each — `forecast`, `contradiction`, `review`, `root-cause`,
-   `audit`, `standard` (§5.4).
+1. Skill names, distinctive without the plugin prefix: `forecast`, `contradiction`,
+   `red-flags`, `root-cause`, `extraneous`, `house-style` (§5.4).
 2. Claude Code: no blocking hook, no per-turn reminder; SessionStart and SubagentStart
    injection only (§5.5). A gate is harmful; the package recommends, insistently, once.
 3. Oh-My-Pi: no TTSR rule files (§5.5).
@@ -291,8 +306,8 @@ Where a spike needs a clean run, run it in a fresh environment that matches what
 3. Oh-My-Pi: install from the marketplace, confirm `rules/prose-discipline.md` appears in the
    system prompt on every request; confirm the `agent-plugins` provider still loads the skill.
 4. Hermes: install the portable package, confirm the skill loads; set `skills.auto_load` with
-   the plugin skill's qualified name and confirm the rules appear in the system prompt; record
-   the exact working form for the README; test Hermes on Windows at all.
+   the computed qualified name (§5.5) and confirm the rules appear in the system prompt with
+   Hermes's auto-load wrapper; test Hermes on Windows at all.
 5. Headless install in CI: whether each CLI needs authentication for `plugin marketplace
    add`/`plugin install` (Claude Code CLI validated without auth here).
 6. Windows checkout: what each client does with the symlinked vendor manifest.
@@ -308,8 +323,9 @@ Where a spike needs a clean run, run it in a fresh environment that matches what
 - Every package has README.md, LICENSE, CHANGELOG.md (after first release-please run),
   a ≤ 250-char description, a category, imperative skill description, referenced paths,
   TOCs.
-- `docs/superpowers/` (spec, handoff, plans) deleted after the work is done and verified,
-  before merge.
+- What outlives the task (client loading facts, the reasons behind decisions) exists as
+  finished documents under `docs/`; then `docs/superpowers/` (spec, handoff, plans) is
+  deleted, before merge.
 
 ## 11. Out of scope
 

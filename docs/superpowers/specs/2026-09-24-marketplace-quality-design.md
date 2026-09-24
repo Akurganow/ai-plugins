@@ -126,10 +126,28 @@ those sources is a finding of a new kind, `external-disagreement`, filed like th
   step compares a generated file. `.agents/rules/conformance.md` "Text only" names the
   entry point beside the check as the second thing this repository runs.
 
-### 4.2 Vendor manifest symlink
+### 4.2 Vendor manifest: a generated copy, not a symlink
 
-Kept for now. The Windows job of the integration matrix (§7.3) decides empirically whether
-it must change; nothing in this spec depends on it.
+`plugins/<name>/.claude-plugin/plugin.json` becomes a regular file, byte-identical to the
+root `plugin.json`, written by `tools/regenerate.sh` (§4.1) and proven equal by CI like
+every other copy. Reason (research `research/10-windows-symlink.md`): Git for Windows
+installs with `core.symlinks=false` unless Developer Mode is on, and then checks out a
+mode 120000 entry as a plain file holding the link text; every client fetches with `git
+clone` on the user's machine; Claude Code reads only `.claude-plugin/plugin.json` and
+fails a non-JSON file with its documented "corrupt manifest" error. Codex, Hermes and
+Oh-My-Pi's `agent-plugins` provider read the root manifest and are unaffected. The CI
+Windows image installs Git with symlinks enabled, so the integration job could not have
+decided this. Consequences in the same change:
+
+- `.agents/rules/conformance.md`, "Package shape", first bullet: "may be a symlink to it
+  and may not be a second copy" becomes "is a byte-identical copy of it, written by the
+  regeneration entry point". §5.1's "No other file can replace, supplement, or override
+  the core fields" is kept beside it: an identical copy overrides nothing. The Codex
+  sentence about a symlinked **root** manifest stays; it is about the root.
+- `tools/check-conformance.py`: the hand check that resolves the vendor path as a symlink
+  becomes a byte-equality check between the two files, with the same §5.1 clause quoted
+  beside it and the Windows reason in one sentence.
+- Root README's Windows note (§6.1) no longer mentions the symlink.
 
 ## 5. Packages
 
@@ -227,7 +245,7 @@ what differs); **Plugins** (generated table: name, one line, link to package REA
 **Layout**; **Contributing** and **Help** (links); **License**; then, at the end under their
 own headings, the explanations that are now inline: what conformance buys, per-client
 notes (Hermes depth-2 and `plugins/howp` suffix, Codex marketplace name, Oh-My-Pi
-providers), Windows and the symlink, the conformance check. The "Nothing below has been
+providers), the conformance check. The "Nothing below has been
 installed…" paragraph and every "not verified" sentence are removed. Sentences ≤ 25 words;
 the result is checked with the `prose-discipline` skill before commit.
 
@@ -280,7 +298,9 @@ workflow `integration.yml`: matrix `os ∈ {ubuntu, macos, windows}` × `client 
 codex, omp, hermes}`, each job installs the client, adds the marketplace (or installs the
 package by path for Hermes), installs every package, and asserts the skill is listed; the
 howp job downloads the release archive and verifies sha256 and, once §7.2 lands, the
-cosign signature. Spikes before writing it (§9). No evals, no model calls anywhere.
+cosign signature. The Windows jobs prove loading on the CI image only; a user's default
+Git for Windows checkout differs (§4.2), which is why the vendor manifest is a copy.
+Spikes before writing it (§9). No evals, no model calls anywhere.
 
 ## 8. Decisions the owner closed last (no open questions remain)
 
@@ -310,7 +330,9 @@ Where a spike needs a clean run, run it in a fresh environment that matches what
    Hermes's auto-load wrapper; test Hermes on Windows at all.
 5. Headless install in CI: whether each CLI needs authentication for `plugin marketplace
    add`/`plugin install` (Claude Code CLI validated without auth here).
-6. Windows checkout: what each client does with the symlinked vendor manifest.
+6. Windows checkout: the Windows job of the integration matrix asserts that Claude Code
+   loads the package from a `windows-latest` checkout; the symlink question is closed by
+   §4.2 from research, not by this job.
 
 ## 10. Acceptance
 

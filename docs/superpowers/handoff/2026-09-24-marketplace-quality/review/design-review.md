@@ -166,4 +166,7 @@ with the client listing facts beside them.
   Research: `research/07-skill-names.md`.
 - F4 resolved by generation: the Hermes qualified name is a function of `plugin.json`'s
   `name`, computed by `tools/regenerate.sh` into the README (spec §5.5).
-- Windows symlink (§4.2, recorded-reason flag): preliminary research pending.
+- Windows symlink (§4.2): research `research/10-windows-symlink.md` showed a default Git
+  for Windows checkout turns the link into a text file and Claude Code then fails to load;
+  the CI image would not reproduce it. Owner: the vendor manifest becomes a generated
+  byte-identical copy; `conformance.md` and the check change with it.

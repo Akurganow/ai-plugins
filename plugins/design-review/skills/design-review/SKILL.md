@@ -159,19 +159,19 @@ with the reason it lost. `references/decisions.md` gives the shape.
 Close with what the review did not cover:
 
 - A conflict between two qualities the user measures belongs to the `triz`
-  skill from the same marketplace, which resolves it with the
+  skill from the same marketplace. It resolves the conflict with the
   contradiction matrix and ARIZ. Hand over only if that skill is
   installed.
 - Many symptoms with one unclear cause belong to the `toc-thinking` skill
   from the same marketplace, which builds the cause-and-effect tree. Hand
   over only if that skill is installed.
 - A finding of the kind "a reader cannot hold this in their head" belongs
-  to the `cognitive-load` skill from the same marketplace, which counts
-  what a named reader must keep in mind for one task. Hand over only if
-  that skill is installed.
+  to the `cognitive-load` skill from the same marketplace. That skill
+  counts what a named reader must keep in mind for one task. Hand over
+  only if that skill is installed.
 - Weighing quality attributes against each other with stakeholders is the
-  Architecture Tradeoff Analysis Method's job, and a record of the
-  decision over time is a decision record's. This skill does neither.
+  Architecture Tradeoff Analysis Method's job. A record of the decision
+  over time is a decision record's. This skill does neither.
 
 ## Boundaries
 
@@ -183,6 +183,6 @@ Close with what the review did not cover:
   and the book calls itself an opinion piece.
 - The review reads the design the user gives it. It does not read a code
   base on its own, does not run a linter, and does not measure anything.
-- A position the book argues against a common practice is reported with
-  the other side beside it where one was read, and as the book's alone
-  where none was. It is never a finding on its own.
+- A position the book argues against a common practice is never a
+  finding on its own. It is reported with the other side where one was
+  read, and as the book's alone where none was.

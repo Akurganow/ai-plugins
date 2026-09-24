@@ -26,8 +26,8 @@ rule that a method should do 'One Thing'. If I can meaningfully extract one
 method from another, then the original method did more than one thing"
 (Method Length).
 
-Where they ended (Method Length Summary): "We agree that it is possible to
-over-decompose." "We disagree on how far to decompose: you recommend
+Where they ended, in Ousterhout's summary (Method Length Summary): "We
+agree that it is possible to over-decompose". "We disagree on how far to decompose: you recommend
 decomposing code into much smaller units than I do." "Entanglement between
 methods in a class doesn't bother you as much as it bothers me." Martin's
 gloss: "we disagree on the relative weighting of those two values."
@@ -51,8 +51,9 @@ enhance the ability of readers to understand the abstractions ... I
 disagree that comments are the only, or even the best, way to understand
 those abstractions" (Comments).
 
-Where they ended: "We agree that implementation code only needs comments
-when the code is nonobvious." On interfaces, Ousterhout's summary records
+Where they ended, in Ousterhout's summary (Comments Summary): "We agree
+that implementation code only needs comments when the code is
+nonobvious." On interfaces, the same summary records
 one agreement and one dispute: "You agree for public APIs, but see little
 need to comment interfaces that are internal to the team."
 
@@ -82,7 +83,7 @@ Martin: "I think we simply disagree that TDD discourages design" and "I
 agree with all that advice, but disagree with your assertion that TDD
 might be the cause of bad code" (Test-Driven Development).
 
-Where they ended (TDD Summary): "We agree that unit tests are an essential
+Where they ended, in Ousterhout's summary (TDD Summary): "We agree that unit tests are an essential
 element in software development." "We agree that it is possible to use TDD
 to produce systems with good designs." The risk of bad design under TDD
 stayed in dispute.

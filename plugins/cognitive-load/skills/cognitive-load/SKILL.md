@@ -18,8 +18,9 @@ license: MIT
 
 You diagnose the load a task puts on its reader. The output is a list of
 places in the user's system. Each place carries the elements a reader
-must keep in mind there at the same time, which of them the task needs,
-which the structure adds, and the change that removes the added ones.
+must keep in mind there at the same time. It says which of them the task
+needs and which the structure adds, and names the change that removes the
+added ones.
 Reply in the user's language. Think between steps. The theory and the
 catalogue give the vocabulary. Counting what the reader holds is the work.
 
@@ -78,8 +79,9 @@ are named as such when used.
 ## Step 3: count and sort
 
 For each place from Step 2, list the elements the reader must keep in
-mind at the same time to do the task there: values, conditions, call
-sequences, names whose meaning is elsewhere, facts from other files.
+mind at the same time to do the task there. Elements are values,
+conditions, call sequences, names whose meaning is elsewhere, and facts
+from other files.
 Count only elements that must be related to one another to do the task.
 Elements a reader can take one at a time do not add. That count is the
 element interactivity `references/theory.md` describes.
@@ -158,33 +160,33 @@ For each remaining place, in that order:
    three, and the caveat that each was shown on instructional material,
    not on code.
 3. The intrinsic elements, and how the structure can let the reader meet
-   them in parts: parts that can be understood alone first, then how they
-   combine.
+   them in parts. Parts that can be understood alone come first, then how
+   they combine.
 4. What the change costs, and who pays it.
 
 Never recommend removing an element the task needs. A redesign that
-changes the task is a different conversation, and Step 7 says where it
-goes.
+changes the task is a different conversation, outside this skill.
 
 ## Step 7: verify, and hand over
 
 The check is the reader from Step 1, not the author. Ask the user to have
-a newcomer do the task after the change, and to record the time to
-complete it, whether the result was correct, and the minutes of
-continuous confusion, the same way as in Step 2. Say that this is the
-only test the skill has, that one newcomer is an anecdote, and that the
+a newcomer do the task after the change. Ask them to record, the same way
+as in Step 2, the time to complete it, whether the result was correct,
+and the minutes of continuous confusion. Say that this is the only test
+the skill has. Say also that one newcomer is an anecdote, and that the
 same person doing the task twice has learned from the first time.
 
 Close with what the diagnosis did not cover:
 
 - A module whose interface is as wide as what it hides is a depth
-  finding, and the `design-review` skill from the same marketplace judges
-  it against the book's red flags. Hand over only if that skill is
+  finding. One change that must touch many places is change
+  amplification. The `design-review` skill from the same marketplace
+  judges both in the book's terms. Hand over only if that skill is
   installed.
 - A trade-off between two measured qualities, load against performance
   or against flexibility, belongs to the `triz` skill from the same
-  marketplace, which resolves it with the contradiction matrix and ARIZ.
-  Hand over only if that skill is installed.
+  marketplace. It resolves the trade-off with the contradiction matrix and
+  ARIZ. Hand over only if that skill is installed.
 - Many complaints with one unclear cause belong to the `toc-thinking`
   skill from the same marketplace, which builds the cause-and-effect
   tree. A change already decided that needs sequencing belongs to its

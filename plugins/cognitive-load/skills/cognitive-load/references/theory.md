@@ -34,7 +34,7 @@ below.
   Review* 10, 1998. The abstract of that paper, read from a mirror,
   describes "a limited capacity working memory" and "an effectively
   unlimited long-term memory, holding schemas that vary in their degree
-  of automation", and names no kind of load. No source read here states
+  of automation", and names none of the three kinds of load. No source read here states
   the additive model in which the three loads sum to a total.
 
 ## What changed
@@ -175,7 +175,7 @@ that was read here. The practitioner text this skill draws on says of its
 own use of the term: "We are going to use 'cognitive load' in an informal
 sense; sometimes it lines up with the specific scientific concept of
 Cognitive Load, but we don't know enough about where it does and doesn't
-match" (`patterns.md`, and `sources.md` for the copy). This skill keeps
+match" (the essay's introduction, in the copy `sources.md` names). This skill keeps
 that distinction. Where it says "load", it means what a reader must keep
 in mind to do a task, and it says which sense it is in when the
 difference matters.

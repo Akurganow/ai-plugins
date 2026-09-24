@@ -73,8 +73,8 @@ Clean Code", a written discussion held between September 2024 and February
 read whole on 2026-09-24. Quotations in `positions.md`, `complexity.md`,
 `principles.md` and `red-flags.md` are marked with its section headings:
 Introductions, Method Length, Method Length Summary, Comments, Comments
-Summary, Test-Driven Development, TDD Summary, Closing Remarks. The
-speaker is named in each case. Martin's words are from the discussion.
+Summary, Test-Driven Development and TDD Summary. The speaker is named
+in each case. Martin's words are from the discussion.
 The one sentence of *Clean Code* quoted in `positions.md` is the one
 Ousterhout quotes there.
 
@@ -186,7 +186,8 @@ for a review and not the book's text:
 - The reading of principle 7 as bounded by Google's over-engineering
   line, and the reading of principles 6 and 10 as one idea from two
   sides, in `principles.md`.
-- The reading of Brooks against Ousterhout in `complexity.md`.
+- The reading of Brooks against Ousterhout in `complexity.md`, and the
+  line drawn there between the book's "cognitive load" and the theory's.
 - The "For a review" paragraphs in `positions.md`.
 - The hand-overs to the `cognitive-load`, `triz` and `toc-thinking`
   skills of this marketplace.

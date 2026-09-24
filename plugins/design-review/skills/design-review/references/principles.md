@@ -90,7 +90,7 @@ determine a better value than we can determine here?" (§8.2, 1e).
 Principle 15 is argued against agile development: "Agile development tends
 to focus developers on features, not abstractions" and "the increments of
 development should be abstractions, not features" (§19.2, 1e).
-`positions.md` carries the dispute around it.
+`positions.md` lists it among the positions the book argues alone.
 
 ## What matters
 

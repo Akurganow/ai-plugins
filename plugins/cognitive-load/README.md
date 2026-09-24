@@ -1,12 +1,12 @@
 # cognitive-load
 
-A diagnosis, for an engineer whose code base, system or process has
-become hard to read, of what a reader must keep in mind at the same time
-to do a task there. One skill that sorts it into the load the task needs
-and the load the structure adds, and names the change that removes the
-second. It draws its terms from cognitive load theory, read mostly as
-abstracts and applied to code by analogy, and from a practitioner's
-catalogue of extraneous load in code.
+A diagnosis of what a reader must keep in mind at the same time to do a
+task in a code base, a system or a process. It is for an engineer whose
+code base, system or process has become hard to read. One skill that
+sorts the load into what the task needs and what the structure adds, and
+names the change that removes the second. Its terms come from cognitive
+load theory, read mostly as abstracts and applied to code by analogy. The
+catalogue of extraneous load in code is a practitioner's essay.
 
 Part of the [`ai-plugins` marketplace](../../README.md). Installing: the
 per-client sections of the [root README](../../README.md#installing).
@@ -52,9 +52,9 @@ the Creative Commons Attribution 4.0 licence, read whole at the commit
 `sources.md` names. The theory was read mostly as abstracts: the
 publishers' sites were not reachable, and `sources.md` says for each paper
 whether its abstract, its full text or nothing was opened. The references
-say where each kind of load is attributed, that Sweller's 1988 abstract
-names none of the three, and that the theory's authors now define germane
-load in terms of intrinsic load.
+say where each kind of load is attributed. Sweller's 1988 abstract names
+none of the three. The theory's authors now define germane load in terms
+of intrinsic load.
 
 **Nothing here has been installed from this repository as published.** The
 references have been checked against the sources they cite. No client has

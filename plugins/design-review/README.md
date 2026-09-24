@@ -1,9 +1,9 @@
 # design-review
 
-A design review for complexity, for an engineer who reviews a module, an
-API, an architecture or a refactoring plan, with the principles and red
-flags of John Ousterhout's *A Philosophy of Software Design*. One skill
-that turns the design into a ranked list of findings. Each finding
+A design review for complexity, with the principles and red flags of
+John Ousterhout's *A Philosophy of Software Design*. It is for an engineer
+who reviews a module, an API, an architecture or a refactoring plan. One
+skill that turns the design into a ranked list of findings. Each finding
 carries the chapter it rests on, and the other side where the book is
 disputed in a text that was read.
 
@@ -28,9 +28,9 @@ that answers it. Then it works through the book's questions in order.
 Every finding cites a chapter. For method length, comments and
 test-driven development, the finding carries Robert Martin's reply from
 his written discussion with Ousterhout. For the book's other positions,
-inheritance, design patterns, accessors and small classes among them, the
-finding says the position is the book's alone, because no text of the
-other side was read. The agent asks for facts it does not have instead of
+the finding says the position is the book's alone, because no text of the
+other side was read. Inheritance, design patterns, accessors and small
+classes are among them. The agent asks for facts it does not have instead of
 guessing the design.
 
 ## What ships here
@@ -81,8 +81,9 @@ None. Removing the plugin removes the skill.
   installed.
 - The book's positions on method length, comments and test-driven
   development are reported with Martin's reply beside them. Its
-  positions on inheritance, design patterns, accessors and small classes
-  carry no reply, because no text of the other side was read.
+  other positions, inheritance, design patterns, accessors and small
+  classes among them, carry no reply, because no text of the other side
+  was read.
   `positions.md` says what evidence was read, which is little, and
   `sources.md` lists the studies that were not.
 - The skill reads what the user gives it. It does not read a code base on

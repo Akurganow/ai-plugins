@@ -37,8 +37,7 @@ the paper's abstract verbatim, cited by path and commit.
   Abstract, mirror:
   <https://github.com/aslakhol/thesis/blob/1f81ed09a7e997a4db7e03b172db3242cd79966b/library.bib>.
 - Sweller, van Merriënboer and Paas, *Educational Psychology Review* 31,
-  2019, DOI 10.1007/s10648-019-09465-5, commonly cited as "Cognitive
-  Architecture and Instructional Design: 20 Years Later". Abstract,
+  2019, DOI 10.1007/s10648-019-09465-5. Abstract,
   mirror:
   <https://github.com/lexnederbragt/ten_quick_tips_live_coding/blob/8a5f69b2a08f81070c294764f8b6c1f0ea63725b/references.bib>.
   The one body sentence quoted in `theory.md` was read as a third party
@@ -132,9 +131,9 @@ works. Nothing in this skill is quoted from them.
   intrinsic and extraneous distinction, known here through Wikipedia.
 - Sweller, "Cognitive load theory, learning difficulty, and instructional
   design", *Learning and Instruction* 4, 1994.
-- Kalyuga, *Educational Psychology Review* 23(1), 2011, pp. 1–19, commonly
-  cited as "Cognitive Load Theory: How Many Types of Load Does It Really
-  Need?". Known here through a search engine's summary.
+- Kalyuga, *Educational Psychology Review* 23(1), 2011, pp. 1–19, as two
+  readers' notes cite it. Known here through a search engine's summary and
+  those notes.
 - Sweller, Ayres and Kalyuga, *Cognitive Load Theory*, 2011. The
   catalogue of effects. Known here through a search engine's table of
   contents.
@@ -174,7 +173,11 @@ for work on code and not any source's text:
 - The count in Step 3 of elements that must be related to one another,
   and the structural test that applies the 2010 abstract's
   essential-to-the-task line to code by asking whether the element
-  survives every structure that does the same task.
+  survives every structure that does the same task. The tie-break there,
+  that the extraneous test decides when both seem to answer yes.
+- The sentence under Capacity in `theory.md` that reading code blocks no
+  recoding, so the four is not a budget, and the two cautions on
+  Intrinsic Complexity Points in `measures.md`.
 - The triage order in Step 4, and the stop rule for a place whose count
   is small and all intrinsic.
 - The ranking in Step 6 by extraneous count times how often readers do

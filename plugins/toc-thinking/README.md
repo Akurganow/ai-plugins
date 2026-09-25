@@ -65,8 +65,8 @@ builds a Current Reality Tree down to the root causes, and checks every
 link with the Categories of Legitimate Reservation. It asks you to confirm
 the core problem before going on. It then builds the Evaporating Cloud for
 the conflict that keeps the problem in place. A Future Reality Tree checks
-the injection for new undesirable effects. It plans the change with a
-Prerequisite Tree and a Transition Tree.
+the injection for new undesirable effects. The skill plans the change with
+a Prerequisite Tree and a Transition Tree.
 
 ## What's inside
 

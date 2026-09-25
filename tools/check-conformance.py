@@ -392,15 +392,18 @@ def check_vendor_manifest_copies(plugin_root: Path) -> None:
     in root `plugin.json`." A copy equal to it byte for byte overrides
     nothing, and `tools/regenerate.sh` writes it. It is a copy and not a
     symlink for two reasons. Git for Windows checks a symlink out as a text
-    file holding its path unless symlinks are enabled. Claude Code reads its
-    manifest only from `.claude-plugin/plugin.json` and fails that text as a
-    corrupt manifest.
+    file holding its path unless symlinks are enabled. Claude Code documents
+    one manifest location, `.claude-plugin/plugin.json`, and fails that text
+    as a corrupt manifest.
 
     Sources, all documentation:
-    - Git for Windows, https://gitforwindows.org/symbolic-links
-    - the git manual, `core.symlinks`,
+    - Git for Windows, for symlinks being off unless enabled:
+      https://gitforwindows.org/symbolic-links
+    - the git manual, `core.symlinks`, for a symlink checked out as a text
+      file:
       https://github.com/git/git/blob/c44beea485f0f2feaf460e2ac87fdd5608d63cf0/Documentation/config/core.adoc#L237-L246
-    - Claude Code, https://code.claude.com/docs/en/plugins-reference
+    - Claude Code, for the manifest location and the corrupt-manifest error:
+      https://code.claude.com/docs/en/plugins-reference
     """
     root_manifest = plugin_root / "plugin.json"
     # A missing, symlinked or non-regular root manifest: check_manifest
@@ -417,8 +420,8 @@ def check_vendor_manifest_copies(plugin_root: Path) -> None:
         if path.is_symlink():
             fail(
                 str(rel),
-                f"is a symlink; it must be a byte-identical copy of {root_rel}, "
-                "written by tools/regenerate.sh",
+                f"is a symlink; it must be a byte-identical copy of {root_rel}; "
+                "run `bash tools/regenerate.sh` and commit the result",
             )
         elif path.read_bytes() != expected:
             fail(

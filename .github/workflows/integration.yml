@@ -105,9 +105,14 @@ jobs:
           & ([scriptblock]::Create((irm "https://raw.githubusercontent.com/NousResearch/hermes-agent/$env:HERMES_COMMIT/scripts/install.ps1"))) -Commit $env:HERMES_COMMIT -SkipSetup -HermesHome $env:HERMES_HOME
           [Environment]::GetEnvironmentVariable('Path', 'User') -split ';' | Where-Object { $_ } | Add-Content $env:GITHUB_PATH
 
+      # Git Bash on windows-latest has no /dev/stderr, so the output is kept in
+      # a variable rather than passed through tee.
       - name: Check the Hermes version
         if: matrix.client == 'hermes'
-        run: hermes --version | tee /dev/stderr | grep -qF 'v0.21.5'
+        run: |
+          version=$(hermes --version)
+          printf '%s\n' "$version"
+          grep -qF 'v0.21.5' <<<"$version"
 
       # Hermes reads no marketplace file. Its user plugin directory is
       # $HERMES_HOME/plugins, and a portable package is disabled until enabled.

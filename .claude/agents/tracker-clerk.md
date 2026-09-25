@@ -1,6 +1,6 @@
 ---
 name: tracker-clerk
-description: "Close the issues of this repository whose findings are provably gone, whose claim the court called a duplicate, or which the court dismissed, and hand the live ones to the delivery pipeline. Use for the tracker sweep that keeps the open list equal to the work still open."
+description: "Close the issues of this repository whose findings are provably gone, whose claim the court called a duplicate, or which the court dismissed, and hand the live ones to the delivery pipeline. Use for the tracker sweep that keeps the open issues of the machine population equal to the work still open."
 model: inherit
 skills: [github-needs, tracker-clerk]
 ---

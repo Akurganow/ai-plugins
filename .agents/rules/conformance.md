@@ -60,8 +60,9 @@ check assert what silently breaks a Hermes install is satisfied whether or not
 the hand check exists — deleting it would have breached nothing. Keeping it is
 right for the reasons above and for no others.
 
-So "do not complicate the code" here — the checks below being the only code
-this repository has — is not "never duplicate the schema". It is: a hand-written
+The checks below are the only code this repository judges packages with. So
+"do not complicate the code" here is not "never duplicate the schema". It is:
+a hand-written
 check either enforces something a JSON Schema cannot express, or it turns a
 schema rejection into a message somebody can act on, and it says beside
 itself which of the two it is. A duplicate with neither reason is the one to
@@ -82,16 +83,28 @@ rule only says that it happens and that the schema does not bend.
 The rules that decide whether a client loads a package at all:
 
 - The manifest is a real file at the plugin root. A vendor discovery path
-  inside the package may be a symlink to it and may not be a second copy:
-  §5.1 is explicit that "No other file can replace, supplement, or override
-  the core fields in root `plugin.json`", and Codex's loader rejects a
-  symlinked root manifest outright — `symlink_metadata` in
+  inside the package is a byte-identical copy of it, written by the
+  regeneration entry point, `tools/regenerate.sh`. The check compares the
+  two byte for byte. §5.1 says: "No other file can replace, supplement, or
+  override the core fields in root `plugin.json`." An identical copy
+  overrides nothing. The copy is not a symlink. Git for
+  Windows disables symbolic links by default
+  ([Git for Windows](https://gitforwindows.org/symbolic-links),
+  documentation). With them off, git checks a link out as a plain file
+  holding the link text
+  ([`core.symlinks`](https://github.com/git/git/blob/c44beea485f0f2feaf460e2ac87fdd5608d63cf0/Documentation/config/core.adoc#L237-L246),
+  documentation). Claude Code documents one manifest location,
+  `.claude-plugin/plugin.json`, and fails on a file that is not JSON
+  ([plugins reference](https://code.claude.com/docs/en/plugins-reference),
+  documentation). The root manifest may not be a symlink either. Codex's
+  loader rejects a symlinked root manifest outright — `symlink_metadata` in
   [`plugin_namespace.rs`](https://github.com/openai/codex/blob/e3e5ad28470f6a225301518c30a66e749a880164/codex-rs/utils/plugins/src/plugin_namespace.rs),
   pinned by its own `rejects_symlinked_root_plugin_manifest` test. That one
-  is **from source**, because Codex publishes no plugins documentation to
-  read first: its `docs/` carries fifteen files and none is about plugins or
-  `plugin.json`. The link is a commit permalink, not a branch — a claim about
-  code that moves has to name the revision it was true at.
+  is **from source**. The `plugin_namespace.rs` link is a commit permalink,
+  not a branch. A claim about code that moves has to name the revision it
+  was true at. Codex's plugin documentation,
+  [Build plugins](https://developers.openai.com/plugins/build/plugins.md)
+  (documentation, read 2026-09-25), does not mention a symlinked manifest.
 - Every package path resolves inside that package's root (§4.1). The
   failure boundary is graded: a root `plugin.json` outside it rejects the
   plugin, while a `SKILL.md` outside it only skips that skill (§7.1) — the
@@ -110,13 +123,20 @@ The rules that decide whether a client loads a package at all:
 
 ## Versions
 
-`version` in `plugins/howp/plugin.json`, the whole of
+The release job that builds and publishes the binaries writes four files.
+It writes `version` in `plugins/howp/plugin.json`, the whole of
 `plugins/howp/binaries.json` and
-`plugins/howp/skills/howp/references/commands.md` are written by the release
-job that builds and publishes the binaries, and by nothing else. **Nobody
-edits any of the three by hand, ever.** Each is a claim about a released
+`plugins/howp/skills/forecast/references/commands.md`, and nothing else writes
+them. It also writes `plugins/howp/.claude-plugin/plugin.json` as a byte copy
+of `plugin.json`; `tools/regenerate.sh` writes the same bytes. **Nobody
+edits any of the four by hand, ever.** Each is a claim about a released
 artifact: a hand edit asserts a version, a digest or a target that no
 release produced, and the next release overwrites it without noticing.
+Every package but howp is released by `.github/workflows/release.yml`,
+which runs cocogitto. It writes `version` in each `plugins/<name>/plugin.json`
+and in its `.claude-plugin/plugin.json` copy, and each
+`plugins/<name>/CHANGELOG.md`. Nobody edits those by hand either, for the same
+reason.
 **The catalogue index carries no version at all**: `.claude-plugin/marketplace.json`
 has no top-level `version`, none under `metadata`, and no `version` in a
 plugin entry, because a version no machine writes is a version somebody moves
@@ -125,9 +145,12 @@ by hand.
 ## Text only
 
 No executables and no built artefacts are stored in the tree. Released
-binaries are published elsewhere and referenced from here; the only thing this
-repository runs is its own check, `tools/check-conformance.py`, and
-`.github/workflows/conformance.yml` runs it.
+binaries are published elsewhere and referenced from here. This repository
+runs two programs of its own. The first is its check,
+`tools/check-conformance.py`. The second is its regeneration entry point,
+`tools/regenerate.sh`, which writes every generated copy from its one source.
+`.github/workflows/conformance.yml` runs both, and fails when a regenerated
+copy differs from the committed one.
 
 If this file and the things it describes ever disagree — the specification,
-the script, the workflow — they are right and this file is stale.
+the scripts, the workflow — they are right and this file is stale.

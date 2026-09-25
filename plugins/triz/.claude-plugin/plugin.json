@@ -1,1 +1,28 @@
-../plugin.json
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "triz",
+  "version": "0.1.0",
+  "description": "Resolves software trade-offs with TRIZ: the contradiction matrix and 40 inventive principles, the separation principles, and ARIZ-85C walked part by part with the user.",
+  "author": {
+    "name": "Alexander Kurganov",
+    "url": "https://github.com/Akurganow"
+  },
+  "homepage": "https://github.com/Akurganow/ai-plugins/tree/main/plugins/triz",
+  "repository": "https://github.com/Akurganow/ai-plugins",
+  "license": "MIT",
+  "keywords": [
+    "triz",
+    "contradiction-matrix",
+    "inventive-principles",
+    "ariz",
+    "ariz-85c",
+    "altshuller",
+    "trade-offs",
+    "problem-solving"
+  ],
+  "extensions": {
+    "io.github.akurganow.ai-plugins": {
+      "category": "Developer Tools"
+    }
+  }
+}

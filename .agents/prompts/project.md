@@ -9,9 +9,10 @@ matter.
 
 `plugins/<name>/` is an Agent Plugins 1.0.0 package: the manifest at the
 plugin root, skills under `skills/<name>/SKILL.md`. A vendor discovery path
-inside a package is a symlink to the real manifest, never a second copy of
-it. `.claude-plugin/marketplace.json` at the repository root is a client's
-index — outside the standard, pointers only, labelled for what it is.
+inside a package holds a byte-identical copy of the real manifest, written
+by `tools/regenerate.sh`. `.claude-plugin/marketplace.json` at the
+repository root is a client's index — outside the standard, pointers only,
+labelled for what it is.
 
 `tools/check-conformance.py` decides by the published schema everything the
 published schema can decide, and implements by hand the rules a JSON Schema
@@ -29,12 +30,13 @@ its provenance and checksum recorded.
   is recorded as a note with a source.
 - **Every compatibility claim is sourced.** Install instructions, supported
   surfaces, loader behaviour — each names the documentation or the source
-  file it was read from. What was not verified says so.
+  file it was read from.
 - **The repository holds text only.** No executables, no built artefacts.
   Released binaries live elsewhere and are referenced.
-- **One manifest per package.** A second `plugin.json` anywhere below a
-  plugin root is acceptable only as a symlink to the root one; a real copy
-  would drift, and the specification is explicit that nothing else may
+- **One manifest per package.** A second `plugin.json` below a plugin root
+  is acceptable only as a byte-identical copy of the root one, written by
+  `tools/regenerate.sh`. CI regenerates it and fails on any difference, so
+  it cannot drift. The specification is explicit that nothing else may
   supplement or override the root manifest.
 - **Nothing here is client-specific except what a standard does not
   define**, and that is labelled as such.

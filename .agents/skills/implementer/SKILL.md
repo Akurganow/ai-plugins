@@ -250,7 +250,7 @@ named:
 commit. The gate checked the specification. This checks the diff:
 
     git diff --cached --name-only \
-      | grep -E '^(tools/schemas/|\.agents/|plugins/[^/]+/binaries\.json$|plugins/[^/]+/skills/[^/]+/references/commands\.md$)' \
+      | grep -E '^(tools/schemas/|\.agents/|plugins/[^/]+/binaries\.json$|plugins/[^/]+/CHANGELOG\.md$|plugins/[^/]+/skills/[^/]+/references/commands\.md$)' \
       | grep -vF -- "$SPEC_DIR/"
     git diff --cached -- 'plugins/*/plugin.json' | grep -n '^[+-].*"version"'
 
@@ -275,7 +275,12 @@ way to move a version without meaning to.
 
 **Exit criteria for the slice, in this order, before it ends either way:**
 
-1. Run the verification the plan names. At minimum
+1. Run `bash tools/regenerate.sh` and commit what it changes with the
+   slice. CI runs it too, and fails on a generated copy that differs from its
+   source. It runs first because the check compares each vendor manifest with
+   the root one, so a stale copy fails it.
+
+   Then run the verification the plan names. At minimum
    `tools/check-conformance.py`, with what it needs importable by whatever
    runs it — `.agents/rules/conformance.md` owns that, and the invocation is
    your caller's, since it is the only part of this that knows the
@@ -476,13 +481,12 @@ accepted is the tree the code review and the owner will read.
        - the spec and plan as they stood:
          https://github.com/Akurganow/ai-plugins/blob/<predelete>/.agents/specs/<ITEM>/spec.md
 
-   Keep the whole state block at the foot, the fingerprint line included. It
-   is the item's identity and what keeps the analysis roles from re-filing
-   this finding.
+   Keep the whole state block at the foot, the `pipeline-work-fingerprint`
+   line included. It is the item's identity. Its `sources=` stops the pipeline
+   Clerk taking the source issues again, at intake step 5.
 
    The fourth section is the one thing in the handover that cannot be
-   skipped. It turns "not verified" into the owner's checklist, and
-   `.agents/rules/claims.md` is why.
+   skipped. It is the owner's checklist of what no command here can prove.
 
    Read the body back and confirm every line of the state block survived.
 

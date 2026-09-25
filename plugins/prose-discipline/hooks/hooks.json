@@ -1,5 +1,5 @@
 {
-  "description": "Inject the prose-discipline core rules at session start.",
+  "description": "Print the prose-discipline core rules into every session and every subagent.",
   "hooks": {
     "SessionStart": [
       {
@@ -7,7 +7,18 @@
         "hooks": [
           {
             "type": "command",
-            "command": "sh \"${CLAUDE_PLUGIN_ROOT:-${PLUGIN_ROOT:-.}}/hooks/session-rules.sh\"",
+            "command": "sh \"${CLAUDE_PLUGIN_ROOT}/hooks/print-rules.sh\"",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "SubagentStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "sh \"${CLAUDE_PLUGIN_ROOT}/hooks/print-rules.sh\" --json",
             "timeout": 10
           }
         ]

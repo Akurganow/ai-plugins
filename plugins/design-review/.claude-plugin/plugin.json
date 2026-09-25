@@ -1,1 +1,27 @@
-../plugin.json
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "design-review",
+  "version": "0.1.0",
+  "description": "Reviews a software design for complexity with the red flags and principles of Ousterhout's A Philosophy of Software Design, each finding cited by chapter.",
+  "author": {
+    "name": "Alexander Kurganov",
+    "url": "https://github.com/Akurganow"
+  },
+  "homepage": "https://github.com/Akurganow/ai-plugins/tree/main/plugins/design-review",
+  "repository": "https://github.com/Akurganow/ai-plugins",
+  "license": "MIT",
+  "keywords": [
+    "design-review",
+    "software-design",
+    "complexity",
+    "deep-modules",
+    "information-hiding",
+    "red-flags",
+    "ousterhout"
+  ],
+  "extensions": {
+    "io.github.akurganow.ai-plugins": {
+      "category": "Developer Tools"
+    }
+  }
+}

@@ -202,8 +202,7 @@ Where it is a diff, put the diff here.
 
 Every new sentence about a client, an install command or a released artifact
 is held to `claims.md`. It names its source. It says which kind of source.
-It says what was not verified. A specification proposing an unsourced claim
-is one the Reviewer rejects.
+A specification proposing an unsourced claim is one the Reviewer rejects.
 
 **`## Acceptance criteria`**: numbered, each checkable by somebody who was
 not here. Prefer a criterion a command settles over one a reader judges.
@@ -227,7 +226,8 @@ Its tell is a sentence with no source beside it.
 Implementer can carry to a green verification on its own.
 
 **`## Verification`**: what must be checked and what each check must produce.
-At minimum, `tools/check-conformance.py` exits 0.
+At minimum, `tools/check-conformance.py` exits 0, and `tools/regenerate.sh`
+leaves nothing to commit.
 
 Name the check, never an invocation of it. The Implementer runs it with what
 its own environment has, and `.agents/rules/conformance.md` owns what it needs

@@ -1,0 +1,73 @@
+name: Install problem
+description: A plugin fails to install, enable or load in a client.
+labels: ["install"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this form when a plugin from this marketplace does not install, enable or load.
+        Report a vulnerability as [SECURITY.md](https://github.com/Akurganow/ai-plugins/blob/main/SECURITY.md) describes, never in a public issue.
+  - type: dropdown
+    id: client
+    attributes:
+      label: Client
+      options:
+        - Claude Code CLI
+        - Claude Code on the web
+        - Claude desktop app
+        - Codex
+        - Oh-My-Pi
+        - Hermes CLI or server
+        - Hermes desktop app
+        - Other
+    validations:
+      required: true
+  - type: input
+    id: client-version
+    attributes:
+      label: Client version
+      description: What the client's version command prints, for example `claude --version`. If you chose Other, name the client too.
+    validations:
+      required: true
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating system
+      options:
+        - macOS
+        - Linux
+        - Windows
+        - Other
+    validations:
+      required: true
+  - type: input
+    id: plugin
+    attributes:
+      label: Plugin
+      description: The plugin name, as the README's plugin table lists it.
+      placeholder: triz
+    validations:
+      required: true
+  - type: input
+    id: plugin-version
+    attributes:
+      label: Plugin version
+      description: The `version` in the plugin's `plugin.json`, or the commit you installed from.
+    validations:
+      required: false
+  - type: textarea
+    id: commands
+    attributes:
+      label: Commands
+      description: The commands you ran, in order.
+      render: shell
+    validations:
+      required: true
+  - type: textarea
+    id: output
+    attributes:
+      label: Output
+      description: Everything the client printed, errors included.
+      render: text
+    validations:
+      required: true

@@ -1,394 +1,269 @@
 # ai-plugins
 
-A public marketplace of agent plugins.
+Agent plugins for Claude Code, Codex, Oh-My-Pi and Hermes. Each plugin is an
+[Agent Plugins 1.0.0](https://agent-plugins.org/specification) package, and
+its skills follow the [Agent Skills specification](https://agentskills.io/specification).
 
-Every plugin under `plugins/` is a package in the
-[Agent Plugins 1.0.0](https://agent-plugins.org/specification) format: a
-directory with `plugin.json` at its root, and its skills under
-`skills/<name>/SKILL.md` per the
-[Agent Skills specification](https://agentskills.io/specification).
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
-The repository holds text. The one program in it is
-`tools/check-conformance.py`, the conformance check described at the bottom;
-no compiled artefact is stored here. The `howp` binaries are released on the
-[releases page](https://github.com/Akurganow/ai-plugins/releases), and
-**which release and which targets exist is recorded in
-[`plugins/howp/binaries.json`](plugins/howp/binaries.json), not in this
-paragraph** — a release rewrites that file and cannot rewrite this sentence,
-so read the file. Every release publishes a `SHA256SUMS` asset beside its
-archives, in the same release the archive URLs in `binaries.json` point at:
-those URLs are where to look for it, and its digests are the ones recorded in
-`binaries.json`.
-The `howp` package uses that release: its skill reads
-`plugins/howp/binaries.json`, refuses any platform the manifest does not
-name, downloads the archive for the one it does, checks the download's sha256
-against the digest recorded there before unpacking it, and then runs what
-that entry's `binaries` array says the archive holds. **The skill drives one
-binary, `hp`**, and that array is also what says whether an archive has it: an
-entry whose `binaries` array omits `hp` stops the skill rather than having it
-run something else, so which releases can be driven is a property of that file
-and not of this paragraph. What has actually been downloaded, verified and run
-— with its date, the release it was measured against, and what it did not
-exercise — is recorded once, in the skill's own [What has been verified, and
-what has not](plugins/howp/skills/howp/SKILL.md#what-has-been-verified-and-what-has-not).
-This file keeps no second copy of it.
+- [Install](#install)
+- [Plugins](#plugins)
+- [Trust](#trust)
+- [Layout](#layout)
+- [Contributing](#contributing)
+- [Help](#help)
+- [License](#license)
+- [What conformance buys](#what-conformance-buys)
+- [Client notes](#client-notes)
+- [The conformance check](#the-conformance-check)
 
-## Compatibility
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-Agent Plugins 1.0.0 governs a plugin *given its root*: "A plugin is a
-directory rooted at a single filesystem location" (§4.1(1)), and a conformant
-client at minimum "can load a plugin from a directory path" (§11.1(1)). That
-is what conformance buys here — point a client that implements the standard
-at `plugins/howp` and everything it needs is there: the manifest at the
-plugin root with the canonical `$schema` (§5.1, §5.2), and skills in the
-fixed `skills/` location (§6.1).
+## Install
 
-What conformance does not buy is the step before that. The specification
-defines no repository-level index, and nothing about how a client gets from a
-repository to a plugin root. That step is client-specific, and a command that
-works for one client says nothing about another. So every install path below
-is stated per client with its source, or not stated at all.
+Read [Trust](#trust) before you install a plugin. Replace `<name>` with a name
+from [Plugins](#plugins).
 
-The surfaces this marketplace is meant for:
+<!-- install:start -->
 
-- **Claude** — Claude Code, local and cloud, and the Claude desktop app.
-- **Hermes** — Desktop and server. Required.
-- **Codex**
-- **Oh-My-Pi**
-- **Any client that implements Agent Plugins Specification 1.0.0.**
-
-Nothing below has been installed from this repository as published. Every
-instruction is read off that client's own documentation first, and its own
-source only where the documentation does not answer; each says which, and
-where a statement comes from running a client's own code, it says that too.
-Claude's documentation site was read directly. Hermes' and Oh-My-Pi's could
-not be read, so the same pages published as Markdown in their own repositories
-were read instead. Codex's could not be read either, and its repository
-carries no replacement: `docs/skills.md` there is a three-line stub pointing
-back at that page. Its claims therefore come from its own source, install
-commands included, which is where Codex keeps its command help. Every citation into a
-repository below is a commit permalink, so it names the revision the claim
-was read at rather than whatever the branch says next.
-
-## Installing
-
-### Claude
+### Claude Code
 
 ```
 /plugin marketplace add Akurganow/ai-plugins
-/plugin install howp@ai-plugins
+/plugin install <name>@ai-plugins
 ```
 
-Source: Claude Code's own documentation
-(<https://code.claude.com/docs/en/discover-plugins>), which documents
-`/plugin marketplace add owner/repo` for "a GitHub repository that contains a
-`.claude-plugin/marketplace.json` file" and `/plugin install
-plugin-name@marketplace-name`. Nothing in this repository differs between
-local and cloud Claude; the plugin is the same package either way.
-
-The desktop app installs from the marketplaces already configured, without a
-terminal: the **+** button beside the prompt box, then **Plugins** → **Add
-plugin**, which opens a browser over "available plugins from your configured
-marketplaces" (<https://code.claude.com/docs/en/desktop>). The desktop app
-applies name rules the CLI does not, and this repository satisfies them:
-Claude Desktop's managed marketplace sync rejects a marketplace named `org`,
-`org-provisioned` or `unknown` in any casing, and accepts names of up to 128
-characters made of letters, digits, `.`, `_` and `-`, starting with a letter
-or digit — it rejects a whole marketplace whose name fails that and silently
-drops a plugin entry whose name does
-(<https://code.claude.com/docs/en/plugin-marketplaces>). `ai-plugins` and
-`howp` both pass.
-
-### Hermes — Desktop and server
-
-Hermes has no per-repository catalogue and does not read
-`.claude-plugin/marketplace.json` or anything resembling it. Its catalogue is
-a single central community index, `NousResearch/hermes-plugin-index`, that a
-plugin joins by pull request. This repository is therefore not a marketplace
-to Hermes, and a package is installed from it directly, by identifier.
-
-What Hermes does support is the package format, in a documented section
-called "Portable Agent Plugins v1 packages": root `plugin.json`, `skills/`,
-`mcp.json`, symlink containment validated locally, no schema fetched while
-loading, and packages disabled until explicitly enabled. Its own scope note
-is worth repeating rather than upgrading — "This is an explicit supported
-subset, not a claim of full Agent Plugins conformance."
-
-```
-hermes plugins install Akurganow/ai-plugins/plugins/howp --no-enable
-hermes plugins list
-hermes plugins enable howp
-```
-
-The trailing `plugins/howp` is load-bearing. `hermes plugins install
-Akurganow/ai-plugins` copies the whole repository into
-`~/.hermes/plugins/ai-plugins/`, which leaves the package at discovery depth
-3 while Hermes' scan stops at depth 2, so nothing is ever discovered — and
-the install still exits 0 and tells you to enable a plugin that is not there.
-
-Sources, in the order they were consulted. Hermes' documentation site is
-unreachable from the network this was written on, but the site is a build of
-Markdown published in the project's own repository under `website/docs/`
-(<https://github.com/NousResearch/hermes-agent/tree/a0ca7c19204e514f9590ce3b812e029b315ab9e9/website/docs>),
-and that is where these claims come from:
-`developer-guide/plugins/index.md` for the portable-package section, the
-scope note and the install-list-enable sequence,
-`user-guide/features/plugins.md` for the community index and the discovery
-layout, `reference/cli-commands.md` for `plugins install <identifier>`.
-
-Documentation did not answer one question, and it is the one this section
-turns on: the CLI reference documents `owner/repo`, a Git URL and a bare
-index name, and does not document the subdirectory form at all. That came
-from the implementation — `_resolve_git_url` in
-[`hermes_cli/plugins_cmd.py`](https://github.com/NousResearch/hermes-agent/blob/a0ca7c19204e514f9590ce3b812e029b315ab9e9/hermes_cli/plugins_cmd.py),
-same repository — and was then executed:
-`Akurganow/ai-plugins/plugins/howp` resolves to that repository with subdir
-`plugins/howp`, while `Akurganow/ai-plugins` resolves with no subdir.
-
-Also executed, against this working tree rather than against what is
-published: Hermes' own Agent Plugins loader reads this package with zero
-diagnostics — manifest valid, one skill, the vendor symlink preserved and
-still contained — and a full install, list and enable through Hermes' own
-installer, from a `file://` clone, produced `howp | enabled | 0.0.3` — the
-manifest version as it stood at that run. Its
-plugin scanner finds `howp` when it scans a directory that *holds* the
-package — `plugins/`, or the repository root as `plugins/howp` — and finds
-nothing when it is pointed at `plugins/howp` itself, because it iterates the
-children of the directory it is given.
-
-Desktop and server are one backend: the desktop app's install goes through
-the same installer, so manifest rules, the depth cap and the enablement
-default are identical, and the differences are surface-level — a pre-flight
-probe over the repository, and a `hermes://plugin/install?repo=…` deep link
-that takes the same identifier, subdirectory included.
-
-The documentation does not settle that last point either — it is the
-subdirectory question above, asked of the deep link:
-`user-guide/features/plugins.md` gives three deep-link forms, all bare
-`repo=owner/repo`, describes the handler as shallow-cloning "the repo", and
-carries no path segment anywhere. The source settles it. The desktop passes
-the `repo` parameter through as it stands
-([`apps/desktop/src/lib/deeplink-routes.ts`](https://github.com/NousResearch/hermes-agent/blob/a0ca7c19204e514f9590ce3b812e029b315ab9e9/apps/desktop/src/lib/deeplink-routes.ts)),
-and each half of the install then splits it the way the CLI does. The desktop
-half splits it in `resolvePluginGitUrl`, which rejects an unusable identifier
-with "Use a Git URL or 'owner/repo' (optionally with a subdirectory)" and
-whose own test pins `owner/repo/plugins/foo` to subdirectory `plugins/foo`
-([`apps/desktop/electron/desktop-plugin-install.ts`](https://github.com/NousResearch/hermes-agent/blob/a0ca7c19204e514f9590ce3b812e029b315ab9e9/apps/desktop/electron/desktop-plugin-install.ts)).
-The agent half — the half that installs this package — goes through the
-gateway's `plugins.manage` install action
-([`tui_gateway/methods_tools.py`](https://github.com/NousResearch/hermes-agent/blob/a0ca7c19204e514f9590ce3b812e029b315ab9e9/tui_gateway/methods_tools.py)),
-which calls `dashboard_install_plugin` in `hermes_cli/plugins_cmd.py`: the same
-module, and the same `_resolve_git_url`, as the command above.
+Source: Claude Code documentation, <https://code.claude.com/docs/en/discover-plugins>.
 
 ### Codex
 
-Codex reads Agent Plugins manifests: its loader looks for `plugin.json` at
-the plugin root and recognises
-`https://agent-plugins.org/schemas/1.0.0/plugin.schema.json` as a supported
-schema identifier, falling back to `.claude-plugin/plugin.json` when there is
-no root manifest. Source: Codex's own source,
-[`codex-rs/utils/plugins/src/plugin_namespace.rs`](https://github.com/openai/codex/blob/e3e5ad28470f6a225301518c30a66e749a880164/codex-rs/utils/plugins/src/plugin_namespace.rs).
-
-It reads this repository's marketplace index too: `.claude-plugin/marketplace.json`
-is one of the marketplace manifest paths Codex looks for, it needs only a
-top-level `name` and `plugins`, each entry needs only `name` and `source`, and
-a `source` string beginning with `./` is resolved against the marketplace root
-— the directory that holds `.claude-plugin/` — which is the form used here
-([`codex-rs/core-plugins/src/marketplace.rs`](https://github.com/openai/codex/blob/e3e5ad28470f6a225301518c30a66e749a880164/codex-rs/core-plugins/src/marketplace.rs)).
-
 ```
 codex plugin marketplace add Akurganow/ai-plugins --ref main
-codex plugin add howp@ai-plugins
+codex plugin add <name>@ai-plugins
 ```
 
-Source: Codex's own CLI, where its command help lives — the `after_help`
-examples in
-[`codex-rs/cli/src/marketplace_cmd.rs`](https://github.com/openai/codex/blob/e3e5ad28470f6a225301518c30a66e749a880164/codex-rs/cli/src/marketplace_cmd.rs)
-give `codex plugin marketplace add owner/repo --ref main`, and those in
-[`codex-rs/cli/src/plugin_cmd.rs`](https://github.com/openai/codex/blob/e3e5ad28470f6a225301518c30a66e749a880164/codex-rs/cli/src/plugin_cmd.rs)
-give `codex plugin add PLUGIN@MARKETPLACE`. The marketplace name is not
-chosen on the command line: Codex takes it from the `name` field of the index
-it has just fetched, which here is `ai-plugins` (`validate_marketplace_root` in
-`codex-rs/core-plugins/src/marketplace.rs`, not either CLI file).
+Source: Codex documentation, <https://developers.openai.com/plugins/build/plugins>, for `marketplace add`; Codex source, [`plugin_cmd.rs`](https://github.com/openai/codex/blob/e3e5ad28470f6a225301518c30a66e749a880164/codex-rs/cli/src/plugin_cmd.rs), for `plugin add`.
 
 ### Oh-My-Pi
 
-Oh-My-Pi installs this repository as a marketplace and reads the package
-through a discovery provider of its own that implements Agent Plugins 1.0.0,
-so nothing here is installed in a reduced form for it. Its preferred catalogue
-path is `.omp-plugin/marketplace.json`; `.claude-plugin/marketplace.json` —
-the only one published here — is the documented "Claude Code-compatible
-fallback", read when the first is absent.
-
 ```
 omp plugin marketplace add Akurganow/ai-plugins
-omp plugin install howp@ai-plugins
+omp plugin install <name>@ai-plugins
 ```
 
-Source: Oh-My-Pi's own documentation. Its site is unreachable from the network
-this was written on; the same pages are published as Markdown in the project's
-repository under `docs/`, and that is what was read.
+Source: Oh-My-Pi documentation, [`docs/marketplace.md`](https://github.com/can1357/oh-my-pi/blob/a33cc26824e3c91edd9fa42d681f10dceb4ac2f0/docs/marketplace.md).
 
-The two catalogue paths, `owner/repo` as a marketplace source, and both
-commands above are in
-[`docs/marketplace.md`](https://github.com/can1357/oh-my-pi/blob/a33cc26824e3c91edd9fa42d681f10dceb4ac2f0/docs/marketplace.md).
-The same install pair closes the publishing workflow in
-[`docs/skills/authoring-marketplaces.md`](https://github.com/can1357/oh-my-pi/blob/a33cc26824e3c91edd9fa42d681f10dceb4ac2f0/docs/skills/authoring-marketplaces.md),
-which also fixes the plugin identifier as `name@marketplace-name` — the
-marketplace half being the `name` inside the catalogue rather than the
-repository it was fetched from, which here is `ai-plugins` either way. Both
-halves must be lowercase letters, digits, hyphens and dots, must start and end
-with a letter or digit, and must stay within 64 characters; `ai-plugins` and
-`howp` pass. A plugin `source` written as a string must begin with `./` and
-resolve inside the marketplace root, which is the form both entries in this
-repository's index use.
-
-A local clone is pointed at directly instead, with a documented flag —
-`--plugin-dir <dir>`, "Add a local plugin directory to discovery (repeatable)"
-([`docs/cli-reference.md`](https://github.com/can1357/oh-my-pi/blob/a33cc26824e3c91edd9fa42d681f10dceb4ac2f0/docs/cli-reference.md)):
+### Hermes
 
 ```
-omp --plugin-dir plugins/howp
+hermes plugins install Akurganow/ai-plugins/plugins/<name> --no-enable
+hermes plugins list
+hermes plugins enable <name>
 ```
 
-Documentation names the provider that reads the package either way and says
-where it ranks — `agent-plugins`, "Agent Plugins standard packages: skills and
-MCP servers", priority 75, above the `claude-plugins` and `codex` providers,
-which sit at 70
-([`docs/context-files.md`](https://github.com/can1357/oh-my-pi/blob/a33cc26824e3c91edd9fa42d681f10dceb4ac2f0/docs/context-files.md),
-[`docs/config-usage.md`](https://github.com/can1357/oh-my-pi/blob/a33cc26824e3c91edd9fa42d681f10dceb4ac2f0/docs/config-usage.md))
-— and stops there. What that provider reads is a claim from source:
-[`agent-plugins.ts`](https://github.com/can1357/oh-my-pi/blob/a33cc26824e3c91edd9fa42d681f10dceb4ac2f0/packages/coding-agent/src/discovery/agent-plugins.ts)
-takes its roots from marketplace installs and `--plugin-dir`, discovers skills
-as the immediate children of `skills/` whose `SKILL.md` resolves to a regular
-file inside the plugin root, and takes MCP servers from a root `mcp.json`.
-[`agent-plugin-format.ts`](https://github.com/can1357/oh-my-pi/blob/a33cc26824e3c91edd9fa42d681f10dceb4ac2f0/packages/coding-agent/src/discovery/agent-plugin-format.ts),
-same repository and revision, is where a root `plugin.json` is classified: a
-`$schema` under `https://agent-plugins.org/schemas/` that is not the 1.0.0
-identifier rejects the whole package, and a skill whose front matter carries a
-field outside the Agent Skills specification's six, or a `name` that differs
-from its directory, is skipped while the rest of the package loads. It is also
-what keeps the reading single: `legacyProviderAllowed` there stands the
-`claude-plugins` and `omp-plugins` providers down from the skills and MCP
-surfaces of any root that declares the standard, so this package's skill is
-loaded once, by the standard's loader, and not a second time through the
-vendor manifest symlink.
+Keep the `plugins/<name>` suffix: without it Hermes copies the whole repository, and its [two-level scan](https://github.com/NousResearch/hermes-agent/blob/a0ca7c19204e514f9590ce3b812e029b315ab9e9/website/docs/user-guide/features/plugins.md) finds no package.
 
-### Any client implementing Agent Plugins 1.0.0
+Source: Hermes documentation, [`developer-guide/plugins/index.md`](https://github.com/NousResearch/hermes-agent/blob/a0ca7c19204e514f9590ce3b812e029b315ab9e9/website/docs/developer-guide/plugins/index.md), for the commands; Hermes source, [`plugins_cmd.py`](https://github.com/NousResearch/hermes-agent/blob/a0ca7c19204e514f9590ce3b812e029b315ab9e9/hermes_cli/plugins_cmd.py) (`_resolve_git_url`), for the subdirectory form and what happens without it.
 
-Point it at `plugins/howp`, the plugin root. Everything the standard requires
-is there: the manifest at the plugin root with the canonical `$schema`, and
-skills in `skills/`. Pointing a client at the repository instead is a
-different operation that the standard does not describe — see
-[Compatibility](#compatibility).
+<!-- install:end -->
+
+What differs between clients:
+
+- **Claude Code**: the desktop app installs from configured marketplaces,
+  through the **+** button, then **Plugins**, then **Add plugin**. Source:
+  [Desktop](https://code.claude.com/docs/en/desktop), documentation, read
+  2026-09-25.
+- **Codex**: start a new session after you install a plugin, before you use
+  its skills. Source: [Plugins](https://learn.chatgpt.com/docs/plugins),
+  documentation, read 2026-09-25.
+- **Oh-My-Pi**: `omp --plugin-dir plugins/<name>` loads a plugin from a local
+  clone. Source: [`docs/cli-reference.md`](https://github.com/can1357/oh-my-pi/blob/a33cc26824e3c91edd9fa42d681f10dceb4ac2f0/docs/cli-reference.md),
+  documentation.
+- **Hermes**: installed with `--no-enable`, a package stays disabled until
+  `hermes plugins enable <name>` runs. Source:
+  [`developer-guide/plugins/index.md`](https://github.com/NousResearch/hermes-agent/blob/a0ca7c19204e514f9590ce3b812e029b315ab9e9/website/docs/developer-guide/plugins/index.md)
+  and [`user-guide/features/plugins.md`](https://github.com/NousResearch/hermes-agent/blob/a0ca7c19204e514f9590ce3b812e029b315ab9e9/website/docs/user-guide/features/plugins.md),
+  documentation.
+
+A client that implements Agent Plugins 1.0.0 can load `plugins/<name>`
+directly. [Client notes](#client-notes) and
+[What conformance buys](#what-conformance-buys) go into more depth.
 
 ## Plugins
 
-| Plugin | What it does | Status |
-|---|---|---|
-| `howp` | Personal probability dashboard: interests → measurable questions → prediction-market probabilities → a local Markdown dashboard of what became more or less likely | working. The skill reads [`plugins/howp/binaries.json`](plugins/howp/binaries.json) for the release, the targets and what an archive holds — that file is the record, not this cell — downloads the archive for a target it names, verifies it against the digest recorded there, and drives one binary, `hp`; it stops on any platform the file does not name. `hp` opens no socket and reads no clock: the agent fetches each market body itself and passes the moment in, and every judgement is the agent's. The published `howp-v0.3.1` binary archive was installed and run by the skill's own procedure on Linux `x86_64` on 2026-09-03 — the package itself through no client — and nothing has been run on macOS |
-| `prose-discipline` | An engineering prose standard for everything an agent writes: sentence structure, plain vocabulary, comment hygiene, artifact formats and slop pruning, each stated as a rule a reader can check | working. The standard is three files a reader can open — [`rules/prose-discipline.md`](plugins/prose-discipline/rules/prose-discipline.md) for the mandatory core, the skill for the protocol, and its references for the depth, the substitution table and a calibration corpus. It reaches a session three ways, and which one a client takes is that client's business: a rule file carrying `alwaysApply: true`, a `SessionStart` hook that prints the core for the host to inject, and the skill itself at the fixed `skills/` location. Nothing here has been installed or observed working from this repository as published, and the upstream checks the package was assembled from are not reproduced. The vendor manifest is a symlink to the root manifest, so a client that reads components only from vendor manifest fields finds the skill and not the rule file or the hook |
-| `toc-thinking` | Goldratt's Theory of Constraints Thinking Processes for software systems: a Current Reality Tree to the core problem, an Evaporating Cloud to the conflict that keeps it in place, a Future Reality Tree to check the injection, a Prerequisite Tree and a Transition Tree to plan it | not installed from here. One skill and three references, checked against the TOCICO Dictionary and Dettmer's *The Logical Thinking Process*, read from public copies that [`references/sources.md`](plugins/toc-thinking/skills/toc-thinking/references/sources.md) names by commit. The Categories of Legitimate Reservation are given as Dettmer's eight, with TOCICO's count of seven noted. Nothing has been installed or observed working from this repository as published |
-| `triz` | TRIZ for engineering trade-offs in software: the classic contradiction matrix with the 39 parameters and the 40 principles for a trade-off that can be named, the separation principles for a physical contradiction, and ARIZ-85C for a problem the matrix did not crack | not installed from here. One skill and five references. The matrix has 1,248 non-empty cells, the majority reading of public transcriptions compared cell by cell. [`references/matrix.md`](plugins/triz/skills/triz/references/matrix.md) lists every disputed cell. The four ARIZ formulas are quoted from a public copy of the Russian text, and Table 2 and three steps from a public English text. [`references/sources.md`](plugins/triz/skills/triz/references/sources.md) names each copy by commit and what could not be opened. Nothing has been installed or observed working from this repository as published |
-| `design-review` | A design review for complexity with the principles and red flags of Ousterhout's *A Philosophy of Software Design*: symptom and cause, module depth, the fourteen red flags, together or apart, errors defined out of existence, and findings ranked by how often the part is touched | not installed from here. One skill and six references. The book's two closing lists, sixteen principles and fourteen red flags, were read verbatim from three public copies that agree, and every chapter quotation is a few sentences at most, from public translation repositories that carry the English. For method length, comments and test-driven development, the other side is quoted from the written discussion between Ousterhout and Robert Martin; for the book's other positions the skill says no text of the other side was read. [`references/sources.md`](plugins/design-review/skills/design-review/references/sources.md) names each copy by commit and the studies that could not be opened. Nothing has been installed or observed working from this repository as published |
-| `cognitive-load` | What a reader must keep in mind at the same time to do a task in a code base, a system or a process, sorted into the load the task needs and the load the structure adds, with the change that removes the second | not installed from here. One skill and four references. Cognitive load theory was read mostly as abstracts mirrored in public repositories, and the references say where each kind of load is attributed, that Sweller's 1988 abstract names none of the three (the paper's body was not read), and that the theory's authors now define germane load in terms of intrinsic load. The catalogue of extraneous load is Zakirullin's essay, CC BY 4.0, read whole at the commit named. [`references/sources.md`](plugins/cognitive-load/skills/cognitive-load/references/sources.md) says for each paper whether its abstract, its text or nothing was opened. Nothing has been installed or observed working from this repository as published |
+Each name links to the plugin's README.
+
+<!-- plugins:start -->
+
+| Plugin | What it does |
+| :-- | :-- |
+| [cognitive-load](plugins/cognitive-load/README.md) | Separates the cognitive load a task needs from the load a code base's structure adds, and names the change that removes the second. |
+| [design-review](plugins/design-review/README.md) | Reviews a software design for complexity with the red flags and principles of Ousterhout's A Philosophy of Software Design, each finding cited by chapter. |
+| [howp](plugins/howp/README.md) | Turn what you follow into measurable questions, bind them to Polymarket and Manifold markets, and write a forecast from their probabilities and the agent's judgement. |
+| [prose-discipline](plugins/prose-discipline/README.md) | An engineering prose standard for agent-written text: short active sentences, plain words, comments that explain why, and labelled review comments. |
+| [toc-thinking](plugins/toc-thinking/README.md) | Applies Goldratt's Thinking Processes to software: finds the core problem behind many symptoms, resolves the conflict that sustains it, and plans the change. |
+| [triz](plugins/triz/README.md) | Resolves software trade-offs with TRIZ: the contradiction matrix and 40 inventive principles, the separation principles, and ARIZ-85C walked part by part with the user. |
+
+<!-- plugins:end -->
+
+## Trust
+
+Claude Code's documentation says: "Make sure you trust a plugin before
+installing, updating, or using it." It also says a plugin "can execute
+arbitrary code on your machine with your user privileges". Source:
+[Plugin security and trust](https://code.claude.com/docs/en/plugins/security),
+Claude Code documentation, read 2026-09-25.
+
+Read a plugin's README and files before you install it. `howp` downloads a
+released binary, checks its sha256 and runs it. `prose-discipline` runs a
+shell script from its hooks when a session or a subagent starts, in clients
+that run plugin hooks. The other plugins carry instructions and reference text
+only.
 
 ## Layout
 
 ```
-.claude-plugin/marketplace.json    the marketplace index: Claude's path and format,
-                                   read by Codex and Oh-My-Pi as well; pointers only,
-                                   no plugin metadata of its own and no version of
-                                   its own
+.claude-plugin/marketplace.json   catalogue index, generated from every plugin.json
 plugins/<name>/
-  plugin.json                      the manifest — Agent Plugins 1.0.0, at the plugin root
-  .claude-plugin/plugin.json       symlink → ../plugin.json, Claude's documented manifest
-                                   path; it holds no content of its own
-  README.md                        every package but howp: what it does, what ships,
-                                   what has and has not been verified
-  binaries.json                    howp only. The released binary set: tag, targets,
-                                   archives, download URLs and their sha256 digests.
-                                   Written by the release path. The skill reads it and
-                                   nothing duplicates it
-  skills/<name>/SKILL.md           the skill, per the Agent Skills specification
-  skills/<name>/references/*       the skill's own bundled references, loaded by the
-                                   agent when a procedure needs them
-tools/check-conformance.py         the conformance check
-tools/schemas/                     the official manifest schema, vendored
-.github/workflows/conformance.yml  runs the check on pushes to main and on pull
-                                   requests
+  plugin.json                     manifest, Agent Plugins 1.0.0
+  .claude-plugin/plugin.json      generated copy of plugin.json, for Claude Code
+  README.md                       what the plugin does and how to use it
+  LICENSE                         generated copy of the root LICENSE
+  skills/<skill>/SKILL.md         a skill, Agent Skills format
+  skills/<skill>/references/      files the skill reads when a step needs them
+  binaries.json                   howp only: released binaries and their sha256,
+                                  written by the howp release
+tools/check-conformance.py        the conformance check
+tools/regenerate.sh               rewrites every generated file from its source
+tools/templates/                  sources of generated text
+tools/schemas/                    vendored Agent Plugins manifest schema
+tools/package.json                pins doctoc for tools/regenerate.sh
+tools/package-lock.json           pins doctoc's dependency tree
+docs/clients.md                   how each client loads a package, with sources
+docs/design.md                    why the repository is built this way
+cog.toml                          release configuration, one entry per package
+                                  but howp
+.github/                          CI workflows and issue forms
 ```
 
-`howp`'s `version`, its `binaries.json` and its skill's
-`references/commands.md` are written by the release that publishes its
-binaries, and by nothing here — `.agents/rules/conformance.md` carries the
-rule. The other packages have no release job, and their `version` moves by
-hand in the change that alters the package.
+A plugin may add directories of its own, such as `hooks/` and `rules/` in
+`prose-discipline`. Its README describes them.
 
-For `howp`, that has a consequence worth stating rather than working
-around. The standard
-does not require a client to care about `version` — §10.2 says only that
-clients "MAY use `version` to determine whether updates are available and
-whether caches are stale" — but Claude Code does: "If set (here or in
-`plugin.json`), the plugin is pinned to this string and users only receive
-updates when it changes"
-(<https://code.claude.com/docs/en/plugin-marketplaces>). So a change to a
-package made between two releases — a corrected sentence in a skill, say —
-reaches such a client at the next release and not before. That is accepted.
+## Contributing
 
-## Cloning on Windows
+Pull requests are welcome. [CONTRIBUTING.md](CONTRIBUTING.md) covers:
 
-`plugins/howp/.claude-plugin/plugin.json` is a symlink to the manifest one
-directory up, recorded in git as mode 120000. Git only materialises it as a
-link where the checkout permits symlinks. With `core.symlinks=false` — git's
-default on Windows — git writes a 14-byte text file containing
-`../plugin.json` instead, at exactly the path Claude Code reads a manifest
-from. Claude Code's documented failure for that file is `Plugin <name> has a
-corrupt manifest file at .claude-plugin/plugin.json. JSON parse error: ...`,
-which is worse than having no manifest at all: the same reference calls the
-manifest optional and auto-discovers components when it is absent. Source:
-Claude Code's plugin reference
-(<https://code.claude.com/docs/en/plugins-reference>).
+- the issue forms
+- the commit format
+- the local checks
+- how to propose a package
 
-So clone with symlinks enabled:
+## Help
 
-```
-git clone -c core.symlinks=true https://github.com/Akurganow/ai-plugins
-```
+[SUPPORT.md](SUPPORT.md) says where to ask a question or report a defect.
+Report a vulnerability privately, as [SECURITY.md](SECURITY.md) describes.
 
-or set it once with `git config --global core.symlinks true`. On Windows the
-setting only takes effect where the account may create symlinks at all, which
-is what Developer Mode grants. `tools/check-conformance.py` fails on such a
-checkout, and names that cause in the finding rather than reporting only a
-second copy of the manifest.
+## License
 
-The plugin manifest is not the only symlink here: `.claude/rules` is a link to
-`.agents/rules` and materialises as a 16-byte text file under the same
-setting. The conformance check speaks only for the plugin packages, so that
-one is not covered by it — the clone flag above is what covers both.
+[MIT](LICENSE), © Alexander Kurganov. Each plugin carries a copy of the
+license.
 
-The vendor symlink is kept rather than dropped, and it is not free. It is the
-only manifest location Claude Code documents, so dropping it would cost every
-Claude user the plugin's version, description, author and license in order to
-protect one platform's default checkout setting, and Claude Code documents
-this exact arrangement as supported: a symlink whose target resolves "within
-the plugin's own directory … is preserved as a relative symlink in the cache,
-so it keeps resolving to the copied target at runtime". The cost is in
-Hermes, which validates a package by resolving `plugin.json` inside the
-directory it was handed: when its scanner descends into `plugins/howp` and
-reaches `.claude-plugin/` as if that were a package root, it logs `Failed to
-parse …/.claude-plugin/plugin.json: plugin.json must be a regular file within
-the plugin root`. Executed, and confirmed non-fatal — that scan finds nothing
-at that depth either way, and the supported install path never reaches it —
-but it is a warning in a mandatory client that the arrangement causes.
+## What conformance buys
 
-## Checking conformance
+Agent Plugins 1.0.0 describes a plugin as a directory with a single root
+(§4.1). A conforming client can at least load a plugin from a directory path
+(§11.1). Every plugin here keeps its manifest at the root with the canonical
+`$schema` (§5.1, §5.2). Its skills sit in the fixed `skills/` location (§6.1).
+Source: [Agent Plugins 1.0.0](https://agent-plugins.org/specification), the
+specification.
 
-The check is `tools/check-conformance.py`, and it must exit 0. It verifies the
-parts of Agent Plugins 1.0.0 this repository is responsible for.
+The specification defines no repository-level catalogue. How a client gets
+from this repository to a plugin root is specific to that client. So each
+install command above cites that client's own source.
 
-It imports `jsonschema` and `yaml`, so both have to be importable by whatever
-runs it. Installing them is a fact about your machine rather than of this
-repository, so no command for it is stated here; one environment's way of
-doing it, pinned, is in `.github/workflows/conformance.yml`, which is also
-where the same check runs in CI on pushes to `main` and on every pull request.
+## Client notes
+
+What each client reads from a package, with sources, is in
+[docs/clients.md](docs/clients.md). The reasons behind the repository's design
+are in [docs/design.md](docs/design.md).
+
+Each note names its source and says whether it is documentation or source
+code. A link into a repository points at the commit at which the note holds.
+
+### Claude Code
+
+- The desktop app accepts marketplace and plugin names of at most 128
+  characters from letters, digits, `.`, `_` and `-`. A name starts with a
+  letter or digit. Every name here meets that rule. Source:
+  [Troubleshoot plugins](https://code.claude.com/docs/en/plugins/troubleshooting),
+  documentation, read 2026-09-25.
+- A change here reaches Claude Code users only after the plugin's next
+  release. It arrives through background auto-update once a user or an admin
+  turns that on. Otherwise it arrives when the user updates the plugin.
+  Source: [Host and maintain a marketplace](https://code.claude.com/docs/en/plugins/host-marketplace),
+  documentation, read 2026-09-25.
+
+### Codex
+
+- The ChatGPT desktop app can read `.claude-plugin/marketplace.json` as a
+  legacy-compatible marketplace. Source:
+  [Build plugins](https://developers.openai.com/plugins/build/plugins),
+  documentation, read 2026-09-25. The Codex CLI also
+  looks for a catalogue at that path. Source:
+  [`marketplace.rs`](https://github.com/openai/codex/blob/e3e5ad28470f6a225301518c30a66e749a880164/codex-rs/core-plugins/src/marketplace.rs#L23),
+  source code.
+- Codex identifies the marketplace by the catalogue's top-level `name`, `ai-plugins`.
+  Source: [Build plugins](https://developers.openai.com/plugins/build/plugins),
+  documentation, read 2026-09-25.
+- `codex plugin marketplace add` takes no name argument. Source:
+  `AddMarketplaceArgs` in
+  [`marketplace_cmd.rs`](https://github.com/openai/codex/blob/e3e5ad28470f6a225301518c30a66e749a880164/codex-rs/cli/src/marketplace_cmd.rs#L63-L83),
+  source code. Codex reads the name from the catalogue. Source:
+  `validate_marketplace_root` in
+  [`marketplace.rs`](https://github.com/openai/codex/blob/e3e5ad28470f6a225301518c30a66e749a880164/codex-rs/core-plugins/src/marketplace.rs#L312-L321),
+  source code.
+
+### Oh-My-Pi
+
+- Oh-My-Pi prefers `.omp-plugin/marketplace.json` and falls back to
+  `.claude-plugin/marketplace.json`, the only catalogue here. Source:
+  [`docs/marketplace.md`](https://github.com/can1357/oh-my-pi/blob/a33cc26824e3c91edd9fa42d681f10dceb4ac2f0/docs/marketplace.md),
+  documentation.
+- A plugin identifier is `name@marketplace-name`, and the marketplace half is
+  the catalogue's `name` field. Source:
+  [`docs/skills/authoring-marketplaces.md`](https://github.com/can1357/oh-my-pi/blob/a33cc26824e3c91edd9fa42d681f10dceb4ac2f0/docs/skills/authoring-marketplaces.md),
+  documentation.
+
+### Hermes
+
+- Hermes reads no per-repository catalogue. It installs a package by
+  identifier, and its community index is `NousResearch/hermes-plugin-index`.
+  Source: [`user-guide/features/plugins.md`](https://github.com/NousResearch/hermes-agent/blob/a0ca7c19204e514f9590ce3b812e029b315ab9e9/website/docs/user-guide/features/plugins.md),
+  documentation.
+- In the desktop app, a `hermes://plugin/install?repo=owner/repo` link
+  installs a plugin after a confirmation dialog. An agent-plugin install from
+  that link goes through the same install-time security scanning as
+  `hermes plugins install`. Source: the "One-click install links (Desktop)"
+  section of
+  [`user-guide/features/plugins.md`](https://github.com/NousResearch/hermes-agent/blob/a0ca7c19204e514f9590ce3b812e029b315ab9e9/website/docs/user-guide/features/plugins.md),
+  documentation.
+- Hermes scans a package when it installs it. A `caution` verdict shows the
+  findings and asks `Install anyway? [y/N]`. A `dangerous` verdict blocks the
+  install, and `--force` does not override it. Source:
+  [`user-guide/features/plugins.md` L625–L643](https://github.com/NousResearch/hermes-agent/blob/a0ca7c19204e514f9590ce3b812e029b315ab9e9/website/docs/user-guide/features/plugins.md#L625-L643),
+  documentation.
+
+## The conformance check
+
+`tools/check-conformance.py` checks the parts of Agent Plugins 1.0.0 that this
+repository controls. It validates each manifest against the vendored schema in
+`tools/schemas/`. It also checks what a schema cannot express:
+
+- where files sit
+- where paths resolve
+- what skill front matter says
+
+CI runs it on every pull request and on pushes to `main`, as
+[`conformance.yml`](.github/workflows/conformance.yml) defines.
+[CONTRIBUTING.md](CONTRIBUTING.md#run-the-checks) shows how to run it locally.

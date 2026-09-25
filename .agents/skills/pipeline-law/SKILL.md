@@ -12,9 +12,10 @@ changing one is a pull request he reviews, rather than four hand edits in a
 web form.
 
 **There is still no spec template, no lint script and no gate script.**
-`.agents/rules/conformance.md` says this repository runs exactly one check of
-its own, and the pipeline adds none. What the repository carries is the law
-and the roles; what it does not carry is anything that executes them.
+`.agents/rules/conformance.md` names the two programs this repository runs,
+its check and its regeneration entry point, and the pipeline adds none. What
+the repository carries is the law and the roles; what it does not carry is
+anything that executes them.
 
 **Two things are deliberately not here, and they belong to whatever fires the
 agent**: the measured facts of that caller's environment, and the clone
@@ -126,6 +127,8 @@ that accumulates.
 
 | Label | Added by | Removed by |
 | :-- | :-- | :-- |
+| `pipeline/intake` | the tracker Clerk, on a sustained finding still live; the owner | Clerk, when it takes the item |
+| `police-report` | every filer; Clerk, on a part it creates | nobody; it marks the population for good |
 | `pipeline/queued` | Clerk, at skeleton birth | Clerk, at promotion |
 | `spec/needs-work` | Clerk at promotion; Reviewer; the gate; the sweep | Writer, at the end of a revision; the sweep |
 | `spec/awaiting-review` | Writer; the sweep | Reviewer; the sweep |
@@ -141,8 +144,13 @@ remove followed by an apply.
 The owner may add or remove anything at any time. Read that as an override.
 
 Labels the pipeline reads but does not own are conventions, never guards:
-`court/tried`, `triage/*`, `audit:*`, `police-report`, `no-trial`. Every skip
-test is positive and built from the pipeline's own markers.
+`court/tried`, `triage/*`, `audit:*`, `no-trial`. Every skip test is
+positive and built from the pipeline's own markers.
+
+The pipeline sees only the machine population, defined once in
+`.agents/skills/github-needs/SKILL.md` under **The machine population**.
+Read the definition there. Every issue a pipeline role lists, reads, labels
+or splits is in that population.
 
 ### A family of items
 
@@ -165,10 +173,12 @@ read from `raw.githubusercontent.com` on 2026-09-08.
 This machine uses one level and at most four parts. A part that is itself
 too big is a report line, never a second split.
 
-**A part is an ordinary issue.** It has its own body, its own comments and
-its own lifecycle. The court tries it, the tracker Clerk closes it, and the
-police read it in the open list, all exactly as they treat any issue. The
-relation is GitHub's own state, not a sentence in a body.
+**A part is an ordinary issue in the machine population.** The Clerk files
+it with `police-report` and its own fingerprint line. It has its own body,
+its own comments and its own lifecycle. The court tries it, the tracker
+Clerk closes it, and the police read it, all exactly as they treat any issue
+in that population. The relation is GitHub's own state, not a sentence in a
+body.
 
 **The brief names the family.** A pull request built from a part carries a
 `## Part of` section naming the parent and every sibling. Two things follow,
@@ -669,15 +679,16 @@ for one is refused over it.
 
 | Path | Why |
 | :-- | :-- |
-| `plugins/*/binaries.json` | written by the release job, never by hand |
-| the `version` field of any `plugins/*/plugin.json` | the same |
+| `plugins/*/binaries.json` | written by a release job, never by hand |
+| the `version` field of any `plugins/*/plugin.json` or its `.claude-plugin/plugin.json` copy | the same |
 | `plugins/*/skills/*/references/commands.md` | the same |
+| `plugins/*/CHANGELOG.md` | written by `.github/workflows/release.yml`, never by hand |
 | `tools/schemas/**` | a verbatim copy of a published schema |
 | `.agents/**` | the rules the machine is governed by |
 
-`.agents/rules/conformance.md` carries the rule on the first three. A finding
-that one of those files is wrong is a defect of the release job in the
-repository that runs it. The honest outcome here is a comment saying so.
+`.agents/rules/conformance.md` carries the rule on the first four. A finding
+that one of those files is wrong is a defect of the release job that
+writes it. The honest outcome here is a comment saying so.
 
 On `tools/schemas/**`, `conformance.md` says it "is never edited to make a
 check agree with a package — that inverts the whole arrangement: the package
@@ -768,8 +779,10 @@ The check is mechanical. That makes it cheap and repeatable, not
 unarguable: a reader who thinks it is wrong should say so.
 
 `plan.md` has no `## Tests first`, and the omission is deliberate. This
-repository ships prose, manifests and one check. Its verification is
-`tools/check-conformance.py` plus re-reading every line the change quotes.
+repository ships prose, manifests, one check and one regeneration entry
+point. Its verification is `bash tools/regenerate.sh`, which must leave
+nothing to commit, then `tools/check-conformance.py`, plus re-reading every
+line the change quotes.
 
 Where a change touches `tools/check-conformance.py`, `## Verification` names
 the malformed package the new rule must reject, and the command that

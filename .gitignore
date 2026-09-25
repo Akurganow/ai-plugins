@@ -1,4 +1,7 @@
 # The conformance check runs as __main__ and caches nothing, so an ordinary
 # run leaves no bytecode. Importing it (a REPL, py_compile, a future test)
-# does, and that is the only generated thing this repository can produce.
+# does.
 __pycache__/
+
+# tools/regenerate.sh installs doctoc here from tools/package-lock.json.
+tools/node_modules/

@@ -1,9 +1,10 @@
 # Slop: what generator residue looks like
 
 What a text generator leaves behind and a person would not have written on
-purpose. This repository is prose almost entirely — a README, a skill with
-its references, one check, one workflow — and its whole value is that its
-sentences hold (`.agents/rules/claims.md`). A sentence that holds nothing is
+purpose. This repository is prose almost entirely: READMEs, skills with
+their references, one check, one regeneration entry point, its CI. Its
+whole value is that its sentences hold (`.agents/rules/claims.md`). A
+sentence that holds nothing is
 the cheapest thing to add here and the hardest to see in review, because it
 reads exactly like the kind that holds. Read by any reviewer, a person or an
 unattended run. What the conformance check decides is owned by
@@ -15,9 +16,10 @@ cannot read.
 > Does this text carry a fact a reader cannot get from the text or the code
 > beside it, in the same file?
 
-A comment or a name in the check, a step name in the workflow, a paragraph
-of the README or the skill, a `description` in a manifest: no fact left over
-is noise; a false fact is a lie. Judge the sentence, not the block: a
+Ask it of every comment and name in the check and in `tools/regenerate.sh`.
+Ask it of every step name in a workflow, every paragraph of the README or a
+skill, and every manifest `description`. No fact left over is noise; a false
+fact is a lie. Judge the sentence, not the block: a
 paragraph that states a reason and adds one empty sentence is a reason, not
 a finding, and so is a reason with a hedge or a reassurance word inside it.
 One excerpt can hold several findings; each has one kind, and when two kinds
@@ -31,10 +33,7 @@ evidence.
    name, hedges and reassurance words ("robust", "seamlessly", "simply")
    standing in for a fact, a sentence that exists to make a section look
    complete. Measurement: the content words against the text and code
-   beside them, nothing left over. Not noise: a sentence that says what was
-   not verified. `claims.md` makes that sentence load-bearing — the one
-   `README.md` opens its install section with carries a fact a reader acts
-   on, and reads like a hedge only to an eye that has not read `claims.md`.
+   beside them, nothing left over.
 2. **`lying`** — text that contradicts this repository: a README sentence
    the check does not do, a step name the step does not perform, a
    `description` the skill does not keep, a count the tree does not have, a
@@ -76,13 +75,19 @@ Never a finding:
   workflow's comments say why a commit sha and not a tag. Other reviews
   read these as evidence.
 - **What a release writes.** `version` in `plugins/howp/plugin.json`,
-  `plugins/howp/binaries.json` and
-  `plugins/howp/skills/howp/references/commands.md` are machine-written,
+  `plugins/howp/binaries.json`,
+  `plugins/howp/skills/forecast/references/commands.md` and the
+  `plugins/howp/.claude-plugin/plugin.json` byte copy are machine-written,
   and `conformance.md` says by whom. A wrong sentence in one is a defect of
   the release job, in the repository that runs it — never judged here.
-- **The claims discipline's sentences.** The statement of what was not
-  verified, the per-fact source and its kind, a date and a tag beside a
-  measurement. To an outside eye these read as hedging; each is a fact.
+  For every package but howp, `version` in `plugins/<name>/plugin.json` and
+  its `.claude-plugin/plugin.json` copy, and `plugins/<name>/CHANGELOG.md`,
+  are machine-written too. `.github/workflows/release.yml` writes them, and
+  they are never judged here either. Each copy is judged through its source,
+  the root `plugin.json`.
+- **A cited source and its date.** The per-fact source and its kind, a date
+  and a tag beside a measurement. To an outside eye these read as hedging;
+  each is a fact.
 - **A section number beside every claim about the specification.**
 - **The vendored schema.** `tools/schemas/` is a verbatim copy; its text
   belongs to its publisher.
@@ -90,13 +95,18 @@ Never a finding:
 
 ## The fence
 
-`tools/check-conformance.py` is the only program here and the only fence:
-where files sit, what a symlink resolves to, what a manifest and a skill's
-front matter say, decided against the published schema and against the
-clause quoted beside each hand check. Nothing keys on vocabulary, and
-nothing should — words have legitimate readings, and the sentence
-`claims.md` protects would be the first casualty of a hedge filter.
-Anything the check names cannot exist on a green `main`; a finding of it is
-a misread. Slop is judged strictly above it: text that passes the check and
+`tools/check-conformance.py` fences what a package's manifest and skills say.
+It checks where files sit, what a symlink resolves to, and what a manifest and
+a skill's front matter say. It decides against the published schema and
+against the clause quoted beside each hand check. Three client validators in
+`.github/workflows/conformance.yml` fence the same packages: `claude plugin
+validate`, `skills-ref validate`, and `hermes plugins validate` with
+`hermes plugins doctor --ci`. Nothing keys
+on vocabulary, and nothing should — words have legitimate readings. A hedge
+filter would first catch the sourced, dated sentences `claims.md` requires.
+Anything the check or a validator names cannot exist on a green `main`; a
+finding of it is a misread. The same holds for a generated copy that differs
+from its source: CI runs `tools/regenerate.sh` and fails on any difference.
+Slop is judged strictly above all of them: text that passes every check and
 still says nothing. A tell that recurs and could be named by a pattern is a
 proposal to the maintainer, not a check added on the spot.

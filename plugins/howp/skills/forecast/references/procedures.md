@@ -11,8 +11,9 @@
 # The three procedures
 
 Everything that is not the routine cycle is judgement — yours — landed by one
-`hp ingest` call that validates what came back. `SKILL.md` names the three and
-their landing commands; this file is what each one actually involves.
+`hp ingest` call that validates what came back. The `forecast` skill's
+`SKILL.md` names the three and their landing commands; this file is what
+each one actually involves.
 
 Two things hold across all three. **You supply judgement, never numbers**:
 every fact about a market is extracted from the market's own body, and there
@@ -112,7 +113,7 @@ command's own words. The wording, the link, the deadline and the resolution
 criteria are read out of `--from`, and the criteria hash is computed over that
 text — so nothing the venue publishes is typed by you, and a hash written here
 is comparable with one `hp matches stale` computes from a later body. The
-record is appended, or its verification replaced in place, keyed by question,
+record is appended, or its verdict replaced in place, keyed by question,
 source and ref.
 
 `--checked-at` has no default, for the reason `--ts` has none: `hp` reads no
@@ -189,7 +190,7 @@ generated, and its age in days. A digest that is not due is not rewritten.
 When one is due, write **one paragraph** over the numbers as they stand.
 `hp stats --repo "$W" --as-of "$TS" --json` is everything the page computes —
 the totals, and per question the probability, the 24-hour and 7-day deltas,
-the badges and the verification note. Write it against that.
+the badges and the verdict note. Write it against that.
 
 **What the validator refuses** — three rules, and none of them is about a
 number: no link, address or domain; no markup; no line break. An empty

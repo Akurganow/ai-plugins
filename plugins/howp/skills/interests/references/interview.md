@@ -126,11 +126,9 @@ One file per interest, a list at the top level.
 - `kind` — `binary` (one yes/no outcome) or `multi` (several mutually
   exclusive outcomes). Defaults to `binary`.
 - `horizon` — free text, but only a date lets a binding measure a market's
-  close date against it. The horizon convention in
-  `../forecast/references/procedures.md`, section 1, sets the verdict that
-  distance earns, and `hp` computes none of it. A vague horizon earns a
-  worse verdict, not a lenient one. Quote a bare date so YAML keeps it a
-  string.
+  close date against it. The horizon convention is in
+  `../forecast/references/procedures.md`, section 1. Quote a bare date so
+  YAML keeps it a string.
 - `status` — `active`, `resolved`, `expired` or `archived`. Defaults to
   `active`. **Only `active` questions are quoted**, which is also how a user
   parks something without deleting it.
@@ -163,12 +161,13 @@ wording.
 ## After writing the files
 
 Binding is what turns a question into something with a probability. The
-page lists a question with no market behind it as uncovered, and it never
-gets a number. Binding belongs to the `forecast` skill, so hand over to
-it now. Its first procedure, in `../forecast/references/procedures.md`,
-finds candidate markets, judges each one and lands the verdict with
-`hp ingest match`. It also runs `hp ingest check questions`, which reads
-these files strictly and reports what is wrong with them.
+page lists a question with no market behind it as uncovered, and that
+question never gets a number. Binding belongs to the `forecast` skill, so
+hand over to it now. Its first procedure, in
+`../forecast/references/procedures.md`, finds candidate markets, judges
+each one and lands the verdict with `hp ingest match`. It also runs
+`hp ingest check questions`, which reads these files strictly and reports
+what is wrong with them.
 
 When the `forecast` skill reports questions with no market, they are not a
 failure of the interview. They are often the ones worth rewording together.

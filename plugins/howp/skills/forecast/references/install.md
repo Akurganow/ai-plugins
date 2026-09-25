@@ -20,7 +20,7 @@ nothing useful.
 
 ## Step 0 — the platform gate
 
-Read `../../../binaries.json` — the manifest at the plugin root, two
+Read `../../binaries.json` — the manifest at the plugin root, two
 directories above `SKILL.md`. It is the authority on what has been published.
 Never hardcode its values, and read it again on every run rather than
 remembering it from the last one: each release rewrites it.
@@ -30,15 +30,14 @@ anything else means the shape has changed and the fields below may have
 moved, so stop and tell the user this skill is older than the package it is
 reading.
 
-**If the file is not there at all**, the skill arrived without the plugin
-package around it — some clients load skills but not plugins. Say so, and
-offer the choice rather than deciding for the user: install the whole
-package, or let you fetch
+**If the file is not there at all**, the skill arrived without its
+package. Say so, and offer the choice rather than deciding for the user.
+Either they install the whole package, or you fetch
 <https://raw.githubusercontent.com/Akurganow/ai-plugins/main/plugins/howp/binaries.json>
 and, for the host list,
 <https://raw.githubusercontent.com/Akurganow/ai-plugins/main/plugins/howp/plugin.json>.
-Note when offering it that the fetched copies are the weaker guarantee: the
-package's copy was fixed at the revision the user's client fetched, while
+When you offer it, say that the fetched copies are the weaker guarantee.
+The package's copy is the revision the user's client fetched, while
 whatever `main` serves today can change under them.
 
 ```sh
@@ -82,7 +81,7 @@ skill. Say so and stop rather than running something else out of it.
 
 ## Step 1 — the preflight: what has to be reachable, and by whom
 
-`../../../plugin.json` lists the hosts, under
+`../../plugin.json` lists the hosts, under
 `extensions["io.github.akurganow.ai-plugins"].network.hosts`. Probe each one
 before spending a download on it. On every run, probe again the first time
 the run needs a market. Reachability changes with the machine, its proxy and
@@ -120,14 +119,15 @@ the one in front of you rather than a generic one:
 
 The package declares its hosts in one machine-readable place, the
 `extensions` object of `plugin.json`. **It is not a grant.** No client is
-documented to read that field as network permission, and nothing in Agent
+documented to read that field as network permission. Nothing in Agent
 Plugins 1.0.0 or the Agent Skills specification gives a plugin a way to
-request it; the manifest schema says of `extensions` only that it is
-"Client-specific manifest data keyed by reverse-domain extension namespace"
-and that "Agent Plugins assigns no semantics to namespace object contents"
-(`tools/schemas/agent-plugins/1.0.0/plugin.schema.json`, the vendored copy
-of the published schema). The declaration is there to be quoted at a user who
-asks what to allow. This step is what actually finds out.
+request it. The manifest schema describes `extensions` in two sentences and
+nothing more (`tools/schemas/agent-plugins/1.0.0/plugin.schema.json`, the
+vendored copy of the published schema). It is "Client-specific manifest
+data keyed by reverse-domain extension namespace", and "Agent Plugins
+assigns no semantics to namespace object contents". The declaration is
+there to be quoted at a user who asks what to allow. This step is what
+actually finds out.
 
 ## Step 2 — is a checked copy already here?
 
@@ -266,9 +266,8 @@ tree lands. The stamp is a record that these bytes passed Step 4 *and*
 unpacked whole, and one written any earlier is worse than no stamp — Step 2's
 shortcut believes it.
 
-**`binaries.json` records no helper script.** Its `binaries` array names
-binaries only, and there is no field for a helper script. Whatever a script
-would have done, you do.
+A helper script has no field in `binaries.json`, and `SKILL.md` rule 5
+says what to do instead.
 
 **On macOS only:** Gatekeeper may refuse to open `hp` because it cannot
 check the developer. Offer a way past it only **after** Step 4 passed,
@@ -276,8 +275,9 @@ because the digest is what shows the file is the released one. Apple
 documents **Open Anyway** under System Settings → Privacy & Security
 ([Safely open apps on your Mac](https://support.apple.com/en-us/102445),
 Apple's documentation). The command-line route is
-`xattr -d com.apple.quarantine <file>`. Apple names `com.apple.quarantine`
-as the quarantine extended file attribute
+`xattr -d com.apple.quarantine <file>`, though the Apple documentation
+cited here does not tie that attribute to Gatekeeper. Apple names
+`com.apple.quarantine` as the quarantine extended file attribute
 ([App Store Connect notice](https://developer.apple.com/news/upcoming-requirements/?id=02182025a),
 Apple's developer documentation). `xattr -d` removes the named attribute
 (`man xattr`, the manual page macOS ships; documentation). Either route lifts

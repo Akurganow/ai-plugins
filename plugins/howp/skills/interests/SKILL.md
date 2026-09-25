@@ -37,5 +37,5 @@ decides the verdict a market can earn against that date.
 
 Hand over to the `forecast` skill once you have written the files. It gets
 `hp`, checks the files with `hp ingest check questions`, and binds each
-question to a market. This skill runs no binary: it talks with the person and writes
-YAML.
+question to a market. This skill runs no binary: it talks with the person
+and writes YAML.

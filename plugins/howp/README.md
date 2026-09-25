@@ -96,7 +96,7 @@ The `forecast` skill runs `uname`, `curl`, `tar`, `mktemp`, and `shasum` or
 ### Hosts
 
 [`plugin.json`](plugin.json) lists every host the `forecast` skill's steps
-reach, under `extensions["io.github.akurganow.ai-plugins"].network.hosts`:
+name, under `extensions["io.github.akurganow.ai-plugins"].network.hosts`:
 
 <!-- hosts:start -->
 
@@ -111,18 +111,19 @@ reach, under `extensions["io.github.akurganow.ai-plugins"].network.hosts`:
 
 The release archive comes from `github.com` and its redirect host,
 `release-assets.githubusercontent.com`, until the `forecast` skill caches a
-checked copy. `raw.githubusercontent.com` serves `binaries.json` and
-`plugin.json` only when a client loads it without its package. The
-Polymarket and Manifold hosts serve the market bodies. `hp` opens no socket:
-the agent fetches every URL `hp` names with its own tools, under your
-client's permission flow. The `forecast` skill probes each host on every run
-and reports a blocked one instead of routing around it.
+checked copy, as [`install.md`](skills/forecast/references/install.md)
+Step 3 records. `raw.githubusercontent.com` serves `binaries.json` and
+`plugin.json` only when a client loads the `forecast` skill without its
+package. The Polymarket and Manifold hosts serve the market bodies. `hp`
+opens no socket: the agent fetches every URL `hp` names with its own tools,
+under your client's permission flow. The `forecast` skill probes each host
+on every run and reports a blocked one instead of routing around it.
 
 The list is a floor, not a fence. The agent searches for candidate markets
-and for the story behind a move on its own. Those searches are not among the
-`forecast` skill's steps, and the hosts they reach are yours to allow. The list grants
-nothing: the Agent Plugins manifest schema assigns "no semantics to
-namespace object contents" of `extensions`
+and for the story behind a move on its own. The `forecast` skill names no
+host for those searches, and the hosts they reach are yours to allow. The
+standard gives the list no meaning: the Agent Plugins manifest schema
+assigns "no semantics to namespace object contents" of `extensions`
 ([schema](https://agent-plugins.org/schemas/1.0.0/plugin.schema.json),
 specification).
 
@@ -145,16 +146,15 @@ The workspace holds `interests.yaml`, `questions/`, `matches/` and `data/`.
 
 - It does not score a forecast against its outcome. Whether a forecast came
   true is yours to judge.
-- It does not search for markets. The agent searches, and `hp` validates
-  what the agent hands it.
+- The package does not search for markets. The agent searches, and `hp`
+  validates what the agent hands it.
 - It places no bets and needs no account on either venue.
 - The package calls no model. Every judgement comes from the agent you run
   it in.
 
 ## License
 
-MIT. See [LICENSE](LICENSE). Each release archive carries its own license
-file for `hp`.
+MIT. See [LICENSE](LICENSE).
 
 ## Help
 

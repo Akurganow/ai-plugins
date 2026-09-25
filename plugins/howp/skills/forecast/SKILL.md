@@ -24,8 +24,8 @@ lands beside those numbers, and `hp render` writes the page.
 raw response, appends the history, detects sharp moves and renders the page.
 **It opens no socket and reads no clock.** A program with its own sockets
 fails behind a sandbox or proxy that allows only the client's own fetches.
-It also cannot use the permission your client already holds. So you fetch, you pass the moment in,
-and every judgement is yours.
+It also cannot use the permission your client already holds. So you fetch,
+you pass the moment in, and every judgement is yours.
 
 This skill does not score a forecast against its outcome.
 `references/commands.md` lists `hp bench`, and no step here runs it.
@@ -57,17 +57,19 @@ holds the commands for these five rules.
    build from a musl build of the same platform. A guess can install a
    binary that will not start.
 3. **Run the preflight on every run.** Probe every host the manifest lists
-   with the tool you fetch with. Probe before the download and before the
-   first market fetch. Reachability depends on this machine and its proxy,
-   and it changes between runs. Never work around a blocked host: the block
-   is the user's decision or their network's. Tell the user what to allow,
-   and where, as `install.md` Step 1 says.
+   with the tool you fetch with. The download itself probes `github.com`
+   and its redirect host, so those need no separate probe. Probe the others
+   before the download and before the first market fetch. Reachability
+   depends on this machine and its proxy, and it changes between runs.
+   Never work around a blocked host: the block is the user's decision or
+   their network's. Tell the user what to allow, and where, as `install.md`
+   Step 1 says.
 4. **Check the sha256 before unpacking.** Extract into a staging directory,
    and stamp only a tree that is complete and runs. The next run's cache
    check believes the stamp, so a stamp beside a partial tree would skip an
-   install that never finished. An archive that fails
-   the digest is deleted, and nothing runs. The digest is the only check
-   between the download and a stranger's code.
+   install that never finished. An archive that fails the digest is
+   deleted, and nothing runs. The digest is the only check between the
+   download and a stranger's code.
 5. **`target.binaries` must name `hp`.** This skill drives one binary. An
    archive without `hp` predates this skill, so stop rather than run
    anything else from it. The `binaries` array of `binaries.json` names
@@ -77,19 +79,20 @@ holds the commands for these five rules.
 The copy caches at `${HOWP_CACHE:-$HOME/.cache/howp}/<version>`. `$BIN`
 below is `$DEST/<root>/<bin_dir>`, and `install.md` sets both.
 
-The manifest lists every host this skill's steps reach, once:
+The manifest lists every host this skill's steps name, once:
 `../../plugin.json`, under
 `extensions["io.github.akurganow.ai-plugins"].network.hosts`. The release
 archive comes from `github.com` and its redirect host,
-`release-assets.githubusercontent.com`, until a checked copy is cached.
-`raw.githubusercontent.com` serves `binaries.json` and `plugin.json` only
-when the package is absent, as `install.md` Step 0 says. `hp` builds its
-requests from the Polymarket and Manifold hosts. They serve the market
-bodies that `hp sources urls` and `hp sources next` name. `hp` names the
-Polymarket price-history host only on a history walk. Allow the hosts the
-manifest lists and no wildcard: a wildcard also allows hosts nothing here
-names. Your own searches are not among these steps. They reach hosts the
-manifest does not list, and those are the user's to allow.
+`release-assets.githubusercontent.com`, until you cache a checked copy, as
+`install.md` Step 3 records. `raw.githubusercontent.com` serves
+`binaries.json` and `plugin.json` only when the package is absent, as
+`install.md` Step 0 says. `hp` builds its requests from the Polymarket and
+Manifold hosts. They serve the market bodies that `hp sources urls` and
+`hp sources next` name. `hp` names the Polymarket price-history host only
+on a history walk. Allow the hosts the manifest lists and no wildcard: a
+wildcard also allows hosts nothing here names. This skill names no host for
+your own searches. They reach hosts the manifest does not list, and those
+are the user's to allow.
 
 ## The workspace
 

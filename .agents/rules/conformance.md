@@ -87,23 +87,23 @@ The rules that decide whether a client loads a package at all:
   two byte for byte. §5.1 is explicit that "No other file can replace,
   supplement, or override the core fields in root `plugin.json`", and an
   identical copy overrides nothing. The copy is not a symlink. Git for
-  Windows disables symbolic links by default and checks a link out as a
-  plain file holding the link text
+  Windows disables symbolic links by default
   ([Git for Windows](https://gitforwindows.org/symbolic-links),
-  documentation;
-  [`core.symlinks`](https://github.com/git/git/blob/c44beea485f0f2feaf460e2ac87fdd5608d63cf0/Documentation/config/core.adoc),
-  documentation). Claude Code reads only `.claude-plugin/plugin.json` and
-  fails on a file that is not JSON
+  documentation). With them off, git checks a link out as a plain file
+  holding the link text
+  ([`core.symlinks`](https://github.com/git/git/blob/c44beea485f0f2feaf460e2ac87fdd5608d63cf0/Documentation/config/core.adoc#L237-L246),
+  documentation). Claude Code documents one manifest location,
+  `.claude-plugin/plugin.json`, and fails on a file that is not JSON
   ([plugins reference](https://code.claude.com/docs/en/plugins-reference),
   documentation). The root manifest may not be a symlink either. Codex's
   loader rejects a symlinked root manifest outright — `symlink_metadata` in
   [`plugin_namespace.rs`](https://github.com/openai/codex/blob/e3e5ad28470f6a225301518c30a66e749a880164/codex-rs/utils/plugins/src/plugin_namespace.rs),
   pinned by its own `rejects_symlinked_root_plugin_manifest` test. That one
-  is **from source**. Codex's plugin documentation,
+  is **from source**. The `plugin_namespace.rs` link is a commit permalink,
+  not a branch — a claim about code that moves has to name the revision it
+  was true at. Codex's plugin documentation,
   [Build plugins](https://developers.openai.com/plugins/build/plugins.md)
-  (documentation), does not mention a symlinked manifest. The link is a
-  commit permalink, not a branch — a claim about code that moves has to
-  name the revision it was true at.
+  (documentation, read 2026-09-25), does not mention a symlinked manifest.
 - Every package path resolves inside that package's root (§4.1). The
   failure boundary is graded: a root `plugin.json` outside it rejects the
   plugin, while a `SKILL.md` outside it only skips that skill (§7.1) — the

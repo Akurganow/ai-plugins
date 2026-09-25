@@ -101,22 +101,28 @@ under `extensions["io.github.akurganow.ai-plugins"].network.hosts`:
 <!-- hosts:start -->
 
 - `github.com`
+- `release-assets.githubusercontent.com`
+- `raw.githubusercontent.com`
 - `gamma-api.polymarket.com`
 - `clob.polymarket.com`
 - `api.manifold.markets`
 
 <!-- hosts:end -->
 
-GitHub serves the release archive until the skill caches a checked copy. The
-Polymarket and Manifold hosts serve the market bodies. `hp` opens no socket:
-the agent fetches every URL `hp` names with its own tools, under your
-client's permission flow. The skill probes each host on every run and
-reports a blocked one instead of routing around it.
+The release archive comes from `github.com` and its redirect host,
+`release-assets.githubusercontent.com`, until the skill caches a checked copy.
+`raw.githubusercontent.com` serves `binaries.json` and `plugin.json` only when
+a client loads the skill without its package. The Polymarket and Manifold
+hosts serve the market bodies. `hp` opens no socket: the agent fetches every
+URL `hp` names with its own tools, under your client's permission flow. The
+skill probes each host on every run and reports a blocked one instead of
+routing around it.
 
 The list is a floor, not a fence. The agent searches for candidate markets
-and for the story behind a move on its own. The hosts those searches reach
-are yours to allow. The list grants nothing: the Agent Plugins manifest
-schema assigns "no semantics to namespace object contents" of `extensions`
+and for the story behind a move on its own. Those searches are not among the
+skill's steps, and the hosts they reach are yours to allow. The list grants
+nothing: the Agent Plugins manifest schema assigns "no semantics to
+namespace object contents" of `extensions`
 ([schema](https://agent-plugins.org/schemas/1.0.0/plugin.schema.json),
 specification).
 

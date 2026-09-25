@@ -87,8 +87,8 @@ skill. Say so and stop rather than running something else out of it.
 before spending a download on it. On every run, probe again the first time
 the run needs a market. Reachability changes with the machine, its proxy and
 the day. Probe with the tool you will actually fetch with, not with a
-different one; a `HEAD` or a small `GET` is enough, and the download in
-Step 3 is its own probe of `github.com`.
+different one. A `HEAD` or a small `GET` is enough. The download in Step 3
+is its own probe of `github.com` and of the host it redirects to.
 
 **If something is blocked, do not work around it — say precisely what to
 allow, and where.** Which mechanism that is depends on the client, so name
@@ -179,6 +179,16 @@ megabytes and may legitimately take minutes on a slow link.
 `--fail` matters: without it curl writes GitHub's error page into the file and
 exits 0, and you would go on to checksum an HTML page.
 
+`--location` matters too: `github.com` answers `<url>` with a redirect to
+`release-assets.githubusercontent.com`, so an allowlist needs both hosts.
+Running `curl -sI` on the `howp-v0.3.6` archive URL on 2026-09-25 returned
+`HTTP/2 302` and `location: https://release-assets.githubusercontent.com/…`
+(measured by running the command). GitHub's runner documentation lists that
+host as needed for downloading release assets, but does not describe the
+redirect
+([self-hosted runners reference](https://docs.github.com/en/actions/reference/runners/self-hosted-runners#accessible-domains-by-function),
+documentation).
+
 ## Step 4 — verify. This is the step that must not be skipped
 
 You are about to run a binary from the internet on someone else's machine.
@@ -254,11 +264,9 @@ tree lands. The stamp is a record that these bytes passed Step 4 *and*
 unpacked whole, and one written any earlier is worse than no stamp — Step 2's
 shortcut believes it.
 
-**Every archive holds the binaries and a licence, and nothing else.** There is
-no helper script in one, for the fetch cycle or anything else, and
-`binaries.json` promises none: its `binaries` array is the list of names that
-must be under `bin/`, and there is no field for anything more. Whatever a
-script would have done, you do.
+**`binaries.json` records no helper script.** Its `binaries` array names
+binaries only, and there is no field for a helper script. Whatever a script
+would have done, you do.
 
 **On macOS only:** Gatekeeper may refuse to open `hp` because it cannot
 check the developer. Offer a way past it only **after** Step 4 passed,

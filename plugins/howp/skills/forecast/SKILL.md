@@ -70,22 +70,26 @@ holds the commands for these five rules.
    between the download and a stranger's code.
 5. **`target.binaries` must name `hp`.** This skill drives one binary. An
    archive without `hp` predates this skill, so stop rather than run
-   anything else from it. `binaries.json` lists binaries only and has no
-   field for a helper script, so whatever a script would do, you do.
+   anything else from it. The `binaries` array of `binaries.json` names
+   binaries only, and there is no field for a helper script. Whatever a
+   script would do, you do.
 
 The copy caches at `${HOWP_CACHE:-$HOME/.cache/howp}/<version>`. `$BIN`
 below is `$DEST/<root>/<bin_dir>`, and `install.md` sets both.
 
 The manifest lists every host this skill's steps reach, once:
 `../../plugin.json`, under
-`extensions["io.github.akurganow.ai-plugins"].network.hosts`. GitHub serves
-the release archive until a checked copy is cached. `hp` builds its requests
-from the Polymarket and Manifold hosts. They serve the market bodies that
-`hp sources urls` and `hp sources next` name. `hp` names the Polymarket
-price-history host only on a history walk. Allow the hosts the manifest
-lists and no wildcard: a wildcard also allows hosts nothing here names. Your
-own searches reach hosts the manifest does not list, and those are the
-user's to allow.
+`extensions["io.github.akurganow.ai-plugins"].network.hosts`. The release
+archive comes from `github.com` and its redirect host,
+`release-assets.githubusercontent.com`, until a checked copy is cached.
+`raw.githubusercontent.com` serves `binaries.json` and `plugin.json` only
+when the package is absent, as `install.md` Step 0 says. `hp` builds its
+requests from the Polymarket and Manifold hosts. They serve the market
+bodies that `hp sources urls` and `hp sources next` name. `hp` names the
+Polymarket price-history host only on a history walk. Allow the hosts the
+manifest lists and no wildcard: a wildcard also allows hosts nothing here
+names. Your own searches are not among these steps. They reach hosts the
+manifest does not list, and those are the user's to allow.
 
 ## The workspace
 

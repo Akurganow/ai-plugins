@@ -23,6 +23,8 @@
       "network": {
         "hosts": [
           "github.com",
+          "release-assets.githubusercontent.com",
+          "raw.githubusercontent.com",
           "gamma-api.polymarket.com",
           "clob.polymarket.com",
           "api.manifold.markets"

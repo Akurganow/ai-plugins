@@ -127,8 +127,7 @@ those sources is a finding of a new kind, `external-disagreement`, filed like th
   that get a table of contents. Reviewed on 2026-09-25 against the written script; the
   owner chose to state this rather than move the same logic into a Node script.
   `CONTRIBUTING.md` documents that one command. CI runs the same command and then
-  `git diff --exit-code`; the step's failure message names the command to run. No other
-  step compares a generated file. `.agents/rules/conformance.md` "Text only" names the
+  `git diff --exit-code`; the step's failure message names the command to run. No other CI step compares a generated file, with one exception: the conformance check's package-shape rule (§4.2) compares the vendor manifest with the root manifest, because a client loads that file and the check must reject a drifted copy on its own. `.agents/rules/conformance.md` "Text only" names the
   entry point beside the check as the second thing this repository runs.
 
 ### 4.2 Vendor manifest: a generated copy, not a symlink

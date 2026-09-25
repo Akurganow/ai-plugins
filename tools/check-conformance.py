@@ -203,8 +203,8 @@ def check_manifest(plugin_root: Path, validator) -> dict | None:
     if not manifest_path.exists():
         fail(where, "no plugin.json at the plugin root (§4.1, §5.1)")
         return None
-    # Not a spec rule but a loader reality and a repository rule: the root
-    # manifest is the real file that vendor copies are made from, never a link.
+    # A loader reality and a repository rule, not a spec rule: the root
+    # manifest is the real file, never a link. Vendor copies are made from it.
     # Codex's loader refuses a symlinked root manifest outright --
     # find_plugin_manifest_path() calls symlink_metadata() and returns None
     # for a symlink, pinned by rejects_symlinked_root_plugin_manifest. From
@@ -385,18 +385,26 @@ def check_containment(plugin_root: Path) -> None:
 def check_vendor_manifest_copies(plugin_root: Path) -> None:
     """Repository rule: a vendor path holds a byte-identical copy of the manifest.
 
+    Written by hand because it enforces what a JSON Schema cannot express: a
+    schema cannot compare two files.
+
     §5.1: "No other file can replace, supplement, or override the core fields
     in root `plugin.json`." A copy equal to it byte for byte overrides
     nothing, and `tools/regenerate.sh` writes it. It is a copy and not a
-    symlink because Git for Windows checks a symlink out as a text file
-    holding the link path unless symlinks are enabled, and Claude Code reads
-    its manifest only from `.claude-plugin/plugin.json`, where that text fails
-    as a corrupt manifest. Sources: Git for Windows documentation,
-    https://gitforwindows.org/symbolic-links; Claude Code documentation,
-    https://code.claude.com/docs/en/plugins-reference.
+    symlink for two reasons. Git for Windows checks a symlink out as a text
+    file holding its path unless symlinks are enabled. Claude Code reads its
+    manifest only from `.claude-plugin/plugin.json` and fails that text as a
+    corrupt manifest.
+
+    Sources, all documentation:
+    - Git for Windows, https://gitforwindows.org/symbolic-links
+    - the git manual, `core.symlinks`,
+      https://github.com/git/git/blob/c44beea485f0f2feaf460e2ac87fdd5608d63cf0/Documentation/config/core.adoc#L237-L246
+    - Claude Code, https://code.claude.com/docs/en/plugins-reference
     """
     root_manifest = plugin_root / "plugin.json"
-    # check_manifest reports a missing or symlinked root manifest.
+    # A missing, symlinked or non-regular root manifest: check_manifest
+    # already reported it.
     if root_manifest.is_symlink() or not root_manifest.is_file():
         return
     expected = root_manifest.read_bytes()

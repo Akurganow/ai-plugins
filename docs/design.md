@@ -298,13 +298,15 @@ It also includes `raw.githubusercontent.com`, where the skill can read the packa
 
 The skill checks each archive's SHA-256 against `plugins/howp/binaries.json`.
 A digest proves the archive is the recorded one, not who built it.
-So the job that builds `hp` is to sign `SHA256SUMS` with Sigstore cosign keyless signing for releases after `howp-v0.3.6`.
+So the job that builds `hp` signs `SHA256SUMS` with Sigstore cosign keyless signing, from `howp-v0.3.7` on.
 Keyless signing ties an ephemeral key to the workflow's OpenID Connect identity, so the job holds no long-lived signing key.
 (documentation: [Signing blobs L10–L12](https://github.com/sigstore/docs/blob/842c30981f1bf5061fe0d370512db4de8cdf3b33/content/en/cosign/signing/signing_with_blobs.md#L10-L12))
 The signer's identity is then the workflow file at a branch, such as `main`.
 (documentation: [OIDC in Fulcio L40–L43](https://github.com/sigstore/docs/blob/842c30981f1bf5061fe0d370512db4de8cdf3b33/content/en/certificate_authority/oidc-in-fulcio.md#L40-L43))
-`howp-v0.3.6`, the newest release, carries `SHA256SUMS` and no signature asset (release assets, read 2026-09-26).
-No CI step here verifies a signature, because no release carries one.
+`howp-v0.3.7` carries `SHA256SUMS` and `SHA256SUMS.sigstore.json`, a Sigstore bundle over the table (release assets, read 2026-09-26).
+The certificate in that bundle names `https://github.com/Akurganow/how-possible/.github/workflows/release.yml@refs/heads/main` as the signer and the GitHub Actions token service as the issuer (the bundle's certificate, read 2026-09-26).
+The `howp-archive` job of `.github/workflows/integration.yml` runs `cosign verify-blob` against that identity and issuer before it compares the table with `binaries.json`.
+(documentation: [Verifying blobs L34–L35](https://github.com/sigstore/docs/blob/842c30981f1bf5061fe0d370512db4de8cdf3b33/content/en/cosign/verifying/verify.md#L34-L35))
 The skill keeps its SHA-256 check and never calls cosign.
 
 Two alternatives lost.

@@ -100,7 +100,8 @@ It checks where files sit, what a symlink resolves to, and what a manifest and
 a skill's front matter say. It decides against the published schema and
 against the clause quoted beside each hand check. Three client validators in
 `.github/workflows/conformance.yml` fence the same packages: `claude plugin
-validate`, `skills-ref validate` and `hermes plugins validate`. Nothing keys
+validate`, `skills-ref validate`, and `hermes plugins validate` with
+`hermes plugins doctor --ci`. Nothing keys
 on vocabulary, and nothing should — words have legitimate readings. A hedge
 filter would first catch the sourced, dated sentences `claims.md` requires.
 Anything the check or a validator names cannot exist on a green `main`; a

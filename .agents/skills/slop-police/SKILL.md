@@ -71,8 +71,8 @@ exit that reports nothing audited is a fire that wasted itself.
 
 ## Your environment, and what you need from GitHub
 
-**What a run needs from GitHub** is the `github-needs` skill, which the four
-analysis agents share. Read it. It names needs and never routes, because
+**What a run needs from GitHub** is the `github-needs` skill, which five roles
+share. Read it. It names needs and never routes, because
 `.agents/rules/unattended.md` puts the route with the environment and not with
 the instruction.
 
@@ -241,7 +241,7 @@ different angle":
 You and the auditor overlap on the published prose, and the line is
 this: a sentence a reader acts on belongs to the auditor; a sentence that
 carries nothing, a stale paragraph about this tree, a name, a comment in
-the check, a step in the workflow, belongs to you. Where one paragraph
+the check, a step in a workflow, belongs to you. Where one paragraph
 could be filed by both, read the auditor's issues in the do-not-report
 list and stay silent if it is there.
 

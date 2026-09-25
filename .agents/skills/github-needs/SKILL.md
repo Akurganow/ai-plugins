@@ -36,22 +36,25 @@ the skill name of the role that filed it. `<value>` is the finding's
 identity, in the form the filer's skill gives. The four other prefixes
 stand on issues already filed, and no filer writes them.
 
+An older prefix names its filer: `repo-audit-routine:` names `repo-police`,
+`slop-police-fingerprint:` names `slop-police`, and
+`agent-police-fingerprint:` names `agent-police`.
+`special-police-fingerprint:` names none.
+
 **No issue belongs to a role.** `<role>` records who filed, and grants
-nothing. Every role that reads the tracker lists the whole population. The
-three police, the Issue Court and both Clerks do.
+nothing. Every role that reads the tracker lists the population, never a
+subset by filer. The three police, the Issue Court and both Clerks do.
 
 **Dedupe.** A filer files nothing whose finding an open issue in the
 population already carries. That holds whatever role filed it and whatever
 its line's prefix. A finding is the same when its fingerprint value names the
 same file and concept. It is also the same when the issue states the same
-defect in other words.
+defect in other words. A part the pipeline Clerk cuts from its parent is
+not a second filing of the parent's finding.
 
-**A role's filings** are the open issues in the population whose `<role>`
-names it. They set its backpressure cap and the filing audit its skill
-gives, and nothing else. An older prefix counts for one role:
-`repo-audit-routine:` for `repo-police`, `slop-police-fingerprint:` for
-`slop-police`, and `agent-police-fingerprint:` for `agent-police`.
-`special-police-fingerprint:` counts for no role.
+**A role's filings** are the open issues in the population whose `<role>`,
+or older prefix, names it. They serve three things its skill gives: its
+backpressure cap, its filing audit, and its note on a stale issue.
 
 No other issue exists for any role. No role lists it, reads it, comments
 on it, labels it or closes it.

@@ -150,8 +150,8 @@ exit that reports nothing audited is a fire that wasted itself.
 
 ## Your environment, and what you need from GitHub
 
-**What a run needs from GitHub** is the `github-needs` skill, which the four
-analysis agents share. Read it. It names needs and never routes, because
+**What a run needs from GitHub** is the `github-needs` skill, which five roles
+share. Read it. It names needs and never routes, because
 `.agents/rules/unattended.md` puts the route with the environment and not with
 the instruction.
 

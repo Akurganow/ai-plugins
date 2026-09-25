@@ -1,7 +1,8 @@
 name: conformance
 
-# Runs the repository's check: the Agent Plugins 1.0.0 conformance check. One
-# short job on a hosted Linux runner, no services, no model calls.
+# Runs the repository's two checks: the Agent Plugins 1.0.0 conformance check,
+# and that every generated file equals what its source produces. One short job
+# on a hosted Linux runner, no services, no model calls.
 #
 # `push` is restricted to `main`. Without that restriction a pull request from
 # a branch in this repository triggers the workflow twice — once for the push
@@ -40,3 +41,24 @@ jobs:
 
       - name: Check conformance
         run: python tools/check-conformance.py
+
+      # tools/regenerate.sh installs doctoc from tools/package-lock.json and
+      # runs it on the Node major pinned here.
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: "22"
+
+      # Installs jq only where the runner image does not already carry it.
+      - name: Install jq
+        run: command -v jq >/dev/null || { sudo apt-get update && sudo apt-get install -y jq; }
+
+      # `--intent-to-add` makes a generated file missing from the commit show
+      # in `git diff`, which otherwise ignores untracked files.
+      - name: Check generated files
+        run: |
+          bash tools/regenerate.sh
+          git add --intent-to-add --all
+          git diff --exit-code || {
+            echo "::error::Generated files differ from their sources. Run bash tools/regenerate.sh and commit the result."
+            exit 1
+          }

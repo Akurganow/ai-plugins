@@ -185,8 +185,8 @@ install command above cites that client's own source.
 ## Client notes
 
 What each client reads from a package, with sources, is in
-[docs/clients.md](docs/clients.md). The reasons behind this layout are in
-[docs/design.md](docs/design.md).
+[docs/clients.md](docs/clients.md). The reasons behind the repository's design
+are in [docs/design.md](docs/design.md).
 
 Each note names its source and says whether it is documentation or source
 code. A link into a repository points at the commit at which the note holds.
@@ -198,8 +198,7 @@ code. A link into a repository points at the commit at which the note holds.
   letter or digit. Every name here meets that rule. Source:
   [Troubleshoot plugins](https://code.claude.com/docs/en/plugins/troubleshooting),
   documentation, read 2026-09-25.
-- A user gets a new copy of a plugin only when its version changes. A change
-  here therefore reaches Claude Code users only after the plugin's next
+- A change here reaches Claude Code users only after the plugin's next
   release. It arrives through background auto-update once a user or an admin
   turns that on. Otherwise it arrives when the user updates the plugin.
   Source: [Host and maintain a marketplace](https://code.claude.com/docs/en/plugins/host-marketplace),
@@ -235,11 +234,6 @@ code. A link into a repository points at the commit at which the note holds.
   the catalogue's `name` field. Source:
   [`docs/skills/authoring-marketplaces.md`](https://github.com/can1357/oh-my-pi/blob/a33cc26824e3c91edd9fa42d681f10dceb4ac2f0/docs/skills/authoring-marketplaces.md),
   documentation.
-- The `agent-plugins` provider reads standard packages at priority 75. The
-  `claude-plugins` and `codex` providers sit at 70. Source:
-  [`docs/context-files.md`](https://github.com/can1357/oh-my-pi/blob/a33cc26824e3c91edd9fa42d681f10dceb4ac2f0/docs/context-files.md)
-  and [`docs/config-usage.md`](https://github.com/can1357/oh-my-pi/blob/a33cc26824e3c91edd9fa42d681f10dceb4ac2f0/docs/config-usage.md),
-  documentation.
 
 ### Hermes
 
@@ -254,14 +248,6 @@ code. A link into a repository points at the commit at which the note holds.
   section of
   [`user-guide/features/plugins.md`](https://github.com/NousResearch/hermes-agent/blob/a0ca7c19204e514f9590ce3b812e029b315ab9e9/website/docs/user-guide/features/plugins.md),
   documentation.
-- The documentation does not cover two points, which the source shows. The
-  desktop app and the server install through the same code. The link takes
-  the same identifier as `hermes plugins install`, subdirectory included.
-  Source:
-  [`deeplink-routes.ts`](https://github.com/NousResearch/hermes-agent/blob/a0ca7c19204e514f9590ce3b812e029b315ab9e9/apps/desktop/src/lib/deeplink-routes.ts),
-  [`desktop-plugin-install.ts`](https://github.com/NousResearch/hermes-agent/blob/a0ca7c19204e514f9590ce3b812e029b315ab9e9/apps/desktop/electron/desktop-plugin-install.ts)
-  and [`methods_tools.py`](https://github.com/NousResearch/hermes-agent/blob/a0ca7c19204e514f9590ce3b812e029b315ab9e9/tui_gateway/methods_tools.py),
-  source code.
 
 ## The conformance check
 

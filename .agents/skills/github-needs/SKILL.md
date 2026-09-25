@@ -1,14 +1,13 @@
 ---
 name: github-needs
-description: "What an unattended analysis run of this repository needs from GitHub, stated as needs and never as routes: the machine population, the probe, the listings, the reads of one issue, the label write that must send the whole set back, and the close. Read it before acting as the Issue Court, the Tracker Clerk, the Repo Police, the Slop Police or the Agent Police."
+description: "What an unattended analysis run of this repository needs from GitHub, stated as needs and never as routes. It defines the machine population, and lists the probe, the listings, the reads of one issue, the full-set label write and the close. Read it before acting as the Issue Court, the Tracker Clerk, the Repo Police, the Slop Police or the Agent Police."
 ---
 
 # What a run needs from GitHub
 
-This file is one file and the four analysis agents all read it: the Issue
-Court, the Tracker Clerk, the Repo Police and the Slop Police. The Agent
-Police reads it too. The four pipeline roles read its first section, which
-`pipeline-law` cites.
+Five analysis roles read this file: the Issue Court, the Tracker Clerk,
+the Repo Police, the Slop Police and the Agent Police. The four pipeline
+roles read its first section, which `pipeline-law` cites.
 
 It names **what** a run needs and never **how** it is reached.
 `.agents/rules/unattended.md` owns that rule: a run reaches GitHub through
@@ -36,10 +35,10 @@ the population too, until it is closed. Each marker belongs to one role:
 filer writes only the fingerprint line.
 
 A role's own issues are the issues in the population whose fingerprint line
-or older marker names that role.
+names that role, or whose older marker belongs to it.
 
-Every other issue does not exist for any role. No role lists it, reads it,
-comments on it, labels it or closes it.
+No other issue exists for any role. No role lists it, reads it, comments
+on it, labels it or closes it.
 
 Every filer applies `police-report` when it files. A filer that cannot
 confirm the label on the repository's label list files nothing, and says so
@@ -68,7 +67,8 @@ in its report.
     parent's order; and its parent;
   - whether a label exists: confirm every name you intend to apply.
     Nothing here creates one, so a name that cannot be confirmed is
-    dropped;
+    dropped — except `police-report`: a filer that cannot confirm it
+    files nothing (see **The machine population**);
   - file an issue with a title, a body and labels; comment on one;
   - add a label to an existing issue: read the whole set first and send
     it back complete with the new name — a route may replace the set

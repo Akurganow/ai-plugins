@@ -108,7 +108,7 @@ jobs:
             codex)  npm install -g @openai/codex@0.155.1 && codex --version ;;
             omp)    bun install -g @oh-my-pi/pi-coding-agent@18.2.8 && omp --version ;;
             hermes)
-              curl -fsSL "https://raw.githubusercontent.com/NousResearch/hermes-agent/$HERMES_COMMIT/scripts/install.sh" \
+              curl -fsSL --retry 5 --retry-delay 5 --retry-all-errors "https://raw.githubusercontent.com/NousResearch/hermes-agent/$HERMES_COMMIT/scripts/install.sh" \
                 | bash -s -- --commit "$HERMES_COMMIT" --skip-setup --skip-browser --hermes-home "$HERMES_HOME"
               echo "$HOME/.local/bin" >> "$GITHUB_PATH" ;;
           esac
@@ -283,10 +283,10 @@ jobs:
           root=$(field root)
           bin_dir=$(field bin_dir)
           cd "$RUNNER_TEMP"
-          curl -fsSL -o "$archive" "$url"
+          curl -fsSL --retry 5 --retry-delay 5 --retry-all-errors -o "$archive" "$url"
           if command -v shasum >/dev/null; then sum="shasum -a 256"; else sum=sha256sum; fi
           printf '%s  %s\n' "$sha" "$archive" | $sum -c -
-          curl -fsSL -o SHA256SUMS "${url%/*}/SHA256SUMS"
+          curl -fsSL --retry 5 --retry-delay 5 --retry-all-errors -o SHA256SUMS "${url%/*}/SHA256SUMS"
           listed=$(awk -v a="$archive" '$2 == a || $2 == "*" a || $2 == "./" a { print $1 }' SHA256SUMS)
           if [ "$listed" != "$sha" ]; then
             echo "::error::The release's SHA256SUMS lists '$listed' for $archive; binaries.json says $sha."

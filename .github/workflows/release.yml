@@ -43,7 +43,7 @@ jobs:
           COG_SHA256: e03938ff2c4c86d71c00c0f3284dbbe95c5ca76fe34a51f33e945c23010d59bb
         run: |
           cd "$RUNNER_TEMP"
-          curl -fsSL -o cocogitto.tar.gz "$COG_URL"
+          curl -fsSL --retry 5 --retry-delay 5 --retry-all-errors -o cocogitto.tar.gz "$COG_URL"
           printf '%s  %s\n' "$COG_SHA256" cocogitto.tar.gz | sha256sum -c -
           mkdir -p "$HOME/.local/bin"
           tar -xzf cocogitto.tar.gz --strip-components=1 -C "$HOME/.local/bin" x86_64-unknown-linux-musl/cog

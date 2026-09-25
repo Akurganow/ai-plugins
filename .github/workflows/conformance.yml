@@ -107,7 +107,7 @@ jobs:
           COG_SHA256: e03938ff2c4c86d71c00c0f3284dbbe95c5ca76fe34a51f33e945c23010d59bb
         run: |
           cd "$RUNNER_TEMP"
-          curl -fsSL -o cocogitto.tar.gz "$COG_URL"
+          curl -fsSL --retry 5 --retry-delay 5 --retry-all-errors -o cocogitto.tar.gz "$COG_URL"
           printf '%s  %s\n' "$COG_SHA256" cocogitto.tar.gz | sha256sum -c -
           mkdir -p "$HOME/.local/bin"
           tar -xzf cocogitto.tar.gz --strip-components=1 -C "$HOME/.local/bin" x86_64-unknown-linux-musl/cog
@@ -221,7 +221,7 @@ jobs:
       # https://github.com/NousResearch/hermes-agent/blob/f97608f178d1ffeca59860195ab7da295f7c8e5f/scripts/install.sh#L172-L180
       - name: Install Hermes
         run: |
-          curl -fsSL "https://raw.githubusercontent.com/NousResearch/hermes-agent/$HERMES_COMMIT/scripts/install.sh" \
+          curl -fsSL --retry 5 --retry-delay 5 --retry-all-errors "https://raw.githubusercontent.com/NousResearch/hermes-agent/$HERMES_COMMIT/scripts/install.sh" \
             | bash -s -- --commit "$HERMES_COMMIT" --skip-setup --skip-browser
           echo "$HOME/.local/bin" >> "$GITHUB_PATH"
 

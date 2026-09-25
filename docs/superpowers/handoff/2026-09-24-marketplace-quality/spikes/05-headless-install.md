@@ -3,11 +3,11 @@
 Two parts. The local part ran on the owner's machine on 2026-09-25, at tree `07a8938`.
 It used Hermes 0.21.5, Claude Code 2.1.282 and Codex 0.155.1, with Codex in its own `CODEX_HOME`.
 `CODEX_HOME` did not isolate the user skill root: `codex debug prompt-input` listed `~/.agents/skills` as skill root `r0`.
-It asks how commands behave, not whether they need a login.
-Every fact below comes from running the clients' own code.
+The local part asks how commands behave, not whether they need a login.
+Every quoted line below is output from the clients' own code or from `find`; the two verdicts read that output.
 The clean part is the first run of `integration.yml` on the pull request.
 
-Every client command ran with stdin from `/dev/null`, so no command could wait on a prompt.
+Every command in the brief's two steps, the probe and the evidence re-runs ran with stdin from `/dev/null`.
 No command asked for input or a login.
 
 ## Local: Hermes validators on a portable package
@@ -51,15 +51,18 @@ Verdict: both pass. Neither command fails on a portable package by design.
 ## Local: Codex hook control
 
 `codex plugin marketplace add` and `codex plugin add` both exited 0.
-`codex plugin list --json` then printed these lines for the control:
+In the first control's `CODEX_HOME`, `codex plugin list --json` printed these adjacent lines:
 
 ```
       "pluginId": "hook-control@hook-control",
+      "name": "hook-control",
+      "marketplaceName": "hook-control",
+      "version": "0.0.1",
       "installed": true,
       "enabled": true,
 ```
 
-`find plugins/cache -type f`, run inside the control's `CODEX_HOME`, printed this line among two:
+`find plugins/cache -type f`, run inside the first control's `CODEX_HOME`, printed this line among two:
 
 ```
 plugins/cache/hook-control/hook-control/0.0.1/hooks/hooks.json
@@ -72,11 +75,11 @@ A second control, beyond the brief, added `touch "$RUN/hook-ran"` to the hook co
 Both installs exited 0.
 It then printed `marker count: 0` and `side effect: hook-ran absent`, so the hook never ran.
 
-`codex features list`, run inside the control's `CODEX_HOME`, printed this line:
+`codex features list`, run in the first control's `CODEX_HOME`, printed this line among its flags:
 
 ```
 plugin_hooks                             removed            false
 ```
 
-Verdict: runs none. `codex debug prompt-input` runs no plugin SessionStart hook (the control's).
+Verdict: runs none of the control's plugin hooks. `codex debug prompt-input` runs no plugin SessionStart hook (the control's).
 The control cannot tell `debug prompt-input` skipping hooks apart from Codex 0.155.1 loading no plugin hooks at all.

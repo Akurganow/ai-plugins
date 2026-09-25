@@ -27,8 +27,9 @@
     {
       "name": "prose-discipline",
       "source": "./plugins/prose-discipline",
-      "description": "Engineering prose standard for everything an agent writes: user replies, prose, code comments, review comments, commit messages, change descriptions, error messages and agent instructions. Five layers — sentence structure, plain vocabulary, comment hygiene, artifact formats, slop pruning — each stated as a rule a reader can check rather than a preference. The core rules are one file, rules/prose-discipline.md, injected at session start by the hook in hooks/ on hosts that run plugin hooks, and loaded as an always-apply rule by hosts that read plugin rule files; the skill carries the protocol and the depth behind every rule, including the substitution table, the Conventional Comments labels and a calibration corpus. Code blocks, identifiers, commands, URLs and quoted text are never flagged, and established domain terms are kept. No credentials, no MCP servers, no settings files, and no checker script: enforcement is model judgement over rule texts a person can read and argue with.",
-      "homepage": "https://github.com/Akurganow/ai-plugins/tree/main/plugins/prose-discipline"
+      "description": "An engineering prose standard kept active in every agent session: short active sentences, plain words, comments that explain why, and labelled review comments.",
+      "homepage": "https://github.com/Akurganow/ai-plugins/tree/main/plugins/prose-discipline",
+      "category": "Productivity"
     },
     {
       "name": "toc-thinking",

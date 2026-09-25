@@ -43,8 +43,8 @@ because the published evaluations could not be read either.
 - Eliyahu M. Goldratt and Jeff Cox, *The Goal*, North River Press.
   Dettmer's bibliography cites the second edition of 1992.
 - H. William Dettmer, *Goldratt's Theory of Constraints*, 1997. The 2007
-  book's copyright page names it as the book it rewrites. Its subtitle and
-  publisher were not verified.
+  book's copyright page names it as the book it rewrites. No source read
+  here confirms its subtitle or publisher.
 - Lisa J. Scheinkopf, *Thinking for a Change*, 1999. Dettmer's endnote
   gives its subtitle as "Putting the TOC Thinking Processes to Work".
   Bookseller listings give "to Use".

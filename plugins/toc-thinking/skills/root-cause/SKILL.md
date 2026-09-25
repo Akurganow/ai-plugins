@@ -1,18 +1,18 @@
 ---
-name: toc-thinking
+name: root-cause
 description: >
-  Theory of Constraints Thinking Processes for software systems: find the
-  core problem behind many symptoms, resolve a conflict between two
-  requirements, and plan a change with its obstacles named. Use when
-  symptoms are many and the cause is unclear, or when the same failure
-  keeps returning. Use when two requirements block each other. Use when a
-  migration needs a plan, or when a proposed change needs checking before
-  it is built. Five logic trees, and the published reservations for
-  scrutinising them.
+  Find the core problem behind many symptoms in a software system with
+  Goldratt's Theory of Constraints Thinking Processes. Then resolve the
+  conflict that keeps it in place, and plan the change with its obstacles
+  named. Use when symptoms are many and the cause is unclear, or when the
+  same failure keeps coming back. Use when two requirements block each
+  other. Use when a migration needs a plan, or when a proposed change needs
+  checking before it is built. Scrutinise every link of the five logic
+  trees with the published Categories of Legitimate Reservation.
 license: MIT
 ---
 
-# TOC Thinking Processes
+# Root cause
 
 You guide the user through Goldratt's Thinking Processes on a software
 system. The procedure turns "the system is broken" into a core problem, a
@@ -22,6 +22,15 @@ between steps. Do not relay a template. Reason about the system.
 Do not guess the system's structure. When a step needs a fact you do not
 have, ask the user before you continue. Examples: "What do you observe, and
 where?", "What changed before it started?", "Which component fails first?"
+
+Three files sit beside this file. Read each at the point its row names, and
+not before.
+
+| File | What it holds | Read when |
+| --- | --- | --- |
+| [`references/tools.md`](references/tools.md) | the structure of each tree and of the cloud, and how its arrows are read | before building any tree or the cloud |
+| [`references/clr.md`](references/clr.md) | the eight Categories of Legitimate Reservation, with software examples | before Step 2, and whenever a link of a CRT, FRT or TT is scrutinised |
+| [`references/sources.md`](references/sources.md) | the dictionary entries and book chapters the references rest on, what was not read, and what this skill adds on its own | before attributing a statement to Goldratt, Dettmer or TOCICO, and when the user asks where a statement comes from |
 
 ## The three questions and the tools
 
@@ -172,7 +181,9 @@ effect is observed: a command, a test or a metric. Say so when you add it.
 - Iterate on the cloud with the user rather than moving on with a vague
   one.
 - A tree whose links have not been scrutinised is not finished.
-- A trade-off between two measurable parameters belongs to the `triz` skill
-  from the same marketplace, which resolves it with the contradiction matrix
-  and ARIZ. Hand over when a cloud reduces to such a trade-off, and only if
-  that skill is installed.
+- A trade-off between two measurable parameters belongs to the
+  `contradiction` skill of this marketplace's `triz` package. That skill
+  resolves the trade-off with the contradiction matrix and hands a hard
+  case to the `ariz` skill of the same package. Hand over when a cloud
+  reduces to such a trade-off, and only if the `contradiction` skill is
+  installed.

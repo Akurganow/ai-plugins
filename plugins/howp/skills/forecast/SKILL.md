@@ -56,8 +56,8 @@ holds the commands for these five rules.
 2. **Two matching entries stop the run too.** `uname` cannot tell a glibc
    build from a musl build of the same platform. A guess can install a
    binary that will not start.
-3. **Run the preflight on every run.** Probe every host the manifest lists
-   with the tool you fetch with. The download itself probes `github.com`
+3. **Run the preflight on every run.** Probe every listed host this run
+   will use, with the tool you fetch with. The download itself probes `github.com`
    and its redirect host, so those need no separate probe. Probe the others
    before the download and before the first market fetch. Reachability
    depends on this machine and its proxy, and it changes between runs.

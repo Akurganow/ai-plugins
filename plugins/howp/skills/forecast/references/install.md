@@ -123,9 +123,9 @@ documented to read that field as network permission. Nothing in Agent
 Plugins 1.0.0 or the Agent Skills specification gives a plugin a way to
 request it. The manifest schema describes `extensions` in two sentences and
 nothing more (`tools/schemas/agent-plugins/1.0.0/plugin.schema.json`, the
-vendored copy of the published schema). It is "Client-specific manifest
-data keyed by reverse-domain extension namespace", and "Agent Plugins
-assigns no semantics to namespace object contents". The declaration is
+vendored copy of the published schema). Those two read "Client-specific
+manifest data keyed by reverse-domain extension namespace" and "Agent
+Plugins assigns no semantics to namespace object contents". The declaration is
 there to be quoted at a user who asks what to allow. This step is what
 actually finds out.
 

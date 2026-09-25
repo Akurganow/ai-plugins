@@ -117,7 +117,7 @@ Step 3 records. `raw.githubusercontent.com` serves `binaries.json` and
 package. The Polymarket and Manifold hosts serve the market bodies. `hp`
 opens no socket: the agent fetches every URL `hp` names with its own tools,
 under your client's permission flow. The `forecast` skill probes each host
-on every run and reports a blocked one instead of routing around it.
+a run needs and reports a blocked one instead of routing around it.
 
 The list is a floor, not a fence. The agent searches for candidate markets
 and for the story behind a move on its own. The `forecast` skill names no

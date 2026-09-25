@@ -19,7 +19,7 @@ Commits follow Conventional Commits. The type sets the next version:
 
 - `fix:` marks a bug fix and releases a patch version.
 - `feat:` marks a new feature and releases a minor version.
-- `feat!:` or `fix!:` marks a breaking change and releases a major version.
+- `feat!:`, `fix!:` or a `BREAKING CHANGE:` footer marks a breaking change and releases a major version.
 
 Source: [Conventional Commits 1.0.0](https://www.conventionalcommits.org/en/v1.0.0/), documentation.
 
@@ -27,6 +27,14 @@ cocogitto versions each package from the commits that touched its path, and
 writes that package's `CHANGELOG.md`. Source:
 [Automatic versioning for monorepo](https://github.com/cocogitto/website/blob/8fa24cde1ec4598ccee7cdd47de40fa594282de2/src/guide/README.md#automatic-versioning-for-monorepo),
 cocogitto documentation.
+
+cocogitto never bumps a package below 1.0.0 to 1.0.0, even for a breaking
+change. Source:
+[Auto bump](https://github.com/cocogitto/website/blob/8fa24cde1ec4598ccee7cdd47de40fa594282de2/src/guide/README.md#L614-L615),
+cocogitto documentation. Below 1.0.0 the type alone sets the version: `feat!:`
+releases a minor version and `fix!:` a patch version. Source:
+[`bump.rs`](https://github.com/cocogitto/cocogitto/blob/055a9fa8db8ac8ce50074d50162b48b92e9d0c47/crates/cocogitto/src/conventional/bump.rs#L258-L273),
+cocogitto source at 7.0.0, the release that `release.yml` installs.
 
 Put the package name in the scope, as in `fix(triz): correct one matrix cell`.
 Renaming a skill breaks its users, so it takes `!`, as in
@@ -47,9 +55,9 @@ release writes three files here, and nobody edits them by hand:
 
 CI runs these checks on every pull request. Run them before you push.
 
-### Regenerate the copies
+### Regenerate the generated files
 
-Some files and regions are copies of another source.
+Some files and regions are generated from another source.
 [`tools/regenerate.sh`](tools/regenerate.sh) rewrites all of them. Edit the
 source, run the script, and commit what it changes:
 
@@ -57,15 +65,17 @@ source, run the script, and commit what it changes:
 bash tools/regenerate.sh
 ```
 
-It needs `jq`, `npx` from Node.js, and `shasum` or `sha256sum`. CI runs it
-and fails if the tree changes afterwards.
+It needs `jq`, Node.js with `npm`, and `shasum` or `sha256sum`. It installs
+doctoc from `tools/package-lock.json` when `tools/node_modules` does not match it.
+That install needs the npm registry. CI runs the script and fails if the tree
+changes afterwards.
 
-These files are whole copies:
+It writes these whole files:
 
 - `.claude-plugin/marketplace.json`, built from every `plugin.json` and
   `tools/templates/marketplace.json`
-- `plugins/<name>/.claude-plugin/plugin.json`, a copy of `plugins/<name>/plugin.json`
-- `plugins/<name>/LICENSE`, a copy of the root `LICENSE`
+- `plugins/<name>/.claude-plugin/plugin.json`, a byte-identical copy of `plugins/<name>/plugin.json`
+- `plugins/<name>/LICENSE`, a byte-identical copy of the root `LICENSE`
 
 A generated region sits between two comments, `<!-- <region>:start -->` and
 `<!-- <region>:end -->`. A table of contents sits between doctoc's
@@ -92,8 +102,9 @@ claude plugin validate plugins/<name>
 ```
 
 Source: [Plugins reference](https://code.claude.com/docs/en/plugins-reference),
-Claude Code documentation. CI also runs the other clients' validators, as
-`.github/workflows/` defines.
+Claude Code documentation. CI also runs the Agent Skills and Hermes validators.
+It installs every package into each client that
+[`integration.yml`](.github/workflows/integration.yml) lists.
 
 ## Propose a new package
 
@@ -111,5 +122,5 @@ Claude Code documentation. CI also runs the other clients' validators, as
 Name each skill so that it stays distinct without the plugin name. Never
 repeat the plugin name in it. Oh-My-Pi shows the bare skill name and drops a
 later skill with the same name. Source:
-[`docs/skills.md`](https://github.com/can1357/oh-my-pi/blob/ba56afb26280a6a3195c329fa66a3f8fb52f82eb/docs/skills.md),
+[`docs/skills.md`](https://github.com/can1357/oh-my-pi/blob/ba56afb26280a6a3195c329fa66a3f8fb52f82eb/docs/skills.md#L98),
 Oh-My-Pi documentation.

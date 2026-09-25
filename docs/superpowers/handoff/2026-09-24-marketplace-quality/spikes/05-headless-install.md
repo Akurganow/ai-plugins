@@ -87,6 +87,7 @@ The control cannot tell `debug prompt-input` skipping hooks apart from Codex 0.1
 ## Clean: first pull-request run
 
 Run: https://github.com/Akurganow/ai-plugins/actions/runs/36178689054, at `a94e003bf3aeb42937f4f72fa245efe8f9dce35a`.
+Pinned clients in this run: Claude Code 2.1.278, Codex 0.155.1, Oh-My-Pi 18.2.8, and Hermes v0.21.5 at `f97608f`.
 Hosted runners; neither workflow referenced a secret (Task 7 Step 1).
 Every quoted line is from a run log (kind: running), cited by run id and job name. The step name follows where it matters.
 
@@ -103,7 +104,8 @@ Every quoted line is from a run log (kind: running), cited by run id and job nam
 | windows | omp | same | 0 | same two lines | no authentication |
 | ubuntu | hermes | `install.sh --commit f97608f…`, `hermes --version` | 0 | `│              ✓ Installation Complete!                   │`; `Hermes Agent v0.21.5 (2026.9.24) · upstream 1b57acf9 · local f97608f1 (+41514 carried commits)` | no authentication |
 | ubuntu | hermes | `hermes plugins show triz` | 0 | `Status: enabled`, `Key: triz`, `Emits: (none)`, `Listens: (none)`; no skill; `##[error]hermes does not list skill ariz of triz` | client gap (see below) |
-| macos | hermes | same two rows as ubuntu | 0 | the same lines; `##[error]hermes does not list skill ariz of triz` | no authentication; client gap |
+| macos | hermes | `install.sh --commit f97608f…`, `hermes --version` | 0 | `│              ✓ Installation Complete!                   │`; `Hermes Agent v0.21.5 (2026.9.24) · upstream 1b57acf9 · local f97608f1 (+41514 carried commits)` | no authentication |
+| macos | hermes | `hermes plugins show triz` | 0 | the same four lines; no skill; `##[error]hermes does not list skill ariz of triz` | client gap (see below) |
 | windows | hermes | `install.ps1 -Commit … -SkipSetup -HermesHome …` | 0 | `\|              [OK] Installation Complete!                \|` | no authentication |
 | windows | hermes | `hermes --version \| tee /dev/stderr \| grep -qF 'v0.21.5'` | 1 | `tee: /dev/stderr: No such file or directory` | workflow defect |
 
@@ -143,15 +145,23 @@ Attempt 2 downloaded `install.ps1`, cloned upstream (`Cloning into 'D:\a\_temp/h
 
 ```
 -> Pinning to commit f97608f178d1ffeca59860195ab7da295f7c8e5f...
+From https://github.com/NousResearch/hermes-agent
+ * branch                  f97608f178d1ffeca59860195ab7da295f7c8e5f -> FETCH_HEAD
 error: Your local changes to the following files would be overwritten by checkout:
 	website/i18n/zh-Hans/docusaurus-plugin-content-docs/current/index.mdx
+Please commit your changes or stash them before you switch branches.
+Aborting
+
 [X] Installation failed: git checkout f97608f178d1ffeca59860195ab7da295f7c8e5f failed (exit 1)
 ```
 
 `install.ps1` clones upstream main before checking out the pinned commit, so the result depends on upstream at run time.
+Kind: source, [`scripts/install.ps1` L20–L24](https://github.com/NousResearch/hermes-agent/blob/f97608f178d1ffeca59860195ab7da295f7c8e5f/scripts/install.ps1#L20-L24).
 Verdict: Hermes cannot install on Windows. The cell is dropped under O4 by a matrix `exclude` that quotes these lines.
 
 ### Hermes lists no portable package's skills
+
+"Client gap" is not one of the brief's five verdicts. It records the owner's decision of 2026-09-25 to drop the Hermes skill assertion.
 
 `hermes plugins show <name>` prints name, version, description, `Status:`, `Source:`, `Key:`, `Emits:` and `Listens:`, and nothing else.
 Kind: running, in the run above. Source agrees: [`plugins_cmd.py` L1814–L1836](https://github.com/NousResearch/hermes-agent/blob/f97608f178d1ffeca59860195ab7da295f7c8e5f/hermes_cli/plugins_cmd.py#L1814-L1836).
@@ -160,7 +170,7 @@ Kind: running, in the run above. Source agrees: [`plugins_cmd.py` L1814–L1836]
 It printed `0 hub-installed, 0 builtin, 0 local — 0 enabled, 0 disabled` with triz and howp enabled. Kind: running, local Hermes 0.21.5 at `d350422b`, in its own `HERMES_HOME`.
 Its `do_list` reads skill directories only. Kind: source, [`skills_hub.py` L782–L828](https://github.com/NousResearch/hermes-agent/blob/f97608f178d1ffeca59860195ab7da295f7c8e5f/hermes_cli/skills_hub.py#L782-L828).
 The documentation names the model-facing tool as the route: "Use `skills_list` to discover the full qualified skill name". Kind: documentation, [`developer-guide/plugins/index.md` L70–L78](https://github.com/NousResearch/hermes-agent/blob/f97608f178d1ffeca59860195ab7da295f7c8e5f/website/docs/developer-guide/plugins/index.md#L70-L78).
-That tool returns `agent-plugin-<slug>-<sha256[:8]>:<skill>`. Kind: source, [`skills_tool.py` L234–L259](https://github.com/NousResearch/hermes-agent/blob/f97608f178d1ffeca59860195ab7da295f7c8e5f/tools/skills_tool.py#L234-L259).
+That tool returns `agent-plugin-<slug>-<sha256[:8]>:<skill>`. Kind: source, [`plugins_manifest.py` L60–L64](https://github.com/NousResearch/hermes-agent/blob/f97608f178d1ffeca59860195ab7da295f7c8e5f/hermes_cli/plugins_manifest.py#L60-L64) for the namespace and [`skills_tool.py` L234–L259](https://github.com/NousResearch/hermes-agent/blob/f97608f178d1ffeca59860195ab7da295f7c8e5f/tools/skills_tool.py#L234-L259).
 Called in-process with no model, it printed `agent-plugin-triz-3db6c5da:ariz`. Kind: running, local, as above. No CLI subcommand calls it.
 
 ## Fixes
@@ -175,6 +185,7 @@ Called in-process with no model, it printed `agent-plugin-triz-3db6c5da:ariz`. K
 Run 36182597972 (at `3f00b7a`): every job `success`.
 All three Hermes jobs, for example `install (windows-latest, hermes)`, printed `##[group]hermes has triz installed and enabled`, then `Key: triz` and `Status: enabled`.
 Run 36182597974 (conformance, same commit): `check`, `validate-claude`, `validate-skills` and `validate-hermes` all `success`.
+After the exclude, at `344db4d`: integration run 36184574245 finished 15 of 15 jobs `success`, and conformance run 36184574204 finished 4 of 4.
 
 ## Decisions for the workflows
 

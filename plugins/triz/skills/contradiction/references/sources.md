@@ -12,8 +12,9 @@
 
 # Sources
 
-What the references in this skill were checked against, how each was read,
-and what was not read. Dates are the day of reading. The sites that hold
+What the references of this skill and of the `ariz` skill beside it were
+checked against, how each was read, and what was not read. Both skills
+link this one file. Dates are the day of reading. The sites that hold
 the primary texts were not reachable from the network this was written on,
 and each entry says what was read instead.
 
@@ -106,8 +107,8 @@ Two copies were read on 2026-09-23.
   <https://github.com/max-talanov/1/blob/8a40e29cc2ed0ffa4d1a7815b108ead31d6c59b5/Neurotechnologies_and_TRIZ/triz.md>.
   That copy cites the Altshuller Foundation's page,
   <https://www.altshuller.ru/triz/ariz85v.asp>, as its source and elides
-  steps 5.4, 7.1 and 9.2. The Russian formulas quoted in `ariz-85c.md` are
-  from it.
+  steps 5.4, 7.1 and 9.2. The Russian formulas quoted in
+  [`ariz-85c.md`](../../ariz/references/ariz-85c.md) are from it.
 - An English text, "Algorithm of Inventive Problem Solving, © G.S.
   Altshuller, 1956-1985", 33 pages, translator not named. Its own
   references are «Правила игры без правил» (Petrozavodsk: Karelia, 1989,
@@ -115,7 +116,7 @@ Two copies were read on 2026-09-23.
   and Invention Machine's TechOptimizer 2.51. Read from
   <https://github.com/arvindvenkatadri/teachingtriz/blob/e10f20c61a4907b453fd8863a8cff7bd98247a73/content/TRIZ/Modules/400-TRIZ-References/TRIZ-Related/ariz85c_en.pdf>.
   Steps 5.4, 7.1 and 9.2, Table 2 and the opening warning quoted in
-  `ariz-85c.md` are from it.
+  [`ariz-85c.md`](../../ariz/references/ariz-85c.md) are from it.
 
 The Foundation's pages, including Table 1 and Table 2 in Russian, were not
 reachable. Neither was the English translation MATRIZ publishes at
@@ -135,7 +136,7 @@ Two printed editions of the algorithm were not opened. Г. С. Альтшулл�
 ## Not read
 
 The following are named in TRIZ literature and were not opened from the
-network this was written on. Nothing in this skill is quoted from them.
+network this was written on. Nothing in either skill is quoted from them.
 
 - Genrich Altshuller, *40 Principles: TRIZ Keys to Technical Innovation*,
   Technical Innovation Center, 1997.

@@ -5,12 +5,11 @@ description: >
   compromise. Restate the problem as a contradiction, map it to
   Altshuller's 39 parameters, read the classic contradiction matrix, and
   adapt the principles it recommends. Send a physical contradiction to the
-  separation principles, and a problem the matrix did not crack to
-  ARIZ-85C, walked part by part. Use when improving one thing makes another
-  worse, or when two requirements seem incompatible. Use when a compromise
-  is the only option on the table. Use when one element must have two
-  opposite properties, or when a hard problem keeps coming back after
-  ordinary fixes.
+  separation principles. Hand a problem the matrix route did not crack, or
+  one that keeps coming back, to the ariz skill of this package. Use when
+  improving one thing makes another worse, or when two requirements seem
+  incompatible. Use when a compromise is the only option on the table. Use
+  when one element must have two opposite properties.
 license: MIT
 ---
 
@@ -27,16 +26,16 @@ user before you continue. Examples: "What gets worse when you improve
 that?", "Is the cost in latency or in throughput?", "What must stay as it
 is?"
 
-Five files sit beside this file. Read each at the point its row names, and
-not before.
+Four reference files sit in `references/`. Read each at the point its row
+names, and not before. The `ariz` skill of this package reads
+`principles.md` and `sources.md` too.
 
 | File | What it holds | Read when |
 | --- | --- | --- |
 | [`references/parameters.md`](references/parameters.md) | the 39 engineering parameters, with a reading of each for software | Step 5, to map both sides of a technical contradiction |
-| [`references/principles.md`](references/principles.md) | the 40 inventive principles, with a reading of each for software | Step 4 for whose separation set it is, Step 7 for each recommended principle, and Step 9 if the principles are tried at ARIZ step 5.3 |
+| [`references/principles.md`](references/principles.md) | the 40 inventive principles, with a reading of each for software | Step 4, for who defined the four separations; Step 7, for each recommended principle |
 | [`references/matrix.md`](references/matrix.md) | the classic contradiction matrix, one line per cell | Step 6: search it for one line, and never read it whole |
-| [`references/ariz-85c.md`](references/ariz-85c.md) | ARIZ-85C, part by part | Step 9, after Step 8 escalates |
-| [`references/sources.md`](references/sources.md) | where each of the others was read from, and what could not be opened | when the user asks where a cell, a principle or a formula comes from |
+| [`references/sources.md`](references/sources.md) | where each reference of this skill and of `ariz` was read, and what could not be opened | when the user asks where a cell or a principle comes from |
 
 ## Step 1: state the contradiction
 
@@ -135,37 +134,12 @@ Ask the user which direction holds, whether the contradiction should be
 restated, and what constraint was missed. Repeat from Step 1 when the
 restatement changes.
 
-Escalate to ARIZ in four cases. The matrix gave nothing the user can use.
-The problem has several contradictions that feed each other. A fix in one
-place breaks another. The problem has returned after earlier fixes. Say
-why you are escalating.
-
-## Step 9: ARIZ-85C
-
-Read `references/ariz-85c.md` and walk the nine parts in order with the
-user. Do not skip a part and do not compress two into one. The value is in
-the formulations. Write each one out in the wording the reference gives
-and fill it from the user's system.
-
-Tell the user what the reference records. Altshuller's text asks for at
-least 80 academic hours of study before ARIZ is applied to a new practical
-problem. The walk here is a guided substitute for that study.
-
-- Parts 1 to 3 produce the mini-problem, the conflicting pair, the
-  intensified conflict, the operative zone and time, and the resource
-  list. They end with the two ideal final results and the physical
-  contradiction.
-- Parts 4 and 5 produce the solution directions from the resources and
-  from the information fund. Step 5.3 applies the algorithm's own table of
-  eleven transformations. Step 4 of this skill uses the four separations
-  of later teaching instead. The 40 principles may be read at 5.3 too,
-  with a note that the algorithm names them only in step 9.2.
-- Part 6 restates the problem when nothing came out.
-- Parts 7 to 9 check the solution, generalise it and record what the walk
-  taught.
-
-Stop after any part when the user has a direction they can act on, and
-say which parts were not walked.
+Hand over to the `ariz` skill of this package in four cases. The matrix
+gave nothing the user can use. The problem has several contradictions
+that feed each other. A fix in one place breaks another. The problem has
+returned after earlier fixes. Say why you are handing over. Pass on the
+technical contradiction, the ideal final result and that reason. `ariz`
+walks ARIZ-85C and hands a restated technical contradiction back here.
 
 ## Boundaries
 

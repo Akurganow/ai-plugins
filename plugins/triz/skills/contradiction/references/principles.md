@@ -383,8 +383,9 @@ ARIZ-77, he gave four:
 - by restructuring, so that the parts have one property and the whole the
   other
 
-In ARIZ-85C he gave the eleven of its Table 2, which `ariz-85c.md` lists
-under step 5.3. "On condition" is in neither of his lists. Authors also
+In ARIZ-85C he gave the eleven of its Table 2, which the `ariz` skill's
+[`ariz-85c.md`](../../ariz/references/ariz-85c.md) lists under step 5.3.
+"On condition" is in neither of his lists. Authors also
 attach lists of the 40 principles to each separation. The lists differ
 between authors, so this skill attaches none. `sources.md` names where
 each list was read.

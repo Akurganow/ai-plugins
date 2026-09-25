@@ -22,9 +22,10 @@ The algorithm Altshuller published in 1985, in his order of parts and
 steps. The steps are paraphrased in English, with a gloss for software
 work under each. The text is quoted where the wording is the instrument.
 The mini-problem, the two ideal final results and the physical
-contradiction are formulas, and their words carry the method. `sources.md`
-says which copies the text was read from, one Russian and one English,
-and which pages could not be opened.
+contradiction are formulas, and their words carry the method. The shared
+[`sources.md`](../../contradiction/references/sources.md) says which copies
+the text was read from, one Russian and one English, and which pages could
+not be opened.
 
 The English text opens with a warning: "ARIZ is a complicated tool. Do not
 apply it to solve new practical problems without at least 80 academic
@@ -38,7 +39,8 @@ Versions are named by year. In 1985 three modifications followed each
 other, lettered with the first three letters of the Russian alphabet, and
 the third is ARIZ-85-В. English texts write the Cyrillic В either by its
 position, C, or by its sound, V. "ARIZ-85C" and "ARIZ-85V" are the same
-text. The C does not stand for "complete". `sources.md` says what this
+text. The C does not stand for "complete".
+[`sources.md`](../../contradiction/references/sources.md) says what this
 naming rests on.
 
 The algorithm has nine parts and forty steps. Part 5 names the instruments
@@ -51,8 +53,8 @@ it applies:
 
 It names the 40 principles once, in step 9.2, as a record to compare the
 finished solution against. It does not name the contradiction matrix. That
-is why this skill treats the matrix route and the ARIZ route as two routes
-rather than one.
+is why the matrix route and the ARIZ route are two skills of this package,
+`contradiction` and `ariz`.
 
 ## Vocabulary
 
@@ -268,9 +270,9 @@ wording:
     a result of decomposition-combination, ionization-recombination.
 
 The rule beside this step: "Only solution concepts that completely match
-the IFR or come close to it are acceptable." The four separations in
-`SKILL.md` Step 4 come from later teaching texts, and `principles.md`
-names them.
+the IFR or come close to it are acceptable." The four separations in Step
+4 of the `contradiction` skill come from later teaching texts, and
+[`principles.md`](../../contradiction/references/principles.md) names them.
 
 Software gloss. Items 3 to 6 are the system-level moves: a cluster of
 services as one system, a service and its inverse, a rigid whole made of

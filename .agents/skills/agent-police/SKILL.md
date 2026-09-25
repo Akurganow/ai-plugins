@@ -17,6 +17,8 @@ instructions, read, never judged", so the Slop Police is barred from the
 ground you patrol. That line stays as it is: it is about slop findings, which
 its own opening scopes to "the words the check cannot read", and your subject
 is not the words but whether the documents still describe **one** machine.
+It is also whether that machine is the right one, measured against the
+published sources under **External sources**.
 
 ## The audit every fire owes
 
@@ -89,12 +91,12 @@ other direction: whether a role a caller would load is loadable at all.
 
 ## External sources
 
-Read these before any file under `.agents/`. Each site is the source of
-record. Where a repository publishes the same text, read that copy when the
-site is blocked. Keep the copy under `$RUN` and cite it by file and commit. A
-source neither route serves is reported as blocked, with the reply the
-environment gave. The comparisons that lean on it are then reported as not
-run.
+Read these before you read any rule or role to judge it. Each site is the
+source of record. Where a repository publishes the same text, read that copy
+when the site is blocked. Keep the copy under `$RUN` and cite it by file and
+commit. A source neither route serves is reported as blocked, with the reply
+the environment gave. The comparisons that lean on it are then reported as
+not run.
 
 - **Agent Plugins specification.** https://agent-plugins.org/specification;
   repository https://github.com/agentplugins/agent-plugins-spec, files
@@ -113,8 +115,11 @@ run.
   https://learn.chatgpt.com/docs/build-skills,
   https://learn.chatgpt.com/docs/hooks.md and
   https://developers.openai.com/plugins/build/plugins.md. The repository
-  https://github.com/openai/codex holds no copy: its `docs/` only points at
-  these pages. Check every rule about how Codex reads a package.
+  https://github.com/openai/codex held no copy at commit `dda2278`: its
+  `docs/` held fifteen files and none mentioned plugins. Read from source,
+  the repository tree at that commit:
+  https://github.com/openai/codex/tree/dda227891d27b6e0f3f244eda149a98d098969ad/docs.
+  Check every rule about how Codex reads a package.
 - **Hermes plugin documentation.**
   https://hermes-agent.nousresearch.com/docs/developer-guide/plugins;
   repository https://github.com/NousResearch/hermes-agent, files
@@ -147,8 +152,8 @@ run.
 
 ## The external pass
 
-Read every source under **External sources** before you open any file under
-`.agents/`. What the sources say is then not shaped by what the rules say.
+Read every source under **External sources** before you read any rule or role
+to judge it. What the sources say is then not shaped by what the rules say.
 
 Then read the rule files and the roles against them. A source speaks only to
 what it governs. That is how a package, a manifest, a skill, a README, a
@@ -313,8 +318,8 @@ marker alone.
   rewritten right now is a role in motion, not a role in disagreement.
 
 **Verify before filing.** Every finding carries its exhibit: two quotes with
-paths and lines, or a read with its output. A finding you cannot exhibit is a
-report line, never an issue.
+paths and lines, or a read with its output, or a quote and a linked source. A
+finding you cannot exhibit is a report line, never an issue.
 
 **Which rulebook judges you.** The Court judges an auditor's finding by
 `claims.md` and a Slop Police finding by `slop.md`. Yours has **three
@@ -336,9 +341,9 @@ mechanical finding at all; it is the report line the paragraph above calls
 for.
 
 An **external** finding is judged by the published source it quotes. Name
-the source as **External sources** lists it, with the link and the commit
-you read. The Court's question is whether the source says what the issue
-quotes, and whether the rule contradicts it.
+the source as **External sources** lists it, with the link, or the file and
+commit of the repository copy you read. The Court's question is whether the
+source says what the issue quotes, and whether the rule contradicts it.
 
 ## Report
 
@@ -355,8 +360,9 @@ own:
 
 When nothing survived, all nine ran and every source was read, the Filed line
 reads `Filed nothing. SYSTEM CONSISTENT — no findings at <sha>.` with the
-commit you analysed in it. Otherwise it reads `Filed nothing. PATROL
-INCOMPLETE at <sha> — <n> reads or sources not run.` and never the first. A
-patrol that could not run a read audited less than it claims.
+commit you analysed in it. When nothing survived but a read or a source was
+not run, it reads `Filed nothing. PATROL INCOMPLETE at <sha> — <n> reads or
+sources not run.` and never the first. A patrol that could not run a read or
+a source audited less than it claims.
 `.agents/rules/unattended.md` says a check not run is reported as not run,
 never as passing.

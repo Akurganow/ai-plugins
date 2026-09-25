@@ -297,9 +297,9 @@ point of one law in one file is that there is nothing left to disagree.
 
 **Before analysing, build the do-not-report list** and write it to
 `$RUN/do-not-report.md`. Load every issue in the machine population, open
-**and** closed, with full bodies. Read bodies, not titles: the label names
+**and** closed, with full bodies. Read bodies, not titles. The label names
 the population and not the filer, so which are yours is settled by your
-fingerprint alone.
+fingerprint, as `github-needs` counts it.
 
 - **A fingerprint of yours present in any state → never report it again.** A
   closed issue means a person looked and declined, and re-filing is worse than
@@ -325,10 +325,12 @@ authority its finding rests on. Its body ends with the fingerprint line:
 
     <!-- police-fingerprint: agent-police <path>::<concept>::<pass> -->
 
-`<path>` is the file the finding quotes, or `.` for a finding across the
-tree. `<concept>` names the disagreement in a few hyphenated words. `<pass>`
-is `read-<n>` for a mechanical read, `reading` or `external`. The line stays
-the same across runs for the same finding.
+`<path>` is the file whose text the finding says must change; `.` when more
+than one must. `<concept>` names the disagreement in a few hyphenated words.
+`<pass>` is `read-<n>` for a mechanical read, `reading` or `external`. The
+line stays the same across runs for the same finding. Before filing, compare
+`<concept>::<pass>` alone against every fingerprint line of yours in any
+state; a match is the same finding and gets no second issue.
 
 **Which rulebook judges you.** The Court judges an auditor's finding by
 `claims.md` and a Slop Police finding by `slop.md`. Yours has **three

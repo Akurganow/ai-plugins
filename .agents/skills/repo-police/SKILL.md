@@ -57,8 +57,9 @@ Read bodies, not titles: each automated issue ends with a fingerprint
 line, and the fingerprint is the identity. `police-report` is shared by
 every automated filer of this repository, so it names the population and
 not the filer. Which of those issues are yours is settled by your
-fingerprint alone. The label is what makes closed issues findable by
-listing, which is why it is never removed from an issue it was applied to.
+fingerprint, as `github-needs` counts it. The label is what makes closed
+issues findable by listing, which is why it is never removed from an issue
+it was applied to.
 Write the list to `$RUN/do-not-report.md` before any analysis, with these
 decisions made in it:
 
@@ -379,8 +380,8 @@ The checklist mapping:
 A missing `audit:*` or `documentation` is a report line and nothing more.
 Neither is counted by anything, and neither decides whether you file.
 
-Your identity does not depend on a label at all: it is the
-fingerprint line naming `repo-police` at the foot of the issue.
+No `audit:*` or `documentation` name identifies you: the fingerprint line
+naming `repo-police` does.
 
 Title: `docs: <specific problem> in <path>`
 (e.g. `docs: plugin.json $schema targets 0.9.0 in plugins/arxiv-search/`)

@@ -112,8 +112,9 @@ Read bodies, not titles: each automated issue ends with a fingerprint
 line, and the fingerprint is the identity. `police-report` is shared by
 every automated filer of this repository, so it names the population and
 not the filer. Which of those issues are yours is settled by your
-fingerprint alone. The label is what makes closed issues findable by
-listing, which is why it is never removed from an issue it was applied to.
+fingerprint, as `github-needs` counts it. The label is what makes closed
+issues findable by listing, which is why it is never removed from an issue
+it was applied to.
 Read the auditor's open and closed issues with the same care. A paragraph
 it already filed is not yours to file again under another name. Write the
 list to `$RUN/do-not-report.md`
@@ -472,8 +473,8 @@ A missing `audit:slop` or `documentation` is a report line and nothing
 more. Neither is counted by anything, and neither decides whether you
 file.
 
-Your identity does not depend on a label at all: it is the fingerprint
-marker at the foot of the issue.
+No `audit:*` or `documentation` name identifies you: the fingerprint line
+naming `slop-police` does.
 
 Title: `[Slop Police] <kind>: <path> — <the missing fact, the false
 fact, the check that cannot fire, or the leftover>`

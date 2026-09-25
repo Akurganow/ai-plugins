@@ -59,13 +59,13 @@ Give the agent a first prompt:
 Set up a forecast workspace in ~/howp. Ask me what I follow, then bind my questions to markets and write the first forecast.
 ```
 
-With the `forecast` skill in use, the agent reads `binaries.json`, probes
-the hosts, downloads the `hp` archive for your machine and checks its
-sha256. It then interviews you one question at a time. It writes
-`interests.yaml` and `questions/*.yaml` only after you approve the list. It
-searches Polymarket and Manifold for a market per question and records each
-verdict with its reasoning. It fetches the market bodies, and `hp` records
-the probabilities.
+With the `interests` skill, the agent interviews you one question at a
+time. It writes `interests.yaml` and `questions/*.yaml` only after you
+approve the list. With the `forecast` skill, it reads `binaries.json`,
+probes the hosts, downloads the `hp` archive for your machine and checks
+its sha256. It searches Polymarket and Manifold for a market per question
+and records each verdict with its reasoning. It fetches the market bodies,
+and `hp` records the probabilities.
 `hp render` writes the forecast page to `data/dashboard.md` in the workspace.
 
 Later prompts refresh the forecast, explain a sharp move or write the weekly
@@ -75,9 +75,10 @@ digest.
 
 | Path | What it holds |
 | :-- | :-- |
-| [`skills/forecast/SKILL.md`](skills/forecast/SKILL.md) | The skill: the platform rules, the workspace, the routine cycle and the three judgements. |
+| [`skills/interests/SKILL.md`](skills/interests/SKILL.md) | The `interests` skill: interviews you and writes the questions a forecast is built on. |
+| [`skills/interests/references/interview.md`](skills/interests/references/interview.md) | The interview, the formats of the two files you own, and what makes a good question. |
+| [`skills/forecast/SKILL.md`](skills/forecast/SKILL.md) | The `forecast` skill: the platform rules, the workspace, the routine cycle and the three judgements. |
 | [`skills/forecast/references/install.md`](skills/forecast/references/install.md) | How the skill gets `hp`: the platform gate, the preflight, the download, the sha256 check and the unpack. |
-| [`skills/forecast/references/interview.md`](skills/forecast/references/interview.md) | The interests interview and the formats of the two files the user owns. |
 | [`skills/forecast/references/procedures.md`](skills/forecast/references/procedures.md) | Binding a question to a market, explaining a sharp move and writing the weekly digest. |
 | [`skills/forecast/references/commands.md`](skills/forecast/references/commands.md) | `hp --help` for every subcommand, written by the release job. |
 | [`binaries.json`](binaries.json) | The released `hp` archives: version, targets, URLs and sha256 digests, written by the release job. |

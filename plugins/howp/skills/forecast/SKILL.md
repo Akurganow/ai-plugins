@@ -2,24 +2,23 @@
 name: forecast
 description: >
   Forecast the questions a person follows from prediction markets and your
-  own judgement. Turn their interests into measurable questions, bind each
-  question to a Polymarket or Manifold market, record the market
-  probabilities with the `hp` binary, and write the forecast. Use when the
-  user asks to forecast something they follow, asks what the markets say
-  about it, wants to set up or refresh a forecast workspace, turn an
-  interest into questions, bind a question to a market, collect market
-  probabilities, explain a sharp move, or write the weekly digest. `hp`
-  runs only on the platforms the package's binaries.json names; read that
-  file before running it.
+  own judgement. Bind each measurable question to a Polymarket or Manifold
+  market. Record the market probabilities with the `hp` binary, and write
+  the forecast. Use when the user asks to forecast something they follow,
+  or asks what the markets say about it. Also use when they want to set up
+  or refresh a forecast workspace. Also use to bind a question to a market,
+  collect market probabilities, explain a sharp move or write the weekly
+  digest. `hp` runs only on the platforms the package's binaries.json
+  names; read that file before running it.
 license: MIT
 ---
 
 # Forecast from prediction markets
 
-The work runs from what a person follows to a written forecast. You
-interview them and write measurable questions. You bind each question to a
-market, and `hp` records its probability. Your judgement lands beside those
-numbers, and `hp render` writes the page.
+The work runs from what a person follows to a written forecast. The
+`interests` skill interviews them and writes measurable questions. You bind
+each question to a market, and `hp` records its probability. Your judgement
+lands beside those numbers, and `hp render` writes the page.
 
 `hp` does the deterministic work. It extracts a probability from a venue's
 raw response, appends the history, detects sharp moves and renders the page.
@@ -106,9 +105,11 @@ shell's directory writes into whatever workspace the shell stands in.
   data/dashboard.md          the forecast page            — hp render
 ```
 
-The person owns the first two files, and writing them is a conversation.
-Read `references/interview.md` when the workspace has no `interests.yaml`,
-or when the user wants to add or change an interest or a question.
+The person owns the first two files, and the `interests` skill writes them
+with the person. Hand over to it when the workspace has no
+`interests.yaml`, or when the user wants to add or change an interest or a
+question. Read `../interests/references/interview.md` when a binding needs
+a field of those files, such as `search_terms`, `horizon` or `status`.
 `HP_DATA_DIR` moves the data tree, and `hp render --out PATH` moves the page
 alone.
 

@@ -126,10 +126,11 @@ One file per interest, a list at the top level.
 - `kind` — `binary` (one yes/no outcome) or `multi` (several mutually
   exclusive outcomes). Defaults to `binary`.
 - `horizon` — free text, but only a date lets a binding measure a market's
-  close date against it. The horizon convention in `references/procedures.md`,
-  section 1, sets the verdict that distance earns, and `hp` computes none of
-  it. A vague horizon earns a worse verdict, not a lenient one. Quote a bare
-  date so YAML keeps it a string.
+  close date against it. The horizon convention in
+  `../forecast/references/procedures.md`, section 1, sets the verdict that
+  distance earns, and `hp` computes none of it. A vague horizon earns a
+  worse verdict, not a lenient one. Quote a bare date so YAML keeps it a
+  string.
 - `status` — `active`, `resolved`, `expired` or `archived`. Defaults to
   `active`. **Only `active` questions are quoted**, which is also how a user
   parks something without deleting it.
@@ -161,14 +162,13 @@ wording.
 
 ## After writing the files
 
-Binding is what turns a question into something with a probability: a
+Binding is what turns a question into something with a probability. A
 question with no market behind it is listed on the page as uncovered and
-never gets a number. Binding one is the first of the three procedures in
-`references/procedures.md` — you find candidate markets yourself, fetch the
-market's own body, judge it, and land the judgement with one `hp ingest match`
-call that reads every fact about the market out of that body. `hp ingest check
-questions` and `hp ingest check matches` read these files strictly afterwards
-and report what is wrong with them.
+never gets a number. Binding belongs to the `forecast` skill, so hand over to
+it now. Its first procedure, in `../forecast/references/procedures.md`,
+finds candidate markets, judges each one and lands the verdict with
+`hp ingest match`. It also runs `hp ingest check questions`, which reads
+these files strictly and reports what is wrong with them.
 
 Then tell the user which questions got a market and which did not. The ones
 that did not are not a failure of the interview; they are the honest part of

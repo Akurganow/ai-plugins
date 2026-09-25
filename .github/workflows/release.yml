@@ -1,14 +1,14 @@
 name: release
 
-# Releases each package whose files changed since its last tag, straight on
-# main, with cocogitto (https://docs.cocogitto.io/guide/monorepo). cog.toml
-# names the packages and writes the version into both manifests.
+# Releases each package that has a feat, fix or breaking commit since its last
+# tag, straight on main, with cocogitto (https://docs.cocogitto.io/guide/monorepo).
+# cog.toml names the packages and writes the version into both manifests.
 #
 # Loop guard: a push made with GITHUB_TOKEN starts no new workflow run
-# (https://docs.github.com/en/actions/concepts/security/github_token), so the
-# version commit and its tags do not run this workflow again.
-# The "main" ruleset forbids only deletion and non-fast-forward pushes, so the
-# fast-forward push below is allowed.
+# (documentation: https://github.com/github/docs/blob/75ea7dd097a5564f27364a5b70eaa1979106eabd/data/reusables/actions/actions-do-not-trigger-workflows.md),
+# so the version commit and its tags cannot rerun this workflow.
+# The "main" ruleset (ruleset 21664827, read 2026-09-25) forbids only deletion
+# and non-fast-forward pushes, so the fast-forward push below is allowed.
 on:
   push:
     branches: [main]
@@ -50,6 +50,25 @@ jobs:
           echo "$HOME/.local/bin" >> "$GITHUB_PATH"
           "$HOME/.local/bin/cog" --version | grep -F '7.0.0'
 
+      # Without a tag, cocogitto reads a package's history from the first commit
+      # (source: https://github.com/cocogitto/cocogitto/blob/055a9fa8db8ac8ce50074d50162b48b92e9d0c47/crates/cocogitto/src/conventional/bump.rs#L190-L194).
+      # That would release a version no seed recorded, so a missing seed stops the run.
+      - name: Refuse to release a package with no seed tag
+        run: |
+          names=$(awk '/^\[monorepo\.packages\]/ { p = 1; next } /^\[/ { p = 0 } p && $1 !~ /^#/ && / = / { print $1 }' cog.toml)
+          if [ -z "$names" ]; then
+            echo "::error::cog.toml names no package under [monorepo.packages]."
+            exit 1
+          fi
+          status=0
+          for name in $names; do
+            if [ -z "$(git tag --merged HEAD -l "$name--v*")" ]; then
+              echo "::error::No $name--v* tag is reachable from main; seed it before releasing."
+              status=1
+            fi
+          done
+          exit "$status"
+
       - name: Bump every package with releasable commits
         id: bump
         run: |
@@ -72,15 +91,18 @@ jobs:
 
       # The notes are the new section of the package's CHANGELOG.md, which
       # cocogitto heads "## <tag> - <date>".
-      - name: Create one GitHub release per new tag
-        if: steps.bump.outputs.released == 'true'
+      # It reads the tags on main's head and skips released ones, so re-running
+      # a run whose release step failed creates only the missing releases.
+      - name: Create one GitHub release per tag on main's head
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          while read -r tag; do
+          for tag in $(git tag --points-at HEAD | grep -e '--v' || true); do
+            gh release view "$tag" >/dev/null 2>&1 && continue
             name=${tag%--v*}
             notes="$RUNNER_TEMP/$tag.md"
             awk -v head="## $tag " 'index($0, head) == 1 { p = 1; next } p && (/^- - -$/ || /^## /) { exit } p' \
               "plugins/$name/CHANGELOG.md" > "$notes"
+            [ -s "$notes" ] || { echo "::error::no changelog section for $tag"; exit 1; }
             gh release create "$tag" --verify-tag --title "$tag" --notes-file "$notes"
-          done < "$RUNNER_TEMP/new-tags"
+          done

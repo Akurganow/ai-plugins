@@ -12,16 +12,26 @@ generate_mono_repository_global_tag = false
 # This repository merges pull requests with merge commits; each branch commit
 # counts for the paths it touched, and the merge commit itself counts for none.
 ignore_merge_commits = true
+# Releases are cut from main only; a detached or other checkout refuses the bump.
 branch_whitelist = ["main"]
 
 # Runs in the package directory before the version commit. plugin.json and
 # .claude-plugin/plugin.json are one source and its byte-identical copy, so
-# both get the new version and must still be equal afterwards.
+# both get the new version and must still be equal afterwards. No workflow
+# runs on the version commit, so this is its byte-identity check.
 pre_package_bump_hooks = [
   "jq --arg v '{{version}}' '.version = $v' plugin.json > plugin.json.next && mv plugin.json.next plugin.json",
   "jq --arg v '{{version}}' '.version = $v' .claude-plugin/plugin.json > .claude-plugin/plugin.json.next && mv .claude-plugin/plugin.json.next .claude-plugin/plugin.json",
   "cmp plugin.json .claude-plugin/plugin.json",
 ]
+
+# The package changelog template names no author and writes no HTML, unlike
+# the built-in one. package_template takes a custom template path
+# (documentation: https://github.com/cocogitto/cocogitto/blob/8cfddce66f6eece4e5f310565737cac030be8e63/website/reference/config.md#L295-L317),
+# read relative to where cog runs, the repository root here
+# (source: https://github.com/cocogitto/cocogitto/blob/055a9fa8db8ac8ce50074d50162b48b92e9d0c47/crates/cocogitto/src/conventional/changelog/template.rs#L176-L182).
+[changelog]
+package_template = "tools/templates/changelog.tera"
 
 # Each package writes its own CHANGELOG.md in its directory (the default).
 [monorepo.packages]

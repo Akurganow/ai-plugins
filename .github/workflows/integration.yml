@@ -1,11 +1,12 @@
 name: integration
 
-# Installs every package into each supported client on each hosted OS, from
-# this checkout. Claude Code, Codex and Oh-My-Pi must list every skill.
+# Installs every package from this checkout into Claude Code, Codex and Oh-My-Pi
+# on Linux, macOS and Windows, and into Hermes on Linux and macOS.
+# Claude Code, Codex and Oh-My-Pi must list every skill.
 # Hermes must show each package installed and enabled. No step calls a model.
 #
 # The windows-latest image installs Git with symlinks enabled
-# (https://github.com/actions/runner-images/blob/ebade26c60adcb867918b31c8f8caa37343a3d39/images/windows/scripts/build/Install-Git.ps1).
+# (source: https://github.com/actions/runner-images/blob/ebade26c60adcb867918b31c8f8caa37343a3d39/images/windows/scripts/build/Install-Git.ps1).
 # A Windows job here proves loading on that image, not on a default Git for
 # Windows checkout.
 on:
@@ -57,7 +58,7 @@ jobs:
           # error: Your local changes to the following files would be overwritten by checkout:
           # [X] Installation failed: git checkout f97608f178d1ffeca59860195ab7da295f7c8e5f failed (exit 1)
           # install.ps1 clones upstream main before checking out the pinned commit.
-          # The result therefore depends on upstream at run time:
+          # The result therefore depends on upstream at run time (source):
           # https://github.com/NousResearch/hermes-agent/blob/f97608f178d1ffeca59860195ab7da295f7c8e5f/scripts/install.ps1#L20-L24
           - os: windows-latest
             client: hermes
@@ -70,19 +71,20 @@ jobs:
       CLIENT: ${{ matrix.client }}
       PAIRS: ${{ needs.packages.outputs.pairs }}
       # Keeps Claude Code at the pinned version
-      # (https://code.claude.com/docs/en/setup, "Disable auto-updates").
+      # (documentation: https://code.claude.com/docs/en/setup, "Disable auto-updates").
       DISABLE_AUTOUPDATER: "1"
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
 
       # Claude Code's npm package needs Node.js 22 or later
-      # (https://code.claude.com/docs/en/setup, "Install with npm").
+      # (documentation: https://code.claude.com/docs/en/setup, "Install with npm").
       - if: matrix.client == 'claude' || matrix.client == 'codex'
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: "22"
 
-      # Oh-My-Pi 18.2.8 declares bun >= 1.3.14.
+      # Oh-My-Pi 18.2.8 declares bun >= 1.3.14 in its package.json engines (source,
+      # as the registry serves it: https://registry.npmjs.org/@oh-my-pi/pi-coding-agent/18.2.8).
       - if: matrix.client == 'omp'
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
@@ -92,10 +94,14 @@ jobs:
         if: matrix.client == 'hermes'
         run: echo "HERMES_HOME=${{ runner.temp }}/hermes-home" >> "$GITHUB_ENV"
 
-      # Install routes: code.claude.com/docs/en/setup; developers.openai.com/codex/cli;
-      # the Oh-My-Pi README; Hermes installation.md, at the pinned commit.
+      # Install routes, documentation: https://code.claude.com/docs/en/setup,
+      # https://developers.openai.com/codex/cli and the Oh-My-Pi README:
+      # https://github.com/can1357/oh-my-pi/blob/6204b7508014bcdf12d95f0b3fd470905fd99344/README.md#L51-L55
+      # Hermes: installation.md (documentation), and install.sh's usage text (source)
+      # for --commit, --skip-setup and --hermes-home, both at the pinned commit:
+      # https://github.com/NousResearch/hermes-agent/blob/f97608f178d1ffeca59860195ab7da295f7c8e5f/website/docs/getting-started/installation.md#L138-L140
+      # https://github.com/NousResearch/hermes-agent/blob/f97608f178d1ffeca59860195ab7da295f7c8e5f/scripts/install.sh#L172-L190
       - name: Install the client
-        if: matrix.client != 'hermes' || runner.os != 'Windows'
         run: |
           case "$CLIENT" in
             claude) npm install -g @anthropic-ai/claude-code@2.1.278 && claude --version ;;
@@ -107,17 +113,6 @@ jobs:
               echo "$HOME/.local/bin" >> "$GITHUB_PATH" ;;
           esac
 
-      # Hermes documents -Commit, -SkipSetup and -HermesHome for install.ps1
-      # (website/docs/user-guide/windows-native.md). The installer writes the User PATH.
-      - name: Install the client (Hermes on Windows)
-        if: matrix.client == 'hermes' && runner.os == 'Windows'
-        shell: pwsh
-        run: |
-          & ([scriptblock]::Create((irm "https://raw.githubusercontent.com/NousResearch/hermes-agent/$env:HERMES_COMMIT/scripts/install.ps1"))) -Commit $env:HERMES_COMMIT -SkipSetup -HermesHome $env:HERMES_HOME
-          [Environment]::GetEnvironmentVariable('Path', 'User') -split ';' | Where-Object { $_ } | Add-Content $env:GITHUB_PATH
-
-      # Git Bash on windows-latest has no /dev/stderr, so the output is kept in
-      # a variable rather than passed through tee.
       - name: Check the Hermes version
         if: matrix.client == 'hermes'
         run: |
@@ -125,8 +120,12 @@ jobs:
           printf '%s\n' "$version"
           grep -qF 'v0.21.5' <<<"$version"
 
-      # Hermes reads no marketplace file. Its user plugin directory is
-      # $HERMES_HOME/plugins, and a portable package is disabled until enabled.
+      # Hermes documents installing a package from a repository. To test this checkout,
+      # each package is copied into the user plugin directory, ~/.hermes/plugins, here under $HERMES_HOME.
+      # A portable package sits there too and stays disabled until enabled. Documentation:
+      # https://github.com/NousResearch/hermes-agent/blob/f97608f178d1ffeca59860195ab7da295f7c8e5f/website/docs/developer-guide/plugins/index.md#L62-L71
+      # https://github.com/NousResearch/hermes-agent/blob/f97608f178d1ffeca59860195ab7da295f7c8e5f/website/docs/user-guide/features/plugins.md#L127
+      # https://github.com/NousResearch/hermes-agent/blob/f97608f178d1ffeca59860195ab7da295f7c8e5f/website/docs/developer-guide/plugins/index.md#L748
       - name: Add the marketplace and install every package
         run: |
           names=$(printf '%s\n' $PAIRS | cut -d: -f1 | sort -u)
@@ -145,7 +144,6 @@ jobs:
               omp plugin list ;;
             hermes)
               plugins_dir="$HERMES_HOME/plugins"
-              if [ "$RUNNER_OS" = Windows ]; then plugins_dir="$(cygpath -u "$HERMES_HOME")/plugins"; fi
               mkdir -p "$plugins_dir"
               for name in $names; do
                 cp -R "plugins/$name" "$plugins_dir/$name"
@@ -154,9 +152,13 @@ jobs:
               hermes plugins list ;;
           esac
 
-      # claude plugin details prints a component inventory; codex debug
-      # prompt-input renders the model-visible prompt, skill catalogue included;
-      # omp read resolves skill://<name> to its SKILL.md.
+      # claude plugin details prints a component inventory (documentation:
+      # https://code.claude.com/docs/en/plugins/cli-reference, "plugin details").
+      # codex debug prompt-input renders the model-visible prompt (documentation:
+      # https://learn.chatgpt.com/docs/developer-commands); running it shows the skill catalogue there.
+      # omp read is documented only by its own --help in 18.2.8 (running).
+      # It resolves skill://<name> to that skill's SKILL.md (documentation):
+      # https://github.com/can1357/oh-my-pi/blob/6204b7508014bcdf12d95f0b3fd470905fd99344/docs/skills.md#L169
       # Each pattern matches the line naming the skill, because a package's name
       # or description can contain the skill name.
       - name: Assert every skill is listed
@@ -201,6 +203,7 @@ jobs:
 
       # Hermes 0.21.5 has no command that prints a portable package's skills
       # without a model call, so this checks install and enable only.
+      # Source, at the pinned commit:
       # plugins show prints name, version, description, Status, Source, Key, Emits and Listens:
       # https://github.com/NousResearch/hermes-agent/blob/f97608f178d1ffeca59860195ab7da295f7c8e5f/hermes_cli/plugins_cmd.py#L1814-L1836
       # plugins list --json carries name, status, version, description, source and removed:
@@ -234,14 +237,14 @@ jobs:
           done
           exit "$status"
 
-      # Not run. In Codex 0.155.1, codex features list prints plugin_hooks as
-      # removed, and debug prompt-input runs no plugin SessionStart hook.
-      # Every other route to the hook calls a model. Upstream hook loading:
+      # Not run. Running Codex 0.155.1 locally, codex features list printed plugin_hooks
+      # as removed, and debug prompt-input ran no plugin SessionStart hook.
+      # Upstream hook loading, in Codex's issue tracker:
       # https://github.com/openai/codex/issues/39895,
       # https://github.com/openai/codex/issues/47925
       - name: Report the prose-discipline hook check as not run (Codex)
         if: matrix.client == 'codex'
-        run: echo "::notice::Hook check not run - Codex 0.155.1 lists plugin_hooks as removed, and no model-free route to the hook exists."
+        run: echo "::notice::Hook check not run - Codex 0.155.1 lists plugin_hooks as removed, and debug prompt-input runs no plugin hook."
 
   # Mirrors the howp skill's platform gate: one binaries.json target must match
   # uname -s and uname -m. A platform with no target is refused, not built.
@@ -291,6 +294,9 @@ jobs:
           fi
           tar -xzf "$archive"
           version=$(jq -r .version "$manifest")
+          # A here-string, not a pipe, for the reason given in the install job.
           for bin in $(jq -r '.binaries[]' <<<"$target"); do
-            "$root/$bin_dir/$bin" --version | tee /dev/stderr | grep -qF -- "$version"
+            out=$("$root/$bin_dir/$bin" --version)
+            printf '%s\n' "$out"
+            grep -qF -- "$version" <<<"$out"
           done

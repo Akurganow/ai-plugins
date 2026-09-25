@@ -16,3 +16,5 @@ tools/** linguist-vendored
 
 # bash fails on a script checked out with CRLF line endings.
 *.sh text eol=lf
+# tools/regenerate.sh matches marker lines exactly, and stops on a CRLF one.
+*.md text eol=lf

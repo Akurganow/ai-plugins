@@ -5,7 +5,7 @@ Every fact names its kind: documentation, source read at a commit, or running th
 A documentation page with no revision is dated by the day it was read.
 A running fact cites a GitHub Actions run of this repository, on hosted runners, with no client signed in.
 Install commands and install-time notes are in the [README](../README.md).
-The decisions built on these facts are in [decisions](decisions/).
+The reasons built on these facts are in [About this repository's design](design.md).
 
 ## Claude Code
 

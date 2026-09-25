@@ -30,8 +30,10 @@ jobs:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
 
       # One "package:skill" pair per skill directory, from each plugin.json name.
+      # nullglob keeps a package without skills/ from yielding the pair "name:*".
       - id: list
         run: |
+          shopt -s nullglob
           pairs=""
           for manifest in plugins/*/plugin.json; do
             root=$(dirname "$manifest")
@@ -146,6 +148,10 @@ jobs:
       # claude plugin details prints a component inventory; codex debug
       # prompt-input renders the model-visible prompt, skill catalogue included;
       # omp read resolves skill://<name> to its SKILL.md.
+      # Each pattern matches the line naming the skill, because a package's name
+      # or description can contain the skill name.
+      # Hermes names a portable skill agent-plugin-<slug>-<hash>:<skill>
+      # (website/docs/developer-guide/plugins/index.md at the pinned commit).
       - name: Assert every skill is listed
         run: |
           if [ "$CLIENT" = codex ]; then codex_prompt=$(codex debug prompt-input); fi
@@ -161,16 +167,24 @@ jobs:
           for pair in $PAIRS; do
             name=${pair%%:*}
             skill=${pair#*:}
-            expected=$skill
-            if [ "$CLIENT" = omp ]; then expected="name: $skill"; fi
+            case "$CLIENT" in
+              claude) expected="^  Skills \([0-9]+\)  (.*, )?$skill(,|\$)" ;;
+              codex)  expected="- $name:$skill: " ;;
+              omp)    expected="^name: $skill\$" ;;
+              hermes) expected="agent-plugin-$name-[0-9a-f]{8}:$skill" ;;
+            esac
             if ! out=$(inventory "$name" "$skill" 2>&1); then
               printf '%s\n' "$out"
               echo "::error::$CLIENT could not list $name"
               status=1
               continue
             fi
-            if printf '%s\n' "$out" | grep -qF -- "$expected"; then
-              echo "$CLIENT lists $name:$skill"
+            # A here-string, not a pipe: grep -q exits on the first match, and
+            # pipefail would report the writer's broken pipe as a failure.
+            if grep -qE -- "$expected" <<<"$out"; then
+              echo "::group::$CLIENT lists $name:$skill"
+              printf '%s\n' "$out"
+              echo "::endgroup::"
             else
               printf '%s\n' "$out"
               echo "::error::$CLIENT does not list skill $skill of $name"

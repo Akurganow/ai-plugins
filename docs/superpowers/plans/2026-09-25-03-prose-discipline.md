@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Make `plugins/prose-discipline` deliver one rules file to every session of Claude Code, Codex, Oh-My-Pi and Hermes by each client's documented always-on route, and bring the package to the shared manifest, skill and README norms.
+**Goal:** Deliver one rules file to every session of the four clients by each client's documented always-on route. Bring the package to the shared manifest, skill and README norms.
 
 **Architecture:** `rules/prose-discipline.md` stays the single source. Claude Code and Codex run `hooks/print-rules.sh` from one shell-form `hooks/hooks.json`. Oh-My-Pi reads the rules file itself. Hermes gets the rules through the renamed `house-style` skill, whose body carries them in a region that `tools/regenerate.sh` (plan 02) fills. Three runtime spikes on the owner's installed clients run first, against a throwaway fixture, before any file in the tree changes.
 
@@ -36,13 +36,13 @@ Copied from spec `../specs/2026-09-24-marketplace-quality-design.md` (§4.1, §5
 **Consumed from plan 02** (`2026-09-25-02-tooling.md`, "Contract for plans 03–07"):
 
 - `tools/regenerate.sh`, no arguments, exit 0 on success. A file without region markers is skipped, so running it between tasks is safe.
-- It fills `rules` in `plugins/prose-discipline/skills/house-style/SKILL.md` with the rules file minus its leading `---` … `---` block, trimmed of blank lines at both ends, with one blank line inside each marker.
+- It fills `rules` in `plugins/prose-discipline/skills/house-style/SKILL.md` with the rules file minus its leading `---` … `---` block. The content is trimmed of blank lines at both ends, with one blank line inside each marker.
 - It fills `description`, `install` and `hermes-auto-load` in `plugins/prose-discipline/README.md`. The Hermes region is a fenced `yaml` block ending in the line `    - agent-plugin-prose-discipline-cf518319:house-style`.
 - It copies `LICENSE` and `plugin.json` to `plugins/prose-discipline/LICENSE` and `plugins/prose-discipline/.claude-plugin/plugin.json`, replacing a symlink.
 - It runs `npx --yes doctoc@2.2.1 --github --notitle` over references longer than 100 lines. Here that is `references/examples.md` (126 lines).
 - `tools/check-conformance.py` checks that the vendor manifest is a byte-identical regular file.
 
-**Requested from plan 02** (one line, not yet in its script): also fill `hermes-auto-load` in the skill, so the skill's first lines can show the exact `config.yaml` lines (spec §5.5, Hermes row). The line to add after the README call in step 6:
+**Requested from plan 02** (one line, not yet in its script): also fill `hermes-auto-load` in the skill. The skill's first lines then show the exact `config.yaml` lines, as spec §5.5 asks in its Hermes row. The line to add after the README call in step 6:
 
 ```bash
 replace_region plugins/prose-discipline/skills/house-style/SKILL.md hermes-auto-load "$WORK/auto-load.md"
@@ -73,9 +73,9 @@ Task 5 detects whether the line landed and picks Block C1 (with the region) or B
 | `plugins/prose-discipline/skills/house-style/references/examples.md` | generated TOC | doctoc |
 | `plugins/prose-discipline/README.md` | rewrite (Block E) | the package README |
 | `plugins/prose-discipline/LICENSE` | generated | copy of the root LICENSE |
-| `docs/superpowers/handoff/2026-09-24-marketplace-quality/spikes/spike-1-claude-code.md` | create | spike 1 record |
-| `docs/superpowers/handoff/2026-09-24-marketplace-quality/spikes/spike-3-oh-my-pi.md` | create | spike 3 record |
-| `docs/superpowers/handoff/2026-09-24-marketplace-quality/spikes/spike-4-hermes.md` | create | spike 4 record |
+| `docs/superpowers/handoff/2026-09-24-marketplace-quality/spikes/01-claude-code.md` | create | spike 1 record |
+| `docs/superpowers/handoff/2026-09-24-marketplace-quality/spikes/03-oh-my-pi.md` | create | spike 3 record |
+| `docs/superpowers/handoff/2026-09-24-marketplace-quality/spikes/04-hermes.md` | create | spike 4 record |
 
 The six other reference files keep their text. They name each other by bare filename inside one directory, which is a correct relative path.
 
@@ -310,7 +310,7 @@ lines. Check punctuation as well as vocabulary: semicolons, em-dash quota,
 and sentence budgets. Quoted specimens of banned patterns are exempt.
 ```
 
-The rules region's routing table uses paths relative to the plugin root (Block D). The "Writing artifacts" list repeats the six files relative to this file, because no single relative path is right in both the rules file and its copy here. The old lines 13–22 ("reach a session by one of three routes" … "no route has been observed working") are gone: the routes live in the README, and the last sentence was the diary §3.1 removes.
+The rules region's routing table uses paths relative to the plugin root (Block D). The "Writing artifacts" list repeats the six files relative to this file. No single relative path is right in both the rules file and its copy here. The old lines 13–22 ("reach a session by one of three routes" … "no route has been observed working") are gone. The routes now live in the README, and the last sentence was the diary that §3.1 removes.
 
 ### Block C2: `skills/house-style/SKILL.md` (plan 02 does not fill the skill's `hermes-auto-load` region)
 
@@ -327,7 +327,7 @@ Everything else, front matter included, is Block C1 verbatim.
 
 ### Block D: `rules/prose-discipline.md`
 
-L5 of the quality review: every absolute carries its reason beside it, and no requirement is softened. The opening line changes from "mandatory in every session, without exceptions" to a factual statement with its reason. That line contradicted the Exemptions section, and Claude Code's hooks documentation warns that text framed as system commands can trip its prompt-injection defences (research `06-claude-code-alwayson.md` line 52). The routing table names real paths (spec §5.4). Size: 4,942 bytes by `wc -c`.
+L5 of the quality review: every absolute carries its reason beside it, and no requirement is softened. The opening line changes from "mandatory in every session, without exceptions" to a factual statement with its reason. That line contradicted the Exemptions section. Claude Code's hooks documentation also warns that text framed as system commands can trip its prompt-injection defences (research `06-claude-code-alwayson.md` line 52). The routing table names real paths (spec §5.4). Size: 4,942 bytes by `wc -c`.
 
 ```markdown
 ---
@@ -403,7 +403,7 @@ relative to the plugin root.
 
 ### Block E: `README.md`
 
-Citations reuse research `09-claude-codex-hooks.md`, `06-claude-code-alwayson.md`, `06-omp-alwayson.md`, `07-skill-names.md` and `08-hermes-auto-load.md`. The plan writer checked each Oh-My-Pi line number against the files at `ba56afb` and each Hermes line number at `749220ef`. Research 07 puts `_portable_skill_namespace` at lines 79–88 of `plugins_manifest.py`; the file at `749220ef` has it at lines 60–69, as research 08 says, and the block cites 60–69. The Claude Code and Codex documentation sites have no permalinks, so those links name the page and section; research 09 dates the reading 2026-09-24. The Codex loader defect stays out of the package, as spec §5.5 says.
+Citations reuse research `09-claude-codex-hooks.md`, `06-claude-code-alwayson.md`, `06-omp-alwayson.md`, `07-skill-names.md` and `08-hermes-auto-load.md`. The plan writer checked each Oh-My-Pi line number against the files at `ba56afb` and each Hermes line number at `749220ef`. Research 07 puts `_portable_skill_namespace` at lines 79–88 of `plugins_manifest.py`. The file at `749220ef` has it at lines 60–69, as research 08 says, and the block cites 60–69. The Claude Code and Codex documentation sites have no permalinks, so those links name the page and section; research 09 dates the reading 2026-09-24. The Codex loader defect stays out of the package, as spec §5.5 says.
 
 The per-client routes sit under Usage as `###` sections. §5.1 has no slot of their own, and Usage is where a reader asks "what happens after install".
 
@@ -560,9 +560,10 @@ Sources:
 
 The hooks run `sh` and `awk` from `PATH`. On Windows, Claude Code runs
 shell-form hooks in Git Bash when it is installed, and in PowerShell
-otherwise ([hooks](https://code.claude.com/docs/en/hooks), "Exec form and
-shell form", Claude Code documentation). If the script fails, it writes one
-line to stderr and the session starts without the hook's copy of the rules.
+otherwise. Source: Claude Code documentation,
+[hooks](https://code.claude.com/docs/en/hooks), "Exec form and shell form".
+If the script fails, it writes one line to stderr and the session starts
+without the hook's copy of the rules.
 
 The rules file stays under 8,000 characters. That keeps the hook text under
 Claude Code's 10,000-character cap and Codex's default 2,500-token threshold
@@ -695,7 +696,7 @@ Record what the client printed, never a paraphrase. An assertion that could not 
 ### Task 1: Spike 1, Claude Code hook delivery
 
 **Files:**
-- Create: `docs/superpowers/handoff/2026-09-24-marketplace-quality/spikes/spike-1-claude-code.md`
+- Create: `docs/superpowers/handoff/2026-09-24-marketplace-quality/spikes/01-claude-code.md`
 
 **Interfaces:**
 - Consumes: Blocks A, B, C1, D, F; the fixture recipe; Claude Code 2.1.278 on the owner's machine.
@@ -796,12 +797,12 @@ Expected: no line for any tracked file. Untracked files of other plans in progre
 
 - [ ] **Step 8: Write the record**
 
-Write `docs/superpowers/handoff/2026-09-24-marketplace-quality/spikes/spike-1-claude-code.md` from the record template, with rows 1v, 1a, 1b and 1c. Quote each deciding `jq` line and each count.
+Write `docs/superpowers/handoff/2026-09-24-marketplace-quality/spikes/01-claude-code.md` from the record template, with rows 1v, 1a, 1b and 1c. Quote each deciding `jq` line and each count.
 
 - [ ] **Step 9: Commit**
 
 ```sh
-git add docs/superpowers/handoff/2026-09-24-marketplace-quality/spikes/spike-1-claude-code.md
+git add docs/superpowers/handoff/2026-09-24-marketplace-quality/spikes/01-claude-code.md
 git commit -m "docs: record spike 1, Claude Code hook delivery" -m "Spike 1 of spec §9 checks SessionStart at startup and after /compact, and SubagentStart, against the plan 03 fixture." -m "Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 ```
 
@@ -818,7 +819,7 @@ git commit -m "docs: record spike 1, Claude Code hook delivery" -m "Spike 1 of s
 ### Task 2: Spike 3, Oh-My-Pi rules file and skill
 
 **Files:**
-- Create: `docs/superpowers/handoff/2026-09-24-marketplace-quality/spikes/spike-3-oh-my-pi.md`
+- Create: `docs/superpowers/handoff/2026-09-24-marketplace-quality/spikes/03-oh-my-pi.md`
 
 **Interfaces:**
 - Consumes: Blocks A, B, C1, D, F; the fixture recipe; Oh-My-Pi 18.2.8 and its `ai-plugins` marketplace (`Akurganow/ai-plugins`) on the owner's machine.
@@ -908,12 +909,12 @@ Expected: `restored`, and no line for a tracked file. The sidecars hold raw cont
 
 - [ ] **Step 6: Write the record**
 
-Write `docs/superpowers/handoff/2026-09-24-marketplace-quality/spikes/spike-3-oh-my-pi.md` from the record template, with rows 3a-rules, 3a-skill, 3b-rules and 3b-skill.
+Write `docs/superpowers/handoff/2026-09-24-marketplace-quality/spikes/03-oh-my-pi.md` from the record template, with rows 3a-rules, 3a-skill, 3b-rules and 3b-skill.
 
 - [ ] **Step 7: Commit**
 
 ```sh
-git add docs/superpowers/handoff/2026-09-24-marketplace-quality/spikes/spike-3-oh-my-pi.md
+git add docs/superpowers/handoff/2026-09-24-marketplace-quality/spikes/03-oh-my-pi.md
 git commit -m "docs: record spike 3, Oh-My-Pi rules file and skill" -m "Spike 3 of spec §9 checks the always-apply rules file and the skill, from --plugin-dir and from the marketplace." -m "Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 ```
 
@@ -928,7 +929,7 @@ git commit -m "docs: record spike 3, Oh-My-Pi rules file and skill" -m "Spike 3 
 ### Task 3: Spike 4, Hermes skill and `skills.auto_load`
 
 **Files:**
-- Create: `docs/superpowers/handoff/2026-09-24-marketplace-quality/spikes/spike-4-hermes.md`
+- Create: `docs/superpowers/handoff/2026-09-24-marketplace-quality/spikes/04-hermes.md`
 
 **Interfaces:**
 - Consumes: Blocks A, B, C1, D, F; the fixture recipe; Hermes 0.21.5 on the owner's machine, with the published `prose-discipline` 1.3.0 installed and enabled at user scope.
@@ -1026,7 +1027,7 @@ grep -c '^# House style' "$RUN/4b-system.txt"
 tail -n +"$(( $(cat "$RUN/log-lines-before") + 1 ))" ~/.hermes/logs/agent.log | grep -n 'skills.auto_load' || echo 'no auto_load log line'
 ```
 
-4b passes when the wrapper count is `1`, the marker and `# House style` counts are at least 1, and the log shows `no auto_load log line`. A log line `skills.auto_load: skill(s) not found or disabled, skipped: …` is **4b-skipped**.
+4b passes when the wrapper count is `1` and the marker and `# House style` counts are at least 1. The log must show `no auto_load log line`. A log line `skills.auto_load: skill(s) not found or disabled, skipped: …` is **4b-skipped**.
 
 - [ ] **Step 6: Assertion 4c, Hermes on Windows**
 
@@ -1046,12 +1047,12 @@ Expected: `prose-discipline` enabled at `1.3.0`; `skills.auto_load` as Step 1 pr
 
 - [ ] **Step 8: Write the record**
 
-Write `docs/superpowers/handoff/2026-09-24-marketplace-quality/spikes/spike-4-hermes.md` from the record template, with rows 4-install, 4a, 4b and 4c. Quote the wrapper line exactly as `4b-system.txt` holds it.
+Write `docs/superpowers/handoff/2026-09-24-marketplace-quality/spikes/04-hermes.md` from the record template, with rows 4-install, 4a, 4b and 4c. Quote the wrapper line exactly as `4b-system.txt` holds it.
 
 - [ ] **Step 9: Commit**
 
 ```sh
-git add docs/superpowers/handoff/2026-09-24-marketplace-quality/spikes/spike-4-hermes.md
+git add docs/superpowers/handoff/2026-09-24-marketplace-quality/spikes/04-hermes.md
 git commit -m "docs: record spike 4, Hermes skill and skills.auto_load" -m "Spike 4 of spec §9 checks the portable install, the qualified skill name and the auto-load wrapper against the plan 03 fixture." -m "Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 ```
 
@@ -1423,7 +1424,7 @@ Expected before the commit: `100644`, and the staged add, modify and delete unde
 - Consumes: Tasks 4–7; spike 3 (3b-rules) and spike 4 (4a, 4b) results; plan 02's `install` template; `LICENSE` from plan 02; `SUPPORT.md` from plan 06.
 - Produces: the package README that plan 06's root table links to.
 
-Today's README holds the diary paragraph "Nothing below has been verified from this repository as published" (lines 56–62 at `344c8fc`), the symlink passage (64–70) and a superseded Codex passage (72–90). Start only when 3b-rules, 4a and 4b passed, or the owner has answered each failure.
+Today's README holds the diary paragraph "Nothing below has been verified from this repository as published" (lines 56–62 at `344c8fc`). It also holds the symlink passage (64–70) and a superseded Codex passage (72–90). Start only when 3b-rules, 4a and 4b passed, or the owner has answered each failure.
 
 - [ ] **Step 1: Write the failing tests**
 

@@ -49,7 +49,7 @@ A file may hold several regions with different names. Region names:
 | `install` | `plugins/<name>/README.md` and `README.md` | `tools/templates/install.md` with `{{name}}` replaced by the package name; in the root README `{{name}}` becomes the literal `<name>` |
 | `hosts` | `plugins/<name>/README.md` of a package whose manifest carries `extensions["io.github.akurganow.ai-plugins"].network.hosts` | one `- \`host\`` line per entry, in manifest order |
 | `rules` | `plugins/prose-discipline/skills/house-style/SKILL.md` | the body of `plugins/prose-discipline/rules/prose-discipline.md` with its front matter stripped |
-| `hermes-auto-load` | `plugins/prose-discipline/README.md` | the `config.yaml` lines for `skills.auto_load` with the computed qualified name |
+| `hermes-auto-load` | `plugins/prose-discipline/README.md` and `plugins/prose-discipline/skills/house-style/SKILL.md` | the `config.yaml` lines for `skills.auto_load` with the computed qualified name |
 
 Files that are whole copies carry no markers: `plugins/<name>/LICENSE` (copy of
 `LICENSE`), `plugins/<name>/.claude-plugin/plugin.json` (copy of
@@ -77,8 +77,8 @@ contents use doctoc's own markers (`<!-- START doctoc … -->` / `<!-- END docto
   4. `install` region of the root README.
   5. doctoc over every file under `plugins/*/skills/*/references/` longer than 100 lines,
      except `plugins/howp/skills/forecast/references/commands.md`.
-  6. `rules` region of the house-style skill and `hermes-auto-load` region of the
-     prose-discipline README. The qualified name is
+  6. `rules` region of the house-style skill and `hermes-auto-load` regions of the
+     prose-discipline README and of the house-style skill. The qualified name is
      `agent-plugin-<name>-<first 8 hex of sha256(name)>:house-style`; for
      `prose-discipline` that is `agent-plugin-prose-discipline-cf518319:house-style`.
 - CI runs `bash tools/regenerate.sh`, then `git add --intent-to-add --all` and
@@ -138,7 +138,7 @@ never executed before the owner approves it.
 ## prose-discipline delivery
 
 - `hooks/hooks.json`: shell form only, no `args`, no `additionalContextLimit`, top-level
-  keys `description` and `hooks` only. `SessionStart` matcher
+  keys `description` and `hooks` only; each entry carries `"timeout": 10`. `SessionStart` matcher
   `startup|resume|clear|compact|fork`, command
   `sh "${CLAUDE_PLUGIN_ROOT}/hooks/print-rules.sh"`. `SubagentStart` (no matcher), command
   `sh "${CLAUDE_PLUGIN_ROOT}/hooks/print-rules.sh" --json`.

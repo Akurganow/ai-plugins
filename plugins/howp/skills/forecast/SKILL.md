@@ -24,8 +24,8 @@ numbers, and `hp render` writes the page.
 `hp` does the deterministic work. It extracts a probability from a venue's
 raw response, appends the history, detects sharp moves and renders the page.
 **It opens no socket and reads no clock.** A program with its own sockets
-fails behind every sandbox and proxy it meets. It also cannot use the
-permission your client already holds. So you fetch, you pass the moment in,
+fails behind a sandbox or proxy that allows only the client's own fetches.
+It also cannot use the permission your client already holds. So you fetch, you pass the moment in,
 and every judgement is yours.
 
 This skill does not score a forecast against its outcome.
@@ -64,26 +64,29 @@ holds the commands for these five rules.
    is the user's decision or their network's. Tell the user what to allow,
    and where, as `install.md` Step 1 says.
 4. **Check the sha256 before unpacking.** Extract into a staging directory,
-   and stamp only a tree that is complete and runs. An archive that fails
+   and stamp only a tree that is complete and runs. The next run's cache
+   check believes the stamp, so a stamp beside a partial tree would skip an
+   install that never finished. An archive that fails
    the digest is deleted, and nothing runs. The digest is the only check
    between the download and a stranger's code.
 5. **`target.binaries` must name `hp`.** This skill drives one binary. An
    archive without `hp` predates this skill, so stop rather than run
-   anything else from it. An archive holds the binaries and a licence and
-   nothing else. No helper script ships, so you do what one would do.
+   anything else from it. `binaries.json` lists binaries only and has no
+   field for a helper script, so whatever a script would do, you do.
 
 The copy caches at `${HOWP_CACHE:-$HOME/.cache/howp}/<version>`. `$BIN`
 below is `$DEST/<root>/<bin_dir>`, and `install.md` sets both.
 
-The manifest lists the hosts `hp` builds requests from, once:
+The manifest lists every host this skill's steps reach, once:
 `../../plugin.json`, under
 `extensions["io.github.akurganow.ai-plugins"].network.hosts`. GitHub serves
-the release archive until a checked copy is cached. The Polymarket and
-Manifold hosts serve the market bodies that `hp sources urls` and
-`hp sources next` name. `hp` names the Polymarket price-history host only on
-a history walk. Read the URLs `hp` prints and allow those hosts only: a
-wildcard also allows hosts `hp` never names. Your own searches reach hosts
-the manifest does not list, and those are the user's to allow.
+the release archive until a checked copy is cached. `hp` builds its requests
+from the Polymarket and Manifold hosts. They serve the market bodies that
+`hp sources urls` and `hp sources next` name. `hp` names the Polymarket
+price-history host only on a history walk. Allow the hosts the manifest
+lists and no wildcard: a wildcard also allows hosts nothing here names. Your
+own searches reach hosts the manifest does not list, and those are the
+user's to allow.
 
 ## The workspace
 
@@ -198,7 +201,8 @@ binary.
 ## The written forecast
 
 A run ends with the page and your account of it. The page carries each
-covered question's probability, your verdict notes on how its market answers
-it, and the weekly digest. A question with no market stays on the page as
+covered question's probability and your verdict notes on how its market
+answers it. It also carries the weekly digest, or one sentence saying why
+there is none. A question with no market stays on the page as
 uncovered. Tell the user which questions moved, which still have no market,
 and whether you wrote a digest.

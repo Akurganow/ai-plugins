@@ -94,7 +94,7 @@ The skill runs `uname`, `curl`, `tar`, `mktemp`, and `shasum` or
 
 ### Hosts
 
-[`plugin.json`](plugin.json) lists the hosts `hp` builds requests from,
+[`plugin.json`](plugin.json) lists every host the skill's steps reach,
 under `extensions["io.github.akurganow.ai-plugins"].network.hosts`:
 
 <!-- hosts:start -->

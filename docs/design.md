@@ -105,12 +105,16 @@ Claude Code's exec form needs `args`, and Codex documents no such field ([Claude
 Codex's parser ignores an unknown handler key, so under Codex an `args` hook would run `sh` with no script ([Codex](clients.md#codex)).
 The hook runs `hooks/print-rules.sh`, which needs `sh` and `awk` and no language runtime.
 For `SessionStart`, the script prints a heading first.
+The rules then open with a statement of fact, as Claude Code advises for hook text ([Claude Code](clients.md#claude-code)).
 Claude Code parses stdout that starts with `{` and ends with `}` as JSON ([Claude Code](clients.md#claude-code)).
 
 The rules file stays under 8,000 bytes, and CI fails at that size.
 Claude Code caps hook text at 10,000 characters ([Claude Code](clients.md#claude-code)).
 Codex writes `additionalContext` over 2,500 tokens to disk by default ([Codex](clients.md#codex)).
 The bound keeps the rules under Claude Code's cap, and keeps English prose under Codex's threshold.
+So `hooks/hooks.json` carries no `additionalContextLimit`, the Codex key that moves that threshold.
+(documentation: [Codex, Hooks](https://learn.chatgpt.com/docs/hooks), read 2026-09-26)
+Claude Code's Hooks page says nothing about a handler key it does not know (documentation, read 2026-09-26).
 
 Hermes loads no hooks and no `rules/` from a package ([Hermes](clients.md#hermes)).
 So `skills/house-style/SKILL.md` carries the rules in a generated region.
@@ -143,7 +147,7 @@ In Oh-My-Pi, a TTSR rule aborts a response on a match and retries it ([Oh-My-Pi]
 It ships no blocking hook, no per-prompt reminder and no TTSR rule file.
 A gate on prose halts real work over a style match.
 Repeating text already in context adds tokens and no fact.
-The rules enter each context once, and again where the client dropped them, as after compaction.
+The rules enter each context once, and again where the client dropped them, as after compaction ([Claude Code](clients.md#claude-code)).
 
 Compliance therefore rests with the model, and nothing in the package checks the output.
 

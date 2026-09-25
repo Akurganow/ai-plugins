@@ -54,9 +54,15 @@ Documentation pages below were read on 2026-09-25.
 - Plain stdout and `additionalContext` are capped at 10,000 characters.
   Longer text reaches Claude as a file path and a preview.
   (documentation: [Hooks, JSON output](https://code.claude.com/docs/en/hooks#json-output))
+- The Hooks page advises writing hook context as factual statements, not imperative system instructions.
+  Text framed as out-of-band system commands can trigger Claude's prompt-injection defences, and Claude then shows it to the user instead.
+  (documentation: [Hooks, Add context for Claude](https://code.claude.com/docs/en/hooks#add-context-for-claude), read 2026-09-26)
 - `SubagentStart` adds its `additionalContext` to a subagent's context before the first prompt.
   The page documents no plain-stdout route for this event.
   (documentation: [Hooks, SubagentStart](https://code.claude.com/docs/en/hooks#subagentstart))
+- When the hook runs again for the same subagent, Claude Code injects its context only if the earlier copy is gone.
+  Auto-compaction discards that copy, so the next run's context arrives again.
+  (documentation: [Hooks, SubagentStart input](https://code.claude.com/docs/en/hooks#subagentstart-input), read 2026-09-26)
 - A command hook without `args` runs in shell form: `sh -c` on macOS and Linux, Git Bash on Windows.
   Windows falls back to PowerShell when Git Bash is not installed.
   With `args`, it runs in exec form, without a shell.
@@ -268,6 +274,10 @@ Facts about Hermes 0.21.5, the version the runs install, link to its commit `f97
   (documentation: [`developer-guide/plugins/index.md` L845](https://github.com/NousResearch/hermes-agent/blob/749220ef0007f8d87bd1531f1c24b0fe93816385/website/docs/developer-guide/plugins/index.md#L845))
 - The agent's `skills_list` tool shows the qualified name.
   (documentation: [`developer-guide/plugins/index.md` L75](https://github.com/NousResearch/hermes-agent/blob/749220ef0007f8d87bd1531f1c24b0fe93816385/website/docs/developer-guide/plugins/index.md#L75))
+- A package skill gets no slash command, because Hermes builds slash commands from skill directories only.
+  The agent loads a package skill with the `skill_view` tool and its qualified name.
+  (documentation: [`developer-guide/plugins/index.md` L70–L78](https://github.com/NousResearch/hermes-agent/blob/749220ef0007f8d87bd1531f1c24b0fe93816385/website/docs/developer-guide/plugins/index.md#L70-L78);
+  source: [`skill_commands.py` L391–L425](https://github.com/NousResearch/hermes-agent/blob/749220ef0007f8d87bd1531f1c24b0fe93816385/agent/skill_commands.py#L391-L425))
 - In Hermes 0.21.5, neither `hermes plugins show`, `hermes plugins list --json` nor `hermes skills list` prints a portable package's skill names.
   `hermes plugins show` prints name, version, description, `Status`, `Source`, `Key`, `Emits` and `Listens`.
   (source: [`plugins_cmd.py` L1814–L1836](https://github.com/NousResearch/hermes-agent/blob/f97608f178d1ffeca59860195ab7da295f7c8e5f/hermes_cli/plugins_cmd.py#L1814-L1836))
@@ -302,6 +312,8 @@ Facts about Hermes 0.21.5, the version the runs install, link to its commit `f97
 - Hermes 0.21.5 installed on Ubuntu and macOS, and every package installed and enabled.
   `hermes plugins show <name>` printed `Key: <name>` and `Status: enabled` for each package.
   (running: [run 36189587613](https://github.com/Akurganow/ai-plugins/actions/runs/36189587613), at `7dd891d`)
+- `hermes plugins validate` printed `✓ security scan — safe` for every package, `howp` included.
+  (running: [run 36197524862](https://github.com/Akurganow/ai-plugins/actions/runs/36197524862), job `validate-hermes`, at `a8a3c94`)
 - On the windows-latest runner, the pinned checkout failed: `Your local changes to the following files would be overwritten by checkout`.
   (running: [run 36183358181](https://github.com/Akurganow/ai-plugins/actions/runs/36183358181), at `0f89614`)
 - The integration matrix excludes Hermes on the windows-latest runner, so run 36189587613 has no such job.

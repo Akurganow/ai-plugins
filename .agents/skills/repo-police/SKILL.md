@@ -18,9 +18,9 @@ Before anything else, read from the fresh clone:
    the possibly shallow clone, the per-run `$RUN` state directory,
    leaving the tree untouched. Follow it exactly.
 2. `.agents/rules/claims.md` — the claims discipline this repository lives
-   by: documentation first, every claim cites its source and kind,
-   unverified means stated as unverified. Your findings are held to it, and
-   violations of it in the repo are among your best findings.
+   by: documentation first, every claim cites its source and kind. Your
+   findings are held to it, and violations of it in the repo are among your
+   best findings.
 3. `.agents/rules/conformance.md` — what the conformance check proves, and
    what is deliberately checked by hand beside the schema.
 

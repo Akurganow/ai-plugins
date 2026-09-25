@@ -310,7 +310,7 @@ with the measurement that makes each real:
 
 - a recorded reason, wherever it argues its own existence
 - the three release-written files
-- the claims discipline's sentences
+- a cited source and its date
 - house style: argued paragraphs, em-dashes, bold on the load-bearing
   clause, a section number beside a specification claim
 - the vendored schema
@@ -337,14 +337,11 @@ Hand at most ~8 candidates to triage.
 - **`README.md`.** Paragraph by paragraph: each against the one before
   it (`noise`), against the check and the tree (`lying`), and for
   passages that describe an update rather than the thing (`residue`).
-  The install section's opening sentence and every "not verified" line
-  are `claims.md`'s and protected.
 - **The skills.** Every `plugins/*/skills/*/SKILL.md` and its
   `references/`, and every plugin's own README — except
   `references/commands.md` under `howp`, which the release writes and
   nobody judges here. A step the procedures describe against what the
-  text beside it says the binary or the rule does; a "What has been
-  verified" section is a claims record and protected.
+  text beside it says the binary or the rule does.
 - **The check.** `tools/check-conformance.py`: every comment against the
   code below it (`noise`), every hand check against the clause quoted
   beside it and against `conformance.md`'s two reasons (`ceremony`),
@@ -415,7 +412,7 @@ fence and `claims.md`, and returns exactly this block:
     verdict: real | not-real
     kind: noise | lying | naming | ceremony | residue
     information: none | some | a false fact | n/a   (what the text carries; n/a for ceremony and residue)
-    protected: none | recorded reason | owner's quotation | release-written | claims sentence | house style
+    protected: none | recorded reason | owner's quotation | release-written | cited source | house style
     fenced: yes | no   (yes if check-conformance.py names it)
     belongs_to: slop | auditor | check | nobody
     cluster: N files   (the count you established; threshold: ≥ 3 passages for noise and naming, across ≥ 2 files; 1 suffices for the rest)

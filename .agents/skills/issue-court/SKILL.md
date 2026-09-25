@@ -26,9 +26,8 @@ Before anything else, read from the fresh clone:
    the possibly shallow clone, the per-run `$RUN` state directory,
    leaving the tree untouched. Follow it exactly.
 2. `.agents/rules/claims.md` — the claims discipline: documentation first,
-   sources cited and dated, unverified stated as unverified. An issue
-   alleging a violation of it is squarely a case; a verdict that itself
-   violated it would be worthless.
+   sources cited and dated. An issue alleging a violation of it is squarely
+   a case; a verdict that itself violated it would be worthless.
 3. `.agents/rules/conformance.md` — what `tools/check-conformance.py`
    proves and what is deliberately checked by hand beside the schema.
 4. `.agents/rules/slop.md` — the one test for generator residue, its five

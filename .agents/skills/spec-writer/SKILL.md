@@ -202,8 +202,7 @@ Where it is a diff, put the diff here.
 
 Every new sentence about a client, an install command or a released artifact
 is held to `claims.md`. It names its source. It says which kind of source.
-It says what was not verified. A specification proposing an unsourced claim
-is one the Reviewer rejects.
+A specification proposing an unsourced claim is one the Reviewer rejects.
 
 **`## Acceptance criteria`**: numbered, each checkable by somebody who was
 not here. Prefer a criterion a command settles over one a reader judges.

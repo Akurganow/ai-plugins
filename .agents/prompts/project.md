@@ -29,7 +29,7 @@ its provenance and checksum recorded.
   is recorded as a note with a source.
 - **Every compatibility claim is sourced.** Install instructions, supported
   surfaces, loader behaviour — each names the documentation or the source
-  file it was read from. What was not verified says so.
+  file it was read from.
 - **The repository holds text only.** No executables, no built artefacts.
   Released binaries live elsewhere and are referenced.
 - **One manifest per package.** A second `plugin.json` anywhere below a

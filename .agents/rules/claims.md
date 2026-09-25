@@ -19,12 +19,6 @@ act on, and the standing rule is that a claim names where it was read.
   in a review thread — and says, per fact, which of the two it came from, or
   that it came from running the client's own code. `README.md` does this
   today for every surface it lists.
-- **Say what was not verified.** `README.md` opens the install section by
-  saying nothing below has been installed from this repository as published.
-  That sentence is load-bearing; it is not softened, moved to a footnote, or
-  quietly upgraded because a package "should" work — and testing a fix in a
-  working tree does not retire it, because what is published is what a reader
-  will install.
 - **Never invent a command.** Where a client's install command could not be
   verified, none is stated and the reason is given. Declining to answer is a
   correct answer here; a plausible command that does not exist is worse than

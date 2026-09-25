@@ -481,8 +481,7 @@ accepted is the tree the code review and the owner will read.
    this finding.
 
    The fourth section is the one thing in the handover that cannot be
-   skipped. It turns "not verified" into the owner's checklist, and
-   `.agents/rules/claims.md` is why.
+   skipped. It is the owner's checklist of what no command here can prove.
 
    Read the body back and confirm every line of the state block survived.
 

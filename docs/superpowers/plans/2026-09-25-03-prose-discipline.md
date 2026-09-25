@@ -15,13 +15,14 @@ Copied from spec `../specs/2026-09-24-marketplace-quality-design.md` (§4.1, §5
 - Files this plan may touch: `plugins/prose-discipline/**`, and the three spike records under `docs/superpowers/handoff/2026-09-24-marketplace-quality/spikes/`. It never edits `tools/`, `tools/schemas/`, root files or another package.
 - "Single source of the core rules: `plugins/prose-discipline/rules/prose-discipline.md`." Every other carrier reads it at run time or is generated from it.
 - "The rules file stays under 8,000 characters, and CI checks the bound." The CI step is plan 07's; the bound is stated in Task 9.
-- `hooks/hooks.json`: "shell form only, no `args`, no `additionalContextLimit`, top-level keys `description` and `hooks` only. `SessionStart` matcher `startup|resume|clear|compact|fork`, command `sh "${CLAUDE_PLUGIN_ROOT}/hooks/print-rules.sh"`. `SubagentStart` (no matcher), command `sh "${CLAUDE_PLUGIN_ROOT}/hooks/print-rules.sh" --json`."
+- `hooks/hooks.json`: "shell form only, no `args`, no `additionalContextLimit`, top-level keys `description` and `hooks` only. `SessionStart` matcher `startup|resume|clear|compact|fork`, command `sh "${CLAUDE_PLUGIN_ROOT}/hooks/print-rules.sh"`. `SubagentStart` (no matcher), command `sh "${CLAUDE_PLUGIN_ROOT}/hooks/print-rules.sh" --json`." Both handlers carry `"timeout": 10` (coordinator decision at plan review; the conventions will list it).
 - `hooks/print-rules.sh`: "POSIX sh, `sed` and `awk` only. Without a flag it prints the rules body (front matter stripped) as plain text starting with the H1. With `--json` it prints one JSON object `{"hookSpecificOutput":{"hookEventName":"SubagentStart","additionalContext":"<escaped body>"}}`. Any failure exits 0 with nothing on stdout and one line on stderr. `hooks/session-rules.sh` is deleted." No `node`.
+- The generator runs as `bash tools/regenerate.sh`, from the repository root, in every step that calls it.
 - Closed by the owner (§8): no blocking hook, no per-turn reminder, no TTSR rule files, no Python and no native Hermes plugin.
 - Manifest: `description` one sentence, at most 250 characters; `keywords` without `agent-skills`; `extensions["io.github.akurganow.ai-plugins"].category` = `Productivity`; `extensions["com.openai"].hooks = "./hooks/hooks.json"`; `components`, `components_note` and `interface` deleted; nothing else under `extensions`. `version` is not edited by hand.
 - Plan 06 consumes the description as "one sentence of at most 25 words".
 - Skill: directory and front-matter `name` `house-style`, renamed with `git mv`; `description` in imperative voice, key use case first, "Use when …", at most 1024 characters; `license: MIT`. "Every reference is named from SKILL.md by relative path with a 'read when' condition."
-- Regions: `rules` in `skills/house-style/SKILL.md`; `description`, `install` and `hermes-auto-load` in the package `README.md`. Markers are two whole lines, `<!-- NAME:start -->` and `<!-- NAME:end -->`, written next to each other; the generator fills them (plan 02 contract).
+- Regions: `rules` and `hermes-auto-load` in `skills/house-style/SKILL.md`; `description`, `install` and `hermes-auto-load` in the package `README.md`. The Hermes markers are `<!-- hermes-auto-load:start -->` and `<!-- hermes-auto-load:end -->` in both files. Markers are two whole lines, `<!-- NAME:start -->` and `<!-- NAME:end -->`, written next to each other; the generator fills them (plan 02 contract).
 - Hermes qualified name: `agent-plugin-prose-discipline-cf518319:house-style` (`printf %s prose-discipline | shasum -a 256 | cut -c1-8` prints `cf518319`).
 - README: the eight sections of §5.1 in order: H1 with description, Install, Usage, What's inside, Requirements and network, Boundaries, License, Help.
 - Prose: every sentence written into the repository follows `plugins/prose-discipline/rules/prose-discipline.md`; at most 25 words; no maintainer diary. Every sentence about a client cites its documentation or source by link, with the kind named; a source link is a commit permalink.
@@ -35,20 +36,14 @@ Copied from spec `../specs/2026-09-24-marketplace-quality-design.md` (§4.1, §5
 
 **Consumed from plan 02** (`2026-09-25-02-tooling.md`, "Contract for plans 03–07"):
 
-- `tools/regenerate.sh`, no arguments, exit 0 on success. A file without region markers is skipped, so running it between tasks is safe.
+- `bash tools/regenerate.sh`, no arguments, exit 0 on success. A file without region markers is skipped, so running it between tasks is safe.
 - It fills `rules` in `plugins/prose-discipline/skills/house-style/SKILL.md` with the rules file minus its leading `---` … `---` block. The content is trimmed of blank lines at both ends, with one blank line inside each marker.
-- It fills `description`, `install` and `hermes-auto-load` in `plugins/prose-discipline/README.md`. The Hermes region is a fenced `yaml` block ending in the line `    - agent-plugin-prose-discipline-cf518319:house-style`.
+- It fills `description`, `install` and `hermes-auto-load` in `plugins/prose-discipline/README.md`, and `hermes-auto-load` in `plugins/prose-discipline/skills/house-style/SKILL.md`. In both files the Hermes region is the same fenced `yaml` block, ending in the line `    - agent-plugin-prose-discipline-cf518319:house-style`.
 - It copies `LICENSE` and `plugin.json` to `plugins/prose-discipline/LICENSE` and `plugins/prose-discipline/.claude-plugin/plugin.json`, replacing a symlink.
 - It runs `npx --yes doctoc@2.2.1 --github --notitle` over references longer than 100 lines. Here that is `references/examples.md` (126 lines).
 - `tools/check-conformance.py` checks that the vendor manifest is a byte-identical regular file.
 
-**Requested from plan 02** (one line, not yet in its script): also fill `hermes-auto-load` in the skill. The skill's first lines then show the exact `config.yaml` lines, as spec §5.5 asks in its Hermes row. The line to add after the README call in step 6:
-
-```bash
-replace_region plugins/prose-discipline/skills/house-style/SKILL.md hermes-auto-load "$WORK/auto-load.md"
-```
-
-Task 5 detects whether the line landed and picks Block C1 (with the region) or Block C2 (pointing at the README). A hand-written qualified name in the skill is not an option: it would be a hand-kept copy of a computed value (spec §2).
+The skill's `hermes-auto-load` region is a coordinator decision at plan review, added to plan 02's step 6. It lets the skill's first lines show the exact `config.yaml` lines, as spec §5.5 asks in its Hermes row. A hand-written qualified name in the skill would be a hand-kept copy of a computed value (spec §2).
 
 **Produced for plan 06:** the manifest `description` (23 words, Block F); the skill path `plugins/prose-discipline/skills/house-style/SKILL.md`; the hooks in `plugins/prose-discipline/hooks/`.
 
@@ -69,7 +64,7 @@ Task 5 detects whether the line landed and picks Block C1 (with the region) or B
 | `plugins/prose-discipline/hooks/print-rules.sh` | create (Block B) | prints the rules body, plain or as hook JSON |
 | `plugins/prose-discipline/hooks/session-rules.sh` | delete | replaced by `print-rules.sh`, and its `node` dependency goes with it |
 | `plugins/prose-discipline/skills/prose-discipline/` | `git mv` to `skills/house-style/` | the skill directory |
-| `plugins/prose-discipline/skills/house-style/SKILL.md` | rewrite (Block C1 or C2) | Hermes note, generated rules, procedure, reference routing |
+| `plugins/prose-discipline/skills/house-style/SKILL.md` | rewrite (Block C) | Hermes note with generated lines, generated rules, procedure, reference routing |
 | `plugins/prose-discipline/skills/house-style/references/examples.md` | generated TOC | doctoc |
 | `plugins/prose-discipline/README.md` | rewrite (Block E) | the package README |
 | `plugins/prose-discipline/LICENSE` | generated | copy of the root LICENSE |
@@ -102,7 +97,8 @@ Two marker sentences tell the rules texts apart in transcripts:
         "hooks": [
           {
             "type": "command",
-            "command": "sh \"${CLAUDE_PLUGIN_ROOT}/hooks/print-rules.sh\""
+            "command": "sh \"${CLAUDE_PLUGIN_ROOT}/hooks/print-rules.sh\"",
+            "timeout": 10
           }
         ]
       }
@@ -112,7 +108,8 @@ Two marker sentences tell the rules texts apart in transcripts:
         "hooks": [
           {
             "type": "command",
-            "command": "sh \"${CLAUDE_PLUGIN_ROOT}/hooks/print-rules.sh\" --json"
+            "command": "sh \"${CLAUDE_PLUGIN_ROOT}/hooks/print-rules.sh\" --json",
+            "timeout": 10
           }
         ]
       }
@@ -121,7 +118,7 @@ Two marker sentences tell the rules texts apart in transcripts:
 }
 ```
 
-The file has no `timeout`: the conventions list the keys exactly, and the script reads one local file.
+`timeout` is in seconds. Codex documents it on command handlers, and its source reads it as `timeout_sec` (research 09 §4). Today's file already sets it for Claude Code. Ten seconds bounds a hung shell, because Claude's first response waits for SessionStart hooks (research `06-claude-code-alwayson.md` line 54).
 
 ### Block B: `hooks/print-rules.sh`
 
@@ -216,7 +213,7 @@ esac
 
 Newlines inside the body become `\n` between lines; the escape table covers the rest of U+0001–U+001F. A NUL byte cannot reach awk, and the rules file holds none.
 
-### Block C1: `skills/house-style/SKILL.md` (plan 02 fills the skill's `hermes-auto-load` region)
+### Block C: `skills/house-style/SKILL.md`
 
 ```markdown
 ---
@@ -311,19 +308,6 @@ and sentence budgets. Quoted specimens of banned patterns are exempt.
 ```
 
 The rules region's routing table uses paths relative to the plugin root (Block D). The "Writing artifacts" list repeats the six files relative to this file. No single relative path is right in both the rules file and its copy here. The old lines 13–22 ("reach a session by one of three routes" … "no route has been observed working") are gone. The routes now live in the README, and the last sentence was the diary that §3.1 removes.
-
-### Block C2: `skills/house-style/SKILL.md` (plan 02 does not fill the skill's `hermes-auto-load` region)
-
-Block C1 with one change. The paragraph from "In Hermes, add this skill" through the `<!-- hermes-auto-load:end -->` line is replaced by this paragraph:
-
-```markdown
-In Hermes, add this skill to `skills.auto_load` so the standard is active in
-every session. Hermes lists no plugin skill in its system prompt, so without
-that setting the rules below reach a session only when this skill is loaded.
-The package README's Hermes section shows the exact `config.yaml` lines.
-```
-
-Everything else, front matter included, is Block C1 verbatim.
 
 ### Block D: `rules/prose-discipline.md`
 
@@ -648,7 +632,7 @@ Then write, verbatim:
 - Block D to `$F/rules/prose-discipline.md`.
 - Block A to `$F/hooks/hooks.json`.
 - Block B to `$F/hooks/print-rules.sh`.
-- Block C1 to `$RUN/SKILL.template.md`.
+- Block C to `$RUN/SKILL.template.md`.
 
 Then fill the rules region and check the fixture:
 
@@ -699,7 +683,7 @@ Record what the client printed, never a paraphrase. An assertion that could not 
 - Create: `docs/superpowers/handoff/2026-09-24-marketplace-quality/spikes/01-claude-code.md`
 
 **Interfaces:**
-- Consumes: Blocks A, B, C1, D, F; the fixture recipe; Claude Code 2.1.278 on the owner's machine.
+- Consumes: Blocks A, B, C, D, F; the fixture recipe; Claude Code 2.1.278 on the owner's machine.
 - Produces: assertions 1v, 1a, 1b, 1c with results. Tasks 6 and 7 read them before they start.
 
 Spec §9 item 1: "install the package with `--plugin-dir`, confirm SessionStart stdout appears in context and survives `/compact`; confirm SubagentStart delivery." Each run below calls a model, with `--model haiku` and a turn cap to keep the cost small.
@@ -822,7 +806,7 @@ git commit -m "docs: record spike 1, Claude Code hook delivery" -m "Spike 1 of s
 - Create: `docs/superpowers/handoff/2026-09-24-marketplace-quality/spikes/03-oh-my-pi.md`
 
 **Interfaces:**
-- Consumes: Blocks A, B, C1, D, F; the fixture recipe; Oh-My-Pi 18.2.8 and its `ai-plugins` marketplace (`Akurganow/ai-plugins`) on the owner's machine.
+- Consumes: Blocks A, B, C, D, F; the fixture recipe; Oh-My-Pi 18.2.8 and its `ai-plugins` marketplace (`Akurganow/ai-plugins`) on the owner's machine.
 - Produces: assertions 3a-rules, 3a-skill, 3b-rules, 3b-skill. Task 8's Oh-My-Pi section rests on them.
 
 Spec §9 item 3: "install from the marketplace, confirm `rules/prose-discipline.md` appears in the system prompt on every request; confirm the `agent-plugins` provider still loads the skill." The new package is not on `main` yet, so the spike runs twice:
@@ -922,7 +906,7 @@ git commit -m "docs: record spike 3, Oh-My-Pi rules file and skill" -m "Spike 3 
 
 - **3a-rules fails and 3b-rules passes:** `--plugin-dir` roots behave differently from marketplace roots. Users install from the marketplace, so no plan change; record it.
 - **3b-rules fails:** the rules route does not work for a standard root in 18.2.8. Block E's Oh-My-Pi section then claims what the client does not do. The spec closed the two alternatives (TTSR files, TypeScript hooks), so the owner decides.
-- **3a-skill fails:** a front-matter warning means Block C1's front matter breaks the six-field validator; fix it and rerun. A `name collision` means another installed source ships `house-style`. The name is then chosen again by the §5.4 rule, with the owner.
+- **3a-skill fails:** a front-matter warning means Block C's front matter breaks the six-field validator; fix it and rerun. A `name collision` means another installed source ships `house-style`. The name is then chosen again by the §5.4 rule, with the owner.
 
 ---
 
@@ -932,7 +916,7 @@ git commit -m "docs: record spike 3, Oh-My-Pi rules file and skill" -m "Spike 3 
 - Create: `docs/superpowers/handoff/2026-09-24-marketplace-quality/spikes/04-hermes.md`
 
 **Interfaces:**
-- Consumes: Blocks A, B, C1, D, F; the fixture recipe; Hermes 0.21.5 on the owner's machine, with the published `prose-discipline` 1.3.0 installed and enabled at user scope.
+- Consumes: Blocks A, B, C, D, F; the fixture recipe; Hermes 0.21.5 on the owner's machine, with the published `prose-discipline` 1.3.0 installed and enabled at user scope.
 - Produces: assertions 4-install, 4a, 4b, 4c. Task 5's Hermes lines and Task 8's Hermes section rest on them.
 
 Spec §9 item 4: "install the portable package, confirm the skill loads; set `skills.auto_load` with the computed qualified name and confirm the rules appear in the system prompt with Hermes's auto-load wrapper; test Hermes on Windows at all."
@@ -1072,7 +1056,7 @@ git commit -m "docs: record spike 4, Hermes skill and skills.auto_load" -m "Spik
 - Generated: `plugins/prose-discipline/.claude-plugin/plugin.json`
 
 **Interfaces:**
-- Consumes: plan 02 landed (`tools/regenerate.sh`, the byte-equality check, the six vendor manifests as regular files).
+- Consumes: plan 02 landed (`bash tools/regenerate.sh`, the byte-equality check, the six vendor manifests as regular files).
 - Produces: the description plan 06 shows; `extensions["com.openai"].hooks`, which Task 7's `hooks/hooks.json` satisfies.
 
 Today's `plugin.json` holds a 1,154-character description, the `agent-skills` keyword and `extensions["io.github.akurganow.ai-plugins"]` with `components`, `components_note` and `interface` (lines 5, 21, 24–35 at `344c8fc`).
@@ -1081,7 +1065,7 @@ Today's `plugin.json` holds a 1,154-character description, the `agent-skills` ke
 
 ```sh
 cd "$(git rev-parse --show-toplevel)"
-test -x tools/regenerate.sh && echo regenerate-present
+test -f tools/regenerate.sh && echo regenerate-present
 test -f plugins/prose-discipline/.claude-plugin/plugin.json && ! test -L plugins/prose-discipline/.claude-plugin/plugin.json && echo vendor-is-a-file
 /private/tmp/claude-501/-Users-akurganow-Projects-ai-plugins/aa53b02e-f388-4b09-bc13-baf4eb5c52bb/scratchpad/venv/bin/python tools/check-conformance.py; echo "exit=$?"
 ```
@@ -1107,7 +1091,7 @@ Expected now: `false`, `exit=1`.
 - [ ] **Step 4: Regenerate the copies**
 
 ```sh
-tools/regenerate.sh; echo "exit=$?"
+bash tools/regenerate.sh; echo "exit=$?"
 ```
 
 Expected: `exit=0`.
@@ -1135,7 +1119,7 @@ Expected: `true`; `23`; `1`; `1.3.0`; no `jq` output; `copy-equal`; `exit=0`; `e
 
 - [ ] **Step 6: Commit**
 
-`tools/regenerate.sh` may also rewrite `.claude-plugin/marketplace.json` and the root `README.md` table. Those are plan 06's files: leave them unstaged.
+`bash tools/regenerate.sh` may also rewrite `.claude-plugin/marketplace.json` and the root `README.md` table. Those are plan 06's files: leave them unstaged.
 
 ```sh
 git add plugins/prose-discipline/plugin.json plugins/prose-discipline/.claude-plugin/plugin.json
@@ -1153,20 +1137,14 @@ Expected from `git status` before the commit: only the two staged files under `p
 
 **Files:**
 - Rename: `plugins/prose-discipline/skills/prose-discipline/` → `plugins/prose-discipline/skills/house-style/` (`git mv`)
-- Modify: `plugins/prose-discipline/skills/house-style/SKILL.md` (whole file; Block C1 or C2)
-- Generated: the `rules` region, the `hermes-auto-load` region (C1 only), the doctoc TOC in `references/examples.md`
+- Modify: `plugins/prose-discipline/skills/house-style/SKILL.md` (whole file; Block C)
+- Generated: the `rules` and `hermes-auto-load` regions, the doctoc TOC in `references/examples.md`
 
 **Interfaces:**
-- Consumes: plan 02's `rules` region contract; the optional `hermes-auto-load` line in the skill (see "Requested from plan 02").
+- Consumes: plan 02's region contract for `rules` and `hermes-auto-load` in the skill.
 - Produces: the path `plugins/prose-discipline/skills/house-style/references/*.md`, which Block D's routing table names in Task 6.
 
-- [ ] **Step 1: Choose the block**
-
-```sh
-grep -F 'replace_region plugins/prose-discipline/skills/house-style/SKILL.md hermes-auto-load' tools/regenerate.sh && echo use-C1 || echo use-C2
-```
-
-- [ ] **Step 2: Write the failing test**
+- [ ] **Step 1: Write the failing test**
 
 ```sh
 test -f plugins/prose-discipline/skills/house-style/SKILL.md; echo "exit=$?"
@@ -1174,23 +1152,23 @@ test -f plugins/prose-discipline/skills/house-style/SKILL.md; echo "exit=$?"
 
 Expected now: `exit=1`.
 
-- [ ] **Step 3: Rename the directory**
+- [ ] **Step 2: Rename the directory**
 
 ```sh
 git mv plugins/prose-discipline/skills/prose-discipline plugins/prose-discipline/skills/house-style
 ```
 
-- [ ] **Step 4: Write Block C1 or C2 (Step 1's answer) to `plugins/prose-discipline/skills/house-style/SKILL.md`**
+- [ ] **Step 3: Write Block C to `plugins/prose-discipline/skills/house-style/SKILL.md`**
 
-- [ ] **Step 5: Regenerate**
+- [ ] **Step 4: Regenerate**
 
 ```sh
-tools/regenerate.sh; echo "exit=$?"
+bash tools/regenerate.sh; echo "exit=$?"
 ```
 
 Expected: `exit=0`. The `rules` region now holds today's rules text; Task 6 replaces it.
 
-- [ ] **Step 6: Run the tests**
+- [ ] **Step 5: Run the tests**
 
 ```sh
 S=plugins/prose-discipline/skills/house-style/SKILL.md
@@ -1213,15 +1191,16 @@ claude plugin validate plugins/prose-discipline; echo "exit=$?"
 
 Expected: `house-style MIT True True True`; `# Prose discipline: core rules`; no `not routed` line; `1`; `no-old-path`; `exit=0`; `exit=0`. The README still names the old path until Task 8, which is why the grep skips it.
 
-With Block C1, also:
+Then check the Hermes region, which must sit before the rules region:
 
 ```sh
+grep -n -x -e '<!-- hermes-auto-load:start -->' -e '<!-- hermes-auto-load:end -->' -e '<!-- rules:start -->' "$S"
 grep -x -- '    - agent-plugin-prose-discipline-cf518319:house-style' "$S"
 ```
 
-Expected: that line, once.
+Expected: the three marker lines in that order, and the qualified-name line once.
 
-- [ ] **Step 7: Commit**
+- [ ] **Step 6: Commit**
 
 ```sh
 git add plugins/prose-discipline/skills
@@ -1289,7 +1268,7 @@ Read each printed bullet. It must state its reason in the same bullet, after "be
 - [ ] **Step 5: Regenerate and compare the skill's copy**
 
 ```sh
-tools/regenerate.sh; echo "exit=$?"
+bash tools/regenerate.sh; echo "exit=$?"
 S=plugins/prose-discipline/skills/house-style/SKILL.md
 awk '/^<!-- rules:start -->$/{f=1;next} /^<!-- rules:end -->$/{f=0} f' "$S" | grep -v '^$' > "${TMPDIR:-/tmp}/pd-region.txt"
 awk 'NR==1 && /^---$/{f=1;next} f && /^---$/{f=0;next} !f' "$R" | grep -v '^$' | diff - "${TMPDIR:-/tmp}/pd-region.txt" && echo region-equal
@@ -1358,6 +1337,7 @@ jq -e '(keys == ["description", "hooks"])
   and (.hooks | keys) == ["SessionStart", "SubagentStart"]
   and .hooks.SessionStart[0].matcher == "startup|resume|clear|compact|fork"
   and (.hooks.SubagentStart[0] | has("matcher") | not)
+  and ([.hooks[][].hooks[].timeout] == [10, 10])
   and ([.. | objects | select(has("args") or has("additionalContextLimit"))] | length) == 0' "$H/hooks.json"
 sh "$H/print-rules.sh" | head -1
 sh "$H/print-rules.sh" --json | jq empty && echo json-valid
@@ -1441,7 +1421,7 @@ Expected now: `0`, then `1`.
 - [ ] **Step 3: Regenerate**
 
 ```sh
-tools/regenerate.sh; echo "exit=$?"
+bash tools/regenerate.sh; echo "exit=$?"
 ```
 
 Expected: `exit=0`.
@@ -1507,9 +1487,9 @@ git commit -m "docs: rewrite the prose-discipline README to the package template
 - [ ] **Step 1: Regenerate and confirm the package is at the generator's fixed point**
 
 ```sh
-tools/regenerate.sh; echo "exit=$?"
+bash tools/regenerate.sh; echo "exit=$?"
 git status --porcelain plugins/prose-discipline
-tools/regenerate.sh && git diff --exit-code -- plugins/prose-discipline && echo package-fixed-point
+bash tools/regenerate.sh && git diff --exit-code -- plugins/prose-discipline && echo package-fixed-point
 ```
 
 Expected: `exit=0`; no line; `package-fixed-point`. A line in the second command means an earlier task skipped a regeneration: stage those paths and commit them in Step 5.
@@ -1526,7 +1506,7 @@ grep -c -x -- '    - agent-plugin-prose-discipline-cf518319:house-style' "$D/REA
 grep -l '^<!-- START doctoc' "$D"/skills/house-style/references/*.md
 ```
 
-Expected: `license-equal`; `vendor-equal`; `rules-region-equals-hook`; `README.md:1`, and `SKILL.md:1` with Block C1 or `SKILL.md:0` with Block C2; only `…/references/examples.md`.
+Expected: `license-equal`; `vendor-equal`; `rules-region-equals-hook`; `README.md:1` and `SKILL.md:1`; only `…/references/examples.md`.
 
 - [ ] **Step 3: Run the validators and syntax checks**
 
@@ -1591,15 +1571,17 @@ If nothing changed, there is nothing to commit. Record `package-fixed-point` in 
 | Quality review L5 | 6 |
 | §3.1 texts removed (diary lines in README and SKILL.md) | 5, 8 |
 
-## Open questions the spec leaves for this cluster
+## Decisions taken at plan review
 
-1. **Hermes lines in the skill.** Spec §5.5 wants the skill's first lines to show the exact `config.yaml` lines. The conventions assign `hermes-auto-load` to the README only, and plan 02's script fills only the README. This plan asks plan 02 for one more `replace_region` line and falls back to Block C2 without it.
-2. **`timeout` in `hooks.json`.** Today's file sets `"timeout": 10`. Block A drops it, because the conventions list the keys exactly. The owner may want it back.
-3. **Matcher.** The spec's §5.5 route column says SessionStart has "no matcher", and its ships column and the conventions give `startup|resume|clear|compact|fork`. Both match every source Claude Code documents today; the plan follows the conventions. Spike 1's 1b decides if they differ.
-4. **Imperative rules and Claude Code's injection warning.** Claude Code's hooks documentation advises factual statements over imperative instructions. Block D makes the opening factual and keeps the rules imperative, because L5 forbids softening them. Spike 1 (1a-injection) shows whether that holds; if not, the owner chooses the wording.
-5. **Oh-My-Pi from the marketplace before merge.** The new package cannot be installed from the marketplace until it is on `main`. Spike 3 tests the new tree through `--plugin-dir` and the marketplace route with the published 1.3.0.
-6. **Hermes on Windows** (spec §9 item 4) cannot run on this macOS machine. The record says "not run", and plan 07's integration matrix covers it.
-7. **Owner state during spikes.** Spikes 3 and 4 install and uninstall on the owner's Oh-My-Pi and Hermes, and spike 4 edits the Hermes config. Both restore the state they found, and the owner should know before they run.
-8. **Where the per-client routes live.** §5.1 has no section for them; Block E puts them under Usage.
-9. **Citation line numbers.** Research 07 cites `plugins_manifest.py` lines 79–88 for the namespace function; the file at `749220ef` has it at 60–69, as research 08 says. Block E cites 60–69.
-10. **Documentation without permalinks.** Claude Code's and Codex's documentation sites offer no commit permalinks. Block E links the pages and names the section, as the root README does today; research 09 dates the reading.
+The coordinator settled the questions this plan raised:
+
+1. The generator fills `hermes-auto-load` in the skill as well as in the README, with identical markers. Block C puts them in the skill's first lines, and no fallback text remains.
+2. Both hook handlers carry `"timeout": 10`; the conventions will list the key.
+3. The SessionStart matcher stays explicit, `startup|resume|clear|compact|fork`, as the conventions give it.
+4. The rules stay imperative. Spike 1's 1a-injection row decides whether that holds.
+5. The per-client routes live under Usage in the README.
+6. `plugins_manifest.py` lines 60–69 are the right citation for the namespace function; plan 08 has been told.
+7. Page-plus-section links are accepted for the Claude Code and Codex documentation sites, which offer no permalinks.
+8. The spikes' changes to the owner's Oh-My-Pi and Hermes go into the coordinator's owner notices.
+
+Still true, and not a decision: Oh-My-Pi cannot install the new package from the marketplace before merge, so spike 3 uses `--plugin-dir` for it. Hermes on Windows cannot run on this macOS machine, so spike 4 records 4c as not run and plan 07's matrix covers it.

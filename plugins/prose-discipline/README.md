@@ -98,8 +98,10 @@ Sources, all Claude Code documentation:
 
 `plugin.json` declares the hook file under `extensions["com.openai"].hooks`,
 and Codex runs the same `SessionStart` and `SubagentStart` hooks. Codex skips
-a plugin's hooks until you review and trust the current hook definition. It
-sets `CLAUDE_PLUGIN_ROOT` for compatibility, so the same command finds the
+a plugin's hooks until you review and trust the current hook definition.
+When hooks are new or changed, Codex opens a "Hooks need review" prompt at
+startup. Its options include "Review hooks" and "Trust all and continue".
+It sets `CLAUDE_PLUGIN_ROOT` for compatibility, so the same command finds the
 script. Codex also lists every installed skill and tells the model to use one
 whose description matches the task.
 
@@ -109,10 +111,14 @@ Sources:
   [plugin packaging](https://developers.openai.com/plugins/build/plugins):
   the `hooks` field under `extensions.com.openai`, and hook trust.
 - Codex documentation, [hooks](https://learn.chatgpt.com/docs/hooks):
-  `CLAUDE_PLUGIN_ROOT` for compatibility.
+  the `SessionStart` and `SubagentStart` events, and `CLAUDE_PLUGIN_ROOT`
+  for compatibility.
 - Codex source,
   [`catalog_prompt.rs`](https://github.com/openai/codex/blob/549455f3ec5a7f2a0489894543a0e49f307142a6/codex-rs/ext/skills/src/catalog_prompt.rs#L3-L8):
   the skill trigger rule.
+- Codex source,
+  [`startup_hooks_review.rs`](https://github.com/openai/codex/blob/694d8d45bd3d440fa4f4cbf22667ac6c17a13758/codex-rs/tui/src/startup_hooks_review.rs#L228-L271):
+  the startup prompt that asks you to trust new or changed hooks.
 
 ### Oh-My-Pi
 
@@ -157,10 +163,16 @@ Hermes then puts the whole skill, core rules included, into the system
 prompt of every new session and marks it as active guidance. The name has
 the form `agent-plugin-<slug>-<hash>:house-style`. The slug is
 `plugin.json`'s `name` with any dot turned into a hyphen. The hash is the
-first eight hex digits of the SHA-256 of that `name`. Source: Hermes source,
-[`hermes_cli/plugins_manifest.py` lines 60–69](https://github.com/NousResearch/hermes-agent/blob/749220ef0007f8d87bd1531f1c24b0fe93816385/hermes_cli/plugins_manifest.py#L60-L69).
-Hermes builds the namespace from that `name` for a package installed
-directly under the plugins directory, which `hermes plugins install` does.
+first eight hex digits of the SHA-256 of that `name`. Hermes builds the
+namespace from that `name` for a package installed directly under the
+plugins directory. Source: Hermes source,
+[`hermes_cli/plugins_manifest.py` lines 60–69](https://github.com/NousResearch/hermes-agent/blob/749220ef0007f8d87bd1531f1c24b0fe93816385/hermes_cli/plugins_manifest.py#L60-L69)
+and [lines 455–467](https://github.com/NousResearch/hermes-agent/blob/749220ef0007f8d87bd1531f1c24b0fe93816385/hermes_cli/plugins_manifest.py#L455-L467).
+
+`hermes plugins install` names the package directory after the manifest
+`name` and puts it directly under the plugins directory. Source: Hermes
+source, [`hermes_cli/plugins_cmd.py` lines 873–876](https://github.com/NousResearch/hermes-agent/blob/749220ef0007f8d87bd1531f1c24b0fe93816385/hermes_cli/plugins_cmd.py#L873-L876)
+and [line 210](https://github.com/NousResearch/hermes-agent/blob/749220ef0007f8d87bd1531f1c24b0fe93816385/hermes_cli/plugins_cmd.py#L210).
 
 Sources:
 
@@ -180,10 +192,6 @@ Sources:
 - Hermes source,
   [`agent/skill_commands.py`](https://github.com/NousResearch/hermes-agent/blob/749220ef0007f8d87bd1531f1c24b0fe93816385/agent/skill_commands.py#L653-L681):
   the auto-load wrapper.
-- Hermes source,
-  [`hermes_cli/plugins_manifest.py`](https://github.com/NousResearch/hermes-agent/blob/749220ef0007f8d87bd1531f1c24b0fe93816385/hermes_cli/plugins_manifest.py#L455-L467):
-  a package directly under the plugins directory keys its namespace on the
-  manifest `name`.
 
 ## What's inside
 
@@ -204,8 +212,10 @@ The hooks run `sh` and `awk` from `PATH`. On Windows, Claude Code runs
 shell-form hooks in Git Bash when it is installed, and in PowerShell
 otherwise. Source: Claude Code documentation,
 [hooks](https://code.claude.com/docs/en/hooks), "Exec form and shell form".
-If the script fails, it writes one line to stderr and the session starts
-without the hook's copy of the rules.
+Without Git Bash and with no `sh` on `PATH`, the hook command fails and the
+session starts without the hook's copy of the rules. The skill and the rules
+file still ship. If the script fails, it writes one line to stderr and the
+session starts without the hook's copy of the rules.
 
 The rules file stays under 8,000 characters. That keeps the hook text under
 Claude Code's 10,000-character cap and Codex's default 2,500-token threshold

@@ -151,7 +151,7 @@ decided this. Consequences in the same change:
   sentence about a symlinked **root** manifest stays; it is about the root.
 - `tools/check-conformance.py`: the hand check that resolves the vendor path as a symlink
   becomes a byte-equality check between the two files, with the same §5.1 clause quoted
-  beside it and the Windows reason in one sentence.
+  beside it and the Windows reason stated briefly, within the 25-word sentence limit.
 - Root README's Windows note (§6.1) no longer mentions the symlink.
 
 ## 5. Packages

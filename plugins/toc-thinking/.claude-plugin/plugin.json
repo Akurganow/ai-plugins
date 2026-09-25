@@ -2,7 +2,7 @@
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "toc-thinking",
   "version": "0.1.0",
-  "description": "Goldratt's Theory of Constraints Thinking Processes, applied to software systems and their architecture. The skill answers three questions in order. What to change: the Current Reality Tree. To what to change: the Evaporating Cloud, then the Future Reality Tree with negative-branch reservations. How to cause the change: the Prerequisite Tree, then the Transition Tree. Every link in a sufficiency tree is scrutinised with the Categories of Legitimate Reservation, and the user confirms the core problem before the cloud is built. The skill carries the procedure. The depth behind each tool and the categories sits in references beside it, each with its source. No script, no network, no credentials.",
+  "description": "Applies Goldratt's Thinking Processes to software: finds the core problem behind many symptoms, resolves the conflict that sustains it, and plans the change.",
   "author": {
     "name": "Alexander Kurganov",
     "url": "https://github.com/Akurganow"
@@ -17,7 +17,11 @@
     "current-reality-tree",
     "evaporating-cloud",
     "root-cause",
-    "goldratt",
-    "agent-skills"
-  ]
+    "goldratt"
+  ],
+  "extensions": {
+    "io.github.akurganow.ai-plugins": {
+      "category": "Developer Tools"
+    }
+  }
 }

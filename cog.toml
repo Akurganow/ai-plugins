@@ -1,0 +1,32 @@
+# cocogitto configuration (https://docs.cocogitto.io/reference/config).
+# Each package under plugins/ is released on its own, from the conventional
+# commits that touched its directory. howp is not listed: the job that
+# publishes its binaries writes its version.
+
+# Tags read <name>--v<version>, the form Claude Code documents for plugin
+# dependencies (https://code.claude.com/docs/en/plugins/dependencies).
+tag_prefix = "v"
+monorepo_version_separator = "--"
+generate_mono_repository_global_tag = false
+
+# This repository merges pull requests with merge commits; each branch commit
+# counts for the paths it touched, and the merge commit itself counts for none.
+ignore_merge_commits = true
+branch_whitelist = ["main"]
+
+# Runs in the package directory before the version commit. plugin.json and
+# .claude-plugin/plugin.json are one source and its byte-identical copy, so
+# both get the new version and must still be equal afterwards.
+pre_package_bump_hooks = [
+  "jq --arg v '{{version}}' '.version = $v' plugin.json > plugin.json.next && mv plugin.json.next plugin.json",
+  "jq --arg v '{{version}}' '.version = $v' .claude-plugin/plugin.json > .claude-plugin/plugin.json.next && mv .claude-plugin/plugin.json.next .claude-plugin/plugin.json",
+  "cmp plugin.json .claude-plugin/plugin.json",
+]
+
+# Each package writes its own CHANGELOG.md in its directory (the default).
+[monorepo.packages]
+cognitive-load = { path = "plugins/cognitive-load" }
+design-review = { path = "plugins/design-review" }
+prose-discipline = { path = "plugins/prose-discipline" }
+toc-thinking = { path = "plugins/toc-thinking" }
+triz = { path = "plugins/triz" }

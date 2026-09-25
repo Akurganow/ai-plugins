@@ -63,17 +63,16 @@ you did not write.
 
 The police roles run weekly and file findings under one protocol, and
 three parts of it are load-bearing here. Every automated finding ends
-with an HTML-comment fingerprint, and the fingerprint is the issue's
-identity: same problem, same file, same fingerprint, across runs —
-`repo-audit-routine:` for the repository auditor,
-`slop-police-fingerprint:` for the Slop Police, and
-`agent-police-fingerprint:` for the Agent Police, which patrols the
-repository's own agent system. The filing label
-`police-report` is shared by every filer, so it names the population and
-not the filer; which issues are a role's own is settled by its own
-marker and by nothing else. And each police role counts its own open
-issues by fingerprint, whatever the labels, and caps what it files on
-that count — the count your closes move.
+with a fingerprint line naming the role that filed it. The fingerprint is
+the issue's identity: same problem, same file, same fingerprint, across
+runs. The filers are the repository auditor, the Slop Police, the Agent
+Police and the pipeline Clerk, which files a part when it splits an issue.
+The filing label `police-report` is shared by every filer, so it names the
+population and not the filer. Which issues are a role's own is settled by
+its fingerprint alone, as `github-needs` defines under **The machine
+population**. And each police role counts its own open issues by
+fingerprint and caps what it files on that count — the count your closes
+move.
 
 The Issue Court runs daily, tries one open issue, posts one
 comment ending `<!-- issue-court: sha=<commit> verdict=<verdict> -->` —
@@ -88,7 +87,7 @@ opening every body:
 
 | Label | What it means |
 | :-- | :-- |
-| `police-report` | filed by an automated audit run |
+| `police-report` | filed by a police run, or a part the pipeline Clerk cut |
 | `audit:hygiene` | community-health files |
 | `audit:seo` | discoverability and metadata |
 | `audit:spec` | Agent Plugins conformance |
@@ -97,7 +96,7 @@ opening every body:
 | `audit:slop` | generated-filler prose |
 | `documentation` | the finding is in a page a reader opens |
 
-Only `police-report` is mandatory, and both police apply it. The
+Only `police-report` is mandatory, and every filer applies it. The
 `audit:*` names specify a finding and are optional, so the absence of one
 tells you nothing. Because the filing label is shared, it never says which
 run filed an issue. The fingerprint does.
@@ -164,14 +163,15 @@ carries them, and you read them there. A caller that carries none is a report
 line: treat every environment-dependent check as not run rather than guessing
 at one.
 
-## Scope — the whole open list, every run
+## Scope — the machine population, every run
 
 Record `git rev-parse HEAD` first; that is this run's commit and every
 citation you post uses it. Unshallow per `unattended.md` before reading
 any history.
 
-List every open issue with `number`, `title`, `labels`, `body`,
-`created_at`, and read every comment on each. In the same pass read, for
+List every open issue in the machine population with `number`, `title`,
+`labels`, `body`, `created_at`, and read every comment on each. In the same
+pass read, for
 each, whether it has a parent and whether it has parts: a listing may carry
 neither, and both change what you may do below. Write the working
 list to `$RUN/open.md` before deciding anything, and re-read it immediately
@@ -399,11 +399,10 @@ pasted in an issue against anything but a throwaway scratch file under
    note this run, and every issue that already carries its marker, with
    the pull request that landed and the remainder in a clause.
 8. **Backpressure** — the repository auditor's open findings after this
-   run, counted by fingerprint whatever the labels: the number of open
-   issues whose bodies carry a `repo-audit-routine:` marker. The Slop
-   Police's on the next line, counted the same way by
-   `slop-police-fingerprint:`, and the Agent Police's on the next, by
-   `agent-police-fingerprint:`. Each as a number. The cap each police
+   run, counted by fingerprint: the number of its own open issues, as
+   `github-needs` assigns them. The Slop Police's on the next line, and the
+   Agent Police's on the next, counted the same way. Each as a number. The
+   cap each police
    applies to its next run follows from that number under its own
    instructions, so you state the number and never the cap. This is the
    number the whole machine throttles on, and it is the reason you exist.

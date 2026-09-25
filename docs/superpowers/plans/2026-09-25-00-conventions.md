@@ -57,10 +57,13 @@ contents use doctoc's own markers (`<!-- START doctoc … -->` / `<!-- END docto
 
 ## `tools/regenerate.sh`
 
-- `#!/usr/bin/env bash`, `set -euo pipefail`, run from the repository root with no
-  arguments, idempotent: a second run changes nothing.
-- Tools it calls: `jq`, `npx --yes doctoc@2.2.1`, `shasum -a 256` (falls back to
-  `sha256sum`), `cp`, `sed`, `awk`. When a tool is missing it exits 1 and names it.
+- `#!/usr/bin/env bash`, `set -euo pipefail`, mode 100644 (no execute bit, like the
+  hook script and the check), always invoked as `bash tools/regenerate.sh` from the
+  repository root with no arguments, idempotent: a second run changes nothing.
+- Tools it calls: `jq`, doctoc 2.2.1 installed from `tools/package.json` and
+  `tools/package-lock.json` with `npm ci --prefix tools` (the lockfile pins its whole
+  tree; `tools/node_modules/` is ignored), `shasum -a 256` (falls back to `sha256sum`),
+  `cp`, `sed`, `awk`. When a tool is missing it exits 1 and names it.
 - Steps, in this order:
   1. `.claude-plugin/marketplace.json`: `tools/templates/marketplace.json` (top-level
      `name`, `owner`, `description`) plus a `plugins` array built from every
@@ -77,9 +80,10 @@ contents use doctoc's own markers (`<!-- START doctoc … -->` / `<!-- END docto
      prose-discipline README. The qualified name is
      `agent-plugin-<name>-<first 8 hex of sha256(name)>:house-style`; for
      `prose-discipline` that is `agent-plugin-prose-discipline-cf518319:house-style`.
-- CI runs `tools/regenerate.sh` and then `git diff --exit-code`; the step's failure
-  message says: run `tools/regenerate.sh` and commit the result. No other CI step
-  compares a generated file.
+- CI runs `bash tools/regenerate.sh`, then `git add --intent-to-add --all` and
+  `git diff --exit-code`; the step's failure message says: run `bash tools/regenerate.sh`
+  and commit the result. No other CI step compares a generated file. `.gitattributes`
+  carries `*.sh text eol=lf` so a Windows checkout keeps the script runnable.
 - The plan for 02 writes the script and the templates. Plans 03–06 add the markers to
   their files and run the script; they do not edit the script. A plan that needs a change
   in the script says so in its "Interfaces" block and the change goes into plan 02.
@@ -174,12 +178,13 @@ holds the citations already found; reuse them.
 - `claude plugin validate plugins/<name>` (Claude Code 2.1.278 is installed).
 - `jq empty <file>` for every JSON file touched; `bash -n tools/regenerate.sh`;
   `sh -n plugins/prose-discipline/hooks/print-rules.sh`.
-- `tools/regenerate.sh && git diff --exit-code` once plan 02 has landed.
+- `bash tools/regenerate.sh && git diff --exit-code` once plan 02 has landed.
 - Clients installed and authorised: Codex CLI 0.155.1, Hermes 0.21.5, Oh-My-Pi 18.2.8.
   Spikes that need a clean run use a fresh environment (spec §9). Nothing in a plan
   calls a model in CI.
-- Not installed: `skills-ref`, `cosign`, `release-please` CLI, `doctoc` (use
-  `npx --yes doctoc@2.2.1`). Plan 07 states how each is installed, pinned.
+- Not installed: `skills-ref`, `cosign`, `release-please` CLI; `doctoc` comes from
+  `tools/package-lock.json` once plan 02 lands. Plan 07 states how each of the others is
+  installed, pinned.
 
 ## Plan format
 

@@ -262,23 +262,25 @@ jobs:
     defaults:
       run:
         shell: bash
-    # The identity Fulcio writes into the signing certificate for a GitHub
-    # Actions token is `https://github.com/` followed by the workflow ref
-    # (source: `identity=` in
-    # https://github.com/Akurganow/how-possible/blob/392cb5d40b38540129293deb9abec75bc48b12c4/.github/scripts/release-publish.sh).
-    # The certificate inside howp-v0.3.7's SHA256SUMS.sigstore.json carries
-    # this SAN and this issuer (release asset, read 2026-09-26).
+    # For a signature made by a GitHub Actions workflow, the issuer is
+    # https://token.actions.githubusercontent.com and the identity is
+    # https://github.com/OWNER/REPO/.github/workflows/FILE@refs/heads/BRANCH
+    # (documentation:
+    # https://github.com/sigstore/docs/blob/842c30981f1bf5061fe0d370512db4de8cdf3b33/content/en/certificate_authority/oidc-in-fulcio.md#L40-L43).
+    # The certificate inside SHA256SUMS.sigstore.json at
+    # https://github.com/Akurganow/ai-plugins/releases/tag/howp-v0.3.7
+    # carries these two values (release asset, read 2026-09-26).
     env:
       SIGNER_IDENTITY: https://github.com/Akurganow/how-possible/.github/workflows/release.yml@refs/heads/main
       OIDC_ISSUER: https://token.actions.githubusercontent.com
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
 
-      # Pinned by commit. At this commit the action installs cosign v3.0.6
-      # (`default:` in
+      # At this commit the action installs cosign v3.0.6 (source: `default:` in
       # https://github.com/sigstore/cosign-installer/blob/6f9f17788090df1f26f669e9d70d6ae9567deba6/action.yml)
       # and supports the GitHub-provided Linux, macOS and Windows runners
-      # (its README L11 at the same commit, documentation).
+      # (documentation:
+      # https://github.com/sigstore/cosign-installer/blob/6f9f17788090df1f26f669e9d70d6ae9567deba6/README.md#L11).
       - uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6 # v4.1.2
 
       - name: Download the archive for this platform, verify the checksum table's signature and the archive's sha256
@@ -309,8 +311,8 @@ jobs:
           printf '%s  %s\n' "$sha" "$archive" | $sum -c -
           curl -fsSL --retry 5 --retry-delay 5 --retry-all-errors -o SHA256SUMS "${url%/*}/SHA256SUMS"
           curl -fsSL --retry 5 --retry-delay 5 --retry-all-errors -o SHA256SUMS.sigstore.json "${url%/*}/SHA256SUMS.sigstore.json"
-          # A sha256 ties the archive to the table; the signature ties the table
-          # to the workflow that built the binaries. A table swapped on the
+          # A sha256 ties the archive to the table. The signature ties the table
+          # to the workflow that built the binaries, so a table swapped on the
           # release page fails here instead of vouching for the swap.
           # Command shape: verify-blob with --bundle, --certificate-identity and
           # --certificate-oidc-issuer (documentation:

@@ -83,8 +83,8 @@ the change costs, and a check with a newcomer.
 The package has no script, hook, rule file or network access.
 
 The catalogue is Artem Zakirullin's essay "Cognitive load is what
-matters", under CC BY 4.0. The package's author read it whole at the
-commit `sources.md` names, and read the theory mostly as abstracts.
+matters", under CC BY 4.0. `sources.md` records the essay as read whole
+at the commit it names, and the theory mostly as abstracts.
 `sources.md` says, for each paper, whether the package's author opened
 its abstract, its full text or nothing.
 
@@ -102,7 +102,7 @@ its abstract, its full text or nothing.
   measured qualities belongs to `contradiction` in
   [`triz`](https://github.com/Akurganow/ai-plugins/tree/main/plugins/triz). Many complaints with one unclear cause
   belong to `root-cause` in [`toc-thinking`](https://github.com/Akurganow/ai-plugins/tree/main/plugins/toc-thinking).
-  The skill hands over only when that skill is installed.
+  The skill hands over only to a skill that is installed.
 
 ## License
 

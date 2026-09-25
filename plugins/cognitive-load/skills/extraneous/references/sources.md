@@ -25,7 +25,7 @@ text was not opened in some form.
 Artem Zakirullin, "Cognitive load is what matters", copyright (c) 2023
 Artem Zakirullin, Creative Commons Attribution 4.0 International, "a
 living document, last update: June 2026" by its own status line. Read
-whole, with its agent-facing summary and its licence file, on 2026-09-24
+whole, with its agent-facing summary and its license file, on 2026-09-24
 at
 <https://github.com/zakirullin/cognitive-load/tree/d2d60d2311c3854f16d87bf34f38c829667be2a4>.
 Every quotation in `patterns.md` is from its `README.md` at that commit.

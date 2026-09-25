@@ -76,7 +76,7 @@ problem as a new technical contradiction, `ariz` offers it back to
 | :-- | :-- |
 | [`skills/contradiction/SKILL.md`](skills/contradiction/SKILL.md) | the matrix route: contradiction, ideal final result, separation, parameters, matrix, principles |
 | [`skills/contradiction/references/parameters.md`](skills/contradiction/references/parameters.md) | the 39 parameters, each with a reading for software |
-| [`skills/contradiction/references/principles.md`](skills/contradiction/references/principles.md) | the 40 principles, each with Altshuller's sub-items and a reading for software; `ariz` reads it too |
+| [`skills/contradiction/references/principles.md`](skills/contradiction/references/principles.md) | the 40 principles, each with a paraphrase of Altshuller's sub-items and a reading for software; `ariz` reads it too |
 | [`skills/contradiction/references/matrix.md`](skills/contradiction/references/matrix.md) | the classic matrix, one line per cell, with its provenance and the disputed cells |
 | [`skills/contradiction/references/sources.md`](skills/contradiction/references/sources.md) | the copy and commit each reference of both skills rests on, and the sources that stayed out of reach |
 | [`skills/ariz/SKILL.md`](skills/ariz/SKILL.md) | the ARIZ-85C walk, part by part, for a problem the matrix route did not crack or that keeps coming back |
@@ -88,10 +88,10 @@ problem as a new technical contradiction, `ariz` offers it back to
 The package has no script, hook, rule file or network access. The agent
 searches the matrix for one line, so the lookup needs nothing installed.
 
-The matrix is the classic 39 by 39 table with 1,248 non-empty cells. It
+The matrix is the classic 39-by-39 table with 1,248 non-empty cells. It
 merges two public transcriptions, which differ on 40 cells. A third, and
 for three cells a fourth, settle those 40 by majority. `matrix.md` lists
-every reading of each disputed cell. No reachable transcription has more
+every reading of each disputed cell. No transcription read here has more
 than 1,248 cells, so the often-quoted count of 1,263 stays unconfirmed.
 `sources.md` names each copy by commit.
 

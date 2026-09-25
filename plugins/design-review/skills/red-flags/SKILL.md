@@ -3,18 +3,18 @@ name: red-flags
 description: >
   Review a software design for complexity with the red flags and principles
   of Ousterhout's A Philosophy of Software Design. Rank the findings by how
-  often each part is touched. Use when reviewing a module, an API, an
-  architecture or a refactoring plan. Use when an interface feels wrong,
-  when a module might need splitting or merging, or when a name will not
-  come. Use when there are too many layers, or when one change touches too
-  many places. Use when someone asks whether an abstraction is right, or
-  says the code feels tangled. Each finding cites its chapter. Where the
-  book is disputed in a text that was read, the finding carries the other
-  side.
+  often each part is touched and what touching it costs. Use when reviewing
+  a module, an API, an architecture or a refactoring plan. Use when an
+  interface feels wrong, when a module might need splitting or merging, or
+  when a name will not come. Use when there are too many layers, or when
+  one change touches too many places. Use when someone asks whether an
+  abstraction is right, or says the code feels tangled. Each finding cites
+  its chapter. Where the book is disputed in a text that was read, the
+  finding carries the other side.
 license: MIT
 ---
 
-# Design review
+# Red flags
 
 You review a design for complexity, in the sense the book gives the word:
 what makes a system hard to understand and modify. The output is a ranked
@@ -39,7 +39,7 @@ not before.
 | [`references/principles.md`](references/principles.md) | the sixteen design principles, with the chapter for each | Step 3 for the deep and shallow section, and whenever a finding cites a principle |
 | [`references/decisions.md`](references/decisions.md) | the criteria for together or apart, errors, design it twice, comments and names | Step 5 for a split or merge, Step 6 for errors, and Step 8 for a second candidate |
 | [`references/positions.md`](references/positions.md) | where the book takes a side, and what the other side says where it was read | Step 8, when a finding rests on a position the book argues against common practice |
-| [`references/sources.md`](references/sources.md) | where each of the others was read, and what was not read | when the user asks where a statement comes from, and before calling a text read |
+| [`references/sources.md`](references/sources.md) | where each of the others was read, and what was not read | when the user asks where a statement comes from, and before saying that a text was read |
 
 ## Step 1: fix the frame
 
@@ -163,8 +163,9 @@ Close with what the review did not cover:
 
 - A conflict between two qualities the user measures belongs to the
   `contradiction` skill of this marketplace's `triz` package. It resolves
-  the conflict with the contradiction matrix and ARIZ. Hand over only if
-  that skill is installed.
+  the conflict with the contradiction matrix and hands a hard case to the
+  `ariz` skill of the same package. Hand over only if the `contradiction`
+  skill is installed.
 - Many symptoms with one unclear cause belong to the `root-cause` skill of
   this marketplace's `toc-thinking` package, which builds the
   cause-and-effect tree. Hand over only if that skill is installed.

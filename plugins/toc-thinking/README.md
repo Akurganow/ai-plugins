@@ -89,9 +89,9 @@ commit. The Categories of Legitimate Reservation are Dettmer's eight, and
 
 ## Boundaries
 
-- The procedure works on facts you can observe. It does not read the code
-  base on its own, and it does not replace a profiler, a debugger or a
-  test.
+- The procedure works on facts you can observe. It asks you for a fact
+  it lacks rather than guessing the system's structure. It does not
+  replace a profiler, a debugger or a test.
 - The skill attributes nothing to Goldratt or Dettmer without a chapter or
   a dictionary entry that `sources.md` names.
 - A cloud that reduces to a trade-off between two measurable parameters

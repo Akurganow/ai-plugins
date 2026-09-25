@@ -15,8 +15,8 @@ license: MIT
 
 You walk the user through ARIZ-85C on a software problem. The output is
 the mini-problem, the physical contradiction and the solution directions
-the algorithm produces. Each is written in the wording the algorithm
-gives and filled from the user's system. Reply in the user's language.
+the algorithm produces. Write each in the wording the algorithm gives,
+and fill it from the user's system. Reply in the user's language.
 Think between steps. The formulations carry the method. Filling them from
 the system is the work.
 
@@ -61,8 +61,8 @@ reference gives, and fill it from the user's system.
   contradiction.
 - Parts 4 and 5 produce the solution directions from the resources and
   from the information fund. Step 5.3 applies the algorithm's own table of
-  eleven transformations. The 40 principles may be read at 5.3 too, with
-  a note that the algorithm names them only in step 9.2.
+  eleven transformations. Read the 40 principles at 5.3 only when the
+  user asks, and note that the algorithm names them only in step 9.2.
 - Part 6 restates the problem when nothing came out.
 - Parts 7 to 9 check the solution, generalise it and record what the walk
   taught.

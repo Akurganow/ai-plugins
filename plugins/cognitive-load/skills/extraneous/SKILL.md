@@ -189,8 +189,8 @@ Close with what the diagnosis did not cover:
 - A trade-off between two measured qualities, load against performance
   or against flexibility, belongs to the `contradiction` skill of this
   marketplace's `triz` package. It resolves the trade-off with the
-  contradiction matrix and ARIZ. Hand over only if that skill is
-  installed.
+  contradiction matrix and hands a hard case to the `ariz` skill of the
+  same package. Hand over only if the `contradiction` skill is installed.
 - Many complaints with one unclear cause belong to the `root-cause` skill
   of this marketplace's `toc-thinking` package, which builds the
   cause-and-effect tree. A change already decided that needs sequencing

@@ -62,7 +62,8 @@ and start in that order before every read, and three services wrap it.
 
 The `red-flags` skill first asks who reads the module, who changes it, and
 how often. It judges the module's depth and walks the book's fourteen red
-flags. It ranks the findings by how often each part is touched. Each
+flags. It ranks the findings by how often each part is touched and what
+touching it costs. Each
 finding names the change, its cost and the chapter it rests on.
 
 ## What's inside
@@ -77,26 +78,26 @@ finding names the change, its cost and the chapter it rests on.
 | [`skills/red-flags/references/positions.md`](skills/red-flags/references/positions.md) | where the book takes a side, the other side where it was read, and the evidence read |
 | [`skills/red-flags/references/sources.md`](skills/red-flags/references/sources.md) | where each reference was read, at which commit, and what was not read |
 | [`plugin.json`](plugin.json) | the Agent Plugins 1.0.0 manifest |
-| [`.claude-plugin/plugin.json`](.claude-plugin/plugin.json) | a byte-identical copy of `plugin.json` at the one path Claude Code reads ([documentation](https://code.claude.com/docs/en/plugins-reference), "Plugin manifest schema") |
-| [`LICENSE`](LICENSE) | the MIT licence |
+| [`.claude-plugin/plugin.json`](.claude-plugin/plugin.json) | a byte-identical copy of `plugin.json` at the one manifest path Claude Code documents ([documentation](https://code.claude.com/docs/en/plugins-reference), "Plugin manifest schema") |
+| [`LICENSE`](LICENSE) | the MIT license |
 
 The package has no script, hook, rule file or network access.
 
-The book is under copyright, and no copy was bought. Its two closing
-lists, sixteen principles and fourteen red flags, were read verbatim from
-three public copies that agree. Chapter quotations are a few sentences at
-most, from two public translation repositories that carry the English.
-`sources.md` names each copy by commit. The second edition lists sixteen
-principles and the first lists fifteen, and the references say which is
-which.
+The book is under copyright, and `sources.md` records no bought copy of
+either edition. It records the sixteen principles verbatim from three
+public copies that agree, and the fourteen red flags from one. Chapter
+quotations are a few sentences at most, from two public translation
+repositories that carry the English. `sources.md` names each copy by
+commit. The second edition lists sixteen principles and the first lists
+fifteen, and the references say which is which.
 
 ## Boundaries
 
 - The review weighs one quality: complexity in the book's sense.
 - For method length, comments and test-driven development, a finding
   carries Robert Martin's reply from his written discussion with
-  Ousterhout. The book's other positions carry no reply, because no text
-  of the other side was read.
+  Ousterhout. The book's other positions carry no reply, because
+  `positions.md` quotes no text of the other side for them.
 - The skill reads the design you give it. It does not read a code base on
   its own and measures nothing.
 - A trade-off between two measured qualities belongs to the
@@ -105,7 +106,7 @@ which.
   [`toc-thinking`](https://github.com/Akurganow/ai-plugins/tree/main/plugins/toc-thinking). What a reader cannot hold
   in their head belongs to `extraneous` in
   [`cognitive-load`](https://github.com/Akurganow/ai-plugins/tree/main/plugins/cognitive-load). The skill hands over
-  only when that package is installed.
+  only to a skill that is installed.
 
 ## License
 

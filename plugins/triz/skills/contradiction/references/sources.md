@@ -83,7 +83,7 @@ them is carried here.
 
 The sub-items in `principles.md` paraphrase the transcription at
 <https://github.com/Robert-Adunka/triz-skills/blob/3d78740eac639a39f19a95a9aaa17c521497a3b9/contradiction-solver/references/40_Inventive_Principles_EN.md>,
-MIT licence, copyright Robert Adunka, read 2026-09-23.
+MIT license, copyright Robert Adunka, read 2026-09-23.
 
 ## Separation principles
 

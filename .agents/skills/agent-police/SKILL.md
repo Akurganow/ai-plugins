@@ -282,13 +282,13 @@ rulebook below, and a verdict against you is a verdict.
 
 ## The tracker discipline
 
-Your identity in the tracker is the `agent-police-fingerprint` marker at the
-foot of every issue you file. The filing label is shared and the fingerprint
-names the filer, so your own issues are the ones whose body carries that
-marker and no others. Your cap at a healthy backlog is 2; **you have no
-cap-overriding exception** — there is no urgent internal inconsistency. The
-auditor's exception for a false published claim is the auditor's: route such a
-claim, never file it.
+Your identity in the tracker is the fingerprint line naming `agent-police` at
+the foot of every issue you file. The filing label is shared and the
+fingerprint names the filer, so your own issues are the ones `github-needs`
+assigns to you and no others. Your cap at a healthy backlog is 2; **you have
+no cap-overriding exception** — there is no urgent internal inconsistency.
+The auditor's exception for a false published claim is the auditor's: route
+such a claim, never file it.
 
 **Silence is the default.** Filing is not the goal of a run and is not
 expected of it. A run that finds nothing is a successful run, and once the
@@ -296,30 +296,39 @@ shared documents are in place it should be the common outcome — the whole
 point of one law in one file is that there is nothing left to disagree.
 
 **Before analysing, build the do-not-report list** and write it to
-`$RUN/do-not-report.md`. Load every issue carrying the shared filing label
-`police-report`, open **and** closed, with full bodies; then every issue any
-of the three fingerprints finds, each hit's body read to confirm the marker is
-really there. Read bodies, not titles: the label names the population of
-automated filings and not the filer, so which are yours is settled by your
-marker alone.
+`$RUN/do-not-report.md`. Load every issue in the machine population, open
+**and** closed, with full bodies. Read bodies, not titles: the label names
+the population and not the filer, so which are yours is settled by your
+fingerprint alone.
 
 - **A fingerprint of yours present in any state → never report it again.** A
   closed issue means a person looked and declined, and re-filing is worse than
   silence. That half is policy and the audit does not touch it.
 - **The audit applies to your own open ones.** Your fingerprint on an open
-  issue says a fire filed it, never that the filing landed complete: check
-  `police-report` stands on each, apply it where it is missing and the name is
-  on the repository's label list, and say in the report which you checked and
-  which you repaired. Nothing here files anything.
-- **The other two police are read with the same care.** A finding already
-  filed under `repo-audit-routine:` or `slop-police-fingerprint:` is not
-  yours to file again under another name.
+  issue says a fire filed it, never that the filing landed complete. Read
+  each one's body against **Filing** below, say in the report which you
+  checked, and make every gap a report line. Nothing here edits an issue or
+  files anything.
+- **The other two police are read with the same care.** A finding the
+  repository auditor or the Slop Police already filed is not yours to file
+  again under another name.
 - **An open pull request touching the documents is not news.** A role being
   rewritten right now is a role in motion, not a role in disagreement.
 
 **Verify before filing.** Every finding carries its exhibit: two quotes with
 paths and lines, or a read with its output, or a quote and a linked source. A
 finding you cannot exhibit is a report line, never an issue.
+
+**Filing.** `police-report` goes on every filing, as `github-needs` requires
+of every filer; confirm it exists before the analysis. The issue names the
+authority its finding rests on. Its body ends with the fingerprint line:
+
+    <!-- police-fingerprint: agent-police <path>::<concept>::<pass> -->
+
+`<path>` is the file the finding quotes, or `.` for a finding across the
+tree. `<concept>` names the disagreement in a few hyphenated words. `<pass>`
+is `read-<n>` for a mechanical read, `reading` or `external`. The line stays
+the same across runs for the same finding.
 
 **Which rulebook judges you.** The Court judges an auditor's finding by
 `claims.md` and a Slop Police finding by `slop.md`. Yours has **three

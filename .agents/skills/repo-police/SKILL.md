@@ -34,8 +34,8 @@ you follow it exactly.
 
 ## The tracker discipline
 
-Your identity in the tracker is the `repo-audit-routine:` fingerprint
-marker at the foot of every issue you file. Your cap at a healthy backlog
+Your identity in the tracker is the fingerprint line naming `repo-police`
+at the foot of every issue you file. Your cap at a healthy backlog
 is 5. Your one cap-overriding exception is named under Backpressure below.
 
 **Silence is the default.** Filing an issue is not the goal of a run and
@@ -48,21 +48,16 @@ them. When in doubt, stay silent — the report is where doubt goes.
 **Before analysing: the do-not-report list.** First load what the tracker
 already holds:
 
-- every issue carrying the filing label `police-report`, open **and**
-  closed, with full bodies, paginated to the end;
-- every issue your own marker finds, whatever its labels — a tracker
-  search for `repo-audit-routine:`, then each hit's body read to confirm the
-  marker is really there — which is how an issue filed without the label
-  is reached;
-- the whole open list, skimmed;
+- every issue in the machine population, open **and** closed, with full
+  bodies, paginated to the end;
 - the open pull requests, since a paragraph being
   rewritten right now is not news.
 
 Read bodies, not titles: each automated issue ends with a fingerprint
-comment, and the fingerprint is the identity. `police-report` is shared by
+line, and the fingerprint is the identity. `police-report` is shared by
 every automated filer of this repository, so it names the population and
-not the filer; which of those issues are yours is settled by your marker
-and by nothing else. The label is what makes closed issues findable by
+not the filer. Which of those issues are yours is settled by your
+fingerprint alone. The label is what makes closed issues findable by
 listing, which is why it is never removed from an issue it was applied to.
 Write the list to `$RUN/do-not-report.md` before any analysis, with these
 decisions made in it:
@@ -72,29 +67,24 @@ decisions made in it:
   silence. That half is policy and the audit does not touch it.
 - **The audit every fire owes applies to your own open ones.** A fingerprint
   of yours on an open issue says a fire filed it, never that the filing
-  landed complete. Check that `police-report` stands on each of them, and
-  apply it where it is missing and the name is on the repository's label
-  list, because that label is what the next run's listing finds and an issue
-  without it is invisible to every role but this check. Say in the report
-  which issues you checked and which you repaired. Nothing here files
-  anything.
+  landed complete. Read each one's labels against **Filing** below. Apply a
+  name that should stand where it is missing and is on the repository's
+  label list. Say in the report which issues you checked and which you
+  repaired. Nothing here files anything.
 - An open issue covers the same file and the same rule under different
   wording → no second issue. Materially new evidence becomes a comment on
   the existing issue; anything less is left alone.
 - An earlier issue of your own is stale — the file it points at was fixed
   or deleted → one comment saying so, a note in the report, and the issue
   stays open; closing is a person's call.
-- Issues without `police-report` are skimmed too: a person may already
-  have filed the same thing.
 
 Re-read the file immediately before filing anything — the list must
 survive to the moment it is needed, not just the moment it was built.
 
 **Backpressure.** An untouched backlog means the maintainer is not
 consuming what the runs produce, and adding to it is pure noise. Count
-your own open issues before analysing anything — the ones the
-`repo-audit-routine:` marker finds, whatever their labels — and cap the
-run:
+your own open issues before analysing anything — the ones `github-needs`
+assigns to you — and cap the run:
 
 | Your own open issues | Maximum filed this run |
 | :-- | :-- |
@@ -126,8 +116,9 @@ exist, before the analysis rather than after it.
 Nothing here creates a label, and a name applied unchecked may create one
 silently — a change to the repository nobody decided on — so a name the
 check does not find is a report line and never an apply.
-`police-report` goes on every filing; it is the label the listing above
-finds. Beside it goes one `audit:*` name saying which checklist the finding
+`police-report` goes on every filing, as `github-needs` requires of every
+filer; it is the label the listing above finds. Beside it goes one
+`audit:*` name saying which checklist the finding
 came from, for a person browsing the tracker; nothing keys on it — no run
 counts it and no run stops because it is missing. One issue per finding,
 never bundled, never more than the cap. Each issue ends with an
@@ -389,7 +380,7 @@ A missing `audit:*` or `documentation` is a report line and nothing more.
 Neither is counted by anything, and neither decides whether you file.
 
 Your identity does not depend on a label at all: it is the
-`repo-audit-routine:` fingerprint marker at the foot of the issue.
+fingerprint line naming `repo-police` at the foot of the issue.
 
 Title: `docs: <specific problem> in <path>`
 (e.g. `docs: plugin.json $schema targets 0.9.0 in plugins/arxiv-search/`)
@@ -416,7 +407,7 @@ Body — fill every section, no empty headings:
     Files affected: `...`
     Priority: P0 | P1 | P2
 
-    <!-- repo-audit-routine:<checklist-letter>:<path>:<short-rule-slug> -->
+    <!-- police-fingerprint: repo-police <checklist-letter>:<path>:<short-rule-slug> -->
 
 The fingerprint MUST be stable across runs for the same problem in the same
 file.

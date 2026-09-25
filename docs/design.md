@@ -114,7 +114,7 @@ Codex writes `additionalContext` over 2,500 tokens to disk by default ([Codex](c
 The bound keeps the rules under Claude Code's cap, and keeps English prose under Codex's threshold.
 So `hooks/hooks.json` carries no `additionalContextLimit`, the Codex key that moves that threshold.
 (documentation: [Codex, Hooks](https://learn.chatgpt.com/docs/hooks), read 2026-09-26)
-Claude Code's Hooks page says nothing about a handler key it does not know (documentation, read 2026-09-26).
+Claude Code's [Hooks page](https://code.claude.com/docs/en/hooks) says nothing about a handler key it does not know (documentation, read 2026-09-26).
 
 Hermes loads no hooks and no `rules/` from a package ([Hermes](clients.md#hermes)).
 So `skills/house-style/SKILL.md` carries the rules in a generated region.

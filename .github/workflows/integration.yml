@@ -241,6 +241,7 @@ jobs:
       # and its config parser skips a plugin_hooks toggle (source, at rust-v0.155.1):
       # https://github.com/openai/codex/blob/be2951ea34f0d295ed0becf97079f92fa5f6950e/codex-rs/core-plugins/src/loader.rs#L954-L964
       # https://github.com/openai/codex/blob/be2951ea34f0d295ed0becf97079f92fa5f6950e/codex-rs/features/src/lib.rs#L607-L609
+      # The notice's "removed" is the feature's stage, lib.rs L238-L239 at the same commit.
       # Upstream hook loading, in Codex's issue tracker:
       # https://github.com/openai/codex/issues/39895,
       # https://github.com/openai/codex/issues/47925

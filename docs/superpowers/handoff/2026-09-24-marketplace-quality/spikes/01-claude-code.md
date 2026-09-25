@@ -2,7 +2,7 @@
 
 Run on 2026-09-25, fixture built from plan 03 blocks A–F at commit `8bd2d49`.
 
-Claude Code updated itself during the spike. Steps 1–3 and two failed Step 4 attempts ran on `2.1.278 (Claude Code)`. The runs that decide 1a, 1b and 1c ran on `2.1.282`.
+Claude Code updated itself during the spike. Steps 1–3 and two failed Step 4 attempts ran on `2.1.278 (Claude Code)`. The runs that decide 1a and 1c ran on `2.1.282`, and so did Step 5's try 3.
 
 Evidence of the update: each transcript's `version` field, and `~/.local/bin/claude` pointing at `versions/2.1.282`, dated `Sep 25 19:02` CEST.
 
@@ -217,8 +217,12 @@ It printed nothing before this record was written.
 
 1a and 1c need no change. Plain stdout serves SessionStart, and `--json` serves SubagentStart, as Blocks A and B have them.
 
-1b is open, and Task 6 waits for it. Unsetting the host variables made the transcript save. Compaction itself then failed: `summarization produced empty response`.
+1b was not observable after four tries. Unsetting the host variables made the transcript save. Compaction itself then failed: `summarization produced empty response`.
 
-No `compact_boundary` line was written, so the compaction never completed. The run therefore tested no part of the hook design. The owner decides whether to run Step 5 again, and how.
+No `compact_boundary` line was written, so the compaction never completed. The run therefore tested no part of the hook design.
+
+Try 4's transcript holds no `SessionStart:resume` line after an interactive `--resume`. No prompt was typed in that run, only `/compact`, so the missing line proves nothing either way.
+
+Ruling: the design rests on the documented `compact` matcher of `SessionStart` ([Hooks](https://code.claude.com/docs/en/hooks#sessionstart), Claude Code documentation). Task 6 went ahead on it.
 
 The brief's 1a and 1b transcript conditions hold whenever the hook runs. The coordinator ruled that the model's quoted heading decides both rows.

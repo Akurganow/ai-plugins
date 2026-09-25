@@ -26,8 +26,8 @@ and the word budgets below count English words.
 
 ## Vocabulary
 
-- Plain verbs: use direct action verbs. Weak-verb combinations like "perform validation" or "make use of" add words and no meaning.
-- Connectives: use simple conjunctions. Heavy compound bureaucratic phrases slow the reader and add nothing.
+- Plain verbs: use direct action verbs. Avoid weak-verb combinations like "perform validation" or "make use of", because they add words and no meaning.
+- Connectives: use simple conjunctions. Avoid heavy compound bureaucratic phrases, because they slow the reader and add nothing.
 - Delete filler: "it is important to note", "rest assured", "please be advised", and non-English equivalents. Filler carries no fact.
 - State facts directly. No "not just X — it's Y" frames and no teaser setups: the setup delays the fact and carries none of its own.
 - Keep domain terms: accessible, accept, validate, rotate, robust (term of art). Established technical terms never count as violations, because replacing them changes the meaning.
@@ -35,9 +35,9 @@ and the word budgets below count English words.
 ## Code comments
 
 - No narration of the obvious ("This function handles...") and no step markers ("// Step 1:"). The code already says it, and narration goes stale when the code changes.
-- Default to no comments. Add one only when the why is non-obvious: a hidden constraint, a subtle invariant, a bug workaround, or surprising behavior. A short orienting comment before a complex block is fine.
+- Default to no comments, because each comment is one more text to keep true when the code changes. Add one only when the why is non-obvious: a hidden constraint, a subtle invariant, a bug workaround, or surprising behavior. A short orienting comment before a complex block is fine.
 - No committed uncertainty ("should work"). Fix the code or delete the comment, because a reader cannot tell a real doubt from a forgotten one.
-- No ASCII section dividers. A region that needs a banner needs its own file, class, or module.
+- No ASCII section dividers. A region that needs a banner belongs in its own file, class, or module.
 - Comments explain why. Names and code explain what.
 
 ## Artifact formats

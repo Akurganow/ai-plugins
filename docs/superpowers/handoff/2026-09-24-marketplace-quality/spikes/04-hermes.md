@@ -4,7 +4,7 @@ Run on 2026-09-25 with `Hermes Agent v0.21.5 (2026.9.24) · upstream d350422b`, 
 
 The fixture and every run file sat outside the repository, under a per-run scratch directory called `$RUN` below. `$CFG` is `/Users/akurganow/.hermes/config.yaml`.
 
-Every fact below comes from running the client. Both model runs used `-m deepseek/deepseek-v4-pro` on the configured provider `openrouter`. OpenRouter's `/api/v1/models` listed it at $0.70 input and $1.41 output per million tokens that day. The two configured Gemini Flash models listed at $0.75 and $3.75. The configured `qwen/qwen3.8-max` had no exact entry, and every `qwen3.8-max` variant listed higher.
+Every fact below comes from running the client, except two. The prices come from OpenRouter's `/api/v1/models` listing. The skipped-name warning under "State left on the owner's machine" is read from Hermes source, not observed. Both model runs used `-m deepseek/deepseek-v4-pro` on the configured provider `openrouter`. OpenRouter's `/api/v1/models` listed it at $0.70 input and $1.41 output per million tokens that day. The two configured Gemini Flash models listed at $0.75 and $3.75. The configured `qwen/qwen3.8-max` had no exact entry, and every `qwen3.8-max` variant listed higher.
 
 ## Assertions
 

@@ -17,11 +17,11 @@ every session. Hermes lists no plugin skill in its system prompt, so without
 that setting the rules below reach a session only when this skill is loaded.
 
 Source: Hermes documentation for `skills.auto_load`,
-[`cli.md`](https://github.com/NousResearch/hermes-agent/blob/749220ef0007f8d87bd1531f1c24b0fe93816385/website/docs/user-guide/cli.md) lines 297–310.
+[`user-guide/cli.md`](https://github.com/NousResearch/hermes-agent/blob/749220ef0007f8d87bd1531f1c24b0fe93816385/website/docs/user-guide/cli.md#L297-L310).
 Hermes documentation for plugin skills missing from the system prompt index,
-[`plugins/index.md`](https://github.com/NousResearch/hermes-agent/blob/749220ef0007f8d87bd1531f1c24b0fe93816385/website/docs/developer-guide/plugins/index.md)
-line 845. Hermes source for loading a skill by its qualified name,
-[`skill_commands.py`](https://github.com/NousResearch/hermes-agent/blob/749220ef0007f8d87bd1531f1c24b0fe93816385/agent/skill_commands.py) lines 165–192.
+[`developer-guide/plugins/index.md`](https://github.com/NousResearch/hermes-agent/blob/749220ef0007f8d87bd1531f1c24b0fe93816385/website/docs/developer-guide/plugins/index.md#L845).
+Hermes source for loading a skill by its qualified name,
+[`agent/skill_commands.py`](https://github.com/NousResearch/hermes-agent/blob/749220ef0007f8d87bd1531f1c24b0fe93816385/agent/skill_commands.py#L165-L192).
 
 Add these lines to the Hermes `config.yaml`, merging them into an existing
 `skills:` block:
@@ -61,8 +61,8 @@ and the word budgets below count English words.
 
 ## Vocabulary
 
-- Plain verbs: use direct action verbs. Weak-verb combinations like "perform validation" or "make use of" add words and no meaning.
-- Connectives: use simple conjunctions. Heavy compound bureaucratic phrases slow the reader and add nothing.
+- Plain verbs: use direct action verbs. Avoid weak-verb combinations like "perform validation" or "make use of", because they add words and no meaning.
+- Connectives: use simple conjunctions. Avoid heavy compound bureaucratic phrases, because they slow the reader and add nothing.
 - Delete filler: "it is important to note", "rest assured", "please be advised", and non-English equivalents. Filler carries no fact.
 - State facts directly. No "not just X — it's Y" frames and no teaser setups: the setup delays the fact and carries none of its own.
 - Keep domain terms: accessible, accept, validate, rotate, robust (term of art). Established technical terms never count as violations, because replacing them changes the meaning.
@@ -70,9 +70,9 @@ and the word budgets below count English words.
 ## Code comments
 
 - No narration of the obvious ("This function handles...") and no step markers ("// Step 1:"). The code already says it, and narration goes stale when the code changes.
-- Default to no comments. Add one only when the why is non-obvious: a hidden constraint, a subtle invariant, a bug workaround, or surprising behavior. A short orienting comment before a complex block is fine.
+- Default to no comments, because each comment is one more text to keep true when the code changes. Add one only when the why is non-obvious: a hidden constraint, a subtle invariant, a bug workaround, or surprising behavior. A short orienting comment before a complex block is fine.
 - No committed uncertainty ("should work"). Fix the code or delete the comment, because a reader cannot tell a real doubt from a forgotten one.
-- No ASCII section dividers. A region that needs a banner needs its own file, class, or module.
+- No ASCII section dividers. A region that needs a banner belongs in its own file, class, or module.
 - Comments explain why. Names and code explain what.
 
 ## Artifact formats
@@ -131,9 +131,6 @@ relative to this file:
 - `references/examples.md`: read when calibrating an audit, to name each
   finding after its closest before/after pair.
 
-When a host or repository template governs the artifact, the standard
-never adds blocks on top of it.
-
 Produce the artifact in the governing format directly. No preamble and
 no closing commentary unless asked.
 
@@ -141,8 +138,7 @@ no closing commentary unless asked.
 
 1. Identify the artifact types and read the matching references above.
 2. Report findings first, ordered by severity. Do not rewrite yet.
-3. Apply the Exemptions section of the core rules as written there. Do not
-   restate it here.
+3. Apply the Exemptions section of the core rules.
 4. Each finding states the location, the violated rule, and the smallest
    fix.
 5. Interactive sessions: apply the minimal fixes after the user approves.

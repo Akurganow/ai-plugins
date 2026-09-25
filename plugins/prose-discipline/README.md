@@ -54,8 +54,10 @@ Source: Hermes documentation, [`developer-guide/plugins/index.md`](https://githu
 ## Usage
 
 The standard needs no prompt. Claude Code and Oh-My-Pi load it into every
-session on their own, and Codex does once you trust its hooks. Hermes loads
-it once you pin the skill, as its section below shows.
+session on their own. Codex documents that it runs the same hooks once you
+trust them ([hooks](https://learn.chatgpt.com/docs/hooks#plugin-bundled-hooks),
+documentation). Hermes loads it once you pin the skill, as its section below
+shows.
 
 To check existing text against the standard, ask for it:
 
@@ -66,7 +68,7 @@ Check this commit message against the house style: "Updated some stuff in auth s
 The agent reports each finding with the rule it breaks and the smallest fix.
 In an interactive session it applies the fixes after you approve them.
 
-Each client gets the same rules file by its own documented route:
+Each client gets the same core rules by its own documented route:
 
 | Client | Route | What you do |
 | :-- | :-- | :-- |
@@ -78,26 +80,29 @@ Each client gets the same rules file by its own documented route:
 ### Claude Code
 
 The `SessionStart` hook prints the core rules as plain text, and Claude Code
-adds that text to the context. The hook runs again after `/clear`, a resume
-and every compaction, so the rules come back where the context lost them.
-The `SubagentStart` hook hands each subagent the same text as
-`additionalContext`. Claude Code does not load a plugin's `CLAUDE.md`, and
-its documentation sends plugin instructions through skills and hooks instead.
+adds that text to the context. The hook also runs on a resume, a fork,
+`/clear` and every compaction, so the rules come back after `/clear` or a
+compaction removes them. The `SubagentStart` hook hands each subagent the
+same text as `additionalContext`. Claude Code does not load a plugin's
+`CLAUDE.md`. Its documentation says to put instructions for the context in a
+skill.
 
 Sources, all Claude Code documentation:
 
 - [Hooks](https://code.claude.com/docs/en/hooks), the `SessionStart` and
-  `SubagentStart` sections: plain stdout and `additionalContext` as context.
+  `SubagentStart` sections: the `SessionStart` matchers, and plain stdout and
+  `additionalContext` as context.
 - [Hooks guide](https://code.claude.com/docs/en/hooks-guide), "Re-inject
   context after compaction".
-- [Plugins reference](https://code.claude.com/docs/en/plugins-reference),
-  "Standard plugin layout": a plugin's `CLAUDE.md` is not loaded, and
-  plugins contribute context through skills, agents and hooks.
+- [Plugins reference](https://code.claude.com/docs/en/plugins-reference#standard-layout),
+  "Standard layout": a `CLAUDE.md` at the plugin root is not loaded as
+  context, and instructions for the context go in a skill.
 
 ### Codex
 
-`plugin.json` declares the hook file under `extensions["com.openai"].hooks`,
-and Codex runs the same `SessionStart` and `SubagentStart` hooks. Codex skips
+`plugin.json` declares the hook file under `extensions["com.openai"].hooks`.
+Codex documents that it loads an enabled plugin's hooks, here the same
+`SessionStart` and `SubagentStart` hooks. Codex skips
 a plugin's hooks until you review and trust the current hook definition.
 When hooks are new or changed, Codex opens a "Hooks need review" prompt at
 startup. Its options include "Review hooks" and "Trust all and continue".
@@ -109,7 +114,8 @@ Sources:
 
 - Codex documentation,
   [plugin packaging](https://developers.openai.com/plugins/build/plugins):
-  the `hooks` field under `extensions.com.openai`, and hook trust.
+  the `hooks` field under `extensions.com.openai`, loading an enabled
+  plugin's hooks, and hook trust.
 - Codex documentation, [hooks](https://learn.chatgpt.com/docs/hooks):
   the `SessionStart` and `SubagentStart` events, and `CLAUDE_PLUGIN_ROOT`
   for compatibility.
@@ -162,7 +168,9 @@ skills:
 Hermes then puts the whole skill, core rules included, into the system
 prompt of every new session and marks it as active guidance. The name has
 the form `agent-plugin-<slug>-<hash>:house-style`. The slug is
-`plugin.json`'s `name` with any dot turned into a hyphen. The hash is the
+`plugin.json`'s `name` in lower case, with each character other than an ASCII
+letter, digit, `_` or `-` turned into `-`. Hermes then strips leading and
+trailing `-` and `_`. The hash is the
 first eight hex digits of the SHA-256 of that `name`. Hermes builds the
 namespace from that `name` for a package installed directly under the
 plugins directory. Source: Hermes source,
@@ -206,16 +214,19 @@ Sources:
 | `.claude-plugin/plugin.json` | a generated copy of `plugin.json`, where Claude Code reads it |
 | `LICENSE` | the MIT license |
 
+Changes to the hand-written files above must pass this standard, so the
+package stays an example of what it asks for.
+
 ## Requirements and network
 
 The hooks run `sh` and `awk` from `PATH`. On Windows, Claude Code runs
 shell-form hooks in Git Bash when it is installed, and in PowerShell
 otherwise. Source: Claude Code documentation,
 [hooks](https://code.claude.com/docs/en/hooks), "Exec form and shell form".
-Without Git Bash and with no `sh` on `PATH`, the hook command fails and the
-session starts without the hook's copy of the rules. The skill and the rules
-file still ship. If the script fails, it writes one line to stderr and the
-session starts without the hook's copy of the rules.
+If Git Bash is missing and `PATH` has no `sh`, or the script fails, the
+session starts without the hook's copy of the rules. A failing script writes
+one line to stderr with the cause and the fix. The skill and the rules file
+still ship.
 
 The rules file stays under 8,000 characters. That keeps the hook text under
 Claude Code's 10,000-character cap and Codex's default 2,500-token threshold
@@ -234,7 +245,6 @@ files. It adds no MCP servers and no settings files.
 - It states the standard once per context and never blocks a reply. There is
   no checker script: enforcement is model judgement over rule texts a person
   can read and argue with.
-- This plugin's own files must pass this standard.
 
 ## License
 

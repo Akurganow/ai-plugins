@@ -8,6 +8,8 @@
 
 **Tech Stack:** POSIX `sh` and `awk` (the hook), JSON (`plugin.json`, `hooks.json`), Markdown, `jq`, `tools/regenerate.sh` and `tools/check-conformance.py` (plan 02), `claude plugin validate`, `hermes plugins validate`, `sqlite3` (spike 4 only).
 
+**Execution note:** The shipped files supersede Blocks C and E, which the review fix rounds changed. The blocks below stay as planned. The shipped `description` has 20 words and 147 characters. "Produced for plan 06", the Block F note and Task 4 Step 5 still say 23 words or 159 characters. Task 4 Step 6's "leave them unstaged" was overridden. `.claude-plugin/marketplace.json` went into the manifest commits, which keeps the generator at its fixed point.
+
 ## Global Constraints
 
 Copied from spec `../specs/2026-09-24-marketplace-quality-design.md` (§4.1, §5.1, §5.4, §5.5, §8, §9, §10) and from `2026-09-25-00-conventions.md`. Every task's requirements include this section.

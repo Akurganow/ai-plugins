@@ -284,6 +284,10 @@ way to move a version without meaning to.
    It must be green, quoted with what it printed. A check you did not run is
    reported as not run, never as passing and never omitted.
 
+   Then run `bash tools/regenerate.sh` and commit what it changes with the
+   slice. CI runs it too, and fails on a generated copy that differs from its
+   source.
+
 2. Re-read every line the change quotes or relies on, at the head, and quote
    the comparison. This is this repository's real test suite. A documentation
    change that cites a line is only as good as that line still saying what it

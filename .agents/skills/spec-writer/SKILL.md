@@ -226,7 +226,8 @@ Its tell is a sentence with no source beside it.
 Implementer can carry to a green verification on its own.
 
 **`## Verification`**: what must be checked and what each check must produce.
-At minimum, `tools/check-conformance.py` exits 0.
+At minimum, `tools/check-conformance.py` exits 0, and
+`bash tools/regenerate.sh` leaves `git diff` empty.
 
 Name the check, never an invocation of it. The Implementer runs it with what
 its own environment has, and `.agents/rules/conformance.md` owns what it needs

@@ -137,9 +137,12 @@ by hand.
 ## Text only
 
 No executables and no built artefacts are stored in the tree. Released
-binaries are published elsewhere and referenced from here; the only thing this
-repository runs is its own check, `tools/check-conformance.py`, and
-`.github/workflows/conformance.yml` runs it.
+binaries are published elsewhere and referenced from here. This repository
+runs two programs of its own. The first is its check,
+`tools/check-conformance.py`. The second is its regeneration entry point,
+`tools/regenerate.sh`, which writes every generated copy from its one source.
+`.github/workflows/conformance.yml` runs both, and fails when a regenerated
+copy differs from the committed one.
 
 If this file and the things it describes ever disagree — the specification,
-the script, the workflow — they are right and this file is stale.
+the scripts, the workflow — they are right and this file is stale.

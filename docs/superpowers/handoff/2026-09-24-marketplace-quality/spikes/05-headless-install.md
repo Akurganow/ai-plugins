@@ -4,10 +4,10 @@ Two parts. The local part ran on the owner's machine on 2026-09-25, at tree `07a
 It used Hermes 0.21.5, Claude Code 2.1.282 and Codex 0.155.1, with Codex in its own `CODEX_HOME`.
 `CODEX_HOME` did not isolate the user skill root: `codex debug prompt-input` listed `~/.agents/skills` as skill root `r0`.
 The local part asks how commands behave, not whether they need a login.
-Every quoted line below is output from the clients' own code or from `find`; the two verdicts read that output.
+Every quoted line below is output from the clients' own code, from `find`, or from the probe's own `echo` lines. The two verdicts read that output.
 The clean part is the first run of `integration.yml` on the pull request.
 
-Every command in the brief's two steps, the probe and the evidence re-runs ran with stdin from `/dev/null`.
+Every client command in the brief's two steps, the probe and the evidence re-runs ran with stdin from `/dev/null`.
 No command asked for input or a login.
 
 ## Local: Hermes validators on a portable package
@@ -69,7 +69,7 @@ plugins/cache/hook-control/hook-control/0.0.1/hooks/hooks.json
 ```
 
 `codex --dangerously-bypass-hook-trust debug prompt-input` exit 0; `HOOK-CONTROL-MARKER` count 0.
-Without the flag, the command also exited 0; its output differed only in timestamps and ids.
+Without the flag, the command also exited 0; after stripping ids, `diff` showed only `create_time` lines.
 
 A second control, beyond the brief, added `touch "$RUN/hook-ran"` to the hook command, in a fresh `CODEX_HOME`.
 Both installs exited 0.

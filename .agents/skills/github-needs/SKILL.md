@@ -67,8 +67,8 @@ in its report.
     parent's order; and its parent;
   - whether a label exists: confirm every name you intend to apply.
     Nothing here creates one, so a name that cannot be confirmed is
-    dropped — except `police-report`: a filer that cannot confirm it
-    files nothing (see **The machine population**);
+    dropped. The exception is `police-report`: a filer that cannot
+    confirm it files nothing (see **The machine population**);
   - file an issue with a title, a body and labels; comment on one;
   - add a label to an existing issue: read the whole set first and send
     it back complete with the new name — a route may replace the set

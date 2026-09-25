@@ -1,0 +1,237 @@
+name: integration
+
+# Installs every package into each supported client on each hosted OS, from
+# this checkout, and checks that the client lists every skill. No step calls a
+# model.
+#
+# The windows-latest image installs Git with symlinks enabled
+# (https://github.com/actions/runner-images/blob/ebade26c60adcb867918b31c8f8caa37343a3d39/images/windows/scripts/build/Install-Git.ps1).
+# A Windows job here proves loading on that image, not on a default Git for
+# Windows checkout.
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  MARKETPLACE: ai-plugins
+  HERMES_COMMIT: f97608f178d1ffeca59860195ab7da295f7c8e5f # Hermes v0.21.5, tag v2026.9.24
+
+jobs:
+  packages:
+    runs-on: ubuntu-latest
+    outputs:
+      pairs: ${{ steps.list.outputs.pairs }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+
+      # One "package:skill" pair per skill directory, from each plugin.json name.
+      - id: list
+        run: |
+          pairs=""
+          for manifest in plugins/*/plugin.json; do
+            root=$(dirname "$manifest")
+            name=$(jq -r .name "$manifest")
+            for skill_md in "$root"/skills/*/SKILL.md; do
+              pairs="$pairs $name:$(basename "$(dirname "$skill_md")")"
+            done
+          done
+          echo "pairs=${pairs# }" >> "$GITHUB_OUTPUT"
+          echo "Packages and skills: ${pairs# }"
+
+  install:
+    needs: packages
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        client: [claude, codex, omp, hermes]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    defaults:
+      run:
+        shell: bash
+    env:
+      CLIENT: ${{ matrix.client }}
+      PAIRS: ${{ needs.packages.outputs.pairs }}
+      # Keeps Claude Code at the pinned version
+      # (https://code.claude.com/docs/en/setup, "Disable auto-updates").
+      DISABLE_AUTOUPDATER: "1"
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+
+      # Claude Code's npm package needs Node.js 22 or later
+      # (https://code.claude.com/docs/en/setup, "Install with npm").
+      - if: matrix.client == 'claude' || matrix.client == 'codex'
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "22"
+
+      # Oh-My-Pi 18.2.8 declares bun >= 1.3.14.
+      - if: matrix.client == 'omp'
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version: "1.4.2"
+
+      - name: Set HERMES_HOME
+        if: matrix.client == 'hermes'
+        run: echo "HERMES_HOME=${{ runner.temp }}/hermes-home" >> "$GITHUB_ENV"
+
+      # Install routes: code.claude.com/docs/en/setup; developers.openai.com/codex/cli;
+      # the Oh-My-Pi README; Hermes installation.md, at the pinned commit.
+      - name: Install the client
+        if: matrix.client != 'hermes' || runner.os != 'Windows'
+        run: |
+          case "$CLIENT" in
+            claude) npm install -g @anthropic-ai/claude-code@2.1.278 && claude --version ;;
+            codex)  npm install -g @openai/codex@0.155.1 && codex --version ;;
+            omp)    bun install -g @oh-my-pi/pi-coding-agent@18.2.8 && omp --version ;;
+            hermes)
+              curl -fsSL "https://raw.githubusercontent.com/NousResearch/hermes-agent/$HERMES_COMMIT/scripts/install.sh" \
+                | bash -s -- --commit "$HERMES_COMMIT" --skip-setup --skip-browser --hermes-home "$HERMES_HOME"
+              echo "$HOME/.local/bin" >> "$GITHUB_PATH" ;;
+          esac
+
+      # Hermes documents -Commit, -SkipSetup and -HermesHome for install.ps1
+      # (website/docs/user-guide/windows-native.md). The installer writes the User PATH.
+      - name: Install the client (Hermes on Windows)
+        if: matrix.client == 'hermes' && runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          & ([scriptblock]::Create((irm "https://raw.githubusercontent.com/NousResearch/hermes-agent/$env:HERMES_COMMIT/scripts/install.ps1"))) -Commit $env:HERMES_COMMIT -SkipSetup -HermesHome $env:HERMES_HOME
+          [Environment]::GetEnvironmentVariable('Path', 'User') -split ';' | Where-Object { $_ } | Add-Content $env:GITHUB_PATH
+
+      - name: Check the Hermes version
+        if: matrix.client == 'hermes'
+        run: hermes --version | tee /dev/stderr | grep -qF 'v0.21.5'
+
+      # Hermes reads no marketplace file. Its user plugin directory is
+      # $HERMES_HOME/plugins, and a portable package is disabled until enabled.
+      - name: Add the marketplace and install every package
+        run: |
+          names=$(printf '%s\n' $PAIRS | cut -d: -f1 | sort -u)
+          case "$CLIENT" in
+            claude)
+              claude plugin marketplace add ./
+              for name in $names; do claude plugin install "$name@$MARKETPLACE"; done
+              claude plugin list ;;
+            codex)
+              codex plugin marketplace add ./
+              for name in $names; do codex plugin add "$name@$MARKETPLACE"; done
+              codex plugin list --json ;;
+            omp)
+              omp plugin marketplace add ./
+              for name in $names; do omp plugin install "$name@$MARKETPLACE"; done
+              omp plugin list ;;
+            hermes)
+              plugins_dir="$HERMES_HOME/plugins"
+              if [ "$RUNNER_OS" = Windows ]; then plugins_dir="$(cygpath -u "$HERMES_HOME")/plugins"; fi
+              mkdir -p "$plugins_dir"
+              for name in $names; do
+                cp -R "plugins/$name" "$plugins_dir/$name"
+                hermes plugins enable "$name"
+              done
+              hermes plugins list ;;
+          esac
+
+      # claude plugin details prints a component inventory; codex debug
+      # prompt-input renders the model-visible prompt, skill catalogue included;
+      # omp read resolves skill://<name> to its SKILL.md.
+      - name: Assert every skill is listed
+        run: |
+          if [ "$CLIENT" = codex ]; then codex_prompt=$(codex debug prompt-input); fi
+          inventory() {
+            case "$CLIENT" in
+              claude) claude plugin details "$1@$MARKETPLACE" ;;
+              codex)  printf '%s\n' "$codex_prompt" ;;
+              omp)    omp read "skill://$2:raw" ;;
+              hermes) hermes plugins show "$1" ;;
+            esac
+          }
+          status=0
+          for pair in $PAIRS; do
+            name=${pair%%:*}
+            skill=${pair#*:}
+            expected=$skill
+            if [ "$CLIENT" = omp ]; then expected="name: $skill"; fi
+            if ! out=$(inventory "$name" "$skill" 2>&1); then
+              printf '%s\n' "$out"
+              echo "::error::$CLIENT could not list $name"
+              status=1
+              continue
+            fi
+            if printf '%s\n' "$out" | grep -qF -- "$expected"; then
+              echo "$CLIENT lists $name:$skill"
+            else
+              printf '%s\n' "$out"
+              echo "::error::$CLIENT does not list skill $skill of $name"
+              status=1
+            fi
+          done
+          exit "$status"
+
+      # Not run. In the spike, codex debug prompt-input ran no plugin SessionStart
+      # hook, and codex features list printed plugin_hooks as removed:
+      # docs/superpowers/handoff/2026-09-24-marketplace-quality/spikes/05-headless-install.md
+      # Every other route to the hook calls a model. Upstream hook loading:
+      # https://github.com/openai/codex/issues/39895,
+      # https://github.com/openai/codex/issues/47925
+      - name: Report the prose-discipline hook check as not run (Codex)
+        if: matrix.client == 'codex'
+        run: echo "::notice::Hook check not run - codex debug prompt-input ran no plugin SessionStart hook in the spike, and no model-free route exists."
+
+  # Mirrors the howp skill's platform gate: one binaries.json target must match
+  # uname -s and uname -m. A platform with no target is refused, not built.
+  howp-archive:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+
+      - name: Download the archive for this platform and verify its sha256
+        run: |
+          manifest="$GITHUB_WORKSPACE/plugins/howp/binaries.json"
+          os=$(uname -s)
+          arch=$(uname -m)
+          matches=$(jq -c --arg os "$os" --arg arch "$arch" '[.targets[] | select(.os == $os and .arch == $arch)]' "$manifest")
+          count=$(jq length <<<"$matches")
+          if [ "$count" -eq 0 ] && [ "$RUNNER_OS" = Windows ]; then
+            echo "binaries.json names no target for $os/$arch, so the skill refuses this platform."
+            exit 0
+          fi
+          if [ "$count" -ne 1 ]; then
+            echo "::error::$count targets in binaries.json match $os/$arch; the skill needs exactly one."
+            exit 1
+          fi
+          target=$(jq -c '.[0]' <<<"$matches")
+          field() { jq -r --arg k "$1" '.[$k]' <<<"$target"; }
+          archive=$(field archive)
+          url=$(field url)
+          sha=$(field sha256)
+          root=$(field root)
+          bin_dir=$(field bin_dir)
+          cd "$RUNNER_TEMP"
+          curl -fsSL -o "$archive" "$url"
+          if command -v shasum >/dev/null; then sum="shasum -a 256"; else sum=sha256sum; fi
+          printf '%s  %s\n' "$sha" "$archive" | $sum -c -
+          curl -fsSL -o SHA256SUMS "${url%/*}/SHA256SUMS"
+          listed=$(awk -v a="$archive" '$2 == a || $2 == "*" a || $2 == "./" a { print $1 }' SHA256SUMS)
+          if [ "$listed" != "$sha" ]; then
+            echo "::error::The release's SHA256SUMS lists '$listed' for $archive; binaries.json says $sha."
+            exit 1
+          fi
+          tar -xzf "$archive"
+          version=$(jq -r .version "$manifest")
+          for bin in $(jq -r '.binaries[]' <<<"$target"); do
+            "$root/$bin_dir/$bin" --version | tee /dev/stderr | grep -qF -- "$version"
+          done

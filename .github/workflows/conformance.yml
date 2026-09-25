@@ -23,8 +23,8 @@ jobs:
       # can be moved to point at different code; the trailing comment records
       # which release each sha is.
       #
-      # Linux checkout keeps symlinks as symlinks, which this check depends
-      # on: it verifies where they resolve.
+      # Linux checkout keeps the `.claude/` and `CLAUDE.md` symlinks as
+      # symlinks, and the check verifies where they resolve.
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
 
       - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
@@ -48,7 +48,8 @@ jobs:
         with:
           node-version: "22"
 
-      # Installs jq only where the runner image does not already carry it.
+      # `ubuntu-latest` moves between images, and jq is not promised on
+      # every one.
       - name: Install jq
         run: command -v jq >/dev/null || { sudo apt-get update && sudo apt-get install -y jq; }
 

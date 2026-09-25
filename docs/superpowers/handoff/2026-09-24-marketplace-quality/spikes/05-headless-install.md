@@ -130,7 +130,26 @@ The pin stays; plan 02 owns it.
 
 Run 36180420083 (at `6b784d6`) showed one transient failure, in `install (windows-latest, hermes)`, step `Install the client (Hermes on Windows)`.
 `irm` of `install.ps1` from raw.githubusercontent.com printed `429: This request was rate-limited due to too many requests from your network.`
-The next run installed with no change, so this is not a defect. It may recur, because the installer is fetched without authentication.
+The next run installed with no change. It may recur, because the installer is fetched without authentication.
+
+### Windows Hermes: installs, then fails, dropped under O4
+
+Kind: running, for every line below.
+In `install (windows-latest, hermes)`, the installer succeeded in run 36180544459 (at `07a4e73`) and in run 36182597972 (at `3f00b7a`).
+Both runs printed `|              [OK] Installation Complete!                |`.
+In run 36183358181 (at `0f89614`), step `Install the client (Hermes on Windows)` failed twice.
+Attempt 1 printed `429: This request was rate-limited due to too many requests from your network.`
+Attempt 2 downloaded `install.ps1`, cloned upstream (`Cloning into 'D:\a\_temp/hermes-home\hermes-agent'...`), then printed:
+
+```
+-> Pinning to commit f97608f178d1ffeca59860195ab7da295f7c8e5f...
+error: Your local changes to the following files would be overwritten by checkout:
+	website/i18n/zh-Hans/docusaurus-plugin-content-docs/current/index.mdx
+[X] Installation failed: git checkout f97608f178d1ffeca59860195ab7da295f7c8e5f failed (exit 1)
+```
+
+`install.ps1` clones upstream main before checking out the pinned commit, so the result depends on upstream at run time.
+Verdict: Hermes cannot install on Windows. The cell is dropped under O4 by a matrix `exclude` that quotes these lines.
 
 ### Hermes lists no portable package's skills
 
@@ -151,6 +170,7 @@ Called in-process with no model, it printed `agent-plugin-triz-3db6c5da:ariz`. K
 | `6b784d6` | workflow defect: `tee: /dev/stderr: No such file or directory` on windows-latest | The Hermes version check keeps the output in a variable, prints it, and greps it through a here-string. |
 | `07a4e73` | workflow defect: vacuous `hermes lists triz:contradiction`, and passing output discarded | Each client matches its own skill line. A passing pair prints its output in a group. `packages` sets `nullglob`, and `grep -q` reads a here-string instead of a pipe. |
 | `3f00b7a` | client gap: no Hermes command prints a portable package's skills without a model call | By the owner's decision, the Hermes cells assert `Key: <name>` and `Status: enabled` from `hermes plugins show <name>`, not the skills. |
+| `c787e37` | Hermes cannot install on Windows: `[X] Installation failed: git checkout f97608f178d1ffeca59860195ab7da295f7c8e5f failed (exit 1)` | The `install` matrix excludes `windows-latest` × `hermes` (O4). |
 
 Run 36182597972 (at `3f00b7a`): every job `success`.
 All three Hermes jobs, for example `install (windows-latest, hermes)`, printed `##[group]hermes has triz installed and enabled`, then `Key: triz` and `Status: enabled`.
@@ -161,4 +181,4 @@ Run 36182597974 (conformance, same commit): `check`, `validate-claude`, `validat
 - Claude Code: auth none; list command `claude plugin details <n>@ai-plugins`.
 - Codex: auth none; list command `codex debug prompt-input`; hook step reported as not run, because Codex 0.155.1 lists `plugin_hooks` as removed.
 - Oh-My-Pi: auth none; list command `omp read skill://<s>:raw`.
-- Hermes: auth none; Windows installs, with the cell kept (the failure was the workflow's `tee`, not the installer); list command none exists. Decision: install and enable are checked with `hermes plugins show <n>`, skills are not asserted, and `hermes plugins validate` runs in `conformance.yml`.
+- Hermes: auth none; Windows: cell dropped under O4. The first failure was the workflow's `tee`, not the installer. Later the installer's pinned checkout failed in run 36183358181. List command: none exists. Decision: install and enable are checked with `hermes plugins show <n>`, skills are not asserted, and `hermes plugins validate` runs in `conformance.yml`.

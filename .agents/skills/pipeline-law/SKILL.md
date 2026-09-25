@@ -678,16 +678,16 @@ for one is refused over it.
 
 | Path | Why |
 | :-- | :-- |
-| `plugins/*/binaries.json` | written by the release job, never by hand |
-| the `version` field of any `plugins/*/plugin.json` | the same |
+| `plugins/*/binaries.json` | written by a release job, never by hand |
+| the `version` field of any `plugins/*/plugin.json` or its `.claude-plugin/plugin.json` copy | the same |
 | `plugins/*/skills/*/references/commands.md` | the same |
 | `plugins/*/CHANGELOG.md` | written by `.github/workflows/release.yml`, never by hand |
 | `tools/schemas/**` | a verbatim copy of a published schema |
 | `.agents/**` | the rules the machine is governed by |
 
 `.agents/rules/conformance.md` carries the rule on the first four. A finding
-that one of those files is wrong is a defect of the release job in the
-repository that runs it. The honest outcome here is a comment saying so.
+that one of those files is wrong is a defect of the release job that
+writes it. The honest outcome here is a comment saying so.
 
 On `tools/schemas/**`, `conformance.md` says it "is never edited to make a
 check agree with a package — that inverts the whole arrangement: the package

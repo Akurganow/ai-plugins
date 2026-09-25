@@ -113,7 +113,7 @@ Source links are commit permalinks into `openai/codex`.
 - Hook settings go under `extensions.com.openai` in the root `plugin.json`.
   An explicit `hooks` value replaces default discovery of `hooks/hooks.json`.
   (documentation: [Package your plugin](https://developers.openai.com/plugins/build/plugins))
-- The documentation says Codex loads an enabled plugin's hooks alongside user, project and managed hooks.
+- The documentation says Codex can load an enabled plugin's hooks alongside user, project and managed hooks.
   (documentation: [Hooks, Plugin-bundled hooks](https://learn.chatgpt.com/docs/hooks#plugin-bundled-hooks))
 - Codex skips plugin hooks until the user reviews and trusts the current hook definition.
   (documentation: [Package your plugin](https://developers.openai.com/plugins/build/plugins),
@@ -132,11 +132,11 @@ Source links are commit permalinks into `openai/codex`.
   (source: [`hook_config.rs` L11–L12](https://github.com/openai/codex/blob/c2abf869d539a6326a6e5a125dfdb8a5dc488ab4/codex-rs/config/src/hook_config.rs#L11-L12),
   [L162–L185](https://github.com/openai/codex/blob/c2abf869d539a6326a6e5a125dfdb8a5dc488ab4/codex-rs/config/src/hook_config.rs#L162-L185))
 - The loader returns no hooks for a package in Agent Plugins format, against the documentation above.
-  Codex 0.155.1, tagged `rust-v0.155.1`, has the same branch.
+  Codex 0.155.1, tagged `rust-v0.155.1`, has the same check.
   (source: [`loader.rs` L950–L960](https://github.com/openai/codex/blob/108e6a6dbeed5485b3b732ed4a29c002780c8632/codex-rs/core-plugins/src/loader.rs#L950-L960),
   [`loader.rs` L954–L964 at `rust-v0.155.1`](https://github.com/openai/codex/blob/be2951ea34f0d295ed0becf97079f92fa5f6950e/codex-rs/core-plugins/src/loader.rs#L954-L964))
 - [openai/codex#39895](https://github.com/openai/codex/issues/39895) and [openai/codex#47925](https://github.com/openai/codex/issues/47925) report the same.
-  Both were open on 2026-09-25.
+  (issues, open on 2026-09-25)
 - In Codex 0.155.1, `plugin_hooks` is a removed compatibility flag for plugin-bundled hooks.
   The config parser skips a `plugin_hooks` toggle.
   (source: [`lib.rs` L238–L239](https://github.com/openai/codex/blob/be2951ea34f0d295ed0becf97079f92fa5f6950e/codex-rs/features/src/lib.rs#L238-L239),
@@ -151,7 +151,8 @@ Source links are commit permalinks into `openai/codex`.
   (running: [run 36189587613](https://github.com/Akurganow/ai-plugins/actions/runs/36189587613), at `7dd891d`)
 - `codex debug prompt-input` listed each skill as `- <plugin>:<skill>: ` followed by its description.
   (running: [run 36189587613](https://github.com/Akurganow/ai-plugins/actions/runs/36189587613))
-- The runs check no plugin hook, and report that check as not run.
+- The run checks no plugin hook, because the loader drops such hooks, as above.
+  It reports that check as not run.
   (running: [run 36189587613](https://github.com/Akurganow/ai-plugins/actions/runs/36189587613))
 
 ## Oh-My-Pi
@@ -179,6 +180,9 @@ Documentation and source links are permalinks at commit `ba56afb`.
 - A skill keeps its bare name, with no plugin prefix.
   (source: [`claude-plugins.ts` L249–L253](https://github.com/can1357/oh-my-pi/blob/ba56afb26280a6a3195c329fa66a3f8fb52f82eb/packages/coding-agent/src/discovery/claude-plugins.ts#L249-L253),
   [`agent-plugins.ts` L182–L183](https://github.com/can1357/oh-my-pi/blob/ba56afb26280a6a3195c329fa66a3f8fb52f82eb/packages/coding-agent/src/discovery/agent-plugins.ts#L182-L183))
+- Providers are sorted by priority, higher first: `agent-plugins` has 75, and `claude-plugins` and `codex` have 70.
+  (documentation: [`context-files.md` L80–L86](https://github.com/can1357/oh-my-pi/blob/ba56afb26280a6a3195c329fa66a3f8fb52f82eb/docs/context-files.md#L80-L86),
+  [`config-usage.md` L211–L217](https://github.com/can1357/oh-my-pi/blob/ba56afb26280a6a3195c329fa66a3f8fb52f82eb/docs/config-usage.md#L211-L217))
 - The dedup key is the skill name, and the first item with that name wins.
   (documentation: [`skills.md` L98](https://github.com/can1357/oh-my-pi/blob/ba56afb26280a6a3195c329fa66a3f8fb52f82eb/docs/skills.md#L98))
 - The dropped duplicate gets a `name collision` warning.
@@ -230,9 +234,25 @@ Facts about Hermes 0.21.5, the version the runs install, link to its commit `f97
 - The loader reads skills and MCP servers, and nothing else: no `hooks/`, no `rules/`.
   (source: [`agent_plugins.py` L423–L435](https://github.com/NousResearch/hermes-agent/blob/749220ef0007f8d87bd1531f1c24b0fe93816385/hermes_cli/agent_plugins.py#L423-L435))
 - Discovery skips `.claude-plugin` and other vendor manifest directories.
-  (source: [`plugins_discovery.py` L33–L34](https://github.com/NousResearch/hermes-agent/blob/749220ef0007f8d87bd1531f1c24b0fe93816385/hermes_cli/plugins_discovery.py#L33-L34))
-- A portable package stays disabled after install until the user enables it.
-  (documentation: [`developer-guide/plugins/index.md` L70](https://github.com/NousResearch/hermes-agent/blob/749220ef0007f8d87bd1531f1c24b0fe93816385/website/docs/developer-guide/plugins/index.md#L70))
+  (source: [`plugins_discovery.py` L33–L34](https://github.com/NousResearch/hermes-agent/blob/749220ef0007f8d87bd1531f1c24b0fe93816385/hermes_cli/plugins_discovery.py#L33-L34),
+  [L131–L133](https://github.com/NousResearch/hermes-agent/blob/749220ef0007f8d87bd1531f1c24b0fe93816385/hermes_cli/plugins_discovery.py#L131-L133))
+- `hermes plugins install` resolves the identifier to a git URL and clones that repository with depth one.
+  (source: [`plugins_cmd.py` L225](https://github.com/NousResearch/hermes-agent/blob/f97608f178d1ffeca59860195ab7da295f7c8e5f/hermes_cli/plugins_cmd.py#L225),
+  [L707](https://github.com/NousResearch/hermes-agent/blob/f97608f178d1ffeca59860195ab7da295f7c8e5f/hermes_cli/plugins_cmd.py#L707))
+- An identifier of the form `owner/repo/subdir` resolves to that GitHub repository and a subdirectory.
+  (source: [`plugins_cmd.py` L252–L257](https://github.com/NousResearch/hermes-agent/blob/f97608f178d1ffeca59860195ab7da295f7c8e5f/hermes_cli/plugins_cmd.py#L252-L257))
+- The desktop app turns a `hermes://plugin/install?repo=owner/repo` link into a `plugins.manage` install request with that identifier.
+  (source: [`deeplink-routes.ts` L53–L58](https://github.com/NousResearch/hermes-agent/blob/f97608f178d1ffeca59860195ab7da295f7c8e5f/apps/desktop/src/lib/deeplink-routes.ts#L53-L58),
+  [`plugin-install-modal.tsx` L225–L232](https://github.com/NousResearch/hermes-agent/blob/f97608f178d1ffeca59860195ab7da295f7c8e5f/apps/desktop/src/app/settings/plugin-install-modal.tsx#L225-L232),
+  [`agent-plugins.ts` L293–L299](https://github.com/NousResearch/hermes-agent/blob/f97608f178d1ffeca59860195ab7da295f7c8e5f/apps/desktop/src/store/agent-plugins.ts#L293-L299))
+- The server hands that request to `dashboard_install_plugin`.
+  It and `hermes plugins install` both call `_install_plugin_core`, so the link takes the same identifiers.
+  (source: [`methods_tools.py` L1626–L1636](https://github.com/NousResearch/hermes-agent/blob/f97608f178d1ffeca59860195ab7da295f7c8e5f/tui_gateway/methods_tools.py#L1626-L1636),
+  [L1708–L1712](https://github.com/NousResearch/hermes-agent/blob/f97608f178d1ffeca59860195ab7da295f7c8e5f/tui_gateway/methods_tools.py#L1708-L1712),
+  [`plugins_cmd.py` L973](https://github.com/NousResearch/hermes-agent/blob/f97608f178d1ffeca59860195ab7da295f7c8e5f/hermes_cli/plugins_cmd.py#L973),
+  [L2095](https://github.com/NousResearch/hermes-agent/blob/f97608f178d1ffeca59860195ab7da295f7c8e5f/hermes_cli/plugins_cmd.py#L2095))
+- The desktop's own repository probe also reads `owner/repo` with an optional subdirectory.
+  (source: [`desktop-plugin-install.ts` L94–L100](https://github.com/NousResearch/hermes-agent/blob/f97608f178d1ffeca59860195ab7da295f7c8e5f/apps/desktop/electron/desktop-plugin-install.ts#L94-L100))
 - On Windows, `install.ps1` clones a branch and then checks out the pinned commit.
   (source: [`install.ps1` L20–L24](https://github.com/NousResearch/hermes-agent/blob/f97608f178d1ffeca59860195ab7da295f7c8e5f/scripts/install.ps1#L20-L24))
 
@@ -253,8 +273,11 @@ Facts about Hermes 0.21.5, the version the runs install, link to its commit `f97
   (source: [`plugins_cmd.py` L1814–L1836](https://github.com/NousResearch/hermes-agent/blob/f97608f178d1ffeca59860195ab7da295f7c8e5f/hermes_cli/plugins_cmd.py#L1814-L1836))
 - `hermes plugins list --json` carries `name`, `status`, `version`, `description`, `source` and `removed`.
   `hermes skills list` reads skill directories only.
+  The `skills_list` tool adds plugin skills after that scan.
   (source: [`plugins_cmd.py` L1672–L1703](https://github.com/NousResearch/hermes-agent/blob/f97608f178d1ffeca59860195ab7da295f7c8e5f/hermes_cli/plugins_cmd.py#L1672-L1703),
-  [`skills_hub.py` L782–L828](https://github.com/NousResearch/hermes-agent/blob/f97608f178d1ffeca59860195ab7da295f7c8e5f/hermes_cli/skills_hub.py#L782-L828))
+  [`skills_hub.py` L782–L828](https://github.com/NousResearch/hermes-agent/blob/f97608f178d1ffeca59860195ab7da295f7c8e5f/hermes_cli/skills_hub.py#L782-L828),
+  [`skills_tool.py` L184–L226](https://github.com/NousResearch/hermes-agent/blob/f97608f178d1ffeca59860195ab7da295f7c8e5f/tools/skills_tool.py#L184-L226),
+  [L234–L246](https://github.com/NousResearch/hermes-agent/blob/f97608f178d1ffeca59860195ab7da295f7c8e5f/tools/skills_tool.py#L234-L246))
 
 ### Always-on instructions
 
@@ -279,6 +302,8 @@ Facts about Hermes 0.21.5, the version the runs install, link to its commit `f97
 - Hermes 0.21.5 installed on Ubuntu and macOS, and every package installed and enabled.
   `hermes plugins show <name>` printed `Key: <name>` and `Status: enabled` for each package.
   (running: [run 36189587613](https://github.com/Akurganow/ai-plugins/actions/runs/36189587613), at `7dd891d`)
-- On Windows, the pinned checkout failed: `Your local changes to the following files would be overwritten by checkout`.
-  The runs therefore install no Hermes on Windows.
+- On the windows-latest runner, the pinned checkout failed: `Your local changes to the following files would be overwritten by checkout`.
   (running: [run 36183358181](https://github.com/Akurganow/ai-plugins/actions/runs/36183358181), at `0f89614`)
+- The integration matrix excludes Hermes on the windows-latest runner, so run 36189587613 has no such job.
+  (source: [`integration.yml` L56–L64](https://github.com/Akurganow/ai-plugins/blob/7dd891d8fbd3eb576d96567f5266ab7b7d81db08/.github/workflows/integration.yml#L56-L64);
+  running: [run 36189587613](https://github.com/Akurganow/ai-plugins/actions/runs/36189587613))

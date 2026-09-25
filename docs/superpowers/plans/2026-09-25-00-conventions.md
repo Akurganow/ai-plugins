@@ -47,6 +47,7 @@ A file may hold several regions with different names. Region names:
 | `plugins` | `README.md` | the plugin table: `| Plugin | What it does |`, one row per package, name linked to `plugins/<name>/README.md`, description from `plugin.json` |
 | `description` | `plugins/<name>/README.md` | the one-sentence `description` from that package's `plugin.json`, as a paragraph under the H1 |
 | `install` | `plugins/<name>/README.md` and `README.md` | `tools/templates/install.md` with `{{name}}` replaced by the package name; in the root README `{{name}}` becomes the literal `<name>` |
+| `hosts` | `plugins/<name>/README.md` of a package whose manifest carries `extensions["io.github.akurganow.ai-plugins"].network.hosts` | one `- \`host\`` line per entry, in manifest order |
 | `rules` | `plugins/prose-discipline/skills/house-style/SKILL.md` | the body of `plugins/prose-discipline/rules/prose-discipline.md` with its front matter stripped |
 | `hermes-auto-load` | `plugins/prose-discipline/README.md` | the `config.yaml` lines for `skills.auto_load` with the computed qualified name |
 
@@ -71,8 +72,8 @@ contents use doctoc's own markers (`<!-- START doctoc … -->` / `<!-- END docto
      `{name, source: "./plugins/<name>", description, homepage, category}` where
      `category` is `extensions["io.github.akurganow.ai-plugins"].category`.
   2. `plugins` region of `README.md`.
-  3. Per package: `description` and `install` regions of its README; `LICENSE` copy;
-     `.claude-plugin/plugin.json` copy.
+  3. Per package: `description`, `install` and (where the manifest has hosts) `hosts`
+     regions of its README; `LICENSE` copy; `.claude-plugin/plugin.json` copy.
   4. `install` region of the root README.
   5. doctoc over every file under `plugins/*/skills/*/references/` longer than 100 lines,
      except `plugins/howp/skills/forecast/references/commands.md`.
@@ -97,6 +98,13 @@ exists), with the kind named. The commands are the ones the root README carries 
 (`README.md` lines 77–80, 117–121, 199–202, 223–226 at `37d6bdc`), with `howp` replaced
 by `{{name}}`. The Hermes block keeps the `plugins/{{name}}` suffix and its one-line
 explanation.
+
+## Package READMEs
+
+A link from a package README to a file outside the package (`SUPPORT.md`, the root
+`LICENSE`, the root README) is an absolute `https://github.com/Akurganow/ai-plugins/blob/main/...`
+URL, because Hermes renders the package README as its catalogue page. Links inside the
+package stay relative.
 
 ## Manifests (`plugins/<name>/plugin.json`)
 

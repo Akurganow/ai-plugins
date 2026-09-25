@@ -2,7 +2,7 @@
 
 What a text generator leaves behind and a person would not have written on
 purpose. This repository is prose almost entirely: READMEs, skills with
-their references, one check, one regeneration entry point, one workflow. Its
+their references, one check, one regeneration entry point, its CI. Its
 whole value is that its sentences hold (`.agents/rules/claims.md`). A
 sentence that holds nothing is
 the cheapest thing to add here and the hardest to see in review, because it

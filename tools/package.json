@@ -1,0 +1,7 @@
+{
+  "name": "ai-plugins-tools",
+  "private": true,
+  "devDependencies": {
+    "doctoc": "2.2.1"
+  }
+}

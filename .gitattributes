@@ -1,8 +1,9 @@
 # What this repository is, as GitHub's language bar reports it.
 #
 # The repository holds text: plugin packages, their skills, and the
-# catalogue index. The one program in it is `tools/check-conformance.py`,
-# which validates those packages; it ships with no package.
+# catalogue index. Its programs sit under `tools/`: `check-conformance.py`
+# validates those packages, and `regenerate.sh` writes every generated
+# copy. Neither ships with a package.
 # Left alone, linguist counts those files and labels the whole marketplace
 # "Python" — the first thing a visitor sees about a repository that
 # contains no Python for them to use.
@@ -12,3 +13,6 @@
 # they are still committed, still run by the conformance workflow, still
 # described in README.md by name.
 tools/** linguist-vendored
+
+# bash fails on a script checked out with CRLF line endings.
+*.sh text eol=lf

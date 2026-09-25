@@ -39,7 +39,10 @@ act on, and the standing rule is that a claim names where it was read.
   that way. The release bot rewrites three files — `binaries.json`,
   `plugin.json`'s `version`, and the skill's `references/commands.md`; every
   other sentence about what ships stays exactly as it was, and a reader cannot
-  tell a fresh one from one the last release falsified.
+  tell a fresh one from one the last release falsified. For the other five
+  packages, `.github/workflows/release.yml` rewrites `plugin.json`'s
+  `version`, its `.claude-plugin/plugin.json` copy and `CHANGELOG.md`, and no
+  other file.
 
 ## Why it is written down rather than assumed
 

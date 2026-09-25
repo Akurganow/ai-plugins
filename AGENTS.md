@@ -57,8 +57,12 @@ to. **All three are `.agents/rules/conformance.md`'s and none of them is
 stated here** — this list says only that they exist and under which heading,
 so read them there before going near any of the three:
 
-- **Versions**, on the three files a release job in another repository writes
-  and nobody edits by hand.
+- **Versions**, on the files a release writes and nobody edits by hand. For
+  howp, the how-possible release job writes four: `version` in `plugin.json`,
+  `binaries.json`, `skills/*/references/commands.md` and the
+  `.claude-plugin/plugin.json` copy. For the other five
+  packages, the cocogitto release workflow writes `version` in `plugin.json`
+  and its `.claude-plugin/plugin.json` copy, and `CHANGELOG.md`.
 - **The vendored schema is a copy, not a source**, on `tools/schemas/` and on
   what may replace it.
 - **Text only**, on what may be committed to this repository at all.

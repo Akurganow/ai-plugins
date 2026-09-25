@@ -681,10 +681,11 @@ for one is refused over it.
 | `plugins/*/binaries.json` | written by the release job, never by hand |
 | the `version` field of any `plugins/*/plugin.json` | the same |
 | `plugins/*/skills/*/references/commands.md` | the same |
+| `plugins/*/CHANGELOG.md` | written by `.github/workflows/release.yml`, never by hand |
 | `tools/schemas/**` | a verbatim copy of a published schema |
 | `.agents/**` | the rules the machine is governed by |
 
-`.agents/rules/conformance.md` carries the rule on the first three. A finding
+`.agents/rules/conformance.md` carries the rule on the first four. A finding
 that one of those files is wrong is a defect of the release job in the
 repository that runs it. The honest outcome here is a comment saying so.
 

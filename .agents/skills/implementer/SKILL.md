@@ -250,7 +250,7 @@ named:
 commit. The gate checked the specification. This checks the diff:
 
     git diff --cached --name-only \
-      | grep -E '^(tools/schemas/|\.agents/|plugins/[^/]+/binaries\.json$|plugins/[^/]+/skills/[^/]+/references/commands\.md$)' \
+      | grep -E '^(tools/schemas/|\.agents/|plugins/[^/]+/binaries\.json$|plugins/[^/]+/CHANGELOG\.md$|plugins/[^/]+/skills/[^/]+/references/commands\.md$)' \
       | grep -vF -- "$SPEC_DIR/"
     git diff --cached -- 'plugins/*/plugin.json' | grep -n '^[+-].*"version"'
 

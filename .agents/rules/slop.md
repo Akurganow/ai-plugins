@@ -78,6 +78,10 @@ Never a finding:
   `plugins/howp/skills/howp/references/commands.md` are machine-written,
   and `conformance.md` says by whom. A wrong sentence in one is a defect of
   the release job, in the repository that runs it — never judged here.
+  `version` in the other five `plugins/<name>/plugin.json` files and their
+  `.claude-plugin/plugin.json` copies, and each `plugins/<name>/CHANGELOG.md`,
+  are machine-written too, by `.github/workflows/release.yml`, and are never
+  judged here either.
 - **A cited source and its date.** The per-fact source and its kind, a date
   and a tag beside a measurement. To an outside eye these read as hedging;
   each is a fact.

@@ -129,6 +129,11 @@ job that builds and publishes the binaries, and by nothing else. **Nobody
 edits any of the three by hand, ever.** Each is a claim about a released
 artifact: a hand edit asserts a version, a digest or a target that no
 release produced, and the next release overwrites it without noticing.
+The other five packages are released by `.github/workflows/release.yml`,
+which runs cocogitto. It writes `version` in each `plugins/<name>/plugin.json`
+and in its `.claude-plugin/plugin.json` copy, and each
+`plugins/<name>/CHANGELOG.md`. Nobody edits those by hand either, for the same
+reason.
 **The catalogue index carries no version at all**: `.claude-plugin/marketplace.json`
 has no top-level `version`, none under `metadata`, and no `version` in a
 plugin entry, because a version no machine writes is a version somebody moves

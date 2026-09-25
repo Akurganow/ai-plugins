@@ -300,7 +300,7 @@ with the measurement that makes each real:
 **Never a finding.** Each line below is its own exclusion:
 
 - a recorded reason, wherever it argues its own existence
-- the three release-written files
+- the release-written files
 - a cited source and its date
 - house style: argued paragraphs, em-dashes, bold on the load-bearing
   clause, a section number beside a specification claim
@@ -351,7 +351,7 @@ Hand at most ~8 candidates to triage.
 
 Not `.agents/**` — your trusted instructions, read and never judged. Not
 `tools/schemas/**` — a verbatim copy of somebody else's text. Not the
-three files the release writes.
+files a release writes.
 
 ## Measure it, then write it
 

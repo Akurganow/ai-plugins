@@ -27,7 +27,7 @@
     {
       "name": "prose-discipline",
       "source": "./plugins/prose-discipline",
-      "description": "An engineering prose standard kept active in every agent session: short active sentences, plain words, comments that explain why, and labelled review comments.",
+      "description": "An engineering prose standard for agent-written text: short active sentences, plain words, comments that explain why, and labelled review comments.",
       "homepage": "https://github.com/Akurganow/ai-plugins/tree/main/plugins/prose-discipline",
       "category": "Productivity"
     },

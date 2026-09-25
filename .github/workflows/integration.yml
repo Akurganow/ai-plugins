@@ -237,8 +237,10 @@ jobs:
           done
           exit "$status"
 
-      # Not run. Running Codex 0.155.1 locally, codex features list printed plugin_hooks
-      # as removed, and debug prompt-input ran no plugin SessionStart hook.
+      # Not run. Codex 0.155.1's loader returns no hooks for an Agent Plugins package,
+      # and its config parser skips a plugin_hooks toggle (source, at rust-v0.155.1):
+      # https://github.com/openai/codex/blob/be2951ea34f0d295ed0becf97079f92fa5f6950e/codex-rs/core-plugins/src/loader.rs#L954-L964
+      # https://github.com/openai/codex/blob/be2951ea34f0d295ed0becf97079f92fa5f6950e/codex-rs/features/src/lib.rs#L607-L609
       # Upstream hook loading, in Codex's issue tracker:
       # https://github.com/openai/codex/issues/39895,
       # https://github.com/openai/codex/issues/47925

@@ -4,6 +4,8 @@ name: integration
 # on Linux, macOS and Windows, and into Hermes on Linux and macOS.
 # Claude Code, Codex and Oh-My-Pi must list every skill.
 # Hermes must show each package installed and enabled. No step calls a model.
+# The howp-archive job also verifies the Sigstore signature over the release's
+# checksum table before it trusts that table.
 #
 # The windows-latest image installs Git with symlinks enabled
 # (source: https://github.com/actions/runner-images/blob/ebade26c60adcb867918b31c8f8caa37343a3d39/images/windows/scripts/build/Install-Git.ps1).
@@ -260,10 +262,28 @@ jobs:
     defaults:
       run:
         shell: bash
+    # For a signature made by a GitHub Actions workflow, the issuer is
+    # https://token.actions.githubusercontent.com and the identity is
+    # https://github.com/OWNER/REPO/.github/workflows/FILE@refs/heads/BRANCH
+    # (documentation:
+    # https://github.com/sigstore/docs/blob/842c30981f1bf5061fe0d370512db4de8cdf3b33/content/en/certificate_authority/oidc-in-fulcio.md#L40-L43).
+    # The certificate inside SHA256SUMS.sigstore.json at
+    # https://github.com/Akurganow/ai-plugins/releases/tag/howp-v0.3.7
+    # carries these two values (release asset, read 2026-09-26).
+    env:
+      SIGNER_IDENTITY: https://github.com/Akurganow/how-possible/.github/workflows/release.yml@refs/heads/main
+      OIDC_ISSUER: https://token.actions.githubusercontent.com
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
 
-      - name: Download the archive for this platform and verify its sha256
+      # At this commit the action installs cosign v3.0.6 (source: `default:` in
+      # https://github.com/sigstore/cosign-installer/blob/6f9f17788090df1f26f669e9d70d6ae9567deba6/action.yml)
+      # and supports the GitHub-provided Linux, macOS and Windows runners
+      # (documentation:
+      # https://github.com/sigstore/cosign-installer/blob/6f9f17788090df1f26f669e9d70d6ae9567deba6/README.md#L11).
+      - uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6 # v4.1.2
+
+      - name: Download the archive for this platform, verify the checksum table's signature and the archive's sha256
         run: |
           manifest="$GITHUB_WORKSPACE/plugins/howp/binaries.json"
           os=$(uname -s)
@@ -290,6 +310,17 @@ jobs:
           if command -v shasum >/dev/null; then sum="shasum -a 256"; else sum=sha256sum; fi
           printf '%s  %s\n' "$sha" "$archive" | $sum -c -
           curl -fsSL --retry 5 --retry-delay 5 --retry-all-errors -o SHA256SUMS "${url%/*}/SHA256SUMS"
+          curl -fsSL --retry 5 --retry-delay 5 --retry-all-errors -o SHA256SUMS.sigstore.json "${url%/*}/SHA256SUMS.sigstore.json"
+          # A sha256 ties the archive to the table. The signature ties the table
+          # to the workflow that built the binaries, so a table swapped on the
+          # release page fails here instead of vouching for the swap.
+          # Command shape: verify-blob with --bundle, --certificate-identity and
+          # --certificate-oidc-issuer (documentation:
+          # https://github.com/sigstore/docs/blob/842c30981f1bf5061fe0d370512db4de8cdf3b33/content/en/cosign/verifying/verify.md#L34-L35).
+          cosign verify-blob SHA256SUMS \
+            --bundle SHA256SUMS.sigstore.json \
+            --certificate-identity "$SIGNER_IDENTITY" \
+            --certificate-oidc-issuer "$OIDC_ISSUER"
           listed=$(awk -v a="$archive" '$2 == a || $2 == "*" a || $2 == "./" a { print $1 }' SHA256SUMS)
           if [ "$listed" != "$sha" ]; then
             echo "::error::The release's SHA256SUMS lists '$listed' for $archive; binaries.json says $sha."

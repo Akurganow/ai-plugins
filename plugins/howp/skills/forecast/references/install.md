@@ -4,7 +4,7 @@
 - [Getting the binary, and proving it is the right bytes](#getting-the-binary-and-proving-it-is-the-right-bytes)
   - [Step 0 — the platform gate](#step-0--the-platform-gate)
   - [Step 1 — the preflight: what has to be reachable, and by whom](#step-1--the-preflight-what-has-to-be-reachable-and-by-whom)
-  - [Step 2 — is a verified copy already here?](#step-2--is-a-verified-copy-already-here)
+  - [Step 2 — is a checked copy already here?](#step-2--is-a-checked-copy-already-here)
   - [Step 3 — download](#step-3--download)
   - [Step 4 — verify. This is the step that must not be skipped](#step-4--verify-this-is-the-step-that-must-not-be-skipped)
   - [Step 5 — unpack, into a staging directory](#step-5--unpack-into-a-staging-directory)
@@ -13,7 +13,7 @@
 
 # Getting the binary, and proving it is the right bytes
 
-`SKILL.md` states the four rules this file carries out. This is how, with the
+`SKILL.md` states the five rules this file carries out. This is how, with the
 commands. Everything in `<angle brackets>` is a placeholder for a value read
 out of `binaries.json`; a command run with the brackets still in it does
 nothing useful.
@@ -23,21 +23,23 @@ nothing useful.
 Read `../../../binaries.json` — the manifest at the plugin root, two
 directories above `SKILL.md`. It is the authority on what has been published.
 Never hardcode its values, and read it again on every run rather than
-remembering it from the last one.
+remembering it from the last one: each release rewrites it.
 
 `.schema` must be `howp-binaries-1`. That string is the file's shape marker:
 anything else means the shape has changed and the fields below may have
 moved, so stop and tell the user this skill is older than the package it is
 reading.
 
-**If the file is not there at all**, the skill was installed on its own,
-without the plugin package around it — some clients load skills but not
-plugins. Say so, and offer the choice rather than deciding for the user:
-install the whole package, or let you fetch
-<https://raw.githubusercontent.com/Akurganow/ai-plugins/main/plugins/howp/binaries.json>.
-Note when offering it that the fetched copy is the weaker guarantee: the
-package's copy was fixed at the revision the user installed, while whatever
-`main` serves today can change under them.
+**If the file is not there at all**, the skill arrived without the plugin
+package around it — some clients load skills but not plugins. Say so, and
+offer the choice rather than deciding for the user: install the whole
+package, or let you fetch
+<https://raw.githubusercontent.com/Akurganow/ai-plugins/main/plugins/howp/binaries.json>
+and, for the host list,
+<https://raw.githubusercontent.com/Akurganow/ai-plugins/main/plugins/howp/plugin.json>.
+Note when offering it that the fetched copies are the weaker guarantee: the
+package's copy was fixed at the revision the user's client fetched, while
+whatever `main` serves today can change under them.
 
 ```sh
 uname -s    # the OS name to match
@@ -80,11 +82,13 @@ skill. Say so and stop rather than running something else out of it.
 
 ## Step 1 — the preflight: what has to be reachable, and by whom
 
-`SKILL.md` carries the host table. Check it before spending a download on it,
-and check again the first time a run needs a market rather than assuming this
-step settled the whole day. Probe with the tool you will actually fetch with,
-not with a different one; a `HEAD` or a small `GET` is enough, and the
-download in Step 3 is its own probe of `github.com`.
+`../../../plugin.json` lists the hosts, under
+`extensions["io.github.akurganow.ai-plugins"].network.hosts`. Probe each one
+before spending a download on it. On every run, probe again the first time
+the run needs a market. Reachability changes with the machine, its proxy and
+the day. Probe with the tool you will actually fetch with, not with a
+different one; a `HEAD` or a small `GET` is enough, and the download in
+Step 3 is its own probe of `github.com`.
 
 **If something is blocked, do not work around it — say precisely what to
 allow, and where.** Which mechanism that is depends on the client, so name
@@ -103,27 +107,27 @@ the one in front of you rather than a generic one:
   sandboxing documentation, <https://code.claude.com/docs/en/sandboxing>,
   which also records that a `WebFetch(domain:…)` allow rule adds its domain
   to that same list.
-- **Any other client.** This skill names no mechanism, because none was
-  verified for one when this was written. Tell the user which host answered
-  what, and let them use whatever their setup provides.
+- **Any other client.** This skill names no mechanism for it, because a
+  setting named without that client's documentation beside it would be a
+  guess. Tell the user which host answered what, and let them use whatever
+  their setup provides.
 - **Neither, sometimes.** A corporate proxy, a container's egress policy or a
   firewall is not something a client setting reaches. If a host is blocked
   below the client, say so plainly instead of sending the user to edit a
   settings file that will not help.
 
-The package declares its hosts in two machine-readable places — the
-`extensions` object of `plugin.json`, and `SKILL.md`'s own frontmatter
-`metadata`. **Neither is a grant.** No client is documented to read either
-field as network permission, and nothing in Agent Plugins 1.0.0 or the Agent
-Skills specification gives a plugin a way to request it; the manifest schema
-says of `extensions` only that it is "Client-specific manifest data keyed by
-reverse-domain extension namespace" and that "Agent Plugins assigns no
-semantics to namespace object contents"
-(`tools/schemas/agent-plugins/1.0.0/plugin.schema.json`, the vendored copy of
-the published schema). The declaration is there to be quoted at a user who
+The package declares its hosts in one machine-readable place, the
+`extensions` object of `plugin.json`. **It is not a grant.** No client is
+documented to read that field as network permission, and nothing in Agent
+Plugins 1.0.0 or the Agent Skills specification gives a plugin a way to
+request it; the manifest schema says of `extensions` only that it is
+"Client-specific manifest data keyed by reverse-domain extension namespace"
+and that "Agent Plugins assigns no semantics to namespace object contents"
+(`tools/schemas/agent-plugins/1.0.0/plugin.schema.json`, the vendored copy
+of the published schema). The declaration is there to be quoted at a user who
 asks what to allow. This step is what actually finds out.
 
-## Step 2 — is a verified copy already here?
+## Step 2 — is a checked copy already here?
 
 ```sh
 HOWP_CACHE="${HOWP_CACHE:-$HOME/.cache/howp}"
@@ -180,7 +184,7 @@ exits 0, and you would go on to checksum an HTML page.
 You are about to run a binary from the internet on someone else's machine.
 The digest in `binaries.json` is what stands between that and a stranger's
 code, and unlike a release asset — which can be replaced after the fact — the
-copy in the package was fixed when the user installed this plugin.
+copy in the package was fixed when the user's client fetched this package.
 
 ```sh
 # macOS, and any Linux that has it:
@@ -240,13 +244,13 @@ if $ok; then
   # Last of all, so the stamp can never describe a tree that is not there.
   printf '%s\n' "<sha256>" > "$DEST/verified.sha256"
 else
-  echo "nothing was installed; $DEST is untouched" >&2
+  echo "nothing was put in place; $DEST is untouched" >&2
 fi
 ```
 
 The `rm -rf "$DEST/<root>"` is what makes a re-released digest recover rather
 than half-overwrite: whatever an earlier attempt left is gone before the new
-tree lands. The stamp is a record that these bytes were verified *and*
+tree lands. The stamp is a record that these bytes passed Step 4 *and*
 unpacked whole, and one written any earlier is worse than no stamp — Step 2's
 shortcut believes it.
 
@@ -256,15 +260,21 @@ no helper script in one, for the fetch cycle or anything else, and
 must be under `bin/`, and there is no field for anything more. Whatever a
 script would have done, you do.
 
-**On macOS only:** if the system refuses to open a binary ("cannot be opened
-because the developer cannot be verified"), that is Gatekeeper's quarantine
-attribute, applied by whatever fetched the file. It is cleared with `xattr -d
-com.apple.quarantine <file>`; that command has not been run or verified by
-anyone who wrote this file, and it is only reasonable **after** Step 4 passed.
-Report it to the user rather than doing it silently. Nothing in this paragraph
-applies to Linux, which has no such attribute — a binary that will not start
-there is usually the wrong C library, and Step 0's two-matching-entries rule
-is what guards against that.
+**On macOS only:** Gatekeeper may refuse to open `hp` because it cannot
+check the developer. Offer a way past it only **after** Step 4 passed,
+because the digest is what shows the file is the released one. Apple
+documents **Open Anyway** under System Settings → Privacy & Security
+([Safely open apps on your Mac](https://support.apple.com/en-us/102445),
+Apple's documentation). The command-line route is
+`xattr -d com.apple.quarantine <file>`. Apple names `com.apple.quarantine`
+as the quarantine extended file attribute
+([App Store Connect notice](https://developer.apple.com/news/upcoming-requirements/?id=02182025a),
+Apple's developer documentation). `xattr -d` removes the named attribute
+(`man xattr`, the manual page macOS ships; documentation). Either route lifts
+a protection the user's system applied, so report it and let the user
+choose. Nothing in this paragraph applies to Linux, which has no such
+attribute — a binary that will not start there is usually the wrong C
+library, and Step 0's two-matching-entries rule is what guards against that.
 
 **If a step here fails, that is new information**, and worth reporting to
 <https://github.com/Akurganow/ai-plugins> rather than working around. Say which

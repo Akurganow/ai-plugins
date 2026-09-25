@@ -13,13 +13,13 @@
 # The interests interview, and the files the user owns
 
 Everything downstream is built on `interests.yaml` and `questions/*.yaml`.
-Those two come out of the interview below, and they are the reason a howp
-dashboard is about *them* rather than about whatever happened to be liquid
+Those two come out of the interview below, and they are the reason a
+forecast is about *them* rather than about whatever happened to be liquid
 this week. Get them wrong and the rest of the pipeline works perfectly on
 the wrong subject.
 
 Do not fill them in from a template. Do not guess someone's interests from
-their repository, their timezone or the fact that they installed this. Ask.
+their repository, their timezone or the fact that they asked for this. Ask.
 
 ## How to run the interview
 
@@ -44,7 +44,7 @@ Open wide, then narrow:
 4. **By when?** An interest with no horizon produces questions no market can
    answer. If they say "eventually", offer two or three concrete horizons
    and let them pick.
-5. **What would you not want on the dashboard?** Just as useful. Someone
+5. **What would you not want in the forecast?** Just as useful. Someone
    following a war does not necessarily want a casualty count on their
    morning page.
 
@@ -60,7 +60,7 @@ Techniques that make it adaptive rather than an interrogation:
   settles 'is the field slowing down'. What would you accept as evidence?"
 - **Do not stack questions.** One at a time, and wait.
 - **Repeat back the list before writing anything**, and let the user cut it.
-  A dashboard of twelve questions they half-care about is worse than four
+  A forecast of twelve questions they half-care about is worse than four
   they check daily.
 
 Then: state which interests and questions you are about to write, in plain
@@ -85,7 +85,7 @@ A list at the top level. One entry per area.
 - `id` — short, lowercase, `[a-z0-9-]`. It becomes the file name
   `questions/<id>.yaml` and `matches/<id>.yaml`, so it is awkward to change
   later; pick it deliberately.
-- `name` — how the user says it. It appears on the dashboard.
+- `name` — how the user says it. It appears on the forecast page.
 - `notes` — optional free text. This is context for you, later: what
   specifically matters, what the user already knows, what they would not
   want. Write it in enough detail that a later session can pick up the
@@ -125,17 +125,11 @@ One file per interest, a list at the top level.
   how, it is not a question yet.
 - `kind` — `binary` (one yes/no outcome) or `multi` (several mutually
   exclusive outcomes). Defaults to `binary`.
-- `horizon` — free text, but a date is what makes verification work: binding a
-  market measures its close date against this one under **the horizon
-  convention**, which is that a market whose close date is more than three
-  calendar months after the question's `horizon` — or more than three calendar
-  months before it — is a `mismatch`; within three calendar months either way,
-  the boundary included, is a `partial`; and a close date already in the past
-  is a `mismatch` outright.
-  `hp` stores the verdict it is handed and computes none of this;
-  `references/procedures.md` says what the convention rests on. So a vague
-  horizon does not produce a lenient verdict, it produces a worse one. Quote a
-  bare date so YAML keeps it a string.
+- `horizon` — free text, but only a date lets a binding measure a market's
+  close date against it. The horizon convention in `references/procedures.md`,
+  section 1, sets the verdict that distance earns, and `hp` computes none of
+  it. A vague horizon earns a worse verdict, not a lenient one. Quote a bare
+  date so YAML keeps it a string.
 - `status` — `active`, `resolved`, `expired` or `archived`. Defaults to
   `active`. **Only `active` questions are quoted**, which is also how a user
   parks something without deleting it.
@@ -149,7 +143,8 @@ One file per interest, a list at the top level.
   useless.
 
 The user edits both files by hand afterwards, and should be told so. Never
-overwrite a question they wrote; append.
+overwrite a question they wrote: append, because an overwrite loses their
+wording.
 
 ## What makes a good question here
 
@@ -160,14 +155,14 @@ overwrite a question they wrote; append.
 - **Something a market might plausibly cover.** Prediction markets are
   thickest on elections, macro numbers, sport, company events, model
   releases and public claims; they are thin on anything local or personal.
-  A question no market covers is not wasted — the dashboard lists it as
+  A question no market covers is not wasted — the page lists it as
   uncovered — but a page of them is a disappointment worth warning about
   before you write twelve.
 
 ## After writing the files
 
-Verification is what turns a question into something with a probability: a
-question with no market behind it is listed on the dashboard as uncovered and
+Binding is what turns a question into something with a probability: a
+question with no market behind it is listed on the page as uncovered and
 never gets a number. Binding one is the first of the three procedures in
 `references/procedures.md` — you find candidate markets yourself, fetch the
 market's own body, judge it, and land the judgement with one `hp ingest match`

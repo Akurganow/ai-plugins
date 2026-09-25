@@ -1,0 +1,53 @@
+name: New package
+description: Propose a plugin for this marketplace.
+labels: ["package"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Propose the package here before you open a pull request.
+        CONTRIBUTING.md describes the shape a package takes.
+  - type: input
+    id: name
+    attributes:
+      label: Plugin name
+      description: Lowercase letters, digits and hyphens.
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: What it does
+      description: One sentence of at most 250 characters, as the plugin table would show it.
+    validations:
+      required: true
+  - type: textarea
+    id: when
+    attributes:
+      label: When someone uses it
+      description: The task or question that the plugin's skills handle.
+    validations:
+      required: true
+  - type: textarea
+    id: contents
+    attributes:
+      label: What it ships
+      description: Skills, references, hooks, scripts or binaries, and every host it contacts.
+    validations:
+      required: true
+  - type: textarea
+    id: sources
+    attributes:
+      label: What it rests on
+      description: The specifications, books or papers the skills follow, and whether their text is public.
+    validations:
+      required: false
+  - type: dropdown
+    id: author
+    attributes:
+      label: Who writes it
+      options:
+        - I will open the pull request
+        - I am asking someone else to write it
+    validations:
+      required: true

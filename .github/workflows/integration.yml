@@ -1,8 +1,8 @@
 name: integration
 
 # Installs every package into each supported client on each hosted OS, from
-# this checkout, and checks that the client lists every skill. No step calls a
-# model.
+# this checkout. Claude Code, Codex and Oh-My-Pi must list every skill.
+# Hermes must show each package installed and enabled. No step calls a model.
 #
 # The windows-latest image installs Git with symlinks enabled
 # (https://github.com/actions/runner-images/blob/ebade26c60adcb867918b31c8f8caa37343a3d39/images/windows/scripts/build/Install-Git.ps1).
@@ -57,7 +57,8 @@ jobs:
           # error: Your local changes to the following files would be overwritten by checkout:
           # [X] Installation failed: git checkout f97608f178d1ffeca59860195ab7da295f7c8e5f failed (exit 1)
           # install.ps1 clones upstream main before checking out the pinned commit.
-          # The result therefore depends on upstream at run time.
+          # The result therefore depends on upstream at run time:
+          # https://github.com/NousResearch/hermes-agent/blob/f97608f178d1ffeca59860195ab7da295f7c8e5f/scripts/install.ps1#L20-L24
           - os: windows-latest
             client: hermes
     runs-on: ${{ matrix.os }}
@@ -208,6 +209,8 @@ jobs:
       # https://github.com/NousResearch/hermes-agent/blob/f97608f178d1ffeca59860195ab7da295f7c8e5f/hermes_cli/skills_hub.py#L782-L828
       # Only the model-facing skills_list tool returns agent-plugin-<slug>-<sha256[:8]>:<skill>:
       # https://github.com/NousResearch/hermes-agent/blob/f97608f178d1ffeca59860195ab7da295f7c8e5f/tools/skills_tool.py#L234-L259
+      # The namespace is built by _portable_skill_namespace:
+      # https://github.com/NousResearch/hermes-agent/blob/f97608f178d1ffeca59860195ab7da295f7c8e5f/hermes_cli/plugins_manifest.py#L60-L64
       - name: Assert every package is installed and enabled (Hermes)
         if: matrix.client == 'hermes'
         run: |

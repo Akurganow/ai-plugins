@@ -174,15 +174,14 @@ jobs:
           done
           exit "$status"
 
-      # Not run. In the spike, codex debug prompt-input ran no plugin SessionStart
-      # hook, and codex features list printed plugin_hooks as removed:
-      # docs/superpowers/handoff/2026-09-24-marketplace-quality/spikes/05-headless-install.md
+      # Not run. In Codex 0.155.1, codex features list prints plugin_hooks as
+      # removed, and debug prompt-input runs no plugin SessionStart hook.
       # Every other route to the hook calls a model. Upstream hook loading:
       # https://github.com/openai/codex/issues/39895,
       # https://github.com/openai/codex/issues/47925
       - name: Report the prose-discipline hook check as not run (Codex)
         if: matrix.client == 'codex'
-        run: echo "::notice::Hook check not run - codex debug prompt-input ran no plugin SessionStart hook in the spike, and no model-free route exists."
+        run: echo "::notice::Hook check not run - Codex 0.155.1 lists plugin_hooks as removed, and no model-free route to the hook exists."
 
   # Mirrors the howp skill's platform gate: one binaries.json target must match
   # uname -s and uname -m. A platform with no target is refused, not built.

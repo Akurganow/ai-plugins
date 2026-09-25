@@ -14,7 +14,7 @@ The fixture and every run directory sat outside the repository, under a per-run 
 | :-- | :-- | :-- | :-- |
 | 1v | `claude plugin validate` accepts the fixture | pass | `exit=0`. One warning, about `extensions`. No line names `hooks.json`. |
 | 1a | SessionStart plain stdout reaches the context | pass | Decided by the reply: the model quoted `# Prose discipline: core rules` with no tool call. Transcript lines support it. |
-| 1b | the rules return after `/compact` | not observable | The screen showed `Compacted`, but the session saved no transcript and the question was never typed. |
+| 1b | the rules return after `/compact` | not observable | Try 3 compacted but saved no transcript. Try 4 saved a transcript, but compaction failed with an empty summary. |
 | 1c | SubagentStart delivers `additionalContext` to a subagent | pass | Decided by the subagent's own reply, `# Prose discipline: core rules`. Its transcript holds the rules in `hook_additional_context`. |
 
 No run showed 1a-injection: neither reply quoted the rules beyond the heading, warned about them, or asked about them.
@@ -101,7 +101,7 @@ The second `hook_success` line comes from the owner's installed superpowers plug
 
 ### Step 5: 1b
 
-Step 5 ran three times under `expect`, driving `claude --plugin-dir "$RUN/fixture/prose-discipline" --model haiku --resume 43598692-7664-4030-9c78-2044555e4f70`.
+Step 5 ran four times under `expect`, driving `claude --plugin-dir "$RUN/fixture/prose-discipline" --model haiku --resume 43598692-7664-4030-9c78-2044555e4f70`.
 
 **Try 1.** The folder trust dialog appeared. The script typed nothing, and it timed out with `expect exit=3`. The screen, with terminal escapes stripped:
 
@@ -137,7 +137,39 @@ The script still waited for a transcript line, so it stopped with `STEP5: no com
 
 The spike ran inside a Claude Code session, whose environment sets `CLAUDE_CODE_CHILD_SESSION`. The child inherited it and saved no transcript. The headless runs of Steps 4 and 6 did save transcripts under the same environment.
 
-So neither decider for 1b exists. No transcript holds a `SessionStart:compact` line, and no reply to the question after compaction exists.
+So neither decider for 1b exists after try 3.
+
+**Try 4.** The coordinator ordered one more run with the host's `CLAUDE_CODE_*` variables removed. The script spawned the same command behind `env`, unsetting these 19 variables:
+
+```
+CLAUDE_CODE_CHILD_SESSION CLAUDE_CODE_DESKTOP_APP_VERSION CLAUDE_CODE_DISABLE_CRON
+CLAUDE_CODE_DISABLE_TERMINAL_TITLE CLAUDE_CODE_EAGER_FLUSH CLAUDE_CODE_EMIT_TOOL_USE_SUMMARIES
+CLAUDE_CODE_ENABLE_ASK_USER_QUESTION_TOOL CLAUDE_CODE_ENABLE_SDK_FILE_CHECKPOINTING
+CLAUDE_CODE_ENTRYPOINT CLAUDE_CODE_EXECPATH CLAUDE_CODE_HOST_SESSION_ID
+CLAUDE_CODE_MESSAGING_SOCKET CLAUDE_CODE_MESSAGING_TOKEN CLAUDE_CODE_OAUTH_SCOPES
+CLAUDE_CODE_REPORT_FINDINGS CLAUDE_CODE_SDK_HAS_HOST_AUTH_REFRESH
+CLAUDE_CODE_SESSION_ATTENDED CLAUDE_CODE_SESSION_ID CLAUDE_CODE_TERMINAL_MCP_TOOLS
+```
+
+The transcript-saving warning did not appear. `/compact` started, then failed:
+
+```
+❯ /compact
+✳Compacting conversation…
+  ⎿  Error during compaction: summarization produced empty response
+```
+
+The script waited 300 s for `Compacted`, then stopped: `STEP5: no Compacted within 300s`, `expect exit=4`. The question was never typed.
+
+This time the session transcript `43598692-7664-4030-9c78-2044555e4f70.jsonl` grew from 30 to 39 lines. The new lines hold the `/compact` command and a `system` `local_command` line:
+
+```
+<local-command-stderr>Error during compaction: summarization produced empty response</local-command-stderr>
+```
+
+`grep -c 'SessionStart:compact\|compact_boundary'` over it printed `0`. The transcript also holds no `SessionStart:resume` line; its only SessionStart objects are the three from the 1a run.
+
+The coordinator's instruction was to record an environment failure and not retry, so Step 5 stopped here.
 
 ### Step 6: 1c
 
@@ -185,11 +217,8 @@ It printed nothing before this record was written.
 
 1a and 1c need no change. Plain stdout serves SessionStart, and `--json` serves SubagentStart, as Blocks A and B have them.
 
-1b is open, and Task 6 waits for it. A run that decides it needs a saved transcript and the typed question. Two routes exist:
+1b is open, and Task 6 waits for it. Unsetting the host variables made the transcript save. Compaction itself then failed: `summarization produced empty response`.
 
-1. The owner types Step 5 in a terminal of their own, outside any Claude Code session.
-2. `expect` spawns `claude` with `CLAUDE_CODE_CHILD_SESSION` unset, and waits for `Compacted` on the screen.
-
-The owner chooses the route.
+No `compact_boundary` line was written, so the compaction never completed. The run therefore tested no part of the hook design. The owner decides whether to run Step 5 again, and how.
 
 The brief's 1a and 1b transcript conditions hold whenever the hook runs. The coordinator ruled that the model's quoted heading decides both rows.

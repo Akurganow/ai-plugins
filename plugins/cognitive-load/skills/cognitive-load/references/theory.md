@@ -1,3 +1,16 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+- [Cognitive load theory, as far as it was read](#cognitive-load-theory-as-far-as-it-was-read)
+  - [Origin](#origin)
+  - [What changed](#what-changed)
+  - [Element interactivity](#element-interactivity)
+  - [Capacity](#capacity)
+  - [The effects](#the-effects)
+  - [Where the theory stops](#where-the-theory-stops)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 # Cognitive load theory, as far as it was read
 
 What the theory says, what it no longer says, and where it stops applying

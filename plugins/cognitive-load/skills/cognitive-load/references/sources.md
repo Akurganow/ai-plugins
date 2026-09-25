@@ -1,3 +1,16 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+- [Sources](#sources)
+  - [The practitioner essay](#the-practitioner-essay)
+  - [The theory](#the-theory)
+  - [The measures](#the-measures)
+  - [The studies of programmers](#the-studies-of-programmers)
+  - [Not read](#not-read)
+  - [What the skill adds on its own](#what-the-skill-adds-on-its-own)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 # Sources
 
 What the references in this skill were checked against, how each was read,

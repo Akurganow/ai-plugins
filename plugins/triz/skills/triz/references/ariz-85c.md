@@ -1,3 +1,21 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+- [ARIZ-85C, part by part](#ariz-85c-part-by-part)
+  - [The name](#the-name)
+  - [Vocabulary](#vocabulary)
+  - [Part 1. Analysis of the problem](#part-1-analysis-of-the-problem)
+  - [Part 2. Analysis of the problem model](#part-2-analysis-of-the-problem-model)
+  - [Part 3. The ideal final result and the physical contradiction](#part-3-the-ideal-final-result-and-the-physical-contradiction)
+  - [Part 4. Mobilising and applying the resources](#part-4-mobilising-and-applying-the-resources)
+  - [Part 5. Applying the information fund](#part-5-applying-the-information-fund)
+  - [Part 6. Changing or replacing the problem](#part-6-changing-or-replacing-the-problem)
+  - [Part 7. Analysis of the way the physical contradiction was removed](#part-7-analysis-of-the-way-the-physical-contradiction-was-removed)
+  - [Part 8. Applying the answer](#part-8-applying-the-answer)
+  - [Part 9. Analysis of the course of the solution](#part-9-analysis-of-the-course-of-the-solution)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 # ARIZ-85C, part by part
 
 The algorithm Altshuller published in 1985, in his order of parts and

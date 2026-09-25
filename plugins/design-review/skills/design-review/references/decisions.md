@@ -1,3 +1,16 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+- [The decisions a review asks about](#the-decisions-a-review-asks-about)
+  - [Together or apart](#together-or-apart)
+    - [Splitting a method](#splitting-a-method)
+  - [Errors](#errors)
+  - [Design it twice](#design-it-twice)
+  - [Comments and names](#comments-and-names)
+  - [What the review reports](#what-the-review-reports)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 # The decisions a review asks about
 
 Four decisions the book argues, with its criteria, for the steps of the

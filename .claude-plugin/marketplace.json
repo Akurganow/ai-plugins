@@ -4,31 +4,43 @@
     "name": "Alexander Kurganov",
     "url": "https://github.com/Akurganow"
   },
-  "description": "Public marketplace of Akurganow's agent plugins. Every plugin under plugins/ is an Agent Plugins 1.0.0 package; this file is the catalogue index in Claude's format and at Claude's path, and it holds pointers to those packages and nothing else. Codex and Oh-My-Pi read the same file.",
+  "description": "Agent plugins for forecasting from prediction markets, writing engineering prose, and reasoning about software design, root causes and trade-offs.",
   "plugins": [
     {
-      "name": "howp",
-      "source": "./plugins/howp"
-    },
-    {
-      "name": "prose-discipline",
-      "source": "./plugins/prose-discipline"
-    },
-    {
-      "name": "toc-thinking",
-      "source": "./plugins/toc-thinking"
-    },
-    {
-      "name": "triz",
-      "source": "./plugins/triz"
+      "name": "cognitive-load",
+      "source": "./plugins/cognitive-load",
+      "description": "What a reader must keep in mind at the same time to do a task in a code base, a system or a process, sorted into the load the task needs and the load the structure adds, with the change that removes the second. The skill fixes the reader and the task, collects observations with a practitioner's measure of newcomer confusion, counts the elements a reader must relate at once, sorts each as intrinsic or extraneous, walks the thirteen sections of Zakirullin's catalogue of extraneous load in code, names a published count when one is wanted, recommends the change per element with its cost, and verifies with a newcomer. The references carry cognitive load theory as read, mostly as abstracts, the catalogue in the essay's words, the two measures, the studies of programmers, and the sources. No script, no network, no credentials.",
+      "homepage": "https://github.com/Akurganow/ai-plugins/tree/main/plugins/cognitive-load"
     },
     {
       "name": "design-review",
-      "source": "./plugins/design-review"
+      "source": "./plugins/design-review",
+      "description": "A design review for complexity, with the principles and red flags of Ousterhout's A Philosophy of Software Design. The skill fixes the frame, then asks the book's questions in order: which symptom and which cause, whether each module is deep, which of the fourteen red flags fire, whether two pieces belong together, whether an error can be defined out of existence, and which findings matter by how often the part is touched. Every finding cites a chapter. For method length, comments and test-driven development the finding carries the other side from the written discussion between Ousterhout and Martin. For the book's other positions it says the position is the book's alone. The references beside the skill carry the book's two lists verbatim, the criteria, the positions and the sources. No script, no network, no credentials.",
+      "homepage": "https://github.com/Akurganow/ai-plugins/tree/main/plugins/design-review"
     },
     {
-      "name": "cognitive-load",
-      "source": "./plugins/cognitive-load"
+      "name": "howp",
+      "source": "./plugins/howp",
+      "description": "Personal probability dashboard: interests → measurable questions → prediction-market probabilities (Polymarket, Manifold) → a local Markdown dashboard of what became more or less likely. The skill reads this package's binaries.json, refuses any platform it does not name, downloads and sha256-verifies the released archive for one it does, caches it under the user's home, and drives one binary, hp; which targets are published, and what an archive holds, come from that file rather than from this sentence. No API keys and no accounts. Deterministic work is hp's — extracting a probability out of a venue's raw response, the append-only history, move detection and the rendered page — and everything else is the agent's: hp opens no socket and reads no clock, so the agent fetches each market body with its own tools, under the permission flow its client already has, and passes the moment in. Every judgement is the agent's too, and no part of this package invokes a model. The hosts hp builds requests from are declared under extensions below — a statement rather than a request, since no client is documented to read that field as network permission.",
+      "homepage": "https://github.com/Akurganow/ai-plugins/tree/main/plugins/howp"
+    },
+    {
+      "name": "prose-discipline",
+      "source": "./plugins/prose-discipline",
+      "description": "Engineering prose standard for everything an agent writes: user replies, prose, code comments, review comments, commit messages, change descriptions, error messages and agent instructions. Five layers — sentence structure, plain vocabulary, comment hygiene, artifact formats, slop pruning — each stated as a rule a reader can check rather than a preference. The core rules are one file, rules/prose-discipline.md, injected at session start by the hook in hooks/ on hosts that run plugin hooks, and loaded as an always-apply rule by hosts that read plugin rule files; the skill carries the protocol and the depth behind every rule, including the substitution table, the Conventional Comments labels and a calibration corpus. Code blocks, identifiers, commands, URLs and quoted text are never flagged, and established domain terms are kept. No credentials, no MCP servers, no settings files, and no checker script: enforcement is model judgement over rule texts a person can read and argue with.",
+      "homepage": "https://github.com/Akurganow/ai-plugins/tree/main/plugins/prose-discipline"
+    },
+    {
+      "name": "toc-thinking",
+      "source": "./plugins/toc-thinking",
+      "description": "Goldratt's Theory of Constraints Thinking Processes, applied to software systems and their architecture. The skill answers three questions in order. What to change: the Current Reality Tree. To what to change: the Evaporating Cloud, then the Future Reality Tree with negative-branch reservations. How to cause the change: the Prerequisite Tree, then the Transition Tree. Every link in a sufficiency tree is scrutinised with the Categories of Legitimate Reservation, and the user confirms the core problem before the cloud is built. The skill carries the procedure. The depth behind each tool and the categories sits in references beside it, each with its source. No script, no network, no credentials.",
+      "homepage": "https://github.com/Akurganow/ai-plugins/tree/main/plugins/toc-thinking"
+    },
+    {
+      "name": "triz",
+      "source": "./plugins/triz",
+      "description": "TRIZ for engineering trade-offs, at two depths in one skill. The short route states the problem as a contradiction, maps it to Altshuller's 39 engineering parameters, reads the classic contradiction matrix for the inventive principles it recommends, and adapts them to the system at hand. A physical contradiction goes to the separation principles instead. The long route, for a problem the short one did not crack, is ARIZ-85C, Altshuller's nine-part algorithm, walked step by step with the user. The matrix ships as a plain-text reference with one line per cell, which the agent searches for one line. The parameters, principles and ARIZ steps are references beside it, each with its provenance. No script, no dependency, no network, no credentials.",
+      "homepage": "https://github.com/Akurganow/ai-plugins/tree/main/plugins/triz"
     }
   ]
 }

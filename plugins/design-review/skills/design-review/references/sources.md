@@ -1,3 +1,19 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+- [Sources](#sources)
+  - [The book](#the-book)
+  - [Ousterhout and Martin](#ousterhout-and-martin)
+  - [Parnas](#parnas)
+  - [Brooks](#brooks)
+  - [Google's reviewer guide](#googles-reviewer-guide)
+  - [Nygard's decision-record template](#nygards-decision-record-template)
+  - [Wikipedia](#wikipedia)
+  - [Not read](#not-read)
+  - [What the skill adds on its own](#what-the-skill-adds-on-its-own)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 # Sources
 
 What the references in this skill were checked against, how each was read,

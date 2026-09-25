@@ -1,3 +1,16 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+- [Complexity, as the book defines it](#complexity-as-the-book-defines-it)
+  - [Definition](#definition)
+  - [The weighting](#the-weighting)
+  - [Three symptoms](#three-symptoms)
+  - [Two causes](#two-causes)
+  - [Incremental](#incremental)
+  - [What this definition is not](#what-this-definition-is-not)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 # Complexity, as the book defines it
 
 The definitions the review rests on. Quotations marked with a section

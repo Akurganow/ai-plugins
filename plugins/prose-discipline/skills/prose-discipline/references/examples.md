@@ -1,3 +1,16 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+- [Examples: Calibration Corpus](#examples-calibration-corpus)
+  - [Review comment](#review-comment)
+  - [Change description](#change-description)
+  - [Error message](#error-message)
+  - [Code comments](#code-comments)
+  - [Sentences](#sentences)
+  - [Noun stack](#noun-stack)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 # Examples: Calibration Corpus
 
 Before/after pairs for calibrating audits. When reporting a finding, name

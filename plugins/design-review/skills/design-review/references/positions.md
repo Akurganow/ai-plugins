@@ -1,3 +1,15 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+- [Where the book takes a side](#where-the-book-takes-a-side)
+  - [Method length](#method-length)
+  - [Comments](#comments)
+  - [Test-driven development](#test-driven-development)
+  - [Positions argued in the book alone](#positions-argued-in-the-book-alone)
+  - [What the evidence read says](#what-the-evidence-read-says)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 # Where the book takes a side
 
 The book argues against several common practices. A review that leans on

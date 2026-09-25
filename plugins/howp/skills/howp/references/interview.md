@@ -1,3 +1,15 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+- [The interests interview, and the files the user owns](#the-interests-interview-and-the-files-the-user-owns)
+  - [How to run the interview](#how-to-run-the-interview)
+  - [`interests.yaml`](#interestsyaml)
+  - [`questions/<interest-id>.yaml`](#questionsinterest-idyaml)
+  - [What makes a good question here](#what-makes-a-good-question-here)
+  - [After writing the files](#after-writing-the-files)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 # The interests interview, and the files the user owns
 
 Everything downstream is built on `interests.yaml` and `questions/*.yaml`.

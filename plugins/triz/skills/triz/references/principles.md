@@ -1,3 +1,51 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+- [The 40 inventive principles](#the-40-inventive-principles)
+  - [1. Segmentation](#1-segmentation)
+  - [2. Taking out](#2-taking-out)
+  - [3. Local quality](#3-local-quality)
+  - [4. Asymmetry](#4-asymmetry)
+  - [5. Merging](#5-merging)
+  - [6. Universality](#6-universality)
+  - [7. Nested doll](#7-nested-doll)
+  - [8. Anti-weight](#8-anti-weight)
+  - [9. Preliminary anti-action](#9-preliminary-anti-action)
+  - [10. Preliminary action](#10-preliminary-action)
+  - [11. Beforehand cushioning](#11-beforehand-cushioning)
+  - [12. Equipotentiality](#12-equipotentiality)
+  - [13. The other way round](#13-the-other-way-round)
+  - [14. Spheroidality and curvature](#14-spheroidality-and-curvature)
+  - [15. Dynamics](#15-dynamics)
+  - [16. Partial or excessive actions](#16-partial-or-excessive-actions)
+  - [17. Another dimension](#17-another-dimension)
+  - [18. Mechanical vibration](#18-mechanical-vibration)
+  - [19. Periodic action](#19-periodic-action)
+  - [20. Continuity of useful action](#20-continuity-of-useful-action)
+  - [21. Skipping](#21-skipping)
+  - [22. Blessing in disguise](#22-blessing-in-disguise)
+  - [23. Feedback](#23-feedback)
+  - [24. Intermediary](#24-intermediary)
+  - [25. Self-service](#25-self-service)
+  - [26. Copying](#26-copying)
+  - [27. Cheap short-living objects](#27-cheap-short-living-objects)
+  - [28. Mechanics substitution](#28-mechanics-substitution)
+  - [29. Pneumatics and hydraulics](#29-pneumatics-and-hydraulics)
+  - [30. Flexible shells and thin films](#30-flexible-shells-and-thin-films)
+  - [31. Porous materials](#31-porous-materials)
+  - [32. Colour changes](#32-colour-changes)
+  - [33. Homogeneity](#33-homogeneity)
+  - [34. Discarding and recovering](#34-discarding-and-recovering)
+  - [35. Parameter changes](#35-parameter-changes)
+  - [36. Phase transitions](#36-phase-transitions)
+  - [37. Thermal expansion](#37-thermal-expansion)
+  - [38. Strong oxidants](#38-strong-oxidants)
+  - [39. Inert atmosphere](#39-inert-atmosphere)
+  - [40. Composite materials](#40-composite-materials)
+  - [Separation principles for a physical contradiction](#separation-principles-for-a-physical-contradiction)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 # The 40 inventive principles
 
 Numbered as the matrix numbers them. Each entry gives four things. The

@@ -1,3 +1,14 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+- [What can be counted, and what the studies on code found](#what-can-be-counted-and-what-the-studies-on-code-found)
+  - [Cognitive Complexity](#cognitive-complexity)
+  - [Intrinsic Complexity Points](#intrinsic-complexity-points)
+  - [Studies of programmers](#studies-of-programmers)
+  - [A size that reviewers use](#a-size-that-reviewers-use)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 # What can be counted, and what the studies on code found
 
 Two published ways to put a number on a unit of code, and the studies of

@@ -1,3 +1,19 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+- [The tools, as published](#the-tools-as-published)
+  - [Two logics](#two-logics)
+  - [The set of tools](#the-set-of-tools)
+  - [Undesirable effect](#undesirable-effect)
+  - [Current Reality Tree](#current-reality-tree)
+  - [Evaporating Cloud](#evaporating-cloud)
+  - [Future Reality Tree and Negative Branch Reservation](#future-reality-tree-and-negative-branch-reservation)
+  - [Prerequisite Tree](#prerequisite-tree)
+  - [Transition Tree](#transition-tree)
+  - [Strategy and Tactics Tree](#strategy-and-tactics-tree)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 # The tools, as published
 
 The structure of each Thinking Process diagram, with the wording of the

@@ -204,7 +204,7 @@ def check_manifest(plugin_root: Path, validator) -> dict | None:
         fail(where, "no plugin.json at the plugin root (§4.1, §5.1)")
         return None
     # Not a spec rule but a loader reality and a repository rule: the root
-    # manifest is the real file that vendor paths point at, never a link.
+    # manifest is the real file that vendor copies are made from, never a link.
     # Codex's loader refuses a symlinked root manifest outright --
     # find_plugin_manifest_path() calls symlink_metadata() and returns None
     # for a symlink, pinned by rejects_symlinked_root_plugin_manifest. From
@@ -382,57 +382,41 @@ def check_containment(plugin_root: Path) -> None:
                 )
 
 
-def materialised_symlink_hint(path: Path, expected_target: Path) -> str:
-    """Name the Windows checkout case instead of misreporting it.
+def check_vendor_manifest_copies(plugin_root: Path) -> None:
+    """Repository rule: a vendor path holds a byte-identical copy of the manifest.
 
-    A checkout with `core.symlinks=false` — git's default on Windows — writes
-    a symlink as a small text file holding its target path. The repository
-    still records mode 120000, so this is a property of the checkout and not
-    of the commit, and saying "second copy of the manifest" about it would
-    send a contributor looking for a defect that is not there.
+    §5.1: "No other file can replace, supplement, or override the core fields
+    in root `plugin.json`." A copy equal to it byte for byte overrides
+    nothing, and `tools/regenerate.sh` writes it. It is a copy and not a
+    symlink because Git for Windows checks a symlink out as a text file
+    holding the link path unless symlinks are enabled, and Claude Code reads
+    its manifest only from `.claude-plugin/plugin.json`, where that text fails
+    as a corrupt manifest. Sources: Git for Windows documentation,
+    https://gitforwindows.org/symbolic-links; Claude Code documentation,
+    https://code.claude.com/docs/en/plugins-reference.
     """
-    try:
-        if path.stat().st_size > 4096:
-            return ""
-        content = path.read_text(encoding="utf-8").strip()
-    except (OSError, UnicodeError):
-        return ""
-    if not content or "\n" in content:
-        return ""
-    if (path.parent / content).resolve(strict=False) != expected_target:
-        return ""
-    return (
-        f" — the file holds {content!r} and nothing else, so this checkout "
-        "materialised the symlink as text (git core.symlinks=false, the "
-        "default on Windows); re-clone with `-c core.symlinks=true`"
-    )
-
-
-def check_no_duplicate_manifest(plugin_root: Path) -> None:
-    """Repository rule: a vendor path may point at the manifest, not hold one.
-
-    A second `plugin.json` anywhere below the plugin root is only acceptable
-    as a symlink to the root manifest; a real file there would be a copy that
-    drifts, and §5.1 is explicit that "No other file can replace, supplement,
-    or override the core fields in root `plugin.json`."
-    """
-    root_manifest = (plugin_root / "plugin.json").resolve(strict=False)
+    root_manifest = plugin_root / "plugin.json"
+    # check_manifest reports a missing or symlinked root manifest.
+    if root_manifest.is_symlink() or not root_manifest.is_file():
+        return
+    expected = root_manifest.read_bytes()
+    root_rel = root_manifest.relative_to(REPO_ROOT)
     for dirpath, _dirnames, filenames in os.walk(plugin_root):
-        if Path(dirpath) == plugin_root:
-            continue
-        if "plugin.json" not in filenames:
+        if Path(dirpath) == plugin_root or "plugin.json" not in filenames:
             continue
         path = Path(dirpath) / "plugin.json"
         rel = path.relative_to(REPO_ROOT)
-        if not path.is_symlink():
+        if path.is_symlink():
             fail(
                 str(rel),
-                "second copy of the manifest; a vendor path may only be a "
-                "symlink to ../plugin.json"
-                + materialised_symlink_hint(path, root_manifest),
+                f"is a symlink; it must be a byte-identical copy of {root_rel}, "
+                "written by tools/regenerate.sh",
             )
-        elif path.resolve(strict=False) != root_manifest:
-            fail(str(rel), f"symlink points at {path.resolve(strict=False)}, not the plugin's own manifest")
+        elif path.read_bytes() != expected:
+            fail(
+                str(rel),
+                f"differs from {root_rel}; run `bash tools/regenerate.sh` and commit the result",
+            )
 
 
 def check_marketplace_index(manifests: dict[str, dict]) -> None:
@@ -523,7 +507,7 @@ def main() -> int:
             manifests[str(plugin_root.relative_to(REPO_ROOT))] = manifest
         check_skills(plugin_root)
         check_containment(plugin_root)
-        check_no_duplicate_manifest(plugin_root)
+        check_vendor_manifest_copies(plugin_root)
 
     check_marketplace_index(manifests)
 

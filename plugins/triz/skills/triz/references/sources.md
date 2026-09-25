@@ -1,3 +1,15 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+- [Sources](#sources)
+  - [The contradiction matrix](#the-contradiction-matrix)
+  - [The 40 principles](#the-40-principles)
+  - [Separation principles](#separation-principles)
+  - [ARIZ-85C](#ariz-85c)
+  - [Not read](#not-read)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 # Sources
 
 What the references in this skill were checked against, how each was read,

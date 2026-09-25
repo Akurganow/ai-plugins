@@ -1,3 +1,22 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+- [Categories of Legitimate Reservation](#categories-of-legitimate-reservation)
+  - [Seven or eight](#seven-or-eight)
+  - [Level I](#level-i)
+    - [1. Clarity](#1-clarity)
+  - [Level II](#level-ii)
+    - [2. Entity existence](#2-entity-existence)
+    - [3. Causality existence](#3-causality-existence)
+  - [Level III](#level-iii)
+    - [4. Cause insufficiency](#4-cause-insufficiency)
+    - [5. Additional cause](#5-additional-cause)
+    - [6. Cause-effect reversal](#6-cause-effect-reversal)
+    - [7. Predicted effect existence](#7-predicted-effect-existence)
+    - [8. Tautology](#8-tautology)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 # Categories of Legitimate Reservation
 
 The rules for scrutinising a sufficiency tree. `sources.md` says where each

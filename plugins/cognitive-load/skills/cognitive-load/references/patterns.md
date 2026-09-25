@@ -1,3 +1,24 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+- [The catalogue of extraneous load in code](#the-catalogue-of-extraneous-load-in-code)
+  - [Complex conditionals](#complex-conditionals)
+  - [Nested ifs](#nested-ifs)
+  - [Inheritance nightmare](#inheritance-nightmare)
+  - [Too many small methods, classes or modules](#too-many-small-methods-classes-or-modules)
+  - [Responsible for one thing](#responsible-for-one-thing)
+  - [Too many shallow microservices](#too-many-shallow-microservices)
+  - [Feature-rich languages](#feature-rich-languages)
+  - [Business logic and HTTP status codes](#business-logic-and-http-status-codes)
+  - [Abusing DRY principle](#abusing-dry-principle)
+  - [Tight coupling with a framework](#tight-coupling-with-a-framework)
+  - [Layered architecture](#layered-architecture)
+  - [Domain-driven design](#domain-driven-design)
+  - [Cognitive load in familiar projects](#cognitive-load-in-familiar-projects)
+  - [The long-run questions](#the-long-run-questions)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 # The catalogue of extraneous load in code
 
 The sections of Artem Zakirullin's "Cognitive load is what matters", a

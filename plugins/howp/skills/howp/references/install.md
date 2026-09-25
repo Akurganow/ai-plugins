@@ -1,3 +1,16 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+- [Getting the binary, and proving it is the right bytes](#getting-the-binary-and-proving-it-is-the-right-bytes)
+  - [Step 0 — the platform gate](#step-0--the-platform-gate)
+  - [Step 1 — the preflight: what has to be reachable, and by whom](#step-1--the-preflight-what-has-to-be-reachable-and-by-whom)
+  - [Step 2 — is a verified copy already here?](#step-2--is-a-verified-copy-already-here)
+  - [Step 3 — download](#step-3--download)
+  - [Step 4 — verify. This is the step that must not be skipped](#step-4--verify-this-is-the-step-that-must-not-be-skipped)
+  - [Step 5 — unpack, into a staging directory](#step-5--unpack-into-a-staging-directory)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 # Getting the binary, and proving it is the right bytes
 
 `SKILL.md` states the four rules this file carries out. This is how, with the

@@ -1,3 +1,13 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+- [The three procedures](#the-three-procedures)
+  - [1. Verify a question — bind it to a market](#1-verify-a-question--bind-it-to-a-market)
+  - [2. Explain a sharp move](#2-explain-a-sharp-move)
+  - [3. Write the weekly digest](#3-write-the-weekly-digest)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 # The three procedures
 
 Everything that is not the routine cycle is judgement — yours — landed by one

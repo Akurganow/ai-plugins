@@ -1,3 +1,25 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+- [The red flags](#the-red-flags)
+  - [Shallow Module](#shallow-module)
+  - [Information Leakage](#information-leakage)
+  - [Temporal Decomposition](#temporal-decomposition)
+  - [Overexposure](#overexposure)
+  - [Pass-Through Method](#pass-through-method)
+  - [Repetition](#repetition)
+  - [Special-General Mixture](#special-general-mixture)
+  - [Conjoined Methods](#conjoined-methods)
+  - [Comment Repeats Code](#comment-repeats-code)
+  - [Implementation Documentation Contaminates Interface](#implementation-documentation-contaminates-interface)
+  - [Vague Name](#vague-name)
+  - [Hard to Pick Name](#hard-to-pick-name)
+  - [Hard to Describe](#hard-to-describe)
+  - [Nonobvious Code](#nonobvious-code)
+  - [Where the names came from](#where-the-names-came-from)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 # The red flags
 
 The book's "Summary of Red Flags" lists fourteen, unnumbered, in the order

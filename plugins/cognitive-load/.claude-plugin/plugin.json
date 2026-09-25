@@ -1,1 +1,23 @@
-../plugin.json
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "cognitive-load",
+  "version": "0.1.0",
+  "description": "What a reader must keep in mind at the same time to do a task in a code base, a system or a process, sorted into the load the task needs and the load the structure adds, with the change that removes the second. The skill fixes the reader and the task, collects observations with a practitioner's measure of newcomer confusion, counts the elements a reader must relate at once, sorts each as intrinsic or extraneous, walks the thirteen sections of Zakirullin's catalogue of extraneous load in code, names a published count when one is wanted, recommends the change per element with its cost, and verifies with a newcomer. The references carry cognitive load theory as read, mostly as abstracts, the catalogue in the essay's words, the two measures, the studies of programmers, and the sources. No script, no network, no credentials.",
+  "author": {
+    "name": "Alexander Kurganov",
+    "url": "https://github.com/Akurganow"
+  },
+  "homepage": "https://github.com/Akurganow/ai-plugins/tree/main/plugins/cognitive-load",
+  "repository": "https://github.com/Akurganow/ai-plugins",
+  "license": "MIT",
+  "keywords": [
+    "cognitive-load",
+    "working-memory",
+    "extraneous-load",
+    "code-comprehension",
+    "onboarding",
+    "sweller",
+    "zakirullin",
+    "agent-skills"
+  ]
+}

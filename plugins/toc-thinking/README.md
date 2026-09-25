@@ -64,8 +64,9 @@ The `root-cause` skill states each symptom as an undesirable effect. It
 builds a Current Reality Tree down to the root causes, and checks every
 link with the Categories of Legitimate Reservation. It asks you to confirm
 the core problem before going on. It then builds the Evaporating Cloud for
-the conflict that keeps the problem in place. On request it plans the
-change with a Prerequisite Tree and a Transition Tree.
+the conflict that keeps the problem in place. A Future Reality Tree checks
+the injection for new undesirable effects. It plans the change with a
+Prerequisite Tree and a Transition Tree.
 
 ## What's inside
 
@@ -94,8 +95,8 @@ commit. The Categories of Legitimate Reservation are Dettmer's eight, and
 - The skill attributes nothing to Goldratt or Dettmer without a chapter or
   a dictionary entry that `sources.md` names.
 - A cloud that reduces to a trade-off between two measurable parameters
-  belongs to the `contradiction` skill of [`triz`](https://github.com/Akurganow/ai-plugins/tree/main/plugins/triz). The
-  skill hands over only when `contradiction` is installed.
+  belongs to the `contradiction` skill of [`triz`](https://github.com/Akurganow/ai-plugins/tree/main/plugins/triz).
+  `root-cause` hands over only when `contradiction` is installed.
 
 ## License
 

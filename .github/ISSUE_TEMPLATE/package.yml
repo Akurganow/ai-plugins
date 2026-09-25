@@ -6,12 +6,12 @@ body:
     attributes:
       value: |
         Propose the package here before you open a pull request.
-        CONTRIBUTING.md describes the shape a package takes.
+        [CONTRIBUTING.md](https://github.com/Akurganow/ai-plugins/blob/main/CONTRIBUTING.md) describes the shape a package takes.
   - type: input
     id: name
     attributes:
       label: Plugin name
-      description: Lowercase letters, digits and hyphens.
+      description: Lowercase letters, digits and hyphens, at most 64 characters.
     validations:
       required: true
   - type: textarea

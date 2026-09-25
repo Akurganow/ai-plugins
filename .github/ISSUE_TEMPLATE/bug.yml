@@ -28,12 +28,20 @@ body:
       label: Client
       options:
         - Claude Code CLI
-        - Claude Code desktop app
+        - Claude Code on the web
+        - Claude desktop app
         - Codex
         - Oh-My-Pi
         - Hermes CLI or server
         - Hermes desktop app
         - Other
+    validations:
+      required: true
+  - type: input
+    id: client-version
+    attributes:
+      label: Client version
+      description: What the client's version command prints, for example `claude --version`. If you chose Other, name the client too.
     validations:
       required: true
   - type: textarea

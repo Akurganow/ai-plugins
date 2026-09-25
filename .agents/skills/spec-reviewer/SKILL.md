@@ -190,7 +190,7 @@ claim there outlives every other defect on this list.
 5. **The claims discipline holds on every new sentence.** Each proposed
    sentence about a client, an install command, a released artifact or a
    compatibility claim names where it was read. It says which kind of source
-   that is. It does not quietly upgrade something unverified.
+   that is.
 
    Quote the clause in the objection. `claims.md`: *"a claim without a
    citation next to it is treated as not yet written, whoever wrote it"*, and

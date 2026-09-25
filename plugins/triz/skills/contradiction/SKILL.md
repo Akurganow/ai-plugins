@@ -1,19 +1,20 @@
 ---
-name: triz
+name: contradiction
 description: >
-  TRIZ for engineering trade-offs in software. The short route restates the
-  problem as a contradiction, maps it to Altshuller's 39 parameters, reads
-  the classic contradiction matrix and adapts the principles it recommends.
-  A physical contradiction goes to the separation principles. A problem the
-  short route did not crack goes to ARIZ-85C, walked part by part. Use when
-  improving one thing worsens another, or when two requirements seem
-  incompatible. Use when a compromise is the only option on the table. Use
-  when one element must have two opposite properties, or when a hard
-  problem keeps coming back after ordinary fixes.
+  Resolve an engineering trade-off in software with TRIZ instead of a
+  compromise. Restate the problem as a contradiction, map it to
+  Altshuller's 39 parameters, read the classic contradiction matrix, and
+  adapt the principles it recommends. Send a physical contradiction to the
+  separation principles, and a problem the matrix did not crack to
+  ARIZ-85C, walked part by part. Use when improving one thing makes another
+  worse, or when two requirements seem incompatible. Use when a compromise
+  is the only option on the table. Use when one element must have two
+  opposite properties, or when a hard problem keeps coming back after
+  ordinary fixes.
 license: MIT
 ---
 
-# TRIZ
+# Contradiction
 
 You guide the user through TRIZ on a software problem. The output is a set
 of concrete solution directions, each named after the principle behind it,
@@ -26,15 +27,16 @@ user before you continue. Examples: "What gets worse when you improve
 that?", "Is the cost in latency or in throughput?", "What must stay as it
 is?"
 
-Five files sit beside this file. Read each when its step says so.
+Five files sit beside this file. Read each at the point its row names, and
+not before.
 
-| File | What it holds |
-| --- | --- |
-| `references/parameters.md` | the 39 engineering parameters, with a reading of each for software |
-| `references/principles.md` | the 40 inventive principles, with a reading of each for software |
-| `references/matrix.md` | the classic contradiction matrix, one line per cell |
-| `references/ariz-85c.md` | ARIZ-85C, part by part |
-| `references/sources.md` | where each of the others was read from, and what was not verified |
+| File | What it holds | Read when |
+| --- | --- | --- |
+| [`references/parameters.md`](references/parameters.md) | the 39 engineering parameters, with a reading of each for software | Step 5, to map both sides of a technical contradiction |
+| [`references/principles.md`](references/principles.md) | the 40 inventive principles, with a reading of each for software | Step 4 for whose separation set it is, Step 7 for each recommended principle, and Step 9 if the principles are tried at ARIZ step 5.3 |
+| [`references/matrix.md`](references/matrix.md) | the classic contradiction matrix, one line per cell | Step 6: search it for one line, and never read it whole |
+| [`references/ariz-85c.md`](references/ariz-85c.md) | ARIZ-85C, part by part | Step 9, after Step 8 escalates |
+| [`references/sources.md`](references/sources.md) | where each of the others was read from, and what could not be opened | when the user asks where a cell, a principle or a formula comes from |
 
 ## Step 1: state the contradiction
 
@@ -173,7 +175,7 @@ say which parts were not walked.
   dropped.
 - A problem with no trade-off in it is not a TRIZ problem, and Step 1
   says so before any lookup.
-- A root cause hidden behind many symptoms belongs to the `toc-thinking`
-  skill from the same marketplace, which builds the cause-and-effect tree.
-  Hand over when the user's problem is a tangle of symptoms rather than a
-  trade-off, and only if that skill is installed.
+- A root cause hidden behind many symptoms belongs to the `root-cause`
+  skill of this marketplace's `toc-thinking` package, which builds the
+  cause-and-effect tree. Hand over when the user's problem is a tangle of
+  symptoms rather than a trade-off, and only if that skill is installed.

@@ -136,8 +136,8 @@ Abstracts, from mirrors, read on 2026-09-24:
 ## Not read
 
 Named in the literature and not opened from the network this was written
-on. Titles are given as commonly cited and were not verified against the
-works. Nothing in this skill is quoted from them.
+on. Titles are given as commonly cited, not as read from the works.
+Nothing in this skill is quoted from them.
 
 - Chandler and Sweller, "Cognitive Load Theory and the Format of
   Instruction", *Cognition and Instruction* 8(4), 1991. The origin of the
@@ -208,5 +208,5 @@ for work on code and not any source's text:
   often not learning it.
 - The reading of the studies in `measures.md` as the paragraph that
   begins "What they support".
-- The hand-overs to the `design-review`, `triz` and `toc-thinking` skills
-  of this marketplace.
+- The hand-overs to the `red-flags`, `contradiction` and `root-cause`
+  skills of this marketplace.

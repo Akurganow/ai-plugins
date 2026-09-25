@@ -1,20 +1,20 @@
 ---
-name: cognitive-load
+name: extraneous
 description: >
-  Find what a reader must keep in mind at the same time to do a task in a
-  code base, a system or a process, sort it into the load the task needs
-  and the load the structure adds, and name the change that removes the
-  second. Draws its terms from cognitive load theory, read mostly as
-  abstracts and applied to code by analogy, and from a practitioner's
-  catalogue of extraneous load in code. Use when something is too complex
-  and nobody can say why, when a review or a change means reading too
-  many files, when newcomers stay confused, when someone says they cannot
-  hold it all in their head, when onboarding is slow, or when a bug takes
-  too long to locate in familiar code.
+  Diagnose what a reader must hold in mind at once to do a task in a code
+  base, a system or a process. Sort each element into the load the task
+  needs and the load the structure adds, and name the change that removes
+  the second. Use when something is too complex and nobody can say why.
+  Use when a review or a change means reading too many files, or when
+  someone says they cannot hold it all in their head. Use when newcomers
+  stay confused, when onboarding is slow, or when a bug takes too long to
+  find in familiar code. The terms come from cognitive load theory, applied
+  to code by analogy, and from a practitioner's catalogue of extraneous
+  load in code.
 license: MIT
 ---
 
-# Cognitive load
+# Extraneous
 
 You diagnose the load a task puts on its reader. The output is a list of
 places in the user's system. Each place carries the elements a reader
@@ -29,14 +29,15 @@ user before you continue. Examples: "Who reads this, and what do they
 already know?", "Where did the last newcomer get stuck, and for how
 long?", "What must a reader open to follow this call?"
 
-Four files sit beside this file. Read each when its step says so.
+Four files sit beside this file. Read each at the point its row names, and
+not before.
 
-| File | What it holds |
-| --- | --- |
-| `references/theory.md` | the theory as read: two loads, capacity, element interactivity, the effects, and where the theory stops |
-| `references/patterns.md` | the practitioner's catalogue of extraneous load in code, with what to look for |
-| `references/measures.md` | two published counts, and what the studies of programmers found |
-| `references/sources.md` | where each of the others was read, and what was not read |
+| File | What it holds | Read when |
+| --- | --- | --- |
+| [`references/theory.md`](references/theory.md) | the theory as read: two loads, capacity, element interactivity, the effects, and where the theory stops | Step 1 for Capacity, Step 3 for element interactivity and germane load, and Step 6 for the effects behind a change of presentation |
+| [`references/patterns.md`](references/patterns.md) | the practitioner's catalogue of extraneous load in code, with what to look for | Step 2 for the three long-run questions, and Step 4 before walking the catalogue |
+| [`references/measures.md`](references/measures.md) | two published counts, and what the studies of programmers found | Step 2 before naming a published default, and Step 5 when the user wants a number a tool can produce |
+| [`references/sources.md`](references/sources.md) | where each of the others was read, and what was not read | before stating any number, to name its source, and when the user asks where a statement comes from |
 
 ## Step 1: fix the reader and the task
 
@@ -64,8 +65,8 @@ features without learning unique mental models?
 Users say it in their own words. "I can't follow this without opening
 five files" answers the first question. "I don't know what else this will
 break" answers the second. "New hires take months" answers the third. "I
-changed twelve files for one feature" is change amplification, a
-`design-review` finding, and Step 7 says where it goes.
+changed twelve files for one feature" is change amplification, a finding
+for the `red-flags` skill, and Step 7 says where it goes.
 
 For each observation, get the place and the measure: which file or
 service, how many things had to be open, how long the confusion lasted.
@@ -182,18 +183,19 @@ Close with what the diagnosis did not cover:
 
 - A module whose interface is as wide as what it hides is a depth
   finding. One change that must touch many places is change
-  amplification. The `design-review` skill from the same marketplace
-  judges both in the book's terms. Hand over only if that skill is
-  installed.
+  amplification. The `red-flags` skill of this marketplace's
+  `design-review` package judges both in the book's terms. Hand over only
+  if that skill is installed.
 - A trade-off between two measured qualities, load against performance
-  or against flexibility, belongs to the `triz` skill from the same
-  marketplace. It resolves the trade-off with the contradiction matrix and
-  ARIZ. Hand over only if that skill is installed.
-- Many complaints with one unclear cause belong to the `toc-thinking`
-  skill from the same marketplace, which builds the cause-and-effect
-  tree. A change already decided that needs sequencing belongs to its
-  Prerequisite and Transition Trees. Hand over only if that skill is
+  or against flexibility, belongs to the `contradiction` skill of this
+  marketplace's `triz` package. It resolves the trade-off with the
+  contradiction matrix and ARIZ. Hand over only if that skill is
   installed.
+- Many complaints with one unclear cause belong to the `root-cause` skill
+  of this marketplace's `toc-thinking` package, which builds the
+  cause-and-effect tree. A change already decided that needs sequencing
+  belongs to its Prerequisite and Transition Trees. Hand over only if
+  that skill is installed.
 
 ## Boundaries
 

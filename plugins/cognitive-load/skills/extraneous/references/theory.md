@@ -41,7 +41,7 @@ below.
   information is presented to learners and is under the control of
   instructional designers". Neither the 1991 paper nor Sweller 1994, to
   which intrinsic load is also often attributed, was opened.
-- **Germane** load. Which paper introduced it was not verified. A search
+- **Germane** load. No primary text read here confirms which paper introduced it. A search
   engine's summary names Sweller, van Merriënboer and Paas, "Cognitive
   Architecture and Instructional Design", *Educational Psychology
   Review* 10, 1998. The abstract of that paper, read from a mirror,

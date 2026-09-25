@@ -7,8 +7,9 @@ description: >
   named. Use when symptoms are many and the cause is unclear, or when the
   same failure keeps coming back. Use when two requirements block each
   other. Use when a migration needs a plan, or when a proposed change needs
-  checking before it is built. Scrutinise every link of the five logic
-  trees with the published Categories of Legitimate Reservation.
+  checking before it is built. Scrutinise each sufficiency tree with the
+  published Categories of Legitimate Reservation, and each necessity arrow
+  by its assumption.
 license: MIT
 ---
 

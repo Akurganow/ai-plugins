@@ -1,5 +1,5 @@
 ---
-name: howp
+name: forecast
 description: >
   A personal probability dashboard. Turns what someone follows into
   measurable questions, binds them to prediction markets (Polymarket,

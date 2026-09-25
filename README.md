@@ -140,6 +140,8 @@ tools/templates/                  sources of generated text
 tools/schemas/                    vendored Agent Plugins manifest schema
 tools/package.json                pins doctoc for tools/regenerate.sh
 tools/package-lock.json           pins doctoc's dependency tree
+docs/clients.md                   how each client loads a package, with sources
+docs/design.md                    why the repository is built this way
 cog.toml                          release configuration, one entry per package
                                   but howp
 .github/                          CI workflows and issue forms
@@ -182,6 +184,10 @@ install command above cites that client's own source.
 
 ## Client notes
 
+What each client reads from a package, with sources, is in
+[docs/clients.md](docs/clients.md). The reasons behind this layout are in
+[docs/design.md](docs/design.md).
+
 Each note names its source and says whether it is documentation or source
 code. A link into a repository points at the commit at which the note holds.
 
@@ -201,11 +207,10 @@ code. A link into a repository points at the commit at which the note holds.
 
 ### Codex
 
-- Codex reads a root `plugin.json` that declares the Agent Plugins schema.
-  Source: [Build plugins](https://developers.openai.com/plugins/build/plugins),
-  documentation, read 2026-09-25.
 - The ChatGPT desktop app can read `.claude-plugin/marketplace.json` as a
-  legacy-compatible marketplace. Source: the same page. The Codex CLI also
+  legacy-compatible marketplace. Source:
+  [Build plugins](https://developers.openai.com/plugins/build/plugins),
+  documentation, read 2026-09-25. The Codex CLI also
   looks for a catalogue at that path. Source:
   [`marketplace.rs`](https://github.com/openai/codex/blob/e3e5ad28470f6a225301518c30a66e749a880164/codex-rs/core-plugins/src/marketplace.rs#L23),
   source code.
@@ -235,22 +240,12 @@ code. A link into a repository points at the commit at which the note holds.
   [`docs/context-files.md`](https://github.com/can1357/oh-my-pi/blob/a33cc26824e3c91edd9fa42d681f10dceb4ac2f0/docs/context-files.md)
   and [`docs/config-usage.md`](https://github.com/can1357/oh-my-pi/blob/a33cc26824e3c91edd9fa42d681f10dceb4ac2f0/docs/config-usage.md),
   documentation.
-- For a package that declares the standard, the `claude-plugins` provider
-  stands down for skills and MCP servers. Each skill therefore loads once.
-  Source: `legacyProviderAllowed` in
-  [`agent-plugin-format.ts`](https://github.com/can1357/oh-my-pi/blob/a33cc26824e3c91edd9fa42d681f10dceb4ac2f0/packages/coding-agent/src/discovery/agent-plugin-format.ts),
-  source code.
 
 ### Hermes
 
 - Hermes reads no per-repository catalogue. It installs a package by
   identifier, and its community index is `NousResearch/hermes-plugin-index`.
   Source: [`user-guide/features/plugins.md`](https://github.com/NousResearch/hermes-agent/blob/a0ca7c19204e514f9590ce3b812e029b315ab9e9/website/docs/user-guide/features/plugins.md),
-  documentation.
-- Hermes loads a subset of the format: root `plugin.json`, `skills/` and
-  `mcp.json`. Its documentation calls this "an explicit supported subset, not a
-  claim of full Agent Plugins conformance". Source:
-  [`developer-guide/plugins/index.md`](https://github.com/NousResearch/hermes-agent/blob/a0ca7c19204e514f9590ce3b812e029b315ab9e9/website/docs/developer-guide/plugins/index.md),
   documentation.
 - In the desktop app, a `hermes://plugin/install?repo=owner/repo` link
   installs a plugin after a confirmation dialog. An agent-plugin install from

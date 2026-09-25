@@ -52,6 +52,14 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
         client: [claude, codex, omp, hermes]
+        exclude:
+          # Hermes 0.21.5's installer failed on the windows-latest image in run 36183358181:
+          # error: Your local changes to the following files would be overwritten by checkout:
+          # [X] Installation failed: git checkout f97608f178d1ffeca59860195ab7da295f7c8e5f failed (exit 1)
+          # install.ps1 clones upstream main before checking out the pinned commit.
+          # The result therefore depends on upstream at run time.
+          - os: windows-latest
+            client: hermes
     runs-on: ${{ matrix.os }}
     timeout-minutes: 30
     defaults:

@@ -128,7 +128,7 @@ Present two to four directions, ranked by how directly each removes the
 contradiction. Name the principle behind each. When a principle does not
 fit, say so and drop it.
 
-## Step 8: iterate or escalate
+## Step 8: iterate or hand over
 
 Ask the user which direction holds, whether the contradiction should be
 restated, and what constraint was missed. Repeat from Step 1 when the

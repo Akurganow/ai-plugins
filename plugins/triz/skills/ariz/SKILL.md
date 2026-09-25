@@ -32,12 +32,12 @@ package, and this skill reads them where they are.
 | File | What it holds | Read when |
 | --- | --- | --- |
 | [`references/ariz-85c.md`](references/ariz-85c.md) | ARIZ-85C part by part, with the formulas quoted and a software gloss under each step | before Part 1, and again at each part as you reach it |
-| [`../contradiction/references/principles.md`](../contradiction/references/principles.md) | the 40 inventive principles, with a reading of each for software | Step 2, if ARIZ step 5.3 tries them; ARIZ step 9.2, to compare the solution with them |
+| [`../contradiction/references/principles.md`](../contradiction/references/principles.md) | the 40 inventive principles, with a reading of each for software | Step 2, when the user wants them tried at ARIZ step 5.3; ARIZ step 9.2, to compare the solution with them |
 | [`../contradiction/references/sources.md`](../contradiction/references/sources.md) | where each reference of both skills was read, and what could not be opened | when the user asks where a formula or a step comes from |
 
 ## Step 1: take the problem in
 
-Start from what the user brings. When the `contradiction` skill handed
+Start from what the user brings. When the `contradiction` skill hands
 the problem over, it passes the technical contradiction, the ideal final
 result and the reason for the hand-over. Keep them in view. ARIZ restates
 the problem in its own form in Part 1 all the same.

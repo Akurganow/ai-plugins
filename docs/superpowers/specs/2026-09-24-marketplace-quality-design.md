@@ -120,7 +120,12 @@ those sources is a finding of a new kind, `external-disagreement`, filed like th
   generator this spec names: the catalogue and the README table (jq), the description and
   Install regions of the package READMEs (§5.1), the package LICENSEs (§5.2, `cp` from the
   root), the TOCs (§5.4, `doctoc`), the rules region of the prose-discipline skill and the
-  Hermes `skills.auto_load` snippet in its README (§5.5). It calls ready-made tools and contains no logic of its own beyond their order.
+  Hermes `skills.auto_load` snippet in its README (§5.5). It calls ready-made tools (`jq`,
+  `doctoc`, `shasum`, `cp`) and owns only what no tool provides: the marker contract
+  (replace the lines between `<!-- x:start -->` and `<!-- x:end -->`), the front-matter
+  strip, the Hermes namespace derivation from the package name, and the choice of files
+  that get a table of contents. Reviewed on 2026-09-25 against the written script; the
+  owner chose to state this rather than move the same logic into a Node script.
   `CONTRIBUTING.md` documents that one command. CI runs the same command and then
   `git diff --exit-code`; the step's failure message names the command to run. No other
   step compares a generated file. `.agents/rules/conformance.md` "Text only" names the

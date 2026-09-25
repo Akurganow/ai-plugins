@@ -75,7 +75,7 @@ the change costs, and a check with a newcomer.
 | [`skills/extraneous/references/theory.md`](skills/extraneous/references/theory.md) | cognitive load theory as read: origin, two loads, capacity, element interactivity, the effects, and where the theory stops |
 | [`skills/extraneous/references/patterns.md`](skills/extraneous/references/patterns.md) | the essay's catalogue, section by section in its own words, with what to look for |
 | [`skills/extraneous/references/measures.md`](skills/extraneous/references/measures.md) | Cognitive Complexity, Intrinsic Complexity Points, and what the studies of programmers found |
-| [`skills/extraneous/references/sources.md`](skills/extraneous/references/sources.md) | for each reference, where the package's author read it, at which commit, whether only as an abstract, and what stays unread |
+| [`skills/extraneous/references/sources.md`](skills/extraneous/references/sources.md) | for each reference, the public copy and commit it rests on, whether only its abstract was open, and what stays unread |
 | [`plugin.json`](plugin.json) | the Agent Plugins 1.0.0 manifest |
 | [`.claude-plugin/plugin.json`](.claude-plugin/plugin.json) | a byte-identical copy of `plugin.json` at the one manifest path Claude Code documents ([documentation](https://code.claude.com/docs/en/plugins-reference), "Plugin manifest schema") |
 | [`LICENSE`](LICENSE) | the MIT license |
@@ -85,8 +85,8 @@ The package has no script, hook, rule file or network access.
 The catalogue is Artem Zakirullin's essay "Cognitive load is what
 matters", under CC BY 4.0. `sources.md` records the essay as read whole
 at the commit it names, and the theory mostly as abstracts.
-`sources.md` says, for each paper, whether the package's author opened
-its abstract, its full text or nothing.
+`sources.md` records, for each paper, whether it rests on the abstract,
+the full text or nothing.
 
 ## Boundaries
 

@@ -84,8 +84,9 @@ finding names the change, its cost and the chapter it rests on.
 The package has no script, hook, rule file or network access.
 
 The book is under copyright, and `sources.md` records no bought copy of
-either edition. It records the sixteen principles verbatim from three
-public copies that agree, and the fourteen red flags from one. Chapter
+either edition. It records the sixteen principles from one public copy,
+checked item by item against two more that agree, and the fourteen red
+flags from one. Chapter
 quotations are a few sentences at most, from two public translation
 repositories that carry the English. `sources.md` names each copy by
 commit. The second edition lists sixteen principles and the first lists

@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "cognitive-load",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Separates the cognitive load a task needs from the load a code base's structure adds, and names the change that removes the second.",
   "author": {
     "name": "Alexander Kurganov",

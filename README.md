@@ -302,7 +302,7 @@ plugins/<name>/
   plugin.json                      the manifest — Agent Plugins 1.0.0, at the plugin root
   .claude-plugin/plugin.json       symlink → ../plugin.json, Claude's documented manifest
                                    path; it holds no content of its own
-  README.md                        every package but howp: what it does, what ships,
+  README.md                        every package: what it does, what ships,
                                    what has and has not been verified
   binaries.json                    howp only. The released binary set: tag, targets,
                                    archives, download URLs and their sha256 digests.

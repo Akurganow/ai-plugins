@@ -36,10 +36,11 @@ act on, and the standing rule is that a claim names where it was read.
   own output, or it names the tag and date it was measured against. Prose
   that restates a property of the current build is not corrected at the next
   release — nothing in the release path can correct it — so it is not written
-  that way. The release bot rewrites three files — `binaries.json`,
-  `plugin.json`'s `version`, and the skill's `references/commands.md`; every
-  other sentence about what ships stays exactly as it was, and a reader cannot
-  tell a fresh one from one the last release falsified. For every package
+  that way. The howp release bot rewrites four files — `binaries.json`,
+  `plugin.json`'s `version`, the `forecast` skill's `references/commands.md`,
+  and the `.claude-plugin/plugin.json` byte copy. Every other sentence about
+  what ships stays exactly as it was, and a reader cannot tell a fresh one
+  from one the last release falsified. For every package
   but howp, `.github/workflows/release.yml` rewrites `version` in
   `plugin.json` and in its `.claude-plugin/plugin.json` copy, and
   `CHANGELOG.md`, and no other file.

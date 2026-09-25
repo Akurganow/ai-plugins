@@ -329,9 +329,9 @@ Hand at most ~8 candidates to triage.
   it (`noise`), against the check and the tree (`lying`), and for
   passages that describe an update rather than the thing (`residue`).
 - **The skills.** Every `plugins/*/skills/*/SKILL.md` and its
-  `references/`, and every plugin's own README — except
-  `references/commands.md` under `howp`, which the release writes and
-  nobody judges here. A step the procedures describe against what the
+  `references/`, and every plugin's own README — except the `forecast`
+  skill's `references/commands.md`, which the release writes and nobody
+  judges here. A step the procedures describe against what the
   text beside it says the binary or the rule does.
 - **The check.** `tools/check-conformance.py`: every comment against the
   code below it (`noise`), every hand check against the clause quoted

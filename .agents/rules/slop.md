@@ -74,8 +74,9 @@ Never a finding:
   workflow's comments say why a commit sha and not a tag. Other reviews
   read these as evidence.
 - **What a release writes.** `version` in `plugins/howp/plugin.json`,
-  `plugins/howp/binaries.json` and
-  `plugins/howp/skills/howp/references/commands.md` are machine-written,
+  `plugins/howp/binaries.json`,
+  `plugins/howp/skills/forecast/references/commands.md` and the
+  `plugins/howp/.claude-plugin/plugin.json` byte copy are machine-written,
   and `conformance.md` says by whom. A wrong sentence in one is a defect of
   the release job, in the repository that runs it — never judged here.
   For every package but howp, `version` in `plugins/<name>/plugin.json` and

@@ -123,11 +123,13 @@ The rules that decide whether a client loads a package at all:
 
 ## Versions
 
-`version` in `plugins/howp/plugin.json`, the whole of
+The release job that builds and publishes the binaries writes four files.
+It writes `version` in `plugins/howp/plugin.json`, the whole of
 `plugins/howp/binaries.json` and
-`plugins/howp/skills/howp/references/commands.md` are written by the release
-job that builds and publishes the binaries, and by nothing else. **Nobody
-edits any of the three by hand, ever.** Each is a claim about a released
+`plugins/howp/skills/forecast/references/commands.md`, and nothing else writes
+them. It also writes `plugins/howp/.claude-plugin/plugin.json` as a byte copy
+of `plugin.json`; `tools/regenerate.sh` would write the same bytes. **Nobody
+edits any of the four by hand, ever.** Each is a claim about a released
 artifact: a hand edit asserts a version, a digest or a target that no
 release produced, and the next release overwrites it without noticing.
 Every package but howp is released by `.github/workflows/release.yml`,

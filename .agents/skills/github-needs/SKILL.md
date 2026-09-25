@@ -5,9 +5,10 @@ description: "What an unattended analysis run of this repository needs from GitH
 
 # What a run needs from GitHub
 
-Five analysis roles read this file: the Issue Court, the Tracker Clerk,
-the Repo Police, the Slop Police and the Agent Police. The four pipeline
-roles read its first section, which `pipeline-law` cites.
+Five roles read this file. The four analysis roles are the Issue Court,
+the Tracker Clerk, the Repo Police and the Slop Police. The fifth is the
+Agent Police, which patrols the other eight roles. The four pipeline roles
+read its first section, which `pipeline-law` cites.
 
 It names **what** a run needs and never **how** it is reached.
 `.agents/rules/unattended.md` owns that rule: a run reaches GitHub through

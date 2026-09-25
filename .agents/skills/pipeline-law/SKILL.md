@@ -127,6 +127,8 @@ that accumulates.
 
 | Label | Added by | Removed by |
 | :-- | :-- | :-- |
+| `pipeline/intake` | the tracker Clerk, on a sustained finding still live; the owner | Clerk, when it takes the item |
+| `police-report` | every filer; Clerk, on a part it creates | nobody; it marks the population for good |
 | `pipeline/queued` | Clerk, at skeleton birth | Clerk, at promotion |
 | `spec/needs-work` | Clerk at promotion; Reviewer; the gate; the sweep | Writer, at the end of a revision; the sweep |
 | `spec/awaiting-review` | Writer; the sweep | Reviewer; the sweep |
@@ -145,8 +147,7 @@ Labels the pipeline reads but does not own are conventions, never guards:
 `court/tried`, `triage/*`, `audit:*`, `no-trial`. Every skip test is
 positive and built from the pipeline's own markers.
 
-`police-report` is the one label that bounds which issues the pipeline sees. With
-the fingerprint line it marks the machine population, defined once in
+The pipeline sees only the machine population, defined once in
 `.agents/skills/github-needs/SKILL.md` under **The machine population**.
 Read the definition there. Every issue a pipeline role lists, reads, labels
 or splits is in that population.

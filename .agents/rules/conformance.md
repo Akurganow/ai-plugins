@@ -85,9 +85,9 @@ The rules that decide whether a client loads a package at all:
 - The manifest is a real file at the plugin root. A vendor discovery path
   inside the package is a byte-identical copy of it, written by the
   regeneration entry point, `tools/regenerate.sh`. The check compares the
-  two byte for byte. §5.1 is explicit that "No other file can replace,
-  supplement, or override the core fields in root `plugin.json`", and an
-  identical copy overrides nothing. The copy is not a symlink. Git for
+  two byte for byte. §5.1 says: "No other file can replace, supplement, or
+  override the core fields in root `plugin.json`." An identical copy
+  overrides nothing. The copy is not a symlink. Git for
   Windows disables symbolic links by default
   ([Git for Windows](https://gitforwindows.org/symbolic-links),
   documentation). With them off, git checks a link out as a plain file
@@ -101,7 +101,7 @@ The rules that decide whether a client loads a package at all:
   [`plugin_namespace.rs`](https://github.com/openai/codex/blob/e3e5ad28470f6a225301518c30a66e749a880164/codex-rs/utils/plugins/src/plugin_namespace.rs),
   pinned by its own `rejects_symlinked_root_plugin_manifest` test. That one
   is **from source**. The `plugin_namespace.rs` link is a commit permalink,
-  not a branch — a claim about code that moves has to name the revision it
+  not a branch. A claim about code that moves has to name the revision it
   was true at. Codex's plugin documentation,
   [Build plugins](https://developers.openai.com/plugins/build/plugins.md)
   (documentation, read 2026-09-25), does not mention a symlinked manifest.
@@ -128,7 +128,7 @@ It writes `version` in `plugins/howp/plugin.json`, the whole of
 `plugins/howp/binaries.json` and
 `plugins/howp/skills/forecast/references/commands.md`, and nothing else writes
 them. It also writes `plugins/howp/.claude-plugin/plugin.json` as a byte copy
-of `plugin.json`; `tools/regenerate.sh` would write the same bytes. **Nobody
+of `plugin.json`; `tools/regenerate.sh` writes the same bytes. **Nobody
 edits any of the four by hand, ever.** Each is a claim about a released
 artifact: a hand edit asserts a version, a digest or a target that no
 release produced, and the next release overwrites it without noticing.

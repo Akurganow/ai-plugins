@@ -13,7 +13,10 @@ than asserted.
 
 ## The two things that make a change unmergeable
 
-- `tools/check-conformance.py` does not exit 0.
+- A job of `.github/workflows/conformance.yml` fails. `check` runs
+  `tools/check-conformance.py`, the regeneration diff and the size bound.
+  `commits` checks a pull request's commits. `validate-claude`,
+  `validate-skills` and `validate-hermes` run the client validators.
 - A claim about a client is stated without naming where it was read.
 
 The first is mechanical and CI enforces it. The second is not mechanical,

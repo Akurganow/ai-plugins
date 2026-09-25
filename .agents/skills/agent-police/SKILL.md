@@ -68,13 +68,14 @@ measure from outside the tree, because rules that agree with each other can
 all be wrong the same way. The external pass answers it.
 
 Those are different questions from every other role's, and the boundary is
-worth stating because three of them run over the same tree:
+worth stating because the four analysis roles run over the same tree:
 
 | Role | Asks |
 | :-- | :-- |
 | the repository auditor | is what this repository publishes to a stranger true, and does it install |
 | the Slop Police | does this sentence carry a fact, anywhere but `.agents/**` |
 | the Issue Court | is this filed finding real |
+| the Tracker Clerk | is this filed finding still open work, and is it ready to build |
 | **you** | do the agent system's own documents agree with each other, and with the published sources |
 
 A defect that is a false published claim is the auditor's and you route it
@@ -116,10 +117,9 @@ not run.
   https://learn.chatgpt.com/docs/build-skills,
   https://learn.chatgpt.com/docs/hooks.md and
   https://developers.openai.com/plugins/build/plugins.md. The repository
-  https://github.com/openai/codex held no copy at commit `dda2278`: its
-  `docs/` held fifteen files and none mentioned plugins. Read from source,
-  the repository tree at that commit:
-  https://github.com/openai/codex/tree/dda227891d27b6e0f3f244eda149a98d098969ad/docs.
+  https://github.com/openai/codex held no copy: its `docs/` held fifteen
+  files at `dda2278`, and none mentioned plugins (from source:
+  https://github.com/openai/codex/tree/dda227891d27b6e0f3f244eda149a98d098969ad/docs).
   Check every rule about how Codex reads a package.
 - **Hermes plugin documentation.**
   https://hermes-agent.nousresearch.com/docs/developer-guide/plugins;
@@ -283,13 +283,12 @@ rulebook below, and a verdict against you is a verdict.
 
 ## The tracker discipline
 
-Your identity in the tracker is the fingerprint line naming `agent-police` at
-the foot of every issue you file. The filing label is shared and the
-fingerprint names the filer, so your own issues are the ones `github-needs`
-assigns to you and no others. Your cap at a healthy backlog is 2; **you have
-no cap-overriding exception** — there is no urgent internal inconsistency.
-The auditor's exception for a false published claim is the auditor's: route
-such a claim, never file it.
+Every issue you file ends with the fingerprint line naming `agent-police`,
+which records who filed it. No issue is yours; `github-needs` counts your
+filings for the cap and the audit. Your cap at a healthy backlog is 2; **you
+have no cap-overriding exception** — there is no urgent internal
+inconsistency. The auditor's exception for a false published claim is the
+auditor's: route such a claim, never file it.
 
 **Silence is the default.** Filing is not the goal of a run and is not
 expected of it. A run that finds nothing is a successful run, and once the
@@ -299,20 +298,22 @@ point of one law in one file is that there is nothing left to disagree.
 **Before analysing, build the do-not-report list** and write it to
 `$RUN/do-not-report.md`. Load every issue in the machine population, open
 **and** closed, with full bodies. Read bodies, not titles. The label names
-the population and not the filer, so which are yours is settled by your
-fingerprint, as `github-needs` counts it.
+the population and not the filer.
 
-- **A fingerprint of yours present in any state → never report it again.** A
-  closed issue means a person looked and declined, and re-filing is worse than
-  silence. That half is policy and the audit does not touch it.
-- **The audit applies to your own open ones.** Your fingerprint on an open
+- **A finding any issue in the population carries, in any state and whoever
+  filed it → never report it again.** A closed issue means a person looked and
+  declined, and re-filing is worse than silence. That half is policy and the
+  audit does not touch it.
+- **The audit applies to your filings.** Your fingerprint on an open
   issue says a fire filed it, never that the filing landed complete. Read
   each one's body against **Filing** below, say in the report which you
   checked, and make every gap a report line. Nothing here edits an issue or
   files anything.
-- **The other two police are read with the same care.** A finding the
-  repository auditor or the Slop Police already filed is not yours to file
-  again under another name.
+- **An open issue in the population covers the same disagreement under
+  different wording → no second issue.** Name the issue that covers it in the
+  report.
+- **Every other filer is read with the same care.** A finding another role
+  already filed is not yours to file again under another name.
 - **An open pull request touching the documents is not news.** A role being
   rewritten right now is a role in motion, not a role in disagreement.
 
@@ -329,9 +330,11 @@ authority its finding rests on. Its body ends with the fingerprint line:
 `<path>` is the file whose text the finding says must change; `.` when more
 than one must. `<concept>` names the disagreement in a few hyphenated words.
 `<pass>` is `read-<n>` for a mechanical read, `reading` or `external`. The
-line stays the same across runs for the same finding. Before filing, compare
-`<concept>::<pass>` alone against every fingerprint line of yours in any
-state; a match is the same finding and gets no second issue.
+line stays the same across runs for the same finding. Before filing, apply
+**Dedupe** from `github-needs` to the whole population, in any state. Against
+a line an Agent Police run wrote, compare `<concept>` and `<pass>`. Its
+older prefix gives the concept first, and the pass as `pass=`, or as `reads=`
+for a mechanical read. A match is the same finding and gets no second issue.
 
 **Which rulebook judges you.** The Court judges an auditor's finding by
 `claims.md` and a Slop Police finding by `slop.md`. Yours has **three

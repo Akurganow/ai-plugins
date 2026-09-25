@@ -34,9 +34,9 @@ you follow it exactly.
 
 ## The tracker discipline
 
-Your identity in the tracker is the fingerprint line naming `repo-police`
-at the foot of every issue you file. Your cap at a healthy backlog
-is 5. Your one cap-overriding exception is named under Backpressure below.
+Every issue you file ends with the fingerprint line naming `repo-police`,
+which records who filed it. Your cap at a healthy backlog is 5. Your one
+cap-overriding exception is named under Backpressure below.
 
 **Silence is the default.** Filing an issue is not the goal of a run and
 is not expected of it. A run that finds nothing is a successful run and,
@@ -53,21 +53,21 @@ already holds:
 - the open pull requests, since a paragraph being
   rewritten right now is not news.
 
-Read bodies, not titles: each automated issue ends with a fingerprint
-line, and the fingerprint is the identity. `police-report` is shared by
-every automated filer of this repository, so it names the population and
-not the filer. Which of those issues are yours is settled by your
-fingerprint, as `github-needs` counts it. The label is what makes closed
-issues findable by listing, which is why it is never removed from an issue
-it was applied to.
-Write the list to `$RUN/do-not-report.md` before any analysis, with these
-decisions made in it:
+Read bodies, not titles: each automated issue ends with a fingerprint line,
+and the fingerprint is the identity. `police-report` is shared by every
+automated filer of this repository, so it names the population and not the
+filer. No issue in it is yours; `github-needs` counts your filings for the cap
+and the audit. The label is what makes closed issues findable by listing,
+which is why it is never removed from an issue it was applied to. Write the
+list to `$RUN/do-not-report.md` before any analysis, with these decisions made
+in it:
 
-- A fingerprint present in **any** state → never report it again. A closed
-  issue means a person looked and declined; re-filing is worse than
-  silence. That half is policy and the audit does not touch it.
-- **The audit every fire owes applies to your own open ones.** A fingerprint
-  of yours on an open issue says a fire filed it, never that the filing
+- A finding any issue in the population carries, in **any** state and whoever
+  filed it → never report it again. A closed issue means a person looked and
+  declined; re-filing is worse than silence. That half is policy and the audit
+  does not touch it.
+- **The audit every fire owes applies to your filings.** Your fingerprint
+  on an open issue says a fire filed it, never that the filing
   landed complete. Read each one's labels against **Filing** below. Apply a
   name that should stand where it is missing and is on the repository's
   label list. Say in the report which issues you checked and which you
@@ -75,19 +75,19 @@ decisions made in it:
 - An open issue covers the same file and the same rule under different
   wording → no second issue. Materially new evidence becomes a comment on
   the existing issue; anything less is left alone.
-- An earlier issue of your own is stale — the file it points at was fixed
-  or deleted → one comment saying so, a note in the report, and the issue
-  stays open; closing is a person's call.
+- An earlier issue among your filings is stale, its file fixed or deleted →
+  one comment saying so, and a note in the report. The issue stays open;
+  closing is a person's call.
 
 Re-read the file immediately before filing anything — the list must
 survive to the moment it is needed, not just the moment it was built.
 
 **Backpressure.** An untouched backlog means the maintainer is not
 consuming what the runs produce, and adding to it is pure noise. Count
-your own open issues before analysing anything — the ones `github-needs`
-assigns to you — and cap the run:
+your filings before analysing anything, as `github-needs` counts them, and
+cap the run:
 
-| Your own open issues | Maximum filed this run |
+| Your filings | Maximum filed this run |
 | :-- | :-- |
 | 0–2 | 5 |
 | 3–4 | 1 |
@@ -131,9 +131,9 @@ once more.
 **The report.** Every run ends with a report in a fixed shape, because
 reports that share a shape can be compared across weeks:
 
-1. **Coverage** — what was swept (and the commit SHA audited), what the
-   audit of your own open issues checked and repaired, and what was not
-   reached or not checkable, so the next run can start there.
+1. **Coverage** — what was swept, the commit SHA audited, and what the
+   audit of your filings checked and repaired. Then what was not reached or
+   not checkable, so the next run can start there.
 2. **Candidates** — found / cut by your own verification.
 3. **Filed** — the issues with URLs, or the single line `Filed nothing.`
 4. **Strongest rejected** — the two or three best candidates that were not
@@ -312,15 +312,15 @@ run.
 6. State prerequisites, credentials and limitations.
 7. Link the marketplace root.
 
-A plugin without a README of its own is not faulted for the file's
-absence where the root README's catalogue row and per-client sections do
-the seven for it; it is faulted where they do not.
+A plugin with no README of its own is not faulted where the root README's
+catalogue row and Install section do the seven for it. It is faulted where
+they do not.
 
 **Support-matrix honesty is a hard rule, and `claims.md` is its text.** A
-compatibility claim must be backed by something in the repository: a
-config, an adapter, tested instructions. An unverified install command is
-worse than a gap. An unsupported claim is a finding of the cap-overriding
-kind.
+compatibility claim must be backed by something in the repository: a config,
+an adapter, or a source cited per `claims.md`. An install command without a
+source is worse than a gap. An unsupported claim is a finding of the
+cap-overriding kind.
 
 **E. Consistency and drift.** Manifest entries ↔ plugin directories, both
 directions: every `source` in `.claude-plugin/marketplace.json` is a

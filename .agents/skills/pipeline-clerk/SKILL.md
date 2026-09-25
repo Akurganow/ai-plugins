@@ -38,7 +38,7 @@ one before it: the sweep, the code-review round, then intake.
 
 The labels you may apply are `pipeline/queued`, `spec/needs-work`,
 `spec/awaiting-review`, `spec/approved`, `pipeline/code-review`,
-`ready-for-human` and `pipeline/stuck`, and `police-report` on a part you
+`ready-for-human`, `pipeline/stuck`, and `police-report` on a part you
 create. A missing name is a hard stop for the duty that needed it, not for
 the whole fire. Say which in the report.
 
@@ -386,8 +386,9 @@ item is open, whatever else is parked.
    hierarchy. A `pipeline-decomposition` comment naming any `unattached=`
    part means that family is broken: drop the issue and its parts, write
    one report line, and touch nothing. A broken family waits for the owner.
-3. One that has parts is already split, and is never built itself.
-   Replace it in the list with its open parts, in the parent's order.
+3. One that has parts is already split, and is never built itself. Replace it
+   in the list with its open parts in the machine population, in the parent's
+   order. A part outside it is a report line.
 4. Read each candidate's full body, never its title alone.
 5. Drop any whose number already appears in the `sources=` of a pipeline
    pull request's fingerprint, open or closed. A closed one means the item

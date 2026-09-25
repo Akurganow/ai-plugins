@@ -24,19 +24,34 @@ and points here; none restates it.
 An issue is in the machine population when both hold:
 
 - it carries the label `police-report`;
-- its body carries the fingerprint line, an HTML comment of the form
-  `<!-- police-fingerprint: <role> <value> -->`. `<role>` is the skill name
-  of the role that filed it. `<value>` is that role's identity for the
-  finding, in the form its skill gives.
+- its body carries a fingerprint line. That is an HTML comment on a line of
+  its own that begins `<!-- `, outside any code block. Its text begins with
+  `police-fingerprint:`, `repo-audit-routine:`, `slop-police-fingerprint:`,
+  `agent-police-fingerprint:` or `special-police-fingerprint:`.
 
-An open issue carrying `police-report` and one of three older markers is in
-the population too, until it is closed. Each marker belongs to one role:
-`repo-audit-routine:` to `repo-police`, `slop-police-fingerprint:` to
-`slop-police`, and `agent-police-fingerprint:` to `agent-police`. Every
-filer writes only the fingerprint line.
+A marker quoted in a sentence or in a code block counts for nothing.
 
-A role's own issues are the issues in the population whose fingerprint line
-names that role, or whose older marker belongs to it.
+Every filer writes `<!-- police-fingerprint: <role> <value> -->`. `<role>` is
+the skill name of the role that filed it. `<value>` is the finding's
+identity, in the form the filer's skill gives. The four other prefixes
+stand on issues already filed, and no filer writes them.
+
+**No issue belongs to a role.** `<role>` records who filed, and grants
+nothing. Every role that reads the tracker lists the whole population. The
+three police, the Issue Court and both Clerks do.
+
+**Dedupe.** A filer files nothing whose finding an open issue in the
+population already carries. That holds whatever role filed it and whatever
+its line's prefix. A finding is the same when its fingerprint value names the
+same file and concept. It is also the same when the issue states the same
+defect in other words.
+
+**A role's filings** are the open issues in the population whose `<role>`
+names it. They set its backpressure cap and the filing audit its skill
+gives, and nothing else. An older prefix counts for one role:
+`repo-audit-routine:` for `repo-police`, `slop-police-fingerprint:` for
+`slop-police`, and `agent-police-fingerprint:` for `agent-police`.
+`special-police-fingerprint:` counts for no role.
 
 No other issue exists for any role. No role lists it, reads it, comments
 on it, labels it or closes it.

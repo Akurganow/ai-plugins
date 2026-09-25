@@ -481,9 +481,9 @@ accepted is the tree the code review and the owner will read.
        - the spec and plan as they stood:
          https://github.com/Akurganow/ai-plugins/blob/<predelete>/.agents/specs/<ITEM>/spec.md
 
-   Keep the whole state block at the foot, the fingerprint line included. It
-   is the item's identity and what keeps the analysis roles from re-filing
-   this finding.
+   Keep the whole state block at the foot, the `pipeline-work-fingerprint`
+   line included. It is the item's identity. Its `sources=` stops the pipeline
+   Clerk taking the source issues again, at intake step 5.
 
    The fourth section is the one thing in the handover that cannot be
    skipped. It is the owner's checklist of what no command here can prove.

@@ -1,8 +1,9 @@
 name: conformance
 
-# Runs the repository's two checks: the Agent Plugins 1.0.0 conformance check,
-# and that every generated file equals what its source produces. One short job
-# on a hosted Linux runner, no services, no model calls.
+# Runs the repository's checks and the validators its clients publish. The
+# checks are Agent Plugins 1.0.0 conformance and that every generated file
+# equals what its source produces. The validators are those of Claude Code,
+# Agent Skills and Hermes. Hosted Linux runners, no services, no model calls.
 #
 # `push` is restricted to `main`. Without that restriction a pull request from
 # a branch in this repository triggers the workflow twice — once for the push
@@ -23,8 +24,8 @@ jobs:
       # can be moved to point at different code; the trailing comment records
       # which release each sha is.
       #
-      # Linux checkout keeps the `.claude/` and `CLAUDE.md` symlinks as
-      # symlinks, and the check verifies where they resolve.
+      # Linux checkout keeps symlinks as symlinks, so the check sees and
+      # judges any symlink a package adds.
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
 
       - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
@@ -63,3 +64,103 @@ jobs:
             echo "::error::Generated files differ from their sources. Run bash tools/regenerate.sh and commit the result."
             exit 1
           }
+
+      # The prose-discipline hook prints this file into the session. Codex
+      # spills hook context over its default 2500-token threshold to a file
+      # (https://learn.chatgpt.com/docs/hooks), so the rules stay under 8000 bytes.
+      - name: Keep the prose-discipline rules under 8000 bytes
+        run: |
+          f=plugins/prose-discipline/rules/prose-discipline.md
+          size=$(wc -c < "$f" | tr -d ' ')
+          if [ "$size" -ge 8000 ]; then
+            echo "::error file=$f::$f is $size bytes; the bound is under 8000 bytes. The prose-discipline hook prints this file, and Codex spills hook context over its default 2500-token threshold (https://learn.chatgpt.com/docs/hooks). Shorten the rules."
+            exit 1
+          fi
+          echo "$f is $size bytes; the bound is under 8000 bytes."
+
+  validate-claude:
+    runs-on: ubuntu-latest
+    # Keeps the pinned version the one that runs
+    # (https://code.claude.com/docs/en/setup, "Disable auto-updates").
+    env:
+      DISABLE_AUTOUPDATER: "1"
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+
+      # The npm package needs Node.js 22 or later
+      # (https://code.claude.com/docs/en/setup, "Install with npm").
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "22"
+
+      - name: Install Claude Code
+        run: |
+          npm install -g @anthropic-ai/claude-code@2.1.278
+          claude --version
+
+      # Without --strict: the Agent Plugins fields Claude Code does not know
+      # are warnings, and they stay in the log.
+      - name: claude plugin validate, per package
+        run: |
+          status=0
+          for dir in plugins/*/; do
+            echo "::group::claude plugin validate ${dir%/}"
+            claude plugin validate "${dir%/}" || status=1
+            echo "::endgroup::"
+          done
+          exit "$status"
+
+  validate-skills:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        with:
+          python-version: "3.12"
+
+      # skills-ref documents only a source install (skills-ref/README.md), so
+      # it is installed from its repository at a pinned commit (version 0.1.0).
+      - name: Install skills-ref
+        run: >-
+          python -m pip install --disable-pip-version-check
+          "skills-ref @ git+https://github.com/agentskills/agentskills@69ef37e9424c0a7ea9dd2293b559e43ec8176379#subdirectory=skills-ref"
+
+      - name: skills-ref validate, per skill
+        run: |
+          status=0
+          for dir in plugins/*/skills/*/; do
+            skills-ref validate "${dir%/}" || status=1
+          done
+          exit "$status"
+
+  validate-hermes:
+    runs-on: ubuntu-latest
+    env:
+      HERMES_COMMIT: f97608f178d1ffeca59860195ab7da295f7c8e5f # Hermes v0.21.5, tag v2026.9.24
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+
+      # The project's own installer, fetched and checked out at the pinned
+      # commit. --skip-setup and --skip-browser skip the wizard and Playwright.
+      - name: Install Hermes
+        run: |
+          curl -fsSL "https://raw.githubusercontent.com/NousResearch/hermes-agent/$HERMES_COMMIT/scripts/install.sh" \
+            | bash -s -- --commit "$HERMES_COMMIT" --skip-setup --skip-browser
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
+      - name: Check the Hermes version
+        run: hermes --version | tee /dev/stderr | grep -qF 'v0.21.5'
+
+      - name: hermes plugins validate and doctor, per package
+        run: |
+          status=0
+          for dir in plugins/*/; do
+            echo "::group::hermes plugins validate ${dir%/}"
+            hermes plugins validate "${dir%/}" || status=1
+            echo "::endgroup::"
+            echo "::group::hermes plugins doctor ${dir%/} --ci"
+            hermes plugins doctor "${dir%/}" --ci || status=1
+            echo "::endgroup::"
+          done
+          exit "$status"

@@ -1,8 +1,8 @@
 ---
 name: house-style
 description: >-
-  Apply this plugin's engineering prose standard to anything an agent
-  writes, from replies and code comments to commit messages and error
+  Apply the prose-discipline engineering prose standard to anything an
+  agent writes, from replies and code comments to commit messages and error
   messages. Use when writing or reviewing replies, docs, code comments,
   review comments, commit messages, change descriptions, error messages or
   agent instructions. Also use when asked to check, clean up, shorten or
@@ -15,6 +15,14 @@ license: MIT
 In Hermes, add this skill to `skills.auto_load` so the standard is active in
 every session. Hermes lists no plugin skill in its system prompt, so without
 that setting the rules below reach a session only when this skill is loaded.
+
+Source: Hermes documentation for `skills.auto_load`,
+[`cli.md`](https://github.com/NousResearch/hermes-agent/blob/749220ef0007f8d87bd1531f1c24b0fe93816385/website/docs/user-guide/cli.md) lines 297–310.
+Hermes documentation for plugin skills missing from the system prompt index,
+[`plugins/index.md`](https://github.com/NousResearch/hermes-agent/blob/749220ef0007f8d87bd1531f1c24b0fe93816385/website/docs/developer-guide/plugins/index.md)
+line 845. Hermes source for loading a skill by its qualified name,
+[`skill_commands.py`](https://github.com/NousResearch/hermes-agent/blob/749220ef0007f8d87bd1531f1c24b0fe93816385/agent/skill_commands.py) lines 165–192.
+
 Add these lines to the Hermes `config.yaml`, merging them into an existing
 `skills:` block:
 
@@ -95,8 +103,6 @@ the matching reference before writing or reviewing an artifact:
 - Lead with the answer, then the evidence.
 - Keep the language-neutral rules in every reply: one action per sentence,
   plain verbs, no hedging, no filler, no rhetorical negations.
-- Match reply length to the question. A one-fact question gets a
-  one-sentence answer.
 
 ## Writing artifacts
 
@@ -117,9 +123,8 @@ relative to this file:
 - `references/examples.md`: read when calibrating an audit, to name each
   finding after its closest before/after pair.
 
-When the host or repository defines a template for the artifact, the
-template outranks this standard's formats. The standard governs only
-the text that remains and never adds blocks on top.
+When a host or repository template governs the artifact, the standard
+never adds blocks on top of it.
 
 Produce the artifact in the governing format directly. No preamble and
 no closing commentary unless asked.
@@ -137,18 +142,8 @@ no closing commentary unless asked.
    substitution table and Conventional Comments labels. Report judgment
    calls as findings.
 
-On step 3, two things about that contract are easy to lose. It names
-licenses as well. It limits the changelog and migration exemptions to
-quoted historical text, never to text you author now.
-
 Severity: `major` covers hedging comments, unlabeled review feedback,
 merge-decision risks, change descriptions with no verification result,
 and session-process narrative replacing a real result. `minor` covers
 narrator, step, and divider comments, vocabulary, structure, and
 format deviations. `nit` covers punctuation and single-word issues.
-
-## Dogfooding
-
-This plugin's own files must pass this standard. Check whole sentences, not
-lines. Check punctuation as well as vocabulary: semicolons, em-dash quota,
-and sentence budgets. Quoted specimens of banned patterns are exempt.

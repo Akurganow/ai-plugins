@@ -60,8 +60,9 @@ check assert what silently breaks a Hermes install is satisfied whether or not
 the hand check exists — deleting it would have breached nothing. Keeping it is
 right for the reasons above and for no others.
 
-So "do not complicate the code" here — the checks below being the only code
-this repository has — is not "never duplicate the schema". It is: a hand-written
+The checks below are the only code this repository judges packages with. So
+"do not complicate the code" here is not "never duplicate the schema". It is:
+a hand-written
 check either enforces something a JSON Schema cannot express, or it turns a
 schema rejection into a message somebody can act on, and it says beside
 itself which of the two it is. A duplicate with neither reason is the one to

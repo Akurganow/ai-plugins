@@ -2,7 +2,7 @@
 
 What a text generator leaves behind and a person would not have written on
 purpose. This repository is prose almost entirely: READMEs, skills with
-their references, one check, one regeneration script, the workflows. Its
+their references, one check, one regeneration entry point, one workflow. Its
 whole value is that its sentences hold (`.agents/rules/claims.md`). A
 sentence that holds nothing is
 the cheapest thing to add here and the hardest to see in review, because it
@@ -92,7 +92,8 @@ Never a finding:
 
 ## The fence
 
-`tools/check-conformance.py` is the only fence on what a package says:
+`tools/check-conformance.py` is the only fence on what a package's manifest
+and skills say:
 where files sit, what a symlink resolves to, what a manifest and a skill's
 front matter say, decided against the published schema and against the
 clause quoted beside each hand check. Nothing keys on vocabulary, and
@@ -101,6 +102,6 @@ first catch the sourced, dated sentences `claims.md` requires.
 Anything the check names cannot exist on a green `main`; a finding of it is
 a misread. The same holds for a generated copy that differs from its source:
 CI runs `tools/regenerate.sh` and fails on any difference. Slop is judged
-strictly above it: text that passes the check and
+strictly above both: text that passes the check and
 still says nothing. A tell that recurs and could be named by a pattern is a
 proposal to the maintainer, not a check added on the spot.

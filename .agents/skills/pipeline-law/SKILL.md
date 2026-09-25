@@ -780,8 +780,8 @@ unarguable: a reader who thinks it is wrong should say so.
 `plan.md` has no `## Tests first`, and the omission is deliberate. This
 repository ships prose, manifests, one check and one regeneration entry
 point. Its verification is `tools/check-conformance.py`, then
-`bash tools/regenerate.sh` with an empty `git diff` after it, plus re-reading
-every line the change quotes.
+`bash tools/regenerate.sh`, which must leave nothing to commit, plus
+re-reading every line the change quotes.
 
 Where a change touches `tools/check-conformance.py`, `## Verification` names
 the malformed package the new rule must reject, and the command that

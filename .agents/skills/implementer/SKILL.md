@@ -275,7 +275,12 @@ way to move a version without meaning to.
 
 **Exit criteria for the slice, in this order, before it ends either way:**
 
-1. Run the verification the plan names. At minimum
+1. Run `bash tools/regenerate.sh` and commit what it changes with the
+   slice. CI runs it too, and fails on a generated copy that differs from its
+   source. It runs first because the check compares each vendor manifest with
+   the root one, so a stale copy fails it.
+
+   Then run the verification the plan names. At minimum
    `tools/check-conformance.py`, with what it needs importable by whatever
    runs it — `.agents/rules/conformance.md` owns that, and the invocation is
    your caller's, since it is the only part of this that knows the
@@ -283,10 +288,6 @@ way to move a version without meaning to.
 
    It must be green, quoted with what it printed. A check you did not run is
    reported as not run, never as passing and never omitted.
-
-   Then run `bash tools/regenerate.sh` and commit what it changes with the
-   slice. CI runs it too, and fails on a generated copy that differs from its
-   source.
 
 2. Re-read every line the change quotes or relies on, at the head, and quote
    the comparison. This is this repository's real test suite. A documentation

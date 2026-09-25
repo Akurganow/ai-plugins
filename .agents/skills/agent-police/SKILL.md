@@ -203,10 +203,10 @@ printed. A pass is a result; a silence is not.
    named surfaces never see.*
 
 5. **Every `.claude/skills/` entry is a symlink into `.agents/skills/`, and
-   its target holds a regular `SKILL.md`.** Not a copy. *Clause: §5.1's "No
-   other file can replace, supplement, or override the core fields", and
-   `conformance.md`'s record that the vendor path may be a link and may not be
-   a second copy.*
+   its target holds a regular `SKILL.md`.** Not a copy. *Reason:
+   `.agents/manifest.yaml` declares `.claude/skills` a vendor path of
+   `.agents/skills`. A copy there is a second text, and no generator in this
+   tree keeps it equal to the first.*
 
 6. **A bound has one number, in one place.** Collect every number any
    document states for every counter, each with its file and line, and decide

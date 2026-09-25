@@ -578,7 +578,7 @@ See [SUPPORT.md](../../SUPPORT.md).
 
 ### Block F: `plugin.json`
 
-`version` stays `1.3.0`: release-please (plan 07) moves it from the commits. The description is one sentence of 23 words and 159 characters.
+`version` stays `1.3.0`: the release workflow (plan 07, cocogitto) moves it from the commits. The description is one sentence of 23 words and 159 characters.
 
 ```json
 {
@@ -1550,7 +1550,7 @@ test -f "$D/README.md" && test -f "$D/LICENSE" && echo readme-and-license
 git status --porcelain
 ```
 
-Expected: `no-diary`; `size-ok`; `old-paths-gone`; `no-node`; `true`; `license: MIT`; `readme-and-license`. The last command may list `.claude-plugin/marketplace.json` and `README.md` as modified by the generator. Those are plan 06's; report them and leave them unstaged. `CHANGELOG.md` comes from release-please's first run (plan 07), so this plan does not check for it.
+Expected: `no-diary`; `size-ok`; `old-paths-gone`; `no-node`; `true`; `license: MIT`; `readme-and-license`. The last command may list `.claude-plugin/marketplace.json` and `README.md` as modified by the generator. Those are plan 06's; report them and leave them unstaged. `CHANGELOG.md` comes from the release workflow's first run on main (plan 07, cocogitto), so this plan does not check for it.
 
 - [ ] **Step 5: Commit what the checks changed**
 

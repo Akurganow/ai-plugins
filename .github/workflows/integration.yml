@@ -150,9 +150,8 @@ jobs:
       # omp read resolves skill://<name> to its SKILL.md.
       # Each pattern matches the line naming the skill, because a package's name
       # or description can contain the skill name.
-      # Hermes names a portable skill agent-plugin-<slug>-<hash>:<skill>
-      # (website/docs/developer-guide/plugins/index.md at the pinned commit).
       - name: Assert every skill is listed
+        if: matrix.client != 'hermes'
         run: |
           if [ "$CLIENT" = codex ]; then codex_prompt=$(codex debug prompt-input); fi
           inventory() {
@@ -160,7 +159,6 @@ jobs:
               claude) claude plugin details "$1@$MARKETPLACE" ;;
               codex)  printf '%s\n' "$codex_prompt" ;;
               omp)    omp read "skill://$2:raw" ;;
-              hermes) hermes plugins show "$1" ;;
             esac
           }
           status=0
@@ -171,7 +169,6 @@ jobs:
               claude) expected="^  Skills \([0-9]+\)  (.*, )?$skill(,|\$)" ;;
               codex)  expected="- $name:$skill: " ;;
               omp)    expected="^name: $skill\$" ;;
-              hermes) expected="agent-plugin-$name-[0-9a-f]{8}:$skill" ;;
             esac
             if ! out=$(inventory "$name" "$skill" 2>&1); then
               printf '%s\n' "$out"
@@ -188,6 +185,39 @@ jobs:
             else
               printf '%s\n' "$out"
               echo "::error::$CLIENT does not list skill $skill of $name"
+              status=1
+            fi
+          done
+          exit "$status"
+
+      # Hermes 0.21.5 has no command that prints a portable package's skills
+      # without a model call, so this checks install and enable only.
+      # plugins show prints name, version, description, Status, Source, Key, Emits and Listens:
+      # https://github.com/NousResearch/hermes-agent/blob/f97608f178d1ffeca59860195ab7da295f7c8e5f/hermes_cli/plugins_cmd.py#L1814-L1836
+      # plugins list --json carries name, status, version, description, source and removed:
+      # https://github.com/NousResearch/hermes-agent/blob/f97608f178d1ffeca59860195ab7da295f7c8e5f/hermes_cli/plugins_cmd.py#L1672-L1703
+      # skills list reads skill directories only, never the plugin-skill registry:
+      # https://github.com/NousResearch/hermes-agent/blob/f97608f178d1ffeca59860195ab7da295f7c8e5f/hermes_cli/skills_hub.py#L782-L828
+      # Only the model-facing skills_list tool returns agent-plugin-<slug>-<sha256[:8]>:<skill>:
+      # https://github.com/NousResearch/hermes-agent/blob/f97608f178d1ffeca59860195ab7da295f7c8e5f/tools/skills_tool.py#L234-L259
+      - name: Assert every package is installed and enabled (Hermes)
+        if: matrix.client == 'hermes'
+        run: |
+          status=0
+          for name in $(printf '%s\n' $PAIRS | cut -d: -f1 | sort -u); do
+            if ! out=$(hermes plugins show "$name" 2>&1); then
+              printf '%s\n' "$out"
+              echo "::error::hermes could not show $name"
+              status=1
+              continue
+            fi
+            if grep -qxF -- "Key: $name" <<<"$out" && grep -qxF -- "Status: enabled" <<<"$out"; then
+              echo "::group::hermes has $name installed and enabled"
+              printf '%s\n' "$out"
+              echo "::endgroup::"
+            else
+              printf '%s\n' "$out"
+              echo "::error::hermes does not show $name as enabled"
               status=1
             fi
           done

@@ -248,6 +248,11 @@ code. A link into a repository points at the commit at which the note holds.
   section of
   [`user-guide/features/plugins.md`](https://github.com/NousResearch/hermes-agent/blob/a0ca7c19204e514f9590ce3b812e029b315ab9e9/website/docs/user-guide/features/plugins.md),
   documentation.
+- Hermes scans a package when it installs it. A `caution` verdict shows the
+  findings and asks `Install anyway? [y/N]`. A `dangerous` verdict blocks the
+  install, and `--force` does not override it. Source:
+  [`user-guide/features/plugins.md` L625–L643](https://github.com/NousResearch/hermes-agent/blob/a0ca7c19204e514f9590ce3b812e029b315ab9e9/website/docs/user-guide/features/plugins.md#L625-L643),
+  documentation.
 
 ## The conformance check
 

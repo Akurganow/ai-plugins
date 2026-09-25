@@ -127,6 +127,12 @@ Hermes validators. It installs every package into each client that
 10. Run `bash tools/regenerate.sh`, then the checks above.
 11. After the merge, a maintainer pushes the seed tag `<name>--v<version>` at the merge commit.
 
+In a package README, link a file outside the package by its full GitHub URL,
+and a file inside it by a relative path. A package installs alone, and the
+Hermes catalogue renders its README at the pinned commit. Source:
+[`plugin-catalog/README.md`](https://github.com/NousResearch/hermes-agent/blob/749220ef0007f8d87bd1531f1c24b0fe93816385/plugin-catalog/README.md#L86),
+Hermes documentation.
+
 The seed tag carries the version in the package's `plugin.json`.
 [`release.yml`](.github/workflows/release.yml) refuses to release any package
 while a `cog.toml` package has no such tag reachable from `main`.

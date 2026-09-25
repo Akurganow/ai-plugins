@@ -1,16 +1,16 @@
 ---
-name: design-review
+name: red-flags
 description: >
-  Review a software design for complexity, with the principles and red
-  flags of Ousterhout's A Philosophy of Software Design: module depth,
-  information hiding, layers, error handling, comments and names. Use when
-  reviewing a module, an API, an architecture or a refactoring plan. Use
-  when an interface feels wrong, when a module might need splitting or
-  merging, when a name will not come, when there are too many layers, or
-  when a change touches too many places. Use when someone asks whether an
-  abstraction is right, or says the code feels tangled. Each finding
-  names the chapter it rests on. Where the book is disputed in a text
-  that was read, the finding carries the other side.
+  Review a software design for complexity with the red flags and principles
+  of Ousterhout's A Philosophy of Software Design. Rank the findings by how
+  often each part is touched. Use when reviewing a module, an API, an
+  architecture or a refactoring plan. Use when an interface feels wrong,
+  when a module might need splitting or merging, or when a name will not
+  come. Use when there are too many layers, or when one change touches too
+  many places. Use when someone asks whether an abstraction is right, or
+  says the code feels tangled. Each finding cites its chapter. Where the
+  book is disputed in a text that was read, the finding carries the other
+  side.
 license: MIT
 ---
 
@@ -29,16 +29,17 @@ user before you continue. Examples: "What is the most common operation a
 caller performs?", "Who changes this module, and how often?", "Which of
 these two pieces can be used without the other?"
 
-Six files sit beside this file. Read each when its step says so.
+Six files sit beside this file. Read each at the point its row names, and
+not before.
 
-| File | What it holds |
-| --- | --- |
-| `references/complexity.md` | the book's definition, symptoms and causes, and what the definition is not |
-| `references/red-flags.md` | the fourteen red flags, with the book's wording and what to look for |
-| `references/principles.md` | the sixteen design principles, with the chapter for each |
-| `references/decisions.md` | the criteria for together or apart, errors, design it twice, comments and names |
-| `references/positions.md` | where the book takes a side, and what the other side says where it was read |
-| `references/sources.md` | where each of the others was read, and what was not read |
+| File | What it holds | Read when |
+| --- | --- | --- |
+| [`references/complexity.md`](references/complexity.md) | the book's definition, symptoms and causes, and what the definition is not | Step 1, before fixing the frame |
+| [`references/red-flags.md`](references/red-flags.md) | the fourteen red flags, with the book's wording and what to look for | Step 4, before walking the flags |
+| [`references/principles.md`](references/principles.md) | the sixteen design principles, with the chapter for each | Step 3 for the deep and shallow section, and whenever a finding cites a principle |
+| [`references/decisions.md`](references/decisions.md) | the criteria for together or apart, errors, design it twice, comments and names | Step 5 for a split or merge, Step 6 for errors, and Step 8 for a second candidate |
+| [`references/positions.md`](references/positions.md) | where the book takes a side, and what the other side says where it was read | Step 8, when a finding rests on a position the book argues against common practice |
+| [`references/sources.md`](references/sources.md) | where each of the others was read, and what was not read | when the user asks where a statement comes from, and before calling a text read |
 
 ## Step 1: fix the frame
 
@@ -160,17 +161,17 @@ with the reason it lost. `references/decisions.md` gives the shape.
 
 Close with what the review did not cover:
 
-- A conflict between two qualities the user measures belongs to the `triz`
-  skill from the same marketplace. It resolves the conflict with the
-  contradiction matrix and ARIZ. Hand over only if that skill is
-  installed.
-- Many symptoms with one unclear cause belong to the `toc-thinking` skill
-  from the same marketplace, which builds the cause-and-effect tree. Hand
-  over only if that skill is installed.
+- A conflict between two qualities the user measures belongs to the
+  `contradiction` skill of this marketplace's `triz` package. It resolves
+  the conflict with the contradiction matrix and ARIZ. Hand over only if
+  that skill is installed.
+- Many symptoms with one unclear cause belong to the `root-cause` skill of
+  this marketplace's `toc-thinking` package, which builds the
+  cause-and-effect tree. Hand over only if that skill is installed.
 - A finding of the kind "a reader cannot hold this in their head" belongs
-  to the `cognitive-load` skill from the same marketplace. That skill
-  counts what a named reader must keep in mind for one task. Hand over
-  only if that skill is installed.
+  to the `extraneous` skill of this marketplace's `cognitive-load`
+  package. That skill counts what a named reader must keep in mind for one
+  task. Hand over only if that skill is installed.
 - Weighing quality attributes against each other with stakeholders is the
   Architecture Tradeoff Analysis Method's job. A record of the decision
   over time is a decision record's. This skill does neither.

@@ -160,9 +160,8 @@ Read on 2026-09-24 as raw wikitext, each for the fact named:
 ## Not read
 
 Named in the references or in the literature around them, and not opened
-from the network this was written on. Titles are given as commonly cited
-and were not verified against the works. Nothing in this skill is quoted
-from them.
+from the network this was written on. Titles are given as commonly cited,
+not as read from the works. Nothing in this skill is quoted from them.
 
 - Robert C. Martin, *Clean Code*, Prentice Hall, 2008.
 - The Software Engineering Institute's Architecture Tradeoff Analysis
@@ -205,5 +204,5 @@ for a review and not the book's text:
 - The reading of Brooks against Ousterhout in `complexity.md`, and the
   line drawn there between the book's "cognitive load" and the theory's.
 - The "For a review" paragraphs in `positions.md`.
-- The hand-overs to the `cognitive-load`, `triz` and `toc-thinking`
+- The hand-overs to the `extraneous`, `contradiction` and `root-cause`
   skills of this marketplace.

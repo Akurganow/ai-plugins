@@ -1,80 +1,119 @@
 # triz
 
-TRIZ for engineering trade-offs in software. One skill with two routes.
-The contradiction matrix serves a trade-off that can be named in two
-parameters. ARIZ-85C serves a problem the matrix did not crack.
+<!-- description:start -->
 
-Part of the [`ai-plugins` marketplace](../../README.md).
+Resolves software trade-offs with TRIZ: the contradiction matrix and 40 inventive principles, the separation principles, and ARIZ-85C walked part by part with the user.
 
-## What it does
+<!-- description:end -->
 
-The short route:
+## Install
 
-- restates the user's problem as a contradiction
-- writes the ideal final result
-- maps the two sides to Altshuller's 39 engineering parameters
-- reads the classic contradiction matrix for the principles it recommends
-- states each principle as a change to the user's system
+<!-- install:start -->
 
-A physical contradiction, where one element must have two opposite
-properties, goes to the four separation principles instead.
+### Claude Code
 
-The long route is ARIZ-85C, Altshuller's algorithm of 1985. The skill walks
-it part by part with the user, from the mini-problem to the analysis of
-the walk itself, in the wording the algorithm gives.
+```
+/plugin marketplace add Akurganow/ai-plugins
+/plugin install triz@ai-plugins
+```
 
-## What ships here
+Source: Claude Code documentation, <https://code.claude.com/docs/en/discover-plugins>.
+
+### Codex
+
+```
+codex plugin marketplace add Akurganow/ai-plugins --ref main
+codex plugin add triz@ai-plugins
+```
+
+Source: Codex documentation, <https://developers.openai.com/plugins/build/plugins>, for `marketplace add`; Codex source, [`plugin_cmd.rs`](https://github.com/openai/codex/blob/e3e5ad28470f6a225301518c30a66e749a880164/codex-rs/cli/src/plugin_cmd.rs), for `plugin add`.
+
+### Oh-My-Pi
+
+```
+omp plugin marketplace add Akurganow/ai-plugins
+omp plugin install triz@ai-plugins
+```
+
+Source: Oh-My-Pi documentation, [`docs/marketplace.md`](https://github.com/can1357/oh-my-pi/blob/a33cc26824e3c91edd9fa42d681f10dceb4ac2f0/docs/marketplace.md).
+
+### Hermes
+
+```
+hermes plugins install Akurganow/ai-plugins/plugins/triz --no-enable
+hermes plugins list
+hermes plugins enable triz
+```
+
+Keep the `plugins/triz` suffix: without it Hermes copies the whole repository, and its [two-level scan](https://github.com/NousResearch/hermes-agent/blob/a0ca7c19204e514f9590ce3b812e029b315ab9e9/website/docs/user-guide/features/plugins.md) finds no package.
+
+Source: Hermes documentation, [`developer-guide/plugins/index.md`](https://github.com/NousResearch/hermes-agent/blob/a0ca7c19204e514f9590ce3b812e029b315ab9e9/website/docs/developer-guide/plugins/index.md), for the commands; Hermes source, [`plugins_cmd.py`](https://github.com/NousResearch/hermes-agent/blob/a0ca7c19204e514f9590ce3b812e029b315ab9e9/hermes_cli/plugins_cmd.py) (`_resolve_git_url`), for the subdirectory form and what happens without it.
+
+<!-- install:end -->
+
+## Usage
+
+Describe the trade-off in your own words:
+
+```text
+A longer cache lifetime takes load off the database but serves stale reads.
+Find a way out that is not a compromise.
+```
+
+The `contradiction` skill restates the problem as a contradiction and asks
+you to confirm it. It writes the ideal final result and maps both sides to
+two of Altshuller's 39 parameters. It reads the matching cell of the
+contradiction matrix. It returns two to four directions, each named after
+its principle and stated as a change to your system. A problem the matrix
+route does not crack, or one that keeps coming back, goes on to the `ariz`
+skill. It walks ARIZ-85C part by part with you. When ARIZ restates the
+problem as a new technical contradiction, `ariz` offers it back to
+`contradiction`.
+
+## What's inside
 
 | Path | What it is |
-| --- | --- |
-| `plugin.json` | the manifest, Agent Plugins 1.0.0, at the plugin root |
-| `skills/triz/SKILL.md` | the skill, per the Agent Skills specification: the procedure |
-| `skills/triz/references/parameters.md` | the 39 parameters, each with a reading for software |
-| `skills/triz/references/principles.md` | the 40 principles, each with Altshuller's sub-items and a reading for software |
-| `skills/triz/references/matrix.md` | the classic matrix, one line per cell, with its provenance and the cells the transcriptions dispute |
-| `skills/triz/references/ariz-85c.md` | the nine parts and forty steps of ARIZ-85C, with the formulas quoted |
-| `skills/triz/references/sources.md` | where each reference was read from, at which commit, and what was not read |
-| `README.md` | this file |
-| `.claude-plugin/plugin.json` | a symlink to the root manifest, at the manifest path Claude Code documents. The root README cites the documentation |
+| :-- | :-- |
+| [`skills/contradiction/SKILL.md`](skills/contradiction/SKILL.md) | the matrix route: contradiction, ideal final result, separation, parameters, matrix, principles |
+| [`skills/contradiction/references/parameters.md`](skills/contradiction/references/parameters.md) | the 39 parameters, each with a reading for software |
+| [`skills/contradiction/references/principles.md`](skills/contradiction/references/principles.md) | the 40 principles, each with Altshuller's sub-items and a reading for software; `ariz` reads it too |
+| [`skills/contradiction/references/matrix.md`](skills/contradiction/references/matrix.md) | the classic matrix, one line per cell, with its provenance and the disputed cells |
+| [`skills/contradiction/references/sources.md`](skills/contradiction/references/sources.md) | the copy and commit each reference of both skills rests on, and the sources that stayed out of reach |
+| [`skills/ariz/SKILL.md`](skills/ariz/SKILL.md) | the ARIZ-85C walk, part by part, for a problem the matrix route did not crack or that keeps coming back |
+| [`skills/ariz/references/ariz-85c.md`](skills/ariz/references/ariz-85c.md) | the nine parts and forty steps of ARIZ-85C, with the formulas quoted and a software gloss |
+| [`plugin.json`](plugin.json) | the Agent Plugins 1.0.0 manifest |
+| [`.claude-plugin/plugin.json`](.claude-plugin/plugin.json) | a byte-identical copy of `plugin.json` at the one manifest path Claude Code documents ([documentation](https://code.claude.com/docs/en/plugins-reference), "Plugin manifest schema") |
+| [`LICENSE`](LICENSE) | the MIT license |
 
-No script, no hook, no rule file, no network, no credentials. The matrix
-is a text file the agent searches for one line, so nothing has to be
-installed for the lookup. The skill is discovered from the fixed `skills/`
-location every Agent Plugins 1.0.0 client reads. That is the only route
-the package has.
+The package has no script, hook, rule file or network access. The agent
+searches the matrix for one line, so the lookup needs nothing installed.
 
-## What the matrix here is
-
-The classic 39-by-39 matrix, with 1,248 non-empty cells. It was not copied
-from one file. Two public transcriptions were compared cell by cell. The
-40 cells where they differ were settled by majority against a third and a
-fourth. Every disputed cell is listed in `matrix.md` with every reading.
-The often-quoted count of 1,263 cells was not confirmed. No transcription
-that could be reached is a scan of a printed edition. `sources.md` names
-each copy and the commit it was read at.
-
-**Nothing here has been installed from this repository as published.** The
-references have been checked against the sources they cite. No client has
-been pointed at this package from this repository, so the behaviour of any
-particular client with it is not stated.
-
-## Configuration
-
-None. Removing the plugin removes the skill.
+The matrix is the classic 39 by 39 table with 1,248 non-empty cells. It
+merges two public transcriptions, which differ on 40 cells. A third, and
+for three cells a fourth, settle those 40 by majority. `matrix.md` lists
+every reading of each disputed cell. No reachable transcription has more
+than 1,248 cells, so the often-quoted count of 1,263 stays unconfirmed.
+`sources.md` names each copy by commit.
 
 ## Boundaries
 
-- The matrix and the principles are directions with a published origin,
-  not a guarantee. The user's knowledge of their system decides which
+- The matrix, the principles and ARIZ give directions with a published
+  origin, not guarantees. Your knowledge of your system decides which
   direction survives.
 - A problem with no trade-off in it is not a TRIZ problem.
-- The software readings of the parameters and the principles are this
-  skill's own, and `sources.md` says so. No published mapping of the 39
-  parameters to software was found. No study that measures the classic
-  matrix on software problems was found either. Of Altshuller's text, the
-  package quotes the Russian formulas in `ariz-85c.md` and the English
-  Table 2 and three steps. `principles.md` paraphrases his sub-items from a
-  third-party transcription.
+  `contradiction` says so before any lookup, and `ariz` before Part 1.
+- The software readings of the parameters and principles are this
+  package's own. `sources.md` reports finding no published mapping of the
+  39 parameters to software, and no study of the matrix on software
+  problems.
 - A tangle of symptoms with no trade-off in sight belongs to the
-  `toc-thinking` package from this marketplace, and the skill says so when
-  it is installed.
+  `root-cause` skill of [`toc-thinking`](https://github.com/Akurganow/ai-plugins/tree/main/plugins/toc-thinking).
+  Both skills hand over only when `root-cause` is installed.
+
+## License
+
+MIT. See [LICENSE](LICENSE).
+
+## Help
+
+See [SUPPORT.md](https://github.com/Akurganow/ai-plugins/blob/main/SUPPORT.md).

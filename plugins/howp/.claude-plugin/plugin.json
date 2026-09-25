@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "howp",
-  "version": "0.3.6",
+  "version": "0.3.8",
   "description": "Turn what you follow into measurable questions, bind them to Polymarket and Manifold markets, and write a forecast from their probabilities and the agent's judgement.",
   "author": {
     "name": "Alexander Kurganov",

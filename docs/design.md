@@ -2,7 +2,7 @@
 
 This page explains why the repository and its packages are built the way they are.
 The client facts behind each reason are in [How the four clients load a package](clients.md), with their sources.
-Every other fact here names its kind: documentation, read on 2026-09-25, or source at a commit.
+Every other fact here names its kind: documentation, read on 2026-09-25, source at a commit, or a dated read of this repository's settings or releases.
 
 ## One source for every copy
 
@@ -11,6 +11,9 @@ Claude Code documents one manifest path, `.claude-plugin/plugin.json` ([Claude C
 Codex shows the category `Other` unless the marketplace entry supplies one ([Codex](clients.md#codex)).
 So the catalogue repeats each manifest's description and category.
 Every package README repeats the install commands, and every package carries its own `LICENSE`.
+A package installs alone, and Agent Plugins 1.0.0 §4.1 keeps every path it supplies inside its root.
+(documentation: [Agent Plugins specification §4.1](https://github.com/agentplugins/agent-plugins-spec/blob/ff8ab5e392cc87bd88d87c060815a87490e51003/spec/1.0.0.md#L58-L64))
+So each package carries its own copy, not a path to a root file.
 
 A copy kept by hand drifts from its source, and nothing notices until a reader does.
 So `plugins/<name>/plugin.json` is the only source of a package's metadata.
@@ -53,13 +56,13 @@ The cost is a second manifest in every package, which the generator and the chec
 ## Skill names carry no plugin prefix
 
 Claude Code, Codex and Hermes prefix a plugin skill with a namespace ([Claude Code](clients.md#claude-code), [Codex](clients.md#codex), [Hermes](clients.md#hermes)).
-Oh-My-Pi shows the bare name, keeps the first skill of each name, and drops the rest ([Oh-My-Pi](clients.md#oh-my-pi)).
-Claude Code also answers a bare `/<skill>` while no other command uses that name ([Claude Code](clients.md#claude-code)).
 So a skill named after its plugin reads `/triz:triz` in Claude Code.
+Claude Code also answers a bare `/<skill>` while no other command uses that name ([Claude Code](clients.md#claude-code)).
+Oh-My-Pi shows the bare name, keeps the first skill of each name, and drops the rest ([Oh-My-Pi](clients.md#oh-my-pi)).
 A generic name such as `review` collides in Oh-My-Pi with any other source that ships one.
 
 A skill name is therefore distinctive without the plugin prefix, and never repeats the plugin name.
-It is one word, or one compound such as `root-cause`.
+It is one word, or one compound such as `root-cause`, so it stays short in Oh-My-Pi's bare list and still names its method.
 The directories under `plugins/*/skills/` hold the names in use:
 
 | Package | Skills |
@@ -99,9 +102,10 @@ Every other carrier reads it at run time, or `tools/regenerate.sh` generates it.
 One `hooks/hooks.json` serves Claude Code and Codex.
 Its commands use shell form, with no `args` field.
 Claude Code's exec form needs `args`, and Codex documents no such field ([Claude Code](clients.md#claude-code), [Codex](clients.md#codex)).
-Codex's parser ignores an unknown handler key, so under Codex an `args` hook would run `sh` with no script.
-The hook runs `hooks/print-rules.sh`, which needs `sh`, `sed` and `awk` and no language runtime.
-For `SessionStart`, the script prints a heading first, since Claude Code parses `{`-first output as JSON.
+Codex's parser ignores an unknown handler key, so under Codex an `args` hook would run `sh` with no script ([Codex](clients.md#codex)).
+The hook runs `hooks/print-rules.sh`, which needs `sh` and `awk` and no language runtime.
+For `SessionStart`, the script prints a heading first.
+Claude Code parses stdout that starts with `{` and ends with `}` as JSON ([Claude Code](clients.md#claude-code)).
 
 The rules file stays under 8,000 bytes, and CI fails at that size.
 Claude Code caps hook text at 10,000 characters ([Claude Code](clients.md#claude-code)).
@@ -122,7 +126,7 @@ A native half would stop Hermes from loading the package as Agent Plugins.
 In Claude Code and Oh-My-Pi, invoking `house-style` puts the rules in context a second time.
 The skill body stays anyway, because it is the only carrier Hermes loads.
 In Hermes, the user adds one config entry, and nothing else loads the rules.
-In Codex, the user trusts the hook once, and again after each change to it.
+In Codex, the user trusts the hook once, and again after each change to it ([Codex](clients.md#codex)).
 
 ## No hook blocks the agent
 
@@ -145,7 +149,7 @@ Compliance therefore rests with the model, and nothing in the package checks the
 
 ## Codex gets its documented hook route
 
-Codex documents plugin hooks under `extensions.com.openai` in a root `plugin.json`.
+Codex documents plugin hooks under `extensions.com.openai` in a root `plugin.json` ([Codex](clients.md#codex)).
 Its loader returns no hooks for a package in Agent Plugins format, and two open issues report it ([Codex](clients.md#codex)).
 In Codex 0.155.1, the config parser skips a `plugin_hooks` toggle, so no setting changes that ([Codex](clients.md#codex)).
 The same branch loads hooks for every other manifest format, such as a package without a root `plugin.json`.
@@ -153,7 +157,7 @@ The same branch loads hooks for every other manifest format, such as a package w
 That package would not conform to Agent Plugins 1.0.0.
 
 So `prose-discipline` declares its hooks the documented way and ships no workaround.
-In Codex today, the rules reach a session only when the model loads `house-style`.
+In Codex 0.155.1, the rules reach a session only when the model loads `house-style`.
 When upstream fixes the loader, the hook runs with no change here.
 
 The integration workflow reports the Codex hook check as not run.
@@ -184,6 +188,9 @@ So the version commit cannot start the release again.
 Three other tools lost.
 release-please works through release pull requests.
 (documentation: [release-please README L18–L21](https://github.com/googleapis/release-please/blob/edce3d805ef3ac964d1ba2b29b0f42905f2fa412/README.md#L18-L21))
+A pull request opened with `GITHUB_TOKEN` starts its workflow runs in an approval-required state.
+(documentation: [GitHub Docs, GITHUB_TOKEN](https://github.com/github/docs/blob/75ea7dd097a5564f27364a5b70eaa1979106eabd/data/reusables/actions/actions-do-not-trigger-workflows.md))
+So every release would wait for a person to approve its checks and merge a second pull request.
 semantic-release does not officially support monorepos.
 (documentation: [Supported branching L89–L93](https://github.com/semantic-release/docs/blob/d4d3420ade2348e15739bc46cd15aaab8d2bf373/src/content/docs/foundation/supported-branching.md#L89-L93))
 Its FAQ also advises against committing the release back to the branch.
@@ -206,10 +213,9 @@ The release workflow refuses to run while any package in `cog.toml` has no reach
 
 ### Breaking changes
 
-cocogitto never bumps a `0.y.z` version to `1.0.0` on its own.
-(documentation: [cocogitto, Bump L124–L125](https://github.com/cocogitto/cocogitto/blob/8cfddce66f6eece4e5f310565737cac030be8e63/website/guide/bump.md#L124-L125))
-A breaking commit therefore moves a `0.y.z` package to the next minor version.
-`prose-discipline` is past 1.0.0, so its skill rename, a `feat!` commit, releases it as 2.0.0.
+[CONTRIBUTING.md](../CONTRIBUTING.md#write-commits) gives the commit types and the versions they release.
+A skill rename breaks every invocation of the old name, so it is a `feat!` commit.
+`prose-discipline` is past 1.0.0, so its rename to `house-style` releases it as 2.0.0.
 
 ### Changelogs
 
@@ -217,19 +223,16 @@ Each package keeps a `CHANGELOG.md`, written by the bump from `tools/templates/c
 cocogitto's default package template adds an inline-HTML `BREAKING` badge, and credits the author and co-authors on every line.
 (source: [`template.rs` L18](https://github.com/cocogitto/cocogitto/blob/055a9fa8db8ac8ce50074d50162b48b92e9d0c47/crates/cocogitto/src/conventional/changelog/template.rs#L18),
 [`macros.tera` L1–L13](https://github.com/cocogitto/cocogitto/blob/055a9fa8db8ac8ce50074d50162b48b92e9d0c47/crates/cocogitto/src/conventional/changelog/template/macro/macros.tera#L1-L13))
-A changelog here tells a user what changed in a package, and neither the badge nor the credit does.
-So the template writes plain Markdown with no author.
+The template keeps `BREAKING:` as text, and drops the HTML and the author credit, which says who, not what.
 
 ### Merges and commit messages
 
-The repository settings allow merge commits only: squash and rebase merges are off (GitHub API, read 2026-09-25).
-A squash folds a branch's commits into one message, and the bump then loses each commit's type and paths.
-A merge keeps every branch commit, and `ignore_merge_commits` in `cog.toml` stops the merge commit itself from counting.
-
+[CONTRIBUTING.md](../CONTRIBUTING.md#write-commits) gives the rules; these are their reasons.
+A squash merge folds a branch's commits into one commit, and the bump then loses each commit's type and paths.
+So the repository settings allow merge commits only (GitHub API, read 2026-09-25).
 The bump drops a commit whose message does not parse, and says nothing.
 (source: [`bump.rs` L204–L208](https://github.com/cocogitto/cocogitto/blob/055a9fa8db8ac8ce50074d50162b48b92e9d0c47/crates/cocogitto/src/conventional/bump.rs#L204-L208))
-So a pull request fails when a non-conventional commit touches `plugins/`.
-A commit outside `plugins/` releases nothing, so its message may be free-form.
+That is why CI checks the messages of pull request commits that touch `plugins/`.
 
 ### Trade-offs
 
@@ -246,7 +249,7 @@ Nothing downloads by that label: `plugins/howp/binaries.json` names each archive
 
 The private repository that builds `hp` releases `howp`, and cocogitto leaves it out.
 Only that release job knows the version, the digests and the binary's help text.
-It writes the files [CONTRIBUTING.md](../CONTRIBUTING.md#write-commits) lists, in the layout this repository has now.
+It writes the files [CONTRIBUTING.md](../CONTRIBUTING.md#write-commits) lists, such as `plugins/howp/skills/forecast/references/commands.md`.
 A second writer would move `version` with no binary behind it.
 
 ## Nothing in CI calls a model
@@ -277,12 +280,7 @@ Behavioural evals are tracked in [issue #62](https://github.com/Akurganow/ai-plu
 ## The repository records no maintainer verification
 
 A sentence about what the maintainer ran describes one machine on one date.
-The next release can make it false, and nothing in the release corrects it.
-So READMEs, skills and manifests say what a package does, and cite a source for each client claim.
-They do not record which installs the maintainer ran, or which were left out.
-
-Cited sources take that place.
-A client fact cites documentation, source at a commit, or a public CI run by its id.
+[How the four clients load a package](clients.md) shows what takes its place: every fact cites its kind and source.
 
 ## howp's host list and signature
 
@@ -298,12 +296,16 @@ It also includes `raw.githubusercontent.com`, where the skill can read the packa
 The skill checks each archive's SHA-256 against `plugins/howp/binaries.json`.
 A digest proves the archive is the recorded one, not who built it.
 So the release job that builds `hp` signs `SHA256SUMS` with Sigstore cosign keyless signing.
-That repository's issue #68 asked for it, and its pull request #69 merged the change.
-This repository's CI will verify the signature against that workflow's identity once a release carries one.
-`howp-v0.3.6`, the release `binaries.json` named on 2026-09-25, carries none, so CI checks its SHA-256 only.
+Keyless signing ties an ephemeral key to the workflow's OpenID Connect identity, so no signing key is stored anywhere.
+(documentation: [Signing blobs L10–L12](https://github.com/sigstore/docs/blob/842c30981f1bf5061fe0d370512db4de8cdf3b33/content/en/cosign/signing/signing_with_blobs.md#L10-L12))
+The signer's identity is then the workflow file at a branch, such as `main`.
+(documentation: [OIDC in Fulcio L40–L43](https://github.com/sigstore/docs/blob/842c30981f1bf5061fe0d370512db4de8cdf3b33/content/en/certificate_authority/oidc-in-fulcio.md#L40-L43))
+No CI step here verifies a signature yet.
+`howp-v0.3.6` carries `SHA256SUMS` and no signature asset (release assets, read 2026-09-26).
 The skill keeps its SHA-256 check and never calls cosign.
 
 Two alternatives lost.
-On GitHub Free, Pro and Team plans, artifact attestations are available only for public repositories.
+GitHub artifact attestations would come from the build, which runs in a private repository because the sources are not public.
+In a private repository, attestations need a GitHub Enterprise Cloud plan.
 (documentation: [GitHub Docs, attestations availability](https://github.com/github/docs/blob/dec1018594fb5061bb1554dcafea7968fb10ff96/data/reusables/gated-features/attestations.md))
 cosign inside the skill would need cosign on every user's machine.

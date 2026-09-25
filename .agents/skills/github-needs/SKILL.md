@@ -1,18 +1,51 @@
 ---
 name: github-needs
-description: "What an unattended analysis run of this repository needs from GitHub, stated as needs and never as routes: the probe, the listings, the reads of one issue, the label write that must send the whole set back, and the close. Read it before acting as the Issue Court, the Tracker Clerk, the Repo Police or the Slop Police."
+description: "What an unattended analysis run of this repository needs from GitHub, stated as needs and never as routes: the machine population, the probe, the listings, the reads of one issue, the label write that must send the whole set back, and the close. Read it before acting as the Issue Court, the Tracker Clerk, the Repo Police, the Slop Police or the Agent Police."
 ---
 
 # What a run needs from GitHub
 
 This file is one file and the four analysis agents all read it: the Issue
-Court, the Tracker Clerk, the Repo Police and the Slop Police.
+Court, the Tracker Clerk, the Repo Police and the Slop Police. The Agent
+Police reads it too. The four pipeline roles read its first section, which
+`pipeline-law` cites.
 
 It names **what** a run needs and never **how** it is reached.
 `.agents/rules/unattended.md` owns that rule: a run reaches GitHub through
 whatever route its environment gives it, and the route is not recorded here.
 Each environment has its own, so the route stays with whatever fired
 you.
+
+## The machine population
+
+This is the one definition. Every other skill names the machine population
+and points here; none restates it.
+
+An issue is in the machine population when both hold:
+
+- it carries the label `police-report`;
+- its body carries the fingerprint line, an HTML comment of the form
+  `<!-- police-fingerprint: <role> <value> -->`. `<role>` is the skill name
+  of the role that filed it. `<value>` is that role's identity for the
+  finding, in the form its skill gives.
+
+An open issue carrying `police-report` and one of three older markers is in
+the population too, until it is closed. Each marker belongs to one role:
+`repo-audit-routine:` to `repo-police`, `slop-police-fingerprint:` to
+`slop-police`, and `agent-police-fingerprint:` to `agent-police`. Every
+filer writes only the fingerprint line.
+
+A role's own issues are the issues in the population whose fingerprint line
+or older marker names that role.
+
+Every other issue does not exist for any role. No role lists it, reads it,
+comments on it, labels it or closes it.
+
+Every filer applies `police-report` when it files. A filer that cannot
+confirm the label on the repository's label list files nothing, and says so
+in its report.
+
+## The needs
 
 - **GitHub.** Reach it through whatever route this environment gives
   you; the route is not recorded here. What a run needs, and what it
@@ -24,12 +57,11 @@ you.
     checked;
   - releases, and tags;
   - issues by label and state, with full bodies, paginated to the end.
-    A route may return pull requests in an issue listing: filter them
-    out;
+    The label is mandatory: every issue listing names `police-report`,
+    alone or beside another label, and none is ever made without it. A
+    route may return pull requests in an issue listing: filter them out;
   - pull requests, open or all, with number, title, head, labels and
     body, and the paths each one touches;
-  - a fingerprint anywhere in the tracker: a search may be inexact, so
-    confirm the marker in each hit's body;
   - the comments on one issue, and the labels on one issue;
   - an issue's place in a hierarchy: whether it has a parent and whether
     it has parts, which a listing may not carry; its parts, in the

@@ -34,9 +34,10 @@ looks right" is not a result the check produced.
 
 Nine roles, as skills under `.agents/skills/`, each with one thin Claude
 binding under `.claude/agents/` that names its skills and carries no role text.
-Four pipeline roles share `pipeline-law`; four analysis roles share
-`github-needs`; the ninth patrols the other eight. `.agents/manifest.yaml`
-declares the set and records why each arrangement is what it is.
+Four pipeline roles share `pipeline-law`. Five roles read `github-needs`: the
+four analysis roles, and the ninth, which patrols the other eight.
+`.agents/manifest.yaml` declares the set and records why each arrangement is
+what it is.
 
 **Whatever fires them is not in this repository and never will be.** The
 caller carries the measured facts of its own environment and the clone

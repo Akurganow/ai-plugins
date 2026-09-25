@@ -72,15 +72,18 @@ What differs between clients:
 
 - **Claude Code**: the desktop app installs from configured marketplaces,
   through the **+** button, then **Plugins**, then **Add plugin**. Source:
-  [Desktop](https://code.claude.com/docs/en/desktop), documentation.
+  [Desktop](https://code.claude.com/docs/en/desktop), documentation, read
+  2026-09-25.
 - **Codex**: start a new session after you install a plugin, before you use
   its skills. Source: [Plugins](https://learn.chatgpt.com/docs/plugins),
-  documentation.
+  documentation, read 2026-09-25.
 - **Oh-My-Pi**: `omp --plugin-dir plugins/<name>` loads a plugin from a local
   clone. Source: [`docs/cli-reference.md`](https://github.com/can1357/oh-my-pi/blob/a33cc26824e3c91edd9fa42d681f10dceb4ac2f0/docs/cli-reference.md),
   documentation.
-- **Hermes**: a package stays disabled until `hermes plugins enable <name>`
-  runs. Source: [`developer-guide/plugins/index.md`](https://github.com/NousResearch/hermes-agent/blob/a0ca7c19204e514f9590ce3b812e029b315ab9e9/website/docs/developer-guide/plugins/index.md),
+- **Hermes**: installed with `--no-enable`, a package stays disabled until
+  `hermes plugins enable <name>` runs. Source:
+  [`developer-guide/plugins/index.md`](https://github.com/NousResearch/hermes-agent/blob/a0ca7c19204e514f9590ce3b812e029b315ab9e9/website/docs/developer-guide/plugins/index.md)
+  and [`user-guide/features/plugins.md`](https://github.com/NousResearch/hermes-agent/blob/a0ca7c19204e514f9590ce3b812e029b315ab9e9/website/docs/user-guide/features/plugins.md),
   documentation.
 
 A client that implements Agent Plugins 1.0.0 can load `plugins/<name>`
@@ -107,9 +110,10 @@ Each name links to the plugin's README.
 ## Trust
 
 Claude Code's documentation says: "Make sure you trust a plugin before
-installing it." It also says a plugin can run arbitrary code with your user
-privileges. Source: [Discover plugins](https://code.claude.com/docs/en/discover-plugins),
-Claude Code documentation.
+installing, updating, or using it." It also says a plugin "can execute
+arbitrary code on your machine with your user privileges". Source:
+[Plugin security and trust](https://code.claude.com/docs/en/plugins/security),
+Claude Code documentation, read 2026-09-25.
 
 Read a plugin's README and files before you install it. `howp` downloads a
 released binary, checks its sha256 and runs it. `prose-discipline` runs a
@@ -134,6 +138,10 @@ tools/check-conformance.py        the conformance check
 tools/regenerate.sh               rewrites every generated file from its source
 tools/templates/                  sources of generated text
 tools/schemas/                    vendored Agent Plugins manifest schema
+tools/package.json                pins doctoc for tools/regenerate.sh
+tools/package-lock.json           pins doctoc's dependency tree
+cog.toml                          release configuration, one entry per package
+                                  but howp
 .github/                          CI workflows and issue forms
 ```
 
@@ -175,23 +183,27 @@ install command above cites that client's own source.
 ## Client notes
 
 Each note names its source and says whether it is documentation or source
-code. A link into a repository points at the commit the note describes.
+code. A link into a repository points at the commit at which the note holds.
 
 ### Claude Code
 
-- The desktop app accepts marketplace and plugin names of letters, digits,
-  `.`, `_` and `-`, up to 128 characters. Every name here meets that rule.
-  Source: [Plugin marketplaces](https://code.claude.com/docs/en/plugin-marketplaces),
-  documentation.
-- Claude Code pins a plugin to its `version` and delivers an update only when
-  the version changes. A change reaches Claude Code users at the plugin's next
-  release. Source: the same page.
+- The desktop app accepts marketplace and plugin names of at most 128
+  characters from letters, digits, `.`, `_` and `-`. A name starts with a
+  letter or digit. Every name here meets that rule. Source:
+  [Troubleshoot plugins](https://code.claude.com/docs/en/plugins/troubleshooting),
+  documentation, read 2026-09-25.
+- A user gets a new copy of a plugin only when its version changes. A change
+  here therefore reaches Claude Code users only after the plugin's next
+  release. It arrives through background auto-update once a user or an admin
+  turns that on. Otherwise it arrives when the user updates the plugin.
+  Source: [Host and maintain a marketplace](https://code.claude.com/docs/en/plugins/host-marketplace),
+  documentation, read 2026-09-25.
 
 ### Codex
 
 - Codex reads a root `plugin.json` that declares the Agent Plugins schema.
   Source: [Build plugins](https://developers.openai.com/plugins/build/plugins),
-  documentation.
+  documentation, read 2026-09-25.
 - Codex reads `.claude-plugin/marketplace.json` as a legacy-compatible
   marketplace. Source: the same page.
 - Codex takes the marketplace name from the catalogue's `name` field,
@@ -231,9 +243,17 @@ code. A link into a repository points at the commit the note describes.
   claim of full Agent Plugins conformance". Source:
   [`developer-guide/plugins/index.md`](https://github.com/NousResearch/hermes-agent/blob/a0ca7c19204e514f9590ce3b812e029b315ab9e9/website/docs/developer-guide/plugins/index.md),
   documentation.
-- The desktop app and the server install through the same code. A
-  `hermes://plugin/install?repo=…` deep link takes the same identifier,
-  subdirectory included. Source:
+- In the desktop app, a `hermes://plugin/install?repo=owner/repo` link
+  installs a plugin after a confirmation dialog. An agent-plugin install from
+  that link goes through the same install-time security scanning as
+  `hermes plugins install`. Source: the "One-click install links (Desktop)"
+  section of
+  [`user-guide/features/plugins.md`](https://github.com/NousResearch/hermes-agent/blob/a0ca7c19204e514f9590ce3b812e029b315ab9e9/website/docs/user-guide/features/plugins.md),
+  documentation.
+- The documentation does not cover two points, which the source shows. The
+  desktop app and the server install through the same code. The link takes
+  the same identifier as `hermes plugins install`, subdirectory included.
+  Source:
   [`deeplink-routes.ts`](https://github.com/NousResearch/hermes-agent/blob/a0ca7c19204e514f9590ce3b812e029b315ab9e9/apps/desktop/src/lib/deeplink-routes.ts),
   [`desktop-plugin-install.ts`](https://github.com/NousResearch/hermes-agent/blob/a0ca7c19204e514f9590ce3b812e029b315ab9e9/apps/desktop/electron/desktop-plugin-install.ts)
   and [`methods_tools.py`](https://github.com/NousResearch/hermes-agent/blob/a0ca7c19204e514f9590ce3b812e029b315ab9e9/tui_gateway/methods_tools.py),

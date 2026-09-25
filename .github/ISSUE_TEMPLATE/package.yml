@@ -11,14 +11,14 @@ body:
     id: name
     attributes:
       label: Plugin name
-      description: Lowercase letters, digits and hyphens, at most 64 characters.
+      description: Lowercase letters, digits and single hyphens, starting and ending with a letter or digit, at most 64 characters.
     validations:
       required: true
   - type: textarea
     id: what
     attributes:
       label: What it does
-      description: One sentence of at most 250 characters, as the plugin table would show it.
+      description: One sentence of at most 250 characters and 25 words, as the plugin table would show it.
     validations:
       required: true
   - type: textarea

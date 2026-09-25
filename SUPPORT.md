@@ -9,7 +9,7 @@ their versions.
 
 Use the issue form that fits:
 
-- **Install problem**: a plugin will not install, enable or load.
+- **Install problem**: a plugin fails to install, enable or load in a client.
 - **Bug**: a plugin loads but does the wrong thing.
 
 Each form asks for the client, the plugin, their versions and the output you

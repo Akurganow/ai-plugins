@@ -204,11 +204,20 @@ code. A link into a repository points at the commit at which the note holds.
 - Codex reads a root `plugin.json` that declares the Agent Plugins schema.
   Source: [Build plugins](https://developers.openai.com/plugins/build/plugins),
   documentation, read 2026-09-25.
-- Codex reads `.claude-plugin/marketplace.json` as a legacy-compatible
-  marketplace. Source: the same page.
-- Codex takes the marketplace name from the catalogue's `name` field,
-  `ai-plugins`, not from the command line. Source: `validate_marketplace_root` in
-  [`marketplace.rs`](https://github.com/openai/codex/blob/e3e5ad28470f6a225301518c30a66e749a880164/codex-rs/core-plugins/src/marketplace.rs),
+- The ChatGPT desktop app can read `.claude-plugin/marketplace.json` as a
+  legacy-compatible marketplace. Source: the same page. The Codex CLI also
+  looks for a catalogue at that path. Source:
+  [`marketplace.rs`](https://github.com/openai/codex/blob/e3e5ad28470f6a225301518c30a66e749a880164/codex-rs/core-plugins/src/marketplace.rs#L23),
+  source code.
+- Codex identifies the marketplace by the catalogue's top-level `name`, `ai-plugins`.
+  Source: [Build plugins](https://developers.openai.com/plugins/build/plugins),
+  documentation, read 2026-09-25.
+- `codex plugin marketplace add` takes no name argument. Source:
+  `AddMarketplaceArgs` in
+  [`marketplace_cmd.rs`](https://github.com/openai/codex/blob/e3e5ad28470f6a225301518c30a66e749a880164/codex-rs/cli/src/marketplace_cmd.rs#L63-L83),
+  source code. Codex reads the name from the catalogue. Source:
+  `validate_marketplace_root` in
+  [`marketplace.rs`](https://github.com/openai/codex/blob/e3e5ad28470f6a225301518c30a66e749a880164/codex-rs/core-plugins/src/marketplace.rs#L312-L321),
   source code.
 
 ### Oh-My-Pi

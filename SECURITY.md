@@ -30,14 +30,14 @@ Include what you have:
   records for that target
 - what you ran, and what happened
 
-A digest mismatch is worth reporting. The `howp` skill refuses an archive
+A digest mismatch is worth reporting. The `forecast` skill refuses an archive
 whose sha256 differs from the recorded digest
-([`SKILL.md`](plugins/howp/skills/forecast/SKILL.md)). Whoever meets that
-refusal holds the evidence, and this is where it goes.
+([`plugins/howp/skills/forecast/SKILL.md`](plugins/howp/skills/forecast/SKILL.md)).
+Whoever meets that refusal holds the evidence, and this is where it goes.
 
 ## The `hp` binary
 
-`howp` runs the `hp` binary, which is built in a private repository. Report
+`howp` runs the `hp` binary, which a private repository builds. Report
 its problems here, by the routes above:
 
 - **A vulnerability in `hp`**: the advisory form.

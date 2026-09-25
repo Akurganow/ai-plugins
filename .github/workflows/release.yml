@@ -1,0 +1,108 @@
+name: release
+
+# Releases each package that has a feat, fix or breaking commit since its last
+# tag, straight on main, with cocogitto (https://docs.cocogitto.io/guide/monorepo).
+# cog.toml names the packages and writes the version into both manifests.
+#
+# Loop guard: a push made with GITHUB_TOKEN starts no new workflow run
+# (documentation: https://github.com/github/docs/blob/75ea7dd097a5564f27364a5b70eaa1979106eabd/data/reusables/actions/actions-do-not-trigger-workflows.md),
+# so the version commit and its tags cannot rerun this workflow.
+# The "main" ruleset (ruleset 21664827, read 2026-09-25) forbids only deletion
+# and non-fast-forward pushes, so the fast-forward push below is allowed.
+on:
+  push:
+    branches: [main]
+
+# One release at a time; the next run starts from the main this one pushed.
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    # Pushing the commit and the tags and creating releases need contents: write.
+    permissions:
+      contents: write
+    steps:
+      # Pinned to a commit sha; the comment records the release. ref: main
+      # takes the newest main; fetch-depth: 0 brings the history and the tags.
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          ref: main
+          fetch-depth: 0
+
+      # cocogitto 7.0.0's release archive for this runner, pinned by sha256
+      # and checked before use. The digest matches GitHub's record of the upload.
+      - name: Install cocogitto
+        env:
+          COG_URL: https://github.com/cocogitto/cocogitto/releases/download/7.0.0/cocogitto-7.0.0-x86_64-unknown-linux-musl.tar.gz
+          COG_SHA256: e03938ff2c4c86d71c00c0f3284dbbe95c5ca76fe34a51f33e945c23010d59bb
+        run: |
+          cd "$RUNNER_TEMP"
+          curl -fsSL --retry 5 --retry-delay 5 --retry-all-errors -o cocogitto.tar.gz "$COG_URL"
+          printf '%s  %s\n' "$COG_SHA256" cocogitto.tar.gz | sha256sum -c -
+          mkdir -p "$HOME/.local/bin"
+          tar -xzf cocogitto.tar.gz --strip-components=1 -C "$HOME/.local/bin" x86_64-unknown-linux-musl/cog
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+          "$HOME/.local/bin/cog" --version | grep -F '7.0.0'
+
+      # Without a tag, cocogitto reads a package's history from the first commit
+      # (source: https://github.com/cocogitto/cocogitto/blob/055a9fa8db8ac8ce50074d50162b48b92e9d0c47/crates/cocogitto/src/conventional/bump.rs#L190-L194).
+      # That would release a version no seed recorded, so a missing seed stops the run.
+      - name: Refuse to release a package with no seed tag
+        run: |
+          names=$(awk '/^\[monorepo\.packages\]/ { p = 1; next } /^\[/ { p = 0 } p && $1 !~ /^#/ && / = / { print $1 }' cog.toml)
+          if [ -z "$names" ]; then
+            echo "::error::cog.toml names no package under [monorepo.packages]."
+            exit 1
+          fi
+          status=0
+          for name in $names; do
+            if [ -z "$(git tag --merged HEAD -l "$name--v*")" ]; then
+              echo "::error::No $name--v* tag is reachable from main; seed it before releasing."
+              status=1
+            fi
+          done
+          exit "$status"
+
+      - name: Bump every package with releasable commits
+        id: bump
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          before=$(git rev-parse HEAD)
+          cog bump --auto
+          if [ "$(git rev-parse HEAD)" = "$before" ]; then
+            echo "No package has a releasable commit."
+            echo "released=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          git tag --points-at HEAD | grep -e '--v' > "$RUNNER_TEMP/new-tags"
+          echo "New tags:"; cat "$RUNNER_TEMP/new-tags"
+          echo "released=true" >> "$GITHUB_OUTPUT"
+
+      - name: Push the version commit and its tags
+        if: steps.bump.outputs.released == 'true'
+        run: git push --atomic origin HEAD:main $(sed 's#^#refs/tags/#' "$RUNNER_TEMP/new-tags")
+
+      # The notes are the new section of the package's CHANGELOG.md, which
+      # cocogitto heads "## <tag> - <date>".
+      # It reads the tags on main's head and skips released ones, so re-running
+      # a run whose release step failed creates only the missing releases.
+      - name: Create one GitHub release per tag on main's head
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          for tag in $(git tag --points-at HEAD | grep -e '--v' || true); do
+            gh release view "$tag" >/dev/null 2>&1 && continue
+            name=${tag%--v*}
+            notes="$RUNNER_TEMP/$tag.md"
+            awk -v head="## $tag " 'index($0, head) == 1 { p = 1; next } p && (/^- - -$/ || /^## /) { exit } p' \
+              "plugins/$name/CHANGELOG.md" > "$notes"
+            [ -s "$notes" ] || { echo "::error::no changelog section for $tag"; exit 1; }
+            gh release create "$tag" --verify-tag --title "$tag" --notes-file "$notes"
+          done

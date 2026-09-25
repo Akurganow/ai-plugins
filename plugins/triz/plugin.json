@@ -1,8 +1,8 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "triz",
-  "version": "0.1.0",
-  "description": "TRIZ for engineering trade-offs, at two depths in one skill. The short route states the problem as a contradiction, maps it to Altshuller's 39 engineering parameters, reads the classic contradiction matrix for the inventive principles it recommends, and adapts them to the system at hand. A physical contradiction goes to the separation principles instead. The long route, for a problem the short one did not crack, is ARIZ-85C, Altshuller's nine-part algorithm, walked step by step with the user. The matrix ships as a plain-text reference with one line per cell, which the agent searches for one line. The parameters, principles and ARIZ steps are references beside it, each with its provenance. No script, no dependency, no network, no credentials.",
+  "version": "0.2.0",
+  "description": "Resolves software trade-offs with TRIZ: the contradiction matrix and 40 inventive principles, the separation principles, and ARIZ-85C walked part by part with the user.",
   "author": {
     "name": "Alexander Kurganov",
     "url": "https://github.com/Akurganow"
@@ -18,7 +18,11 @@
     "ariz-85c",
     "altshuller",
     "trade-offs",
-    "problem-solving",
-    "agent-skills"
-  ]
+    "problem-solving"
+  ],
+  "extensions": {
+    "io.github.akurganow.ai-plugins": {
+      "category": "Developer Tools"
+    }
+  }
 }

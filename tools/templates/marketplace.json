@@ -1,0 +1,8 @@
+{
+  "name": "ai-plugins",
+  "owner": {
+    "name": "Alexander Kurganov",
+    "url": "https://github.com/Akurganow"
+  },
+  "description": "Agent plugins for forecasting from prediction markets, writing engineering prose, and reasoning about software design, root causes and trade-offs."
+}

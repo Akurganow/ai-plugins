@@ -1,1 +1,35 @@
-../plugin.json
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "howp",
+  "version": "0.3.6",
+  "description": "Turn what you follow into measurable questions, bind them to Polymarket and Manifold markets, and write a forecast from their probabilities and the agent's judgement.",
+  "author": {
+    "name": "Alexander Kurganov",
+    "url": "https://github.com/Akurganow"
+  },
+  "homepage": "https://github.com/Akurganow/ai-plugins/tree/main/plugins/howp",
+  "repository": "https://github.com/Akurganow/ai-plugins",
+  "license": "MIT",
+  "keywords": [
+    "probability",
+    "forecasting",
+    "prediction-markets",
+    "polymarket",
+    "manifold"
+  ],
+  "extensions": {
+    "io.github.akurganow.ai-plugins": {
+      "category": "Data & Analytics",
+      "network": {
+        "hosts": [
+          "github.com",
+          "release-assets.githubusercontent.com",
+          "raw.githubusercontent.com",
+          "gamma-api.polymarket.com",
+          "clob.polymarket.com",
+          "api.manifold.markets"
+        ]
+      }
+    }
+  }
+}

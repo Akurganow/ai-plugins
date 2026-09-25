@@ -4,23 +4,49 @@
     "name": "Alexander Kurganov",
     "url": "https://github.com/Akurganow"
   },
-  "description": "Public marketplace of Akurganow's agent plugins. Every plugin under plugins/ is an Agent Plugins 1.0.0 package; this file is the catalogue index in Claude's format and at Claude's path, and it holds pointers to those packages and nothing else. Codex and Oh-My-Pi read the same file.",
+  "description": "Agent plugins for forecasting from prediction markets, writing engineering prose, and reasoning about software design, root causes and trade-offs.",
   "plugins": [
     {
+      "name": "cognitive-load",
+      "source": "./plugins/cognitive-load",
+      "description": "Separates the cognitive load a task needs from the load a code base's structure adds, and names the change that removes the second.",
+      "homepage": "https://github.com/Akurganow/ai-plugins/tree/main/plugins/cognitive-load",
+      "category": "Developer Tools"
+    },
+    {
+      "name": "design-review",
+      "source": "./plugins/design-review",
+      "description": "Reviews a software design for complexity with the red flags and principles of Ousterhout's A Philosophy of Software Design, each finding cited by chapter.",
+      "homepage": "https://github.com/Akurganow/ai-plugins/tree/main/plugins/design-review",
+      "category": "Developer Tools"
+    },
+    {
       "name": "howp",
-      "source": "./plugins/howp"
+      "source": "./plugins/howp",
+      "description": "Turn what you follow into measurable questions, bind them to Polymarket and Manifold markets, and write a forecast from their probabilities and the agent's judgement.",
+      "homepage": "https://github.com/Akurganow/ai-plugins/tree/main/plugins/howp",
+      "category": "Data & Analytics"
     },
     {
       "name": "prose-discipline",
-      "source": "./plugins/prose-discipline"
+      "source": "./plugins/prose-discipline",
+      "description": "An engineering prose standard for agent-written text: short active sentences, plain words, comments that explain why, and labelled review comments.",
+      "homepage": "https://github.com/Akurganow/ai-plugins/tree/main/plugins/prose-discipline",
+      "category": "Productivity"
     },
     {
       "name": "toc-thinking",
-      "source": "./plugins/toc-thinking"
+      "source": "./plugins/toc-thinking",
+      "description": "Applies Goldratt's Thinking Processes to software: finds the core problem behind many symptoms, resolves the conflict that sustains it, and plans the change.",
+      "homepage": "https://github.com/Akurganow/ai-plugins/tree/main/plugins/toc-thinking",
+      "category": "Developer Tools"
     },
     {
       "name": "triz",
-      "source": "./plugins/triz"
+      "source": "./plugins/triz",
+      "description": "Resolves software trade-offs with TRIZ: the contradiction matrix and 40 inventive principles, the separation principles, and ARIZ-85C walked part by part with the user.",
+      "homepage": "https://github.com/Akurganow/ai-plugins/tree/main/plugins/triz",
+      "category": "Developer Tools"
     }
   ]
 }

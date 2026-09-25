@@ -89,8 +89,10 @@ x:
           Read by pipeline-clerk, spec-writer, spec-reviewer and implementer.
           One file where there were four byte-identical copies.
         github-needs: >-
-          Read by issue-court, tracker-clerk, repo-police and slop-police.
-          The same, for what a run needs from GitHub.
+          Read by issue-court, tracker-clerk, repo-police, slop-police and
+          agent-police. The same, for what a run needs from GitHub. It
+          holds the one definition of the machine population, which
+          pipeline-law cites for the four pipeline roles.
       notCarriedHere: >-
         The measured facts of a routine's environment, and the clone sequence
         that environment needs. Those belong to whoever runs the agent, never

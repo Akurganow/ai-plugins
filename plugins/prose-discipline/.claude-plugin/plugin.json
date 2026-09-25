@@ -1,1 +1,30 @@
-../plugin.json
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "prose-discipline",
+  "version": "2.0.0",
+  "description": "An engineering prose standard for agent-written text: short active sentences, plain words, comments that explain why, and labelled review comments.",
+  "author": {
+    "name": "Alexander Kurganov",
+    "url": "https://github.com/Akurganow"
+  },
+  "homepage": "https://github.com/Akurganow/ai-plugins/tree/main/plugins/prose-discipline",
+  "repository": "https://github.com/Akurganow/ai-plugins",
+  "license": "MIT",
+  "keywords": [
+    "prose",
+    "writing",
+    "style-guide",
+    "anti-slop",
+    "code-review",
+    "conventional-comments",
+    "commit-messages"
+  ],
+  "extensions": {
+    "com.openai": {
+      "hooks": "./hooks/hooks.json"
+    },
+    "io.github.akurganow.ai-plugins": {
+      "category": "Productivity"
+    }
+  }
+}

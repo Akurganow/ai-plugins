@@ -1,6 +1,6 @@
 ---
 name: issue-court
-description: "Try one open issue of this repository per run under a short adversarial review, and post one technical comment written from the verdict. Use when an unattended run must decide whether a filed finding is real and record that decision on the issue itself."
+description: "Try one open issue of this repository's machine population per run under a short adversarial review, and post one technical comment written from the verdict. Use when an unattended run must decide whether a filed finding is real and record that decision on the issue itself."
 model: inherit
 skills: [github-needs, issue-court]
 ---

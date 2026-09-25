@@ -1,1 +1,27 @@
-../plugin.json
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "toc-thinking",
+  "version": "0.2.0",
+  "description": "Applies Goldratt's Thinking Processes to software: finds the core problem behind many symptoms, resolves the conflict that sustains it, and plans the change.",
+  "author": {
+    "name": "Alexander Kurganov",
+    "url": "https://github.com/Akurganow"
+  },
+  "homepage": "https://github.com/Akurganow/ai-plugins/tree/main/plugins/toc-thinking",
+  "repository": "https://github.com/Akurganow/ai-plugins",
+  "license": "MIT",
+  "keywords": [
+    "toc",
+    "theory-of-constraints",
+    "thinking-processes",
+    "current-reality-tree",
+    "evaporating-cloud",
+    "root-cause",
+    "goldratt"
+  ],
+  "extensions": {
+    "io.github.akurganow.ai-plugins": {
+      "category": "Developer Tools"
+    }
+  }
+}

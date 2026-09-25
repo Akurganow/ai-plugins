@@ -34,9 +34,10 @@ looks right" is not a result the check produced.
 
 Nine roles, as skills under `.agents/skills/`, each with one thin Claude
 binding under `.claude/agents/` that names its skills and carries no role text.
-Four pipeline roles share `pipeline-law`; four analysis roles share
-`github-needs`; the ninth patrols the other eight. `.agents/manifest.yaml`
-declares the set and records why each arrangement is what it is.
+Four pipeline roles share `pipeline-law`. Five roles read `github-needs`: the
+four analysis roles, and the ninth, which patrols the other eight.
+`.agents/manifest.yaml` declares the set and records why each arrangement is
+what it is.
 
 **Whatever fires them is not in this repository and never will be.** The
 caller carries the measured facts of its own environment and the clone
@@ -56,8 +57,9 @@ to. **All three are `.agents/rules/conformance.md`'s and none of them is
 stated here** — this list says only that they exist and under which heading,
 so read them there before going near any of the three:
 
-- **Versions**, on the three files a release job in another repository writes
-  and nobody edits by hand.
+- **Versions**, on the files a release writes, which nobody edits by hand.
+  The release job in another repository writes howp's;
+  `.github/workflows/release.yml` writes every other package's.
 - **The vendored schema is a copy, not a source**, on `tools/schemas/` and on
   what may replace it.
 - **Text only**, on what may be committed to this repository at all.

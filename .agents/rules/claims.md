@@ -19,12 +19,6 @@ act on, and the standing rule is that a claim names where it was read.
   in a review thread — and says, per fact, which of the two it came from, or
   that it came from running the client's own code. `README.md` does this
   today for every surface it lists.
-- **Say what was not verified.** `README.md` opens the install section by
-  saying nothing below has been installed from this repository as published.
-  That sentence is load-bearing; it is not softened, moved to a footnote, or
-  quietly upgraded because a package "should" work — and testing a fix in a
-  working tree does not retire it, because what is published is what a reader
-  will install.
 - **Never invent a command.** Where a client's install command could not be
   verified, none is stated and the reason is given. Declining to answer is a
   correct answer here; a plausible command that does not exist is worse than
@@ -42,10 +36,14 @@ act on, and the standing rule is that a claim names where it was read.
   own output, or it names the tag and date it was measured against. Prose
   that restates a property of the current build is not corrected at the next
   release — nothing in the release path can correct it — so it is not written
-  that way. The release bot rewrites three files — `binaries.json`,
-  `plugin.json`'s `version`, and the skill's `references/commands.md`; every
-  other sentence about what ships stays exactly as it was, and a reader cannot
-  tell a fresh one from one the last release falsified.
+  that way. The howp release bot rewrites four files — `binaries.json`,
+  `plugin.json`'s `version`, the `forecast` skill's `references/commands.md`,
+  and the `.claude-plugin/plugin.json` byte copy. Every other sentence about
+  what ships stays exactly as it was, and a reader cannot tell a fresh one
+  from one the last release falsified. For every package
+  but howp, `.github/workflows/release.yml` rewrites `version` in
+  `plugin.json` and in its `.claude-plugin/plugin.json` copy, and
+  `CHANGELOG.md`, and no other file.
 
 ## Why it is written down rather than assumed
 

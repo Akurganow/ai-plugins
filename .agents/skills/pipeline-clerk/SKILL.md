@@ -38,8 +38,9 @@ one before it: the sweep, the code-review round, then intake.
 
 The labels you may apply are `pipeline/queued`, `spec/needs-work`,
 `spec/awaiting-review`, `spec/approved`, `pipeline/code-review`,
-`ready-for-human` and `pipeline/stuck`. A missing name is a hard stop for the
-duty that needed it, not for the whole fire. Say which in the report.
+`ready-for-human`, `pipeline/stuck`, and `police-report` on a part you
+create. A missing name is a hard stop for the duty that needed it, not for
+the whole fire. Say which in the report.
 
 You push a branch, so a still-shallow clone is a hard stop: a report line, no
 commit, no push, and the sweep still runs.
@@ -374,17 +375,20 @@ on him while the queue moves.
 With the slot free, build the candidate list. The slot is free when no live
 item is open, whatever else is parked.
 
-1. List open issues carrying `pipeline/intake`. That label says a finding
-   should be built. Two hands apply it: the tracker Clerk, on a
-   finding the court sustained and it re-derived as still live, and the
-   owner, on anything he wants built. **You never apply it to anything**,
-   and you are still the only role that removes it.
+1. List the open issues in the machine population carrying
+   `pipeline/intake`; the law says where that population is defined. That
+   label says a finding should be built. Two hands apply it. The tracker
+   Clerk applies it to a finding the court sustained and it re-derived as
+   still live. The owner applies it to any issue in that population he
+   wants built. **You never apply it to anything**, and you are still the
+   only role that removes it.
 2. Read each one in full, with its comments and its place in any
    hierarchy. A `pipeline-decomposition` comment naming any `unattached=`
    part means that family is broken: drop the issue and its parts, write
    one report line, and touch nothing. A broken family waits for the owner.
-3. One that has parts is already split, and is never built itself.
-   Replace it in the list with its open parts, in the parent's order.
+3. One that has parts is already split, and is never built itself. Replace it
+   in the list with its open parts in the machine population, in the parent's
+   order. A part outside it is a report line.
 4. Read each candidate's full body, never its title alone.
 5. Drop any whose number already appears in the `sources=` of a pipeline
    pull request's fingerprint, open or closed. A closed one means the item
@@ -456,18 +460,20 @@ The title names the part. The body:
 
     Part <k> of <m> of #<N>.
 
-    <!-- pipeline-part: parent=#<N> part=<k>/<m> at=<UTC> -->
+    <!-- police-fingerprint: pipeline-clerk parent=#<N> part=<k>/<m> at=<UTC> -->
 
-**A part carries no label.** Every label here belongs to whoever applies it.
-`audit:*` is the police's, `court/*` and `triage/*` are the court's,
-`pipeline/intake` is the tracker Clerk's and the owner's, `no-trial` is the
-owner's. You own none of them.
+**A part carries `police-report` and no other label.** The label and the
+fingerprint line put the part in the machine population, so the court and
+the tracker Clerk can reach it. Every other label belongs to whoever
+applies it. `audit:*` is the police's, `court/*` and `triage/*` are the
+court's, `pipeline/intake` is the tracker Clerk's and the owner's,
+`no-trial` is the owner's. You own none of them.
 `no-trial` says "Set by a person" in its own description, so the court tries
 a part like any other issue.
 
 Then, in this order:
 
-1. Create every part.
+1. Create every part, with `police-report` in the same create.
 2. Read each one's parent back. It must name the parent.
 3. Read the parent's parts back. Every part must be there, in order.
 4. Post one comment on the parent, and only after steps 2 and 3. A short
@@ -608,8 +614,9 @@ brief.
 - Never split an issue that has a parent, or one that already has parts.
   Never split more than one issue in a fire, and never into more than four
   parts. Never split and cut a skeleton in the same fire.
-- Never apply a label to an issue. `pipeline/intake` is the only one you
-  touch there, and only to remove it.
+- Never apply a label to an existing issue. A part carries `police-report`
+  from its creation. `pipeline/intake` is the only label you touch on an
+  existing issue, and only to remove it.
 - Never write a forbidden path. Never write anything in the tree except the
   skeleton under `.agents/specs/<N>-<slug>/`.
 - Never merge a pull request — merging the base into an item branch to

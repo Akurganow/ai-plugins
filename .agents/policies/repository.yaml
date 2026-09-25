@@ -1,9 +1,11 @@
 # What an agent working in this repository may do, and where it must stop.
 id: repository
 description: >-
-  Ordinary maintenance: the plugin packages, the conformance check, the
-  README, the workflow. Narrow, because the repository is small and public
-  and its whole value is that its claims hold.
+  Ordinary maintenance: the plugin packages, the conformance check and
+  regeneration script, the entry point and agent bindings, the root
+  documents, the workflows and release configuration. Narrow, because the
+  repository is small and public and its whole value is that its claims
+  hold.
 
 capabilities:
   filesystem:
@@ -19,12 +21,24 @@ capabilities:
 paths:
   allow:
     - ".agents/**"
+    - ".claude/agents/**"
     - ".claude/rules"
+    - ".claude/skills/**"
     - ".claude-plugin/**"
     - ".github/**"
     - "plugins/**"
     - "tools/**"
+    - "docs/**"
     - "README.md"
+    - "AGENTS.md"
+    - "CLAUDE.md"
+    - "CONTRIBUTING.md"
+    - "SUPPORT.md"
+    - "SECURITY.md"
+    - "LICENSE"
+    - ".gitattributes"
+    - ".gitignore"
+    - "cog.toml"
   # Nothing is closed outright. The one tree that must not drift —
   # `tools/schemas/`, a verbatim copy of a published schema — is gated by a
   # confirmation instead, because it does have to be replaced when the
@@ -39,5 +53,5 @@ paths:
 confirmations:
   requiredFor:
     - "publishing a release"
-    - "adding a plugin to the marketplace index"
+    - "adding a package under `plugins/`"
     - "changing the vendored specification schema"

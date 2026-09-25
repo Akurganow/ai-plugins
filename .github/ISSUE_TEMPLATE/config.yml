@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Report a vulnerability
+    url: https://github.com/Akurganow/ai-plugins/blob/main/SECURITY.md
+    about: Report privately, as SECURITY.md describes. Never in a public issue.
+  - name: Ask a question
+    url: https://github.com/Akurganow/ai-plugins/blob/main/SUPPORT.md
+    about: SUPPORT.md says where questions go.

@@ -162,14 +162,13 @@ wording.
 
 ## After writing the files
 
-Binding is what turns a question into something with a probability. A
-question with no market behind it is listed on the page as uncovered and
-never gets a number. Binding belongs to the `forecast` skill, so hand over to
+Binding is what turns a question into something with a probability. The
+page lists a question with no market behind it as uncovered, and it never
+gets a number. Binding belongs to the `forecast` skill, so hand over to
 it now. Its first procedure, in `../forecast/references/procedures.md`,
 finds candidate markets, judges each one and lands the verdict with
 `hp ingest match`. It also runs `hp ingest check questions`, which reads
 these files strictly and reports what is wrong with them.
 
-Then tell the user which questions got a market and which did not. The ones
-that did not are not a failure of the interview; they are the honest part of
-the page, and often the ones worth rewording together.
+When the `forecast` skill reports questions with no market, they are not a
+failure of the interview. They are often the ones worth rewording together.

@@ -87,7 +87,9 @@ skill. Say so and stop rather than running something else out of it.
 before spending a download on it. On every run, probe again the first time
 the run needs a market. Reachability changes with the machine, its proxy and
 the day. Probe with the tool you will actually fetch with, not with a
-different one. A `HEAD` or a small `GET` is enough. The download in Step 3
+different one. A `HEAD` or a small `GET` is enough. Any answer from the
+host proves the connection, so a root 404 or 301 is reachable; only a
+failed connection or proxy refusal is blocked. The download in Step 3
 is its own probe of `github.com` and of the host it redirects to.
 
 **If something is blocked, do not work around it — say precisely what to

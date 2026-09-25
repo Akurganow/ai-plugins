@@ -141,8 +141,14 @@ remove followed by an apply.
 The owner may add or remove anything at any time. Read that as an override.
 
 Labels the pipeline reads but does not own are conventions, never guards:
-`court/tried`, `triage/*`, `audit:*`, `police-report`, `no-trial`. Every skip
-test is positive and built from the pipeline's own markers.
+`court/tried`, `triage/*`, `audit:*`, `no-trial`. Every skip test is
+positive and built from the pipeline's own markers.
+
+`police-report` is the one label that bounds which issues the pipeline sees. With
+the fingerprint line it marks the machine population, defined once in
+`.agents/skills/github-needs/SKILL.md` under **The machine population**.
+Read the definition there. Every issue a pipeline role lists, reads, labels
+or splits is in that population.
 
 ### A family of items
 
@@ -165,10 +171,12 @@ read from `raw.githubusercontent.com` on 2026-09-08.
 This machine uses one level and at most four parts. A part that is itself
 too big is a report line, never a second split.
 
-**A part is an ordinary issue.** It has its own body, its own comments and
-its own lifecycle. The court tries it, the tracker Clerk closes it, and the
-police read it in the open list, all exactly as they treat any issue. The
-relation is GitHub's own state, not a sentence in a body.
+**A part is an ordinary issue in the machine population.** The Clerk files
+it with `police-report` and its own fingerprint line. It has its own body,
+its own comments and its own lifecycle. The court tries it, the tracker
+Clerk closes it, and the police read it, all exactly as they treat any issue
+in that population. The relation is GitHub's own state, not a sentence in a
+body.
 
 **The brief names the family.** A pull request built from a part carries a
 `## Part of` section naming the parent and every sibling. Two things follow,

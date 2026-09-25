@@ -304,7 +304,7 @@ Those are the two values a GitHub Actions workflow gets under keyless signing.
 The identity is the workflow file at a branch, and no long-lived key exists.
 (documentation: [OIDC in Fulcio L40–L43](https://github.com/sigstore/docs/blob/842c30981f1bf5061fe0d370512db4de8cdf3b33/content/en/certificate_authority/oidc-in-fulcio.md#L40-L43); [Signing blobs L10–L12](https://github.com/sigstore/docs/blob/842c30981f1bf5061fe0d370512db4de8cdf3b33/content/en/cosign/signing/signing_with_blobs.md#L10-L12))
 The `howp-archive` job of `.github/workflows/integration.yml` downloads the table and the bundle of the release `binaries.json` names.
-It runs `cosign verify-blob` against that identity and issuer, then compares the table's digest with the one in `binaries.json`.
+It runs `cosign verify-blob` against that identity and issuer, then compares the digest the table lists for the archive with the one in `binaries.json`.
 (documentation: [Verifying blobs L34–L35](https://github.com/sigstore/docs/blob/842c30981f1bf5061fe0d370512db4de8cdf3b33/content/en/cosign/verifying/verify.md#L34-L35))
 A release without a bundle, or with a table another identity signed, fails that job.
 So the digests the skill trusts are the ones CI has checked against a signed table.

@@ -257,7 +257,7 @@ reporting section is kept.
 
 ### 6.3 CONTRIBUTING, SUPPORT, issue templates (M3)
 
-- `CONTRIBUTING.md`: how to file an issue (templates), conventional commits (release-please
+- `CONTRIBUTING.md`: how to file an issue (templates), conventional commits (cocogitto
   reads them; `feat:`/`fix:`/`feat!:`), how to run the checks locally, how a new package is
   proposed (a PR with `plugins/<name>/` in the template shape). No mention of any agent.
 - `SUPPORT.md`: issues for defects, Discussions for questions if the owner enables them.
@@ -267,14 +267,28 @@ reporting section is kept.
 
 ## 7. Releases and CI
 
-### 7.1 release-please (M1)
+### 7.1 cocogitto: releases committed straight to `main` (M1)
 
-`release-please-config.json` + `.release-please-manifest.json`, `release-type: simple`
-per package path (`plugins/<name>`), `extra-files` `[{"type":"json","path":"plugin.json",
-"jsonpath":"$.version"}]`, `changelog-path: CHANGELOG.md`, `tag-separator: "--"` so tags
-read `<name>--v<version>` (the form Claude Code documents). `howp` is not in the config.
-Workflow `.github/workflows/release-please.yml` (`googleapis/release-please-action`,
-pinned by sha). Initial versions: current values.
+The owner rejected release pull requests (2026-09-25): a version bump is committed to
+`main` by the workflow right after the commit that earned it. Tool: cocogitto
+(`cog`, pinned), chosen from the research in
+`../handoff/2026-09-24-marketplace-quality/research/11-release-no-pr.md`: `cog bump
+--auto` works out each package's next version from the conventional commits that
+touched its path, writes one version commit and one tag per package, and takes hooks
+for the files it does not know. `cog.toml` at the repository root declares the five
+packages (`plugins/<name>`, howp excluded), `monorepo_version_separator = "--"` and
+`tag_prefix = "v"` so tags read `<name>--v<version>` (the form Claude Code documents),
+the global tag turned off, a `CHANGELOG.md` per package, and a bump hook that writes the
+new version into `plugin.json` and its `.claude-plugin/plugin.json` copy with `jq`. The
+workflow `.github/workflows/release.yml` runs on push to `main`, installs `cog` pinned,
+runs the bump, pushes the commit and the tags, and creates one GitHub release per new
+tag with `gh release create`. A push made with `GITHUB_TOKEN` starts no other workflow
+(GitHub's documented rule), so the release commit cannot loop; the conformance check
+does not run on it, which is accepted because the commit changes only what the hooks
+write. cocogitto never bumps a `0.y.z` version to `1.0.0` on its own, so the `feat!`
+renames in this rework stay in `0.x`. Initial versions: current values, seeded as one
+`<name>--v<current>` tag per package before the workflow is enabled. Conventional
+commits are the input (`CONTRIBUTING.md` says so, §6.3).
 
 ### 7.2 cosign in how-possible (H6) — issue text
 
@@ -342,7 +356,7 @@ Where a spike needs a clean run, run it in a fresh environment that matches what
 - `.agents/` has no clause demanding the diary; `agent-police` carries the external list;
   every issue-listing clause names the `police-report` population.
 - Generated files equal their sources (CI proves it).
-- Every package has README.md, LICENSE, CHANGELOG.md (after first release-please run),
+- Every package has README.md, LICENSE, CHANGELOG.md (after the first release run),
   a ≤ 250-char description, a category, imperative skill description, referenced paths,
   TOCs.
 - What outlives the task (client loading facts, the reasons behind decisions) exists as

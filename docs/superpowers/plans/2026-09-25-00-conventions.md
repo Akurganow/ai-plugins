@@ -22,7 +22,7 @@ its own.
 | 04 | howp | `plugins/howp/**` except the three release-written files | §5.3, §5.1, §5.4, §4.1 per-manifest changes | 02 |
 | 05 | methods | `plugins/{design-review,cognitive-load,toc-thinking,triz}/**` | §5.1, §5.4, §4.1 per-manifest changes | 02 |
 | 06 | root-docs | `README.md`, `SECURITY.md`, `CONTRIBUTING.md`, `SUPPORT.md`, `.github/ISSUE_TEMPLATE/*`, `.claude-plugin/marketplace.json` (generated) | §6, §4.1 catalogue | 02, 03–05 (names, descriptions) |
-| 07 | release-ci | `release-please-config.json`, `.release-please-manifest.json`, `.github/workflows/release-please.yml`, `.github/workflows/integration.yml`, validator steps of `conformance.yml`, the how-possible issue text, spike 5 | §7, §9 spike 5 | 02–06 |
+| 07 | release-ci | `cog.toml`, `.github/workflows/release.yml`, `.github/workflows/integration.yml`, validator steps of `conformance.yml`, the how-possible issue text, spike 5 | §7, §9 spike 5 | 02–06 |
 | 08 | closing | new files under `docs/`, deletion of `docs/superpowers/`, acceptance §10 | §10, cleanup paragraph | 01–07 |
 
 Plans 01 and 02 run first and in parallel. 03, 04, 05 run after 02 and in parallel with
@@ -163,7 +163,7 @@ never executed before the owner approves it.
 
 ## Commits
 
-Conventional commits, one per task, because release-please reads them: `feat(<plugin>):`,
+Conventional commits, one per task, because cocogitto reads them to version each package: `feat(<plugin>):`,
 `fix(<plugin>):`, `docs:`, `chore:`, `ci:`, `refactor(<plugin>):`, with `!` for a
 breaking change (a skill rename is `feat(<plugin>)!:`). Body: what changed and why, in
 sentences of at most 25 words. Last line:
@@ -190,7 +190,7 @@ holds the citations already found; reuse them.
 - Clients installed and authorised: Codex CLI 0.155.1, Hermes 0.21.5, Oh-My-Pi 18.2.8.
   Spikes that need a clean run use a fresh environment (spec §9). Nothing in a plan
   calls a model in CI.
-- Not installed: `skills-ref`, `cosign`, `release-please` CLI; `doctoc` comes from
+- Not installed: `skills-ref`, `cosign`, `cog` (cocogitto); `doctoc` comes from
   `tools/package-lock.json` once plan 02 lands. Plan 07 states how each of the others is
   installed, pinned.
 

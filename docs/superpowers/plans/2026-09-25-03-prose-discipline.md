@@ -668,6 +668,10 @@ Run on <date> with <client> <version, as its --version printed it>, fixture buil
 
 <every command in order, each followed by the output lines that decide an assertion, verbatim>
 
+## State left on the owner's machine
+
+<"Restored to the state found", or each change the owner chose to keep, with the command output that shows it>
+
 ## Consequence for plan 03
 
 <"None", or the change from the task's failure list, and the owner's answer>
@@ -923,7 +927,7 @@ Spec §9 item 4: "install the portable package, confirm the skill loads; set `sk
 
 The installed Hermes reports `upstream d350422b`. Research 08 read `749220ef`. The wrapper text at line 673 of `agent/skill_commands.py` is the same in both. Hermes stores each session's system prompt in `~/.hermes/state.db`: `sessions.system_prompt_hash` points into table `system_prompts`. The plan writer read that schema from the local database. Each `hermes chat` call below calls a model; pass `-m` with the cheapest model the configured provider offers.
 
-The spike changes the owner's Hermes install and config, and Step 7 restores both.
+The owner approved these changes to their Hermes install and config, with backups. Step 7 restores everything except one line the owner keeps: the `skills.auto_load` entry `agent-plugin-prose-discipline-cf518319:house-style`.
 
 - [ ] **Step 1: Prepare, record versions and back up the config**
 
@@ -1017,21 +1021,32 @@ tail -n +"$(( $(cat "$RUN/log-lines-before") + 1 ))" ~/.hermes/logs/agent.log | 
 
 Record 4c as "not run: this machine runs macOS". The Windows × Hermes job of plan 07's integration matrix covers it.
 
-- [ ] **Step 7: Restore the owner's Hermes state**
+- [ ] **Step 7: Restore the owner's Hermes state, keeping the auto-load entry**
+
+The owner keeps the `skills.auto_load` entry and will use it. Everything else goes back to the Step 1 state. Restore the config backup first, then add the entry again the way Step 5 succeeded. Use `hermes config set` if it produced a list there, otherwise edit the existing `skills:` block by hand.
 
 ```sh
 cp "$RUN/config.yaml.bak" "$CFG"
+hermes config set skills.auto_load '["agent-plugin-prose-discipline-cf518319:house-style"]'
+hermes config get skills.auto_load
+diff "$RUN/config.yaml.bak" "$CFG"
 hermes plugins install Akurganow/ai-plugins/plugins/prose-discipline --force --enable
 hermes plugins list | grep -A1 'prose-discipline'
-hermes config get skills.auto_load
 cd "$(git rev-parse --show-toplevel)" && git status --porcelain
 ```
 
-Expected: `prose-discipline` enabled at `1.3.0`; `skills.auto_load` as Step 1 printed it; no line for a tracked file.
+Expected:
+
+- `hermes config get` prints a list holding only `agent-plugin-prose-discipline-cf518319:house-style`, plus any entries Step 1 printed.
+- `diff` shows only the added `auto_load` lines under `skills:`.
+- `prose-discipline` is enabled at `1.3.0`.
+- `git status` shows no line for a tracked file.
+
+The published 1.3.0 still ships the skill as `prose-discipline`, so Hermes logs `skills.auto_load: skill(s) not found or disabled, skipped: …` for the entry. That lasts until a release ships `house-style`. It is harmless: Hermes skips a missing name and starts the session. Tell the owner in the spike's report.
 
 - [ ] **Step 8: Write the record**
 
-Write `docs/superpowers/handoff/2026-09-24-marketplace-quality/spikes/04-hermes.md` from the record template, with rows 4-install, 4a, 4b and 4c. Quote the wrapper line exactly as `4b-system.txt` holds it.
+Write `docs/superpowers/handoff/2026-09-24-marketplace-quality/spikes/04-hermes.md` from the record template, with rows 4-install, 4a, 4b and 4c. Quote the wrapper line exactly as `4b-system.txt` holds it. Under "State left on the owner's machine", quote the Step 7 `hermes config get` and `diff` output. Also note the skip warning that the kept entry produces until `house-style` is released.
 
 - [ ] **Step 9: Commit**
 
@@ -1582,6 +1597,6 @@ The coordinator settled the questions this plan raised:
 5. The per-client routes live under Usage in the README.
 6. `plugins_manifest.py` lines 60–69 are the right citation for the namespace function; plan 08 has been told.
 7. Page-plus-section links are accepted for the Claude Code and Codex documentation sites, which offer no permalinks.
-8. The spikes' changes to the owner's Oh-My-Pi and Hermes go into the coordinator's owner notices.
+8. The owner approved the spikes' installs into Oh-My-Pi and Hermes and the Hermes config change, with backups. After spike 4 the `skills.auto_load` entry `agent-plugin-prose-discipline-cf518319:house-style` stays in the owner's config; everything else is restored.
 
 Still true, and not a decision: Oh-My-Pi cannot install the new package from the marketplace before merge, so spike 3 uses `--plugin-dir` for it. Hermes on Windows cannot run on this macOS machine, so spike 4 records 4c as not run and plan 07's matrix covers it.

@@ -298,14 +298,17 @@ It also includes `raw.githubusercontent.com`, where the skill can read the packa
 
 The skill checks each archive's SHA-256 against `plugins/howp/binaries.json`.
 A digest proves the archive is the recorded one, not who built it.
-So the job that builds `hp` is to sign `SHA256SUMS` with Sigstore cosign keyless signing for releases after `howp-v0.3.6`.
-Keyless signing ties an ephemeral key to the workflow's OpenID Connect identity, so the job holds no long-lived signing key.
-(documentation: [Signing blobs L10–L12](https://github.com/sigstore/docs/blob/842c30981f1bf5061fe0d370512db4de8cdf3b33/content/en/cosign/signing/signing_with_blobs.md#L10-L12))
-The signer's identity is then the workflow file at a branch, such as `main`.
-(documentation: [OIDC in Fulcio L40–L43](https://github.com/sigstore/docs/blob/842c30981f1bf5061fe0d370512db4de8cdf3b33/content/en/certificate_authority/oidc-in-fulcio.md#L40-L43))
-`howp-v0.3.6`, the newest release, carries `SHA256SUMS` and no signature asset (release assets, read 2026-09-26).
-No CI step here verifies a signature, because no release carries one.
-The skill keeps its SHA-256 check and never calls cosign.
+The release [`howp-v0.3.7`](https://github.com/Akurganow/ai-plugins/releases/tag/howp-v0.3.7) carries `SHA256SUMS` and `SHA256SUMS.sigstore.json`, a Sigstore bundle over the table (release assets, read 2026-09-26).
+The certificate in that bundle names `https://github.com/Akurganow/how-possible/.github/workflows/release.yml@refs/heads/main` as the signer and `https://token.actions.githubusercontent.com` as the issuer (the bundle's certificate, read 2026-09-26).
+Those are the two values a GitHub Actions workflow gets under keyless signing.
+The identity is the workflow file at a branch, and no long-lived key exists.
+(documentation: [OIDC in Fulcio L40–L43](https://github.com/sigstore/docs/blob/842c30981f1bf5061fe0d370512db4de8cdf3b33/content/en/certificate_authority/oidc-in-fulcio.md#L40-L43); [Signing blobs L10–L12](https://github.com/sigstore/docs/blob/842c30981f1bf5061fe0d370512db4de8cdf3b33/content/en/cosign/signing/signing_with_blobs.md#L10-L12))
+The `howp-archive` job of `.github/workflows/integration.yml` downloads the table and the bundle of the release `binaries.json` names.
+It runs `cosign verify-blob` against that identity and issuer, then compares the digest the table lists for the archive with the one in `binaries.json`.
+(documentation: [Verifying blobs L34–L35](https://github.com/sigstore/docs/blob/842c30981f1bf5061fe0d370512db4de8cdf3b33/content/en/cosign/verifying/verify.md#L34-L35))
+A release without a bundle, or with a table another identity signed, fails that job.
+So the digests the skill trusts are the ones CI has checked against a signed table.
+The skill itself keeps its SHA-256 check and never calls cosign.
 
 Two alternatives lost.
 GitHub artifact attestations would come from the build, which runs in a private repository because the sources are not public.

@@ -69,7 +69,8 @@ and `hp` records the probabilities.
 `hp render` writes the forecast page to `data/dashboard.md` in the workspace.
 
 Later prompts refresh the forecast, explain a sharp move or write the weekly
-digest.
+digest. Another forecasts one event from recorded results, the gated market
+and evidence, and scores that forecast after the outcome.
 
 ## What's inside
 
@@ -77,9 +78,9 @@ digest.
 | :-- | :-- |
 | [`skills/interests/SKILL.md`](skills/interests/SKILL.md) | The `interests` skill: interviews you and writes the questions a forecast is built on. |
 | [`skills/interests/references/interview.md`](skills/interests/references/interview.md) | The interview, the formats of the two files you own, and what makes a good question. |
-| [`skills/forecast/SKILL.md`](skills/forecast/SKILL.md) | The `forecast` skill: the platform rules, the workspace, the routine cycle and the three judgements. |
+| [`skills/forecast/SKILL.md`](skills/forecast/SKILL.md) | The `forecast` skill: the platform rules, the workspace, the routine cycle and the four procedures. |
 | [`skills/forecast/references/install.md`](skills/forecast/references/install.md) | How the `forecast` skill gets `hp`: the platform gate, the preflight, the download, the sha256 check and the unpack. |
-| [`skills/forecast/references/procedures.md`](skills/forecast/references/procedures.md) | Binding a question to a market, explaining a sharp move and writing the weekly digest. |
+| [`skills/forecast/references/procedures.md`](skills/forecast/references/procedures.md) | Binding a question to a market, explaining a sharp move, writing the weekly digest, and forecasting one event from recorded results, the gated market and evidence, then scoring it. |
 | [`skills/forecast/references/commands.md`](skills/forecast/references/commands.md) | `hp --help` for every subcommand, written by the release job. |
 | [`binaries.json`](binaries.json) | The released `hp` archives: version, targets, URLs and sha256 digests, written by the release job. |
 | [`plugin.json`](plugin.json) | The manifest, with the host list under `extensions`. |
@@ -91,7 +92,8 @@ other machine the `forecast` skill stops and names the listed targets. It
 never builds `hp` from source, because the source repository is private.
 
 The `forecast` skill runs `uname`, `curl`, `tar`, `mktemp`, and `shasum` or
-`sha256sum`. It needs no API key and no account.
+`sha256sum`. Its procedure for a forecast from evidence and markets also runs
+`jq`. It needs no API key and no account.
 
 ### Hosts
 
@@ -119,10 +121,11 @@ opens no socket: the agent fetches every URL `hp` names with its own tools,
 under your client's permission flow. The `forecast` skill probes each host
 a run needs and reports a blocked one instead of routing around it.
 
-The list is a floor, not a fence. The agent searches for candidate markets
-and for the story behind a move on its own. The `forecast` skill names no
-host for those searches, and the hosts they reach are yours to allow. The
-standard gives the list no meaning: the Agent Plugins manifest schema
+The list is a floor, not a fence. The agent searches for candidate markets,
+for the story behind a move, and for the results and evidence a forecast is
+built from, on its own. The `forecast` skill names no host for those
+searches, and the hosts they reach are yours to allow. The standard gives
+the list no meaning: the Agent Plugins manifest schema
 assigns "no semantics to namespace object contents" of `extensions`
 ([schema](https://agent-plugins.org/schemas/1.0.0/plugin.schema.json),
 specification).
@@ -130,7 +133,8 @@ specification).
 ### What it reads and writes
 
 The `forecast` skill caches the archive at `${HOWP_CACHE:-$HOME/.cache/howp}/<version>`.
-The workspace holds `interests.yaml`, `questions/`, `matches/` and `data/`.
+The workspace holds `interests.yaml`, `questions/`, `matches/` and `data/`,
+and `forecasts/` once you forecast from evidence and markets.
 `HP_DATA_DIR` moves `data/` elsewhere.
 
 ### When something fails
@@ -144,13 +148,14 @@ The workspace holds `interests.yaml`, `questions/`, `matches/` and `data/`.
 
 ## Boundaries
 
-- It does not score a forecast against its outcome. Whether a forecast came
+- It scores only a forecast recorded with `hp forecast pool`, against an
+  outcome file written from the results. Whether any other forecast came
   true is yours to judge.
 - The package does not search for markets. The agent searches, and `hp`
   validates what the agent hands it.
 - It places no bets and needs no account on either venue.
 - The package calls no model. Every judgement comes from the agent you run
-  it in.
+  it in, and every evidence effect from an estimator you run yourself.
 
 ## License
 

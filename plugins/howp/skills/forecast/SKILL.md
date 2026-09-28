@@ -8,8 +8,10 @@ description: >
   or asks what the markets say about it. Also use when they want to set up
   or refresh a forecast workspace. Also use to bind a question to a market,
   collect market probabilities, explain a sharp move or write the weekly
-  digest. `hp` runs only on the platforms the package's binaries.json
-  names; read that file before running it.
+  digest. Also use to forecast an event from recorded results, the gated
+  market and evidence, and to score that forecast after the outcome. `hp`
+  runs only on the platforms the package's binaries.json names; read that
+  file before running it.
 license: MIT
 ---
 
@@ -27,8 +29,9 @@ fails behind a sandbox or proxy that allows only the client's own fetches.
 It also cannot use the permission your client already holds. So you fetch,
 you pass the moment in, and every judgement is yours.
 
-This skill does not score a forecast against its outcome.
-`references/commands.md` lists `hp bench`, and no step here runs it.
+The only forecast this skill scores against its outcome is one recorded with
+`hp forecast pool`: the fourth procedure scores it with `hp forecast score`.
+`references/commands.md` also lists `hp bench`, and no step here runs it.
 
 Two rules hold throughout:
 
@@ -96,9 +99,11 @@ are the user's to allow.
 
 ## The workspace
 
-Every command takes `--repo PATH`. Its default comes from `HP_ROOT`, then
-the current directory. Pass it explicitly: a default that follows the
-shell's directory writes into whatever workspace the shell stands in.
+Every command that reads or writes the workspace takes `--repo PATH`. Its
+default comes from `HP_ROOT`, then the current directory. Pass it
+explicitly: a default that follows the shell's directory writes into
+whatever workspace the shell stands in. `hp forecast` and `hp estimator`
+take no `--repo`: they read and write only the files you name.
 
 ```
 <workspace>/
@@ -190,8 +195,10 @@ one series.
 ## Your judgement: bindings, moves and the digest
 
 Everything outside the cycle is your judgement. One `hp ingest` call lands
-each judgement and validates it. Read `references/procedures.md` before you
-bind a question, explain a move or write a digest. It holds all three
+each of the first three and validates it; a forecast from evidence and
+markets lands in a record that `hp forecast pool` writes. Read
+`references/procedures.md` before you bind a question, explain a move, write
+a digest or forecast an event from evidence and markets. It holds all four
 procedures with their snippets.
 
 | The work | Ends in |
@@ -199,6 +206,7 @@ procedures with their snippets.
 | bind a question to a market, or record that a candidate does not answer it | `hp ingest match --from <the market's own body> --verdict … --direction … --confidence … --notes … --checked-at …` |
 | what explains a sharp move | `hp ingest explanation --move … --url … --title … --published … --why …` |
 | the week's digest, when `hp digest due --as-of …` says one is due | `hp ingest digest --from - --generated-at …` |
+| forecast one event from recorded results, the gated market and evidence, and score it after the outcome | `hp forecast pool --question … --family … --record … --estimator … --json`, then `hp forecast score --record … --resolution … --json` |
 
 Read `references/commands.md` when you need a flag or a subcommand this file
 does not show. It is `hp --help` and every subcommand's help, verbatim, for

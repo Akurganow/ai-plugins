@@ -1,7 +1,7 @@
 # Every `hp` command, verbatim
 
 Written by the release job from the binary's own `--help`, top level and every
-subcommand recursively, at `hp 0.3.8` (`howp-v0.3.8`) on 2026-09-26.
+subcommand recursively, at `hp 0.3.9` (`howp-v0.3.9`) on 2026-09-28.
 Nothing here is paraphrased and nothing is added. Where this file and the binary
 in front of you disagree, **the binary is right**. This file is never edited by
 hand: the next release rewrites it from the binary it publishes.
@@ -14,15 +14,17 @@ One command over a how-possible workspace: ingest what somebody else fetched, na
 Usage: hp <COMMAND>
 
 Commands:
-  ingest   Write a source's raw response into the record
-  sources  Name the requests a fetch needs
-  matches  Read the verdict cache
-  stats    Everything the dashboard computes about a question, as JSON
-  render   The dashboard, as one Markdown page
-  digest   The weekly digest, read rather than written
-  moves    Sharp probability moves over the live snapshot history
-  bench    The benchmark's deterministic half: arithmetic, a substring check, two reports, and the requests a case's own sources imply
-  help     Print this message or the help of the given subcommand(s)
+  ingest     Write a source's raw response into the record
+  sources    Name the requests a fetch needs
+  matches    Read the verdict cache
+  stats      Everything the dashboard computes about a question, as JSON
+  render     The dashboard, as one Markdown page
+  digest     The weekly digest, read rather than written
+  moves      Sharp probability moves over the live snapshot history
+  bench      The benchmark's deterministic half: arithmetic, a substring check, two reports, and the requests a case's own sources imply
+  forecast   Probability distributions from finishing orders, rates and markets: files in, JSON out
+  estimator  Evidence rows as the states an estimator that answers yes or no with a probability is asked in: anonymised, rotated, and beside a control state that holds no evidence; and its answers read back
+  help       Print this message or the help of the given subcommand(s)
 
 Options:
   -h, --help     Print help
@@ -583,4 +585,314 @@ Options:
       --case <FILE>  The case file
       --json         Print JSON. Required for the reason `hp sources urls` gives
   -h, --help         Print help
+```
+
+## `hp forecast --help`
+
+```
+Probability distributions from finishing orders, rates and markets: files in, JSON out
+
+Usage: hp forecast <COMMAND>
+
+Commands:
+  strengths  Participant and group strengths fitted from finishing orders
+  places     The probability of every finishing position, counted over seeded draws, and each group's ranks by points
+  rates      A place's rate of an event per session, shrunk toward every place's: how many times in the next session, or whether at all
+  pool       A question's every variant: its baseline pooled with the gated market and the evidence effect, or rows drawn from another question's entry; appended to the record, and printed
+  score      Each record's questions scored against what happened, every variant with its skill against the market and the base, and the estimator's variant against the market's, record by record
+  fit        The constants, fitted once: each family's weights over past records, leaving one record out at a time; the decays and Harville exponents over past finishing orders; and the space an estimator's shifts are averaged in, over its answers; written to `--out`, with what each was fitted over printed
+  help       Print this message or the help of the given subcommand(s)
+
+Options:
+  -h, --help  Print help
+```
+
+### `hp forecast strengths --help`
+
+```
+Participant and group strengths fitted from finishing orders
+
+Usage: hp forecast strengths --orderings <FILE> --entrants <FILE> --kind <KIND> --as-of <ISO> --constants <FILE> --json
+
+Options:
+      --orderings <FILE>
+          The finishing orders of past events (`hp-orderings-1`)
+
+      --entrants <FILE>
+          Who takes part in the event being forecast (`hp-entrants-1`); the output lists them in this order
+
+      --kind <KIND>
+          The kind of event to fit over; events of every other kind are left out
+
+      --as-of <ISO>
+          The moment of the fit: only events strictly before it count, each weighted by its age in days before it.
+          
+          **Required, and never defaulted**, for the reason `--ts` is: this binary reads no clock, and a moment it invented would decide which events count and how much.
+
+      --constants <FILE>
+          The constants (`hp-constants-1`); the two decays are read from it
+
+      --json
+          Print JSON. Required for the reason `hp sources urls` gives
+
+  -h, --help
+          Print help (see a summary with '-h')
+```
+
+### `hp forecast places --help`
+
+```
+The probability of every finishing position, counted over seeded draws, and each group's ranks by points
+
+Usage: hp forecast places [OPTIONS] --input <FILE> --constants <FILE> --seed <N> --draws <N> --json
+
+Options:
+      --input <FILE>      What the places are drawn from: strengths (`hp-strengths-1`), or a win distribution (`hp-distribution-1` of form `options`)
+      --constants <FILE>  The constants (`hp-constants-1`); the two Harville exponents are read from it
+      --seed <N>          The generator's seed. Required, and never defaulted: with the number of draws it is what the same probabilities are drawn again from
+      --draws <N>         How many draws the probabilities are counted over, 1 or more
+      --points <FILE>     Points by position (`hp-points-1`); with it, each group's ranks by points and the probability that it scores the most are counted too
+      --entrants <FILE>   The group each option of a win distribution takes part for (`hp-entrants-1`); strengths name their own
+      --json              Print JSON. Required for the reason `hp sources urls` gives
+  -h, --help              Print help
+```
+
+### `hp forecast rates --help`
+
+```
+A place's rate of an event per session, shrunk toward every place's: how many times in the next session, or whether at all
+
+Usage: hp forecast rates [OPTIONS] --counts <FILE> --place <PLACE> --session <KIND> --as-of <ISO> --form <FORM> --question <ID> --json
+
+Options:
+      --counts <FILE>
+          How many times the event happened, per place and session (`hp-counts-1`)
+
+      --place <PLACE>
+          The place the forecast is for. A place the counts do not name has no sessions and takes the pooled rate, a misspelt one too
+
+      --session <KIND>
+          The kind of session to read; sessions of every other kind are left out
+
+      --as-of <ISO>
+          The moment of the forecast: only sessions strictly before it count.
+          
+          **Required, and never defaulted**, for the reason `--ts` is: this binary reads no clock, and a moment it invented would decide which sessions count.
+
+      --form <FORM>
+          What the distribution answers
+
+          Possible values:
+          - count:  How many times in the next session: the cells `0`, `1` and `2+`
+          - yes-no: Whether it happens at all: the cell `yes`
+
+      --sessions <N>
+          With `yes-no`, the probability that it happens in at least one of N sessions rather than in the next one; 1 or more, and refused with `count`
+
+      --question <ID>
+          The question the distribution answers, as it names it
+
+      --json
+          Print JSON. Required for the reason `hp sources urls` gives
+
+  -h, --help
+          Print help (see a summary with '-h')
+```
+
+### `hp forecast pool --help`
+
+```
+A question's every variant: its baseline pooled with the gated market and the evidence effect, or rows drawn from another question's entry; appended to the record, and printed
+
+Usage: hp forecast pool [OPTIONS] --question <ID> --family <NAME> --record <PATH> --constants <FILE> --estimator <ESTIMATOR> --json <--live|--reconstruction>
+
+Options:
+      --question <ID>
+          The question the entry answers
+
+      --family <NAME>
+          The question's family, which names its weights in the constants
+
+      --record <PATH>
+          The record (`hp-forecast-record-1`) the entry is appended to. Made when there is no file there yet, with the four header flags
+
+      --constants <FILE>
+          The constants (`hp-constants-1`): the family's weights, the Harville exponents derived rows are drawn under, and the model id a new record carries
+
+      --estimator <ESTIMATOR>
+          Which variant is printed. The protocol sets it, and it is never defaulted
+
+          Possible values:
+          - shadow: Recorded beside the printed `market` variant and never printed
+          - on:     Printed
+
+      --live
+          The entry is forecast before the cutoff, from what was available then
+
+      --reconstruction
+          The entry is rebuilt afterwards, from inputs available before the cutoff
+
+      --baseline <FILE>
+          The baseline: a distribution (`hp-distribution-1`) of form options, yes-no or count — or, with `--slice`, places (`hp-places-1`) to cut one from
+
+      --slice <SLICE>
+          What is cut from places: `win` or `group-most-points` for a baseline; `membership:K`, or `positions:K` or `group-positions:K` of up to three ordered rows, for derived rows
+
+      --derive-from <QUESTION>
+          Rows derived from this question's last entry in the record: each of its variants drawn through places and cut by `--slice`. Its pick heads ordered rows unless `--head` names another question
+
+      --head <QUESTION>
+          The question whose pick heads ordered rows, when it is not the one they are derived from: rows over groups are headed by a question over the groups. Membership takes no head
+
+      --seed <N>
+          The seed every variant of derived rows is drawn with
+
+      --draws <N>
+          How many draws derived rows are counted over, 1 or more
+
+      --points <FILE>
+          Points by position (`hp-points-1`), for derived rows over groups
+
+      --entrants <FILE>
+          The group each option takes part for (`hp-entrants-1`), for derived rows over groups
+
+      --market <FILE>
+          The question's market after the gate (`hp-market-1`)
+
+      --effect <FILE>
+          The evidence effect of the selected rows (`hp-effect-1`)
+
+      --effect-unselected <FILE>
+          The evidence effect of every admitted row (`hp-effect-1`): the `estimator_unselected` variant
+
+      --floor-question <ID>
+          Another yes-no question in the record, whose variants this yes-no's are floored at
+
+      --stage <STAGE>
+          Which pass of the forecast the entry is. A question has one `initial` entry, and a rerun is appended beside it
+
+          Possible values:
+          - initial:     The first pass
+          - tie-rerun:   The pass after more evidence was gathered on options tied at the top
+          - after-trial: The pass after a trial session
+          
+          [default: initial]
+
+      --issued <ISO>
+          When the forecast was issued: ISO-8601 with an offset. Part of a new record's header, and checked against an existing one's
+
+      --cutoff <ISO>
+          The moment no input may postdate: ISO-8601 with an offset. A market price taken after it is not used. Part of a new record's header, and checked against an existing one's
+
+      --protocol <TEXT>
+          The protocol's version, as the caller names it. Part of a new record's header, and checked against an existing one's
+
+      --inputs <FILE>
+          The files the forecast is made from (`hp-inputs-1`), each hashed here and named by the entry. Part of a new record's header; a later call adds those the header does not list, and is refused for one it lists with another hash
+
+      --json
+          Print JSON. Required for the reason `hp sources urls` gives
+
+  -h, --help
+          Print help (see a summary with '-h')
+```
+
+### `hp forecast score --help`
+
+```
+Each record's questions scored against what happened, every variant with its skill against the market and the base, and the estimator's variant against the market's, record by record
+
+Usage: hp forecast score [OPTIONS] --record <FILE>... --json
+
+Options:
+      --record <FILE>...      The records (`hp-forecast-record-1`) to score; each question's last entry is its forecast
+      --resolution <FILE>...  What happened (`hp-resolution-1`), each naming the record it resolves by file name. A record given with none is listed as unresolved
+      --json                  Print JSON. Required for the reason `hp sources urls` gives
+  -h, --help                  Print help
+```
+
+### `hp forecast fit --help`
+
+```
+The constants, fitted once: each family's weights over past records, leaving one record out at a time; the decays and Harville exponents over past finishing orders; and the space an estimator's shifts are averaged in, over its answers; written to `--out`, with what each was fitted over printed
+
+Usage: hp forecast fit [OPTIONS] --orderings <FILE> --priors <FILE> --model-id <TEXT> --out <FILE> --json
+
+Options:
+      --orderings <FILE>      The finishing orders of past events (`hp-orderings-1`): the decays and the Harville exponents are fitted from them alone
+      --priors <FILE>         Each family's prior weight on the market and where it comes from (`hp-priors-1`): the constants carry every family it names, and a question of another family is refused
+      --record <FILE>...      The records (`hp-forecast-record-1`) the weights are fitted over, one event each; without any, every family keeps its prior and no effect
+      --resolution <FILE>...  What happened (`hp-resolution-1`), each naming the record it resolves by file name. A record given with none is listed and not fitted over
+      --answers <FILE>...     The estimator's answers of earlier rounds (`hp-answers-1`): the space its shifts are averaged in is chosen from them, and without any it is log-odds
+      --model-id <TEXT>       The estimator the constants are fitted for, as the opaque id the caller supplies. Every record and every answers file given must have been made for it
+      --out <FILE>            Where the constants (`hp-constants-1`) are written, whole
+      --json                  Print JSON. Required for the reason `hp sources urls` gives
+  -h, --help                  Print help
+```
+
+## `hp estimator --help`
+
+```
+Evidence rows as the states an estimator that answers yes or no with a probability is asked in: anonymised, rotated, and beside a control state that holds no evidence; and its answers read back
+
+Usage: hp estimator <COMMAND>
+
+Commands:
+  prepare  A family's evidence as a plan: every rotation of its options' labels, each over the admitted rows and over none, with the stage's questions and the re-identification check
+  read     An estimator's answers read back against their plan: the select stage's as a selection, and the estimate stage's as each option's evidence effect, with the re-identification check scored
+  help     Print this message or the help of the given subcommand(s)
+
+Options:
+  -h, --help  Print help
+```
+
+### `hp estimator prepare --help`
+
+```
+A family's evidence as a plan: every rotation of its options' labels, each over the admitted rows and over none, with the stage's questions and the re-identification check
+
+Usage: hp estimator prepare [OPTIONS] --evidence <FILE> --stage <STAGE> --as-of <ISO> --json
+
+Options:
+      --evidence <FILE>
+          The family's options and every name each is known by, the rows, and the questions (`hp-evidence-1`)
+
+      --stage <STAGE>
+          `select` asks of every row which option it concerns, whether it bears on the question and whether it states a fact; `estimate` asks the family's questions over the admitted rows and over none
+
+          Possible values:
+          - select:   Of every row: which options it concerns, whether it bears on the question, and whether it states a fact
+          - estimate: The family's questions, over the admitted rows and over none
+
+      --selection <FILE>
+          The select stage's answers read back (`hp-selection-1`): the estimate stage admits the rows it admits
+
+      --all-rows
+          The estimate stage admits every row of kind evidence published before the moment, with no selection
+
+      --as-of <ISO>
+          The moment the states are prepared for: only rows published strictly before it are admitted, each with its age in whole days before it.
+          
+          **Required, and never defaulted**, for the reason `--ts` is: this binary reads no clock, and a moment it invented would decide which rows count. It may not be later than the evidence's own cutoff.
+
+      --json
+          Print JSON. Required for the reason `hp sources urls` gives
+
+  -h, --help
+          Print help (see a summary with '-h')
+```
+
+### `hp estimator read --help`
+
+```
+An estimator's answers read back against their plan: the select stage's as a selection, and the estimate stage's as each option's evidence effect, with the re-identification check scored
+
+Usage: hp estimator read --plan <FILE> --answers <FILE> --constants <FILE> --json
+
+Options:
+      --plan <FILE>       The plan the answers answer (`hp-estimator-plan-1`), of either stage
+      --answers <FILE>    What the estimator answered (`hp-answers-1`)
+      --constants <FILE>  The constants (`hp-constants-1`): the space the estimate stage's shifts are averaged in, and the model id its answers must be of for an effect other than 0
+      --json              Print JSON. Required for the reason `hp sources urls` gives
+  -h, --help              Print help
 ```

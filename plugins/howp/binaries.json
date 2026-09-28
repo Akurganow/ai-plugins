@@ -1,34 +1,34 @@
 {
   "schema": "howp-binaries-1",
-  "version": "0.3.9",
-  "tag": "howp-v0.3.9",
-  "released_at": "2026-09-28T14:55:02Z",
+  "version": "0.3.10",
+  "tag": "howp-v0.3.10",
+  "released_at": "2026-09-28T15:15:12Z",
   "targets": [
     {
       "target": "aarch64-apple-darwin",
       "os": "Darwin",
       "arch": "arm64",
-      "archive": "howp-0.3.9-aarch64-apple-darwin.tar.gz",
-      "root": "howp-0.3.9-aarch64-apple-darwin",
+      "archive": "howp-0.3.10-aarch64-apple-darwin.tar.gz",
+      "root": "howp-0.3.10-aarch64-apple-darwin",
       "bin_dir": "bin",
-      "sha256": "fa2115c6d33994a3deb87a15fb9192bf7705da74cca667a2dc53d71e93da9865",
+      "sha256": "7eaeb00476b3d6cac7e8467d677719a783218efc9d0bfd10292b8fcb70a2a5d8",
       "binaries": [
         "hp"
       ],
-      "url": "https://github.com/Akurganow/ai-plugins/releases/download/howp-v0.3.9/howp-0.3.9-aarch64-apple-darwin.tar.gz"
+      "url": "https://github.com/Akurganow/ai-plugins/releases/download/howp-v0.3.10/howp-0.3.10-aarch64-apple-darwin.tar.gz"
     },
     {
       "target": "x86_64-unknown-linux-musl",
       "os": "Linux",
       "arch": "x86_64",
-      "archive": "howp-0.3.9-x86_64-unknown-linux-musl.tar.gz",
-      "root": "howp-0.3.9-x86_64-unknown-linux-musl",
+      "archive": "howp-0.3.10-x86_64-unknown-linux-musl.tar.gz",
+      "root": "howp-0.3.10-x86_64-unknown-linux-musl",
       "bin_dir": "bin",
-      "sha256": "0945bd18729cdad0df39806262dff489a3b8633ce7666cc4e9b8e86452a511ab",
+      "sha256": "dbe382606d098e492114c7cad1d280af19fe858d95e0998fa9524c1d17c6369a",
       "binaries": [
         "hp"
       ],
-      "url": "https://github.com/Akurganow/ai-plugins/releases/download/howp-v0.3.9/howp-0.3.9-x86_64-unknown-linux-musl.tar.gz"
+      "url": "https://github.com/Akurganow/ai-plugins/releases/download/howp-v0.3.10/howp-0.3.10-x86_64-unknown-linux-musl.tar.gz"
     }
   ]
 }

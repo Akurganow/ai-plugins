@@ -1,12 +1,14 @@
 # What this repository is, as GitHub's language bar reports it.
 #
 # The repository holds text: plugin packages, their skills, and the
-# catalogue index. Its programs sit under `tools/`: `check-conformance.py`
+# catalogue index. Its own programs sit under `tools/`: `check-conformance.py`
 # validates those packages, and `regenerate.sh` writes every generated
-# copy. Neither ships with a package.
-# Left alone, linguist counts those files and labels the whole marketplace
-# "Python" — the first thing a visitor sees about a repository that
-# contains no Python for them to use.
+# copy. Neither ships with a package. A script inside a package, such as
+# a hook, ships with that package; it is not under `tools/`, and the rule
+# below does not reach it.
+# Left alone, linguist counts the files under `tools/` and labels the whole
+# marketplace "Python" — the first thing a visitor sees about a repository
+# that contains no Python for them to use.
 #
 # `linguist-vendored` is the standard marking for code that is present but
 # is not the repository's own subject. It changes nothing about the files:

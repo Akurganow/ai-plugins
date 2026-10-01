@@ -1,7 +1,7 @@
 # Every `hp` command, verbatim
 
 Written by the release job from the binary's own `--help`, top level and every
-subcommand recursively, at `hp 0.3.10` (`howp-v0.3.10`) on 2026-09-28.
+subcommand recursively, at `hp 0.3.11` (`howp-v0.3.11`) on 2026-10-01.
 Nothing here is paraphrased and nothing is added. Where this file and the binary
 in front of you disagree, **the binary is right**. This file is never edited by
 hand: the next release rewrites it from the binary it publishes.

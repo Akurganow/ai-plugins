@@ -315,3 +315,20 @@ GitHub artifact attestations would come from the build, which runs in a private 
 In a private repository, attestations need a GitHub Enterprise Cloud plan.
 (documentation: [GitHub Docs, attestations availability](https://github.com/github/docs/blob/dec1018594fb5061bb1554dcafea7968fb10ff96/data/reusables/gated-features/attestations.md))
 cosign inside the skill would need cosign on every user's machine.
+
+## Pipeline items carry no closing keyword
+
+A pipeline item names its sources in its fingerprint, as `sources=#a,#b`.
+The pull-request bodies the pipeline Clerk and the Implementer write carry no closing keyword such as `Closes #n`.
+GitHub closes a linked issue when a pull request whose description carries such a keyword merges into the default branch.
+(documentation: [Linking a pull request to an issue](https://github.com/github/docs/blob/2bd66de8cea336061c9ea060c9b37385136e6ab3/content/issues/tracking-your-work-with-issues/using-issues/linking-a-pull-request-to-an-issue.md#L28-L35))
+That close would skip the tracker Clerk's checks.
+The tracker Clerk closes an issue as completed only when every claim re-derives as gone at the commit it runs on.
+A remainder no pull request can carry gets a note and stays open.
+The tracker Clerk closes the open sources of a pipeline item closed unmerged, as not planned.
+
+The other direction belongs to the pipeline.
+The pipeline Clerk closes an item whose sources are all closed, and narrows one when only some are.
+The law proves a pipeline item by three facts.
+One is that its head repository is this repository, so a fork cannot forge an item.
+`.agents/skills/pipeline-law/SKILL.md` holds the stale and narrowing rules under "When a source closes", and the three facts under "What a fired stage trusts".

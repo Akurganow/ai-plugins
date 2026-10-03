@@ -37,9 +37,11 @@ would break a correct implementation. Taste is dropped and never reported.
 ## Before any work
 
 1. Probe GitHub, per your environment.
-2. Prove the item is yours by the law's two positive facts.
+2. Prove the item is yours by the law's three positive facts.
 3. Confirm it still carries `spec/awaiting-review`.
-4. Exit if it carries `pipeline/stuck` or `pipeline/hold`.
+4. Exit if the pull request is closed, under the law's
+   **A closed pull request ends the fire**, or if it carries
+   `pipeline/stuck` or `pipeline/hold`.
 5. Confirm `spec/needs-work` and `spec/approved` exist.
 6. Read the state block from the pull-request body.
 7. Read `review_rounds` out of it.
@@ -72,8 +74,10 @@ Release the claim at every terminal exit, errors included.
 **Detect, audit, complete.** An item that acquires `pipeline/hold` mid-fire is
 left alone from that moment, and so is one that acquires `pipeline/stuck`: the
 Clerk tries to straighten a stuck item on its own run, and you report it and
-stop. Everything else your own previous fire left unfinished is yours to
-finish, per the law's **The audit every fire owes**.
+stop. A pull request that closes mid-fire ends the fire the same way. Write
+nothing to it but the claim's release. Everything else
+your own previous fire left unfinished is yours to finish, per the law's
+**The audit every fire owes**.
 
 ## You work in your own clone
 
@@ -145,16 +149,19 @@ a comment or a retitle therefore costs the Writer nothing.
 Read these, in this order:
 
 - the pull-request body and the sources it names
+- the Clerk's narrowing comments, each ending `<!-- pipeline-narrowing:`
 - the sibling issues, where the body carries `## Part of`
 - `spec.md` and `plan.md` in full
 - the rule files the law lists
 - the files the specification proposes to change, as they stand at the head
+- the files the pull request changes against its base, where a narrowing
+  names a source
 
 Read the reviews and review comments too, with each author's login. The
 owner's are decisions and outrank your reading. The automated code review's
 rarely concern a specification, so note those and do not implement them.
 
-**Run all eight checks.** A failed check does not end the round. Report every
+**Run all nine checks.** A failed check does not end the round. Report every
 objection that survives round 2, not only the first one you found.
 
 Check 5 is the one this repository exists to keep. Give it the most
@@ -212,12 +219,24 @@ claim there outlives every other defect on this list.
 8. **The plan's steps implement the specification and nothing else.** A step
    touching a file `## Proposed change` never mentions is scope creep. A
    criterion nothing in the plan reaches is the same defect from the other
-   side.
+   side. A step that removes a narrowed source's work is not scope creep,
+   because check 9 requires it.
 
    Where the body carries `## Part of`, work a sibling owns is that same
    defect with a number attached. `## Out of scope` must name every sibling,
    and neither document may change what one claims. Quote the brief in the
    objection.
+
+9. **The narrowing is carried out.** Take each source a narrowing marker
+   lists, where the fingerprint's `sources=` names it and it is closed now.
+   No part of `## Problem`, `## Proposed change` or `## Acceptance criteria`
+   names it or serves only it, and `## Out of scope` names it. No step in
+   `## Steps` and no check in `## Verification` serves only that source,
+   except the step that removes the work, and its check. Where the branch
+   already carries work that serves only that source, a step in `## Steps`
+   removes the work. A miss is an objection. Under the law's
+   **When a source closes**, the closed source's work leaves the pull
+   request, and a miss builds it anyway.
 
 ## Round 2, refutation only
 

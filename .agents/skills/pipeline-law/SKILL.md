@@ -247,7 +247,8 @@ narrowing writes its `pipeline-done` marker again with a new `at=`, even
 where its content did not move.
 
 A stage reads the narrowing comments again just before it writes that
-marker. A narrowing created since its first read voids the fire's outcome.
+marker or hands the item on. A narrowing created since its first read, for
+a source the stage acts on, voids the fire's outcome.
 The stage writes no marker, hands nothing on, releases its claim and ends.
 The next waking carries that narrowing out. So a marker newer than a
 narrowing comment proves the stage read the comment.

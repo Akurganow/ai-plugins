@@ -132,7 +132,7 @@ and the outcome says what it ruled:
 | `role=gate` at this spec hash, `outcome=accepted` | skip the gate |
 | `role=gate` at this spec hash, `outcome=rejected` | hand back to the Writer, do not re-gate, do not touch `gate_bounces` |
 | `role=implementer` at this tree id, `outcome=rejected` | the trio already rejected this tree, work `must_change`, do not dispatch |
-| `role=implementer` at this tree id, `outcome=accepted` | the trio already accepted this tree. Take **The last read**, then hand off on its `verdict: ACCEPTED tree=` comment and dispatch nothing. With no such comment, dispatch the trio again |
+| `role=implementer` at this tree id, `outcome=accepted` | the trio already accepted this tree. Take **The last read**, then hand off on its `verdict: ACCEPTED tree=` comment and dispatch nothing |
 
 The second row is a fire that died between two label writes. One comment says
 the `G-*` objections stand. The exception is `gate_bounces` already at 2,
@@ -249,10 +249,10 @@ This fire's worklist, in priority order:
    source. While the specification exists, its plan carries that removal.
    Where nothing serves only a narrowed source, the tree does not move.
    Take **The last read**, then rewrite your `role=implementer` marker with
-   a new `at=`, keeping its tree and outcome. The narrowing then stops waiting
-   on you, and that marker's row in the gate's table decides what follows. Where
-   you have no such marker yet, the `role=implementer` marker you write after
-   this fire's trio answers the narrowing.
+   `at=` the time of that read, keeping its tree and outcome. The narrowing then
+   stops waiting on you, and that marker's row in the gate's table decides what
+   follows. Where you have no such marker yet, the `role=implementer` marker you
+   write after this fire's trio answers the narrowing.
 4. Work the remaining plan steps.
 
 **On the review comments.** Read them with each author's login, and
@@ -375,7 +375,10 @@ review will be shown.
 
 7. Dispatch the trio over the pushed diff, unless a `role=implementer`
    marker already names this tree id. Then that marker's row in the gate's
-   table decides.
+   table decides. A `verdict: ACCEPTED tree=` comment of yours for this tree
+   with no marker is a fire that died between the two. Then take **The last
+   read**, write the accepted marker for that tree, and go on from handoff
+   step 3.
 8. On an accepted verdict only, and never before, do the handoff.
 
 The specification is process scaffolding. It lives on in the branch history,
@@ -450,9 +453,11 @@ you chose your work, that lists a narrowed source, voids this attempt. Act on no
 verdict, write no marker, release the claim and end the fire. The next waking
 carries that narrowing out.
 
-Otherwise write the `role=implementer` marker at the end of the attempt, on
-either verdict, carrying the tree id you judged and the outcome, and read it
-back.
+Otherwise write the `role=implementer` marker after the verdict's own
+comment, as the law orders every stage's exit. It carries the tree id you
+judged and the outcome, with `at=` the time of **The last read**. A rejected
+verdict posts `must_change` first, below. An accepted one posts the verdict
+comment first, in handoff step 2.
 
 **A rejected verdict** ends the fire through the slice loop:
 
@@ -502,7 +507,8 @@ accepted is the tree the code review and the owner will read.
 
    The confidence and the struck list go in your report instead. They are the
    session's machinery, and this comment outlives the session. Read the
-   comment back.
+   comment back. Then write the `role=implementer` marker with
+   `outcome=accepted` and this tree id, and read it back.
 
 3. **Rewrite the pull-request body for the owner**, replacing the Clerk's
    process-era body:

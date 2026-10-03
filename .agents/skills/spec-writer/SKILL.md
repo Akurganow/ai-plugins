@@ -59,7 +59,8 @@ fire that died, and a `state=released` claim never blocks: take either
 over under your own role, and go on to the audit the law owes. Another role's
 claim you leave exactly as it stands.
 
-Release the claim at every terminal exit, errors included.
+Release the claim at every terminal exit, errors included. A closed pull
+request is the one exception: it ends the fire with no write.
 
 **Detect, audit, complete.** An item that acquires `pipeline/hold` mid-fire is
 left alone from that moment, and so is one that acquires `pipeline/stuck`: the
@@ -72,7 +73,7 @@ unfinished is yours to finish, per the law's **The audit every fire owes**.
 
 Test this first. A narrowing waits on you as the law's **When a source
 closes** defines it. Where you have a marker, the spec hash has not moved
-since it, so the test below would read this waking as a re-fire and only
+since it. The test below would then read this waking as a re-fire and only
 route.
 
 For each source a waiting narrowing's marker lists, where the fingerprint's
@@ -91,19 +92,21 @@ A narrowing that arrives with `R-*` or `G-*` objections is one revision that
 answers both. The revision routes to `spec/awaiting-review`, because the
 Reviewer has not read the narrowed content.
 
-Where the specification already carries every edit above, a fire died
-before its marker. Write your completion marker and route as a revision
-would. Where the open sources leave nothing to change, **When the item has
-nothing left to change** applies. That stop writes no completion marker,
-because it writes no revision.
+Where no listed source qualifies, the narrowing asks nothing of you. Go on
+with whatever other waking holds. Where a source qualifies, and the
+specification already carries every edit above and answers every
+objection, a fire died before its marker. Write your completion marker and
+route as a revision would. Where the open sources leave nothing to change,
+**When the item has nothing left to change** applies. That stop takes no
+source out, so it has not acted on the narrowing and writes no completion
+marker.
 
 A fresh fill leaves out every source in `narrowed=` the same way.
 
 ## Have you already written this?
 
-Skip this section while a narrowing waits on you. The section above writes
-that revision. Otherwise read your own `pipeline-done role=spec-writer` line
-next.
+Skip this section while a narrowing waits on you. The section above handles
+it. Otherwise read your own `pipeline-done role=spec-writer` line next.
 
 Compute the spec hash at the head, per the law. If the marker's hash equals
 it, you already wrote this content and pushed it. A fire died between the
@@ -129,8 +132,8 @@ Five wakings. Tell them apart from what the item holds.
 | A fresh skeleton | every heading holds one `[NEEDS CLARIFICATION: unfilled skeleton …]` line, and no `spec-reviewer` or `gate` marker exists |
 | A revision after review | a `spec-reviewer` marker with `outcome=rejected`, and a comment carrying numbered `R-*` objections |
 | A revision after a gate bounce | a `gate` marker with `outcome=rejected`, and a comment carrying numbered `G-*` objections |
-| A narrowing | a `pipeline-narrowing` comment created after your newest `pipeline-done` marker, or with none yet. It combines with any other waking |
-| A re-fire of your own run | your own marker's hash matches the head, handled above |
+| A narrowing | a `pipeline-narrowing` comment created after your newest `pipeline-done` marker, or any such comment where you have no marker yet. It combines with any other waking |
+| A re-fire of your own run | outside a narrowing, your own marker's hash matches the head, handled above |
 
 A gate bounce without a narrowing routes back to `spec/approved`, not to the
 Reviewer. The Implementer's gate objected, so it re-checks its own

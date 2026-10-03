@@ -230,8 +230,9 @@ The Clerk posts one comment that opens `Narrowing:` and ends with the
 narrowing marker. Then it routes the item to the stage that holds the work.
 While `.agents/specs/<N>-<slug>/` exists at the head, that is the Writer,
 which takes the source out of the specification. Once the final slice has
-deleted it, that is the Implementer, which removes the work. The Clerk's
-last write adds the source to `narrowed=`.
+deleted it, that is the Implementer, which removes the work. The Clerk adds
+the source to `narrowed=` only once the narrowing no longer waits on that
+stage.
 
 The route lifts `pipeline/stuck`, `pipeline/code-review` and
 `ready-for-human`. Work leaves a pull request only through a stage, and no
@@ -244,7 +245,9 @@ waits when its comment was created after that marker's `at=`, or when the
 stage has no such marker yet. The comment's creation time is GitHub's, so a
 forged `at=` in the narrowing marker changes nothing. A stage that acts on a
 narrowing writes its `pipeline-done` marker again with a new `at=`, even
-where its content did not move.
+where its content did not move. Each of the two stages writes that `at=` as
+the time of its last read, not the time of the write. A comment created
+after that read then still waits, even when the marker lands after it.
 
 A stage acts on a narrowing only for a source that `sources=` names and
 that is closed when the stage reads it. A forged comment can then remove
@@ -263,13 +266,14 @@ revision moves the spec hash. Where the Implementer removes work, its commit
 moves the tree id. Where it removes nothing, the tree id stays, and each
 bound reads the item as unchanged.
 
-**A narrowing routes only while it waits.** A fire can die after the route
-and before `narrowed=` is written. The next sweep then matches the row
-again. Where the narrowing still waits on the target stage, the Clerk routes
-again. Either the first route never landed, or its label still hangs, which
-**The baton** absorbs. Where it no longer waits, the stage has done the
-work. The Clerk then writes only `narrowed=`, and a finished item stays
-where it is.
+**A narrowing routes until the stage answers it.** The row matches on every
+sweep until `narrowed=` names the source. While the narrowing waits on the
+target stage, the Clerk routes again. A route the stage has not answered yet
+meets a label still hanging, which **The baton** absorbs. Once the narrowing
+no longer waits, the stage has done the work, and the Clerk only records the
+source. Where the stage's newest record since the comment is a stop, the
+row does not match. The Clerk's last-gate case handles that stop, and a
+later marker answers the narrowing.
 
 ### The automated code review
 

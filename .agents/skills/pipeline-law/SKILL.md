@@ -112,9 +112,9 @@ one.
 **There is no guard.** No script in this machine is deterministic, and the
 draft flip is not one either: it says the implementation is written and
 asserts nothing whatever about the checks. `ready-for-human` is applied last.
-No role removes it but the Clerk, on a narrowing, under **When a source
-closes**. It is the owner's watchlist marker, and by the time it goes on the
-item has long since stopped being a draft.
+No role removes it but the Clerk, on a narrowing, under
+**When a source closes**. It is the owner's watchlist marker, and by the
+time it goes on the item has long since stopped being a draft.
 
 The checks a guard would have made are the Implementer's own. It runs them as
 commands and quotes the output.
@@ -220,8 +220,9 @@ the fingerprint names. Two of its rows act on what it finds.
 nothing is left for the item to fix. The Clerk posts one comment that opens
 `Stale:` and names each source with its state reason. The comment ends with
 the stale marker under **The comments that stay comments**. Then the Clerk
-closes the pull request unmerged. The fingerprint in the closed body stops
-the Clerk proposing the item again.
+closes the pull request unmerged. A fresh claim does not defer the close.
+The fire's work is moot, and **A closed pull request ends the fire**. The
+fingerprint in the closed body stops the Clerk proposing the item again.
 
 **A narrowing.** A source is closed and another is open. The closed
 source's outcome is already decided, so its work leaves the pull request.
@@ -440,8 +441,10 @@ exit that reports nothing audited is a fire that wasted itself.
 Re-read the labels, the body, the comments and the head from the API at the
 start of the fire. A payload is a snapshot of a past moment.
 
-Re-read the label set immediately before every write. A `pipeline/hold`
-applied while the fire was thinking is then honoured rather than overwritten.
+Re-read the label set and the pull request's state immediately before every
+write. A `pipeline/hold` applied while the fire was thinking is then honoured
+rather than overwritten. The re-read also catches a close made meanwhile,
+before the write lands.
 
 **A closed pull request ends the fire.** A stage woken on one exits with one
 line and touches nothing, whatever labels it carries. The Clerk and the
@@ -639,6 +642,7 @@ After every write, fetch the object back and check the field you wrote.
 | the title | the pull request | the `title` field, not the body |
 | labels | the pull request's label set | the successor present, yours absent |
 | the draft flip | the pull request | the draft field reads false |
+| a close | the pull request | the state reads closed, not merged |
 
 Take the field exactly as the API returns it. A rendered page, a summary, or
 the string you sent is not a read-back.
@@ -668,10 +672,10 @@ item itself:
 - do not lift it.
 
 **Closing a pull request unmerged is final, whoever closes it.** The owner
-closes one to reject the work. The Clerk closes a stale one, under **When a
-source closes**. Nothing is retried. The tracker Clerk closes the sources
-still open as not planned on its next run. The fingerprint in the closed
-body stops the Clerk proposing the item again.
+closes one to reject the work. The Clerk closes a stale one, under
+**When a source closes**. Nothing is retried. The tracker Clerk closes the
+sources still open as not planned on its next run. The fingerprint in the
+closed body stops the Clerk proposing the item again.
 
 **Removing `pipeline/stuck` or `pipeline/hold`** is the owner's whole act.
 One label off and nothing else. The next daily sweep re-enters the stage
@@ -704,9 +708,10 @@ the whole of the signal.
 on every sweep and re-runs the last gate's repairs. A stop is a judgement made
 at one moment against one content, and the tree moves underneath it.
 
-Two cases un-stick the item. A repair moved it. Or the stop names a worklist a
-stage can still work, and the Clerk sends that worklist back. A stop that fits
-neither keeps the label, and the item waits for the owner.
+Three cases un-stick the item. A repair moved it. The stop names a worklist
+a stage can still work, and the Clerk sends that worklist back. Or a source
+closed, and the Clerk narrows the item under **When a source closes**. A
+stop that fits none keeps the label, and the item waits for the owner.
 
 Everything between the two is the machine's own to carry: a conflict, a dead
 fire, a lost label, a marker that would not stay written. An item in one of

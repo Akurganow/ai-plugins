@@ -39,9 +39,9 @@ would break a correct implementation. Taste is dropped and never reported.
 1. Probe GitHub, per your environment.
 2. Prove the item is yours by the law's three positive facts.
 3. Confirm it still carries `spec/awaiting-review`.
-4. Exit if the pull request is closed, under the law's **A closed pull
-   request ends the fire**, or if it carries `pipeline/stuck` or
-   `pipeline/hold`.
+4. Exit if the pull request is closed, under the law's
+   **A closed pull request ends the fire**, or if it carries
+   `pipeline/stuck` or `pipeline/hold`.
 5. Confirm `spec/needs-work` and `spec/approved` exist.
 6. Read the state block from the pull-request body.
 7. Read `review_rounds` out of it.
@@ -229,13 +229,14 @@ claim there outlives every other defect on this list.
 
 9. **The narrowing is carried out.** Take each source a narrowing marker
    lists, where the fingerprint's `sources=` names it and it is closed now.
-   It appears nowhere in `## Problem`, `## Proposed change` or `## Acceptance
-   criteria`, and `## Out of scope` names it. No step in `## Steps` and no
-   check in `## Verification` serves only that source. Where the branch
+   No part of `## Problem`, `## Proposed change` or `## Acceptance criteria`
+   names it or serves only it, and `## Out of scope` names it. No step in
+   `## Steps` and no check in `## Verification` serves only that source,
+   except the step that removes the work, and its check. Where the branch
    already carries work that serves only that source, a step in `## Steps`
-   removes the work. A miss is an objection. Under the law's **When a source
-   closes**, the closed source's work leaves the pull request, and a miss
-   builds it anyway.
+   removes the work. A miss is an objection. Under the law's
+   **When a source closes**, the closed source's work leaves the pull
+   request, and a miss builds it anyway.
 
 ## Round 2, refutation only
 

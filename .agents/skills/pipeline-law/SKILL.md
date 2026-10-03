@@ -556,7 +556,8 @@ it, rewritten `state=released` at every terminal exit.
 
 **The claim-freshness bound is stated here and nowhere else: two hours.** A
 claim reading `state=held` and younger than that is a fire still running, and
-nothing may take the item from it. Older than that is a fire that died. A
+nothing may take the item from it. A stale close takes nothing from it, under
+**When a source closes**. Older than that is a fire that died. A
 `state=released` claim never blocks, and a claim older than the current
 application of the label it answers to is stale whatever its age, the label
 application being the newer fact. Every role applies that test by naming this

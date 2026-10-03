@@ -216,14 +216,14 @@ marker whose verdict is `dismissed` or `out-of-scope`. Close as
 A verdict of `not-proven` is **not** closable. It means a person still has
 to supply something, and the issue is waiting on them.
 
-**4. Its pipeline item closed unmerged.** A pipeline item that names the
-issue in the `sources=` of its fingerprint closed without merging. Close the
+**4. Its pipeline item closed unmerged.** A pipeline item closed without
+merging, and the `sources=` of its fingerprint names the issue. Close the
 issue as `not_planned`. The comment's shape is below, under case 4.
 
 A pull request is a pipeline item when its head branch matches `pipeline/*`,
-that branch lives in this repository, and its body carries
-`<!-- pipeline-work-fingerprint:`. A fork cannot create a branch here, so an
-outsider's pull request never passes. List pipeline pull requests in every
+its head repository is this repository, and its body carries
+`<!-- pipeline-work-fingerprint:`. A fork's pull request has the fork as its
+head repository, so it never passes. List pipeline pull requests in every
 state, with their bodies, to find them. Test case 1 first. A finding already
 gone closes as `completed`, because fixed is the truer reason.
 

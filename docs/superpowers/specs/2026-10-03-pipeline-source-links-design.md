@@ -173,7 +173,8 @@ closed or narrowed gets nothing else this fire, and the table stays "the
 whole of your authority over an item" (`:113-117`).
 
 - **Row 2, stale.** Every issue in `sources=` is closed, whatever the state
-  reason, and no stage holds a fresh claim.
+  reason. A fresh claim does not defer it: the running fire's work is moot,
+  and the stage it hands to exits on the closed pull request.
   1. Re-read the pull request. One merged since the listing matches no row
      here.
   2. Post one comment naming each source and its state reason. It ends with
@@ -200,8 +201,9 @@ whole of your authority over an item" (`:113-117`).
 
   The narrowing comment is the stage's worklist. On a stuck item this row
   is the un-stick, with the narrowing as its worklist.
-- **A fresh claim** fails both rows. The item falls to the rows below,
-  where a fresh claim already means nothing and one report line (`:100`).
+- **A fresh claim** fails row 3, because a route or a body write under a
+  running fire races it. The item falls to the rows below, where a fresh
+  claim already means nothing and one report line (`:100`).
 - **The conflict repair** before the table (`:56-63`) skips an item whose
   every source is closed. Row 2 closes it, and a merge into it is wasted.
 

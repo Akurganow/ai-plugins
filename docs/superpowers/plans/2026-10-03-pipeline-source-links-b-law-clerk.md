@@ -377,7 +377,7 @@ description: "Caretake the delivery pipeline: sweep its open pull requests for d
 with:
 
 ```
-description: "Caretake the delivery pipeline: sweep its open pull requests for dead fires and repair them, close an item whose sources all closed and narrow one when only some did, straighten a stuck item's labels, run the automated code-review round, and take one new finding into a skeleton branch and draft pull request. Use for the pipeline's scheduled run."
+description: "Caretake the delivery pipeline. Sweep its open pull requests, repair dead fires and straighten a stuck item's labels. Close an item whose sources all closed, and narrow one when only some did. Run the automated code-review round, and take one new finding into a skeleton branch and draft pull request. Use for the pipeline's scheduled run."
 ```
 
 - [ ] **Step 3: The one pull request the Clerk closes**
@@ -396,7 +396,7 @@ with:
 reads the police and the court, it comments, and it closes issues. **You never
 close an issue.** It never touches a pull request. The two of you share a name
 and nothing else. The one pull request you close is a stale item, under the
-sweep's second row.
+sweep's stale-item row.
 ```
 
 - [ ] **Step 3b: The sweep lists by the law's three facts**
@@ -440,8 +440,8 @@ with:
 ```
 fresh by the law's claim-freshness bound. Say so in the report. Skip it too
 on an item carrying `pipeline/hold`, which is the owner's freeze. Skip it on
-an item whose every source is closed: the table's second row closes it, and
-a merge into it is wasted. A stuck item
+an item whose every source is closed: the stale-item row closes it, and a
+merge into it is wasted. A stuck item
 ```
 
 - [ ] **Step 6: Only a narrowing removes `ready-for-human`**
@@ -484,8 +484,8 @@ Find this row:
 Insert these two rows directly below it:
 
 ```
-| every source in the fingerprint's `sources=` closed, and no stage label beside a `state=held` claim the law's claim-freshness bound calls fresh | the stale item, below: one comment, then close the pull request unmerged |
-| a source in `sources=` closed and missing from `narrowed=`, another source open, and no such fresh claim | the narrowing, below: one comment, the route, then `narrowed=` |
+| every source in the fingerprint's `sources=` closed | the stale item, below: one comment, then close the pull request unmerged |
+| a source in `sources=` closed and missing from `narrowed=`, another source open, and no stage label beside a `state=held` claim the law's claim-freshness bound calls fresh | the narrowing, below: one comment, the route, then `narrowed=` |
 ```
 
 - [ ] **Step 8: Describe the two rows**
@@ -494,10 +494,12 @@ Insert this text immediately before the paragraph that opens `**Straightening a 
 
 ```
 **The stale item.** Every source is closed, so the item has nothing left to
-fix. The law's **When a source closes** says why it closes.
+fix. The law's **When a source closes** says why it closes. A fire that
+holds the item does not defer the close. Its work is moot once every source
+is closed, and the stage it hands to exits on the closed pull request.
 
-1. Re-read the pull request. Where it merged since your listing, stop: its
-   merge already closed it.
+1. Re-read the pull request and its labels. Where it merged or closed since
+   your listing, or now carries `pipeline/hold`, stop.
 2. Post one comment that opens `Stale:` and names each source with its state
    reason. End it with
    `<!-- pipeline-stale: sources=#a,#b at=<UTC> -->`. Post it only where no
@@ -510,12 +512,13 @@ item under either.
 **The narrowing.** A source closed while another stays open, and the closed
 source's work leaves the item. Three writes, in this order:
 
-1. Post one comment that opens `Narrowing:`. Name each closed source missing
-   from `narrowed=`, with its state reason. End it with
-   `<!-- pipeline-narrowing: sources=#b at=<UTC> -->`. Skip this write where
-   a comment of yours already carries that marker for the source.
+1. Post one comment that opens `Narrowing:`. Name each closed source that
+   is missing from `narrowed=` and that no narrowing comment of yours names
+   yet, with its state reason. End it with
+   `<!-- pipeline-narrowing: sources=#b at=<UTC> -->`. Where every such
+   source already has its comment, skip this write.
 2. Route the item, but only while the narrowing waits on the target stage,
-   as the law defines it. Where it no longer waits, the stage has done the
+   as the law's **When a source closes** defines it. Where it no longer waits, the stage has done the
    work: go to step 3. The target is `spec/needs-work` while
    `.agents/specs/<N>-<slug>/` exists at the head, and `spec/approved` once
    the final slice has deleted it. Remove `pipeline/stuck`,
@@ -525,11 +528,18 @@ source's work leaves the item. Three writes, in this order:
 3. Add each source to `narrowed=` in the state block, and read the body
    back. This write is last on purpose.
 
-Until step 3 lands, the row still matches, and the next sweep repeats only
-the writes still missing. Step 2's test keeps a finished item where it is. On
-a stuck item this row is the un-stick, with the narrowing comment as its
-worklist. It never reaches an item carrying `pipeline/hold`, because the
-first row matches that item first.
+Until step 3 lands, the row still matches. The next sweep posts no second
+comment, and step 2's test decides whether the route runs again. A finished
+item therefore stays where it is. On a stuck item this row is the un-stick,
+with the narrowing comment as its worklist. It never reaches an item
+carrying `pipeline/hold`, because the first row matches that item first.
+
+The row waits while a stage holds a fresh claim, because a write under a
+running fire races it. A route would re-enter a label the fire may still
+hand on. A `narrowed=` write would compete with the fire's own body writes.
+
+Neither source row counts against the repair limit below. That limit stops
+a machine at fault, and a closed source is not one.
 ```
 
 - [ ] **Step 10: The skeleton seeds `narrowed=none`**
@@ -582,7 +592,8 @@ Replace:
 with:
 
 ```
-- Never remove `ready-for-human` outside a narrowing, and never apply it to an issue.
+- Never remove `ready-for-human` outside a narrowing, and never apply it to
+  an issue.
 ```
 
 Find this bullet:
@@ -597,8 +608,8 @@ Find this bullet:
 Insert after it:
 
 ```
-- Never close a pull request except a stale item, under the sweep's second
-  row.
+- Never close a pull request except a stale item, under the sweep's
+  stale-item row.
 ```
 
 - [ ] **Step 13: Verify**

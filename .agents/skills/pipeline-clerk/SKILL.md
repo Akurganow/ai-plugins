@@ -97,7 +97,7 @@ Then apply the first row that matches, and only the first:
 | :-- | :-- |
 | `pipeline/hold` | nothing at all, one report line. It is the owner's freeze |
 | every source in the fingerprint's `sources=` closed | the stale item, below: one comment, then close the pull request unmerged |
-| a source in `sources=` closed and missing from `narrowed=`, another source open, and no stage label beside a `state=held` claim the law's claim-freshness bound calls fresh | the narrowing, below: one comment, the route, then `narrowed=` |
+| a source in `sources=` closed and missing from `narrowed=`, another source open, no stage label beside a `state=held` claim the law's claim-freshness bound calls fresh, and the target stage's newest record since the narrowing comment not a stop | the narrowing, below: one comment, the route, and `narrowed=` once the stage answers |
 | `pipeline/stuck` | straighten it first, below, then try the un-stick, below. It is not flipped. Only that un-stick, or the narrowing row above, re-enters a stage on it |
 | `pipeline/code-review` | duty two, below, which takes it out of draft first |
 | `ready-for-human` | take it out of draft where it is still one, then one report line. The item is the owner's |
@@ -166,15 +166,16 @@ order:
    `pipeline/stuck`, `pipeline/code-review`, `ready-for-human` and every
    stage label but the target. Then re-enter the target by the law's
    primitive, and read the label set back.
-4. Add to `narrowed=` each closed source a `pipeline-narrowing` marker of
-   yours lists, and read the body back. This write is last on purpose.
+4. Add to `narrowed=` each closed source whose narrowing comment no longer
+   waits on the target stage, and read the body back. A source whose comment
+   still waits stays out, so the row matches again on the next sweep.
 
-Until step 4 lands, the row still matches. The next sweep posts no comment
-for a source a marker already lists. Step 3's test decides whether the route
-runs again, so a finished item stays where it is. On a stuck item this row
-is the un-stick, with the narrowing comment as its worklist. It never
-reaches an item carrying `pipeline/hold`, because the `pipeline/hold` row
-sits above it.
+The row matches on every sweep until `narrowed=` names the source. The next
+sweep posts no comment for a source a marker already lists. Step 3's test
+decides whether the route runs again, so a finished item stays where it is. On a
+stuck item this row is the un-stick, with the narrowing comment as its worklist.
+It never reaches an item carrying `pipeline/hold`, because the `pipeline/hold`
+row sits above it.
 
 The narrowing row does not match while a stage holds a fresh claim, because
 a write under a running fire races it. A route would re-enter a label the

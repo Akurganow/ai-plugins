@@ -463,9 +463,9 @@ item is open, whatever else is parked.
    order. A part outside it is a report line.
 4. Read each candidate's full body, never its title alone.
 5. Drop any whose number already appears in the `sources=` of a pipeline
-   item's fingerprint, open or closed. The item must pass the law's three
-   facts. A fork's pull request then cannot keep a finding out of the
-   pipeline. A closed one means the item was tried and settled.
+   item's fingerprint, open or closed. A closed one means the item was
+   tried and settled. The item must pass the law's three facts. A fork's
+   pull request then cannot keep a finding out of the pipeline.
 6. Consolidate: two issues naming the same file and the same rule are one
    item, and both numbers go in `sources=`. Never consolidate across a
    family, because those parts were separated on purpose.

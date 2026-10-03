@@ -132,7 +132,7 @@ and the outcome says what it ruled:
 | `role=gate` at this spec hash, `outcome=accepted` | skip the gate |
 | `role=gate` at this spec hash, `outcome=rejected` | hand back to the Writer, do not re-gate, do not touch `gate_bounces` |
 | `role=implementer` at this tree id, `outcome=rejected` | the trio already rejected this tree, work `must_change`, do not dispatch |
-| `role=implementer` at this tree id, `outcome=accepted` | the trio already accepted this tree. Hand off on its `verdict: ACCEPTED tree=` comment and dispatch nothing. With no such comment, dispatch the trio again |
+| `role=implementer` at this tree id, `outcome=accepted` | the trio already accepted this tree. Take **The last read**, then hand off on its `verdict: ACCEPTED tree=` comment and dispatch nothing. With no such comment, dispatch the trio again |
 
 The second row is a fire that died between two label writes. One comment says
 the `G-*` objections stand. The exception is `gate_bounces` already at 2,
@@ -248,11 +248,11 @@ This fire's worklist, in priority order:
    narrowing waiting on you, remove the work that serves only a narrowed
    source. While the specification exists, its plan carries that removal.
    Where nothing serves only a narrowed source, the tree does not move.
-   Rewrite your `role=implementer` marker with a new `at=`, keeping its tree
-   and outcome. The narrowing then stops waiting on you, and that marker's
-   row in the gate's table decides what follows. Where you have no such
-   marker yet, the `role=implementer` marker you write after this fire's
-   trio answers the narrowing.
+   Take **The last read**, then rewrite your `role=implementer` marker with
+   a new `at=`, keeping its tree and outcome. The narrowing then stops waiting
+   on you, and that marker's row in the gate's table decides what follows. Where
+   you have no such marker yet, the `role=implementer` marker you write after
+   this fire's trio answers the narrowing.
 4. Work the remaining plan steps.
 
 **On the review comments.** Read them with each author's login, and
@@ -443,14 +443,16 @@ The deletion commit's parent is where the files were still present.
   is not a verdict: ask once for the block in the required form. If it still
   does not come, treat the round as rejected and say so.
 
-**Before you act on the verdict**, read the narrowing comments again, under
-the law's **When a source closes**. A narrowing created since your first read
-that lists a narrowed source voids this attempt. Act on no verdict, write no
-marker, release the claim and end the fire. The next waking carries that
-narrowing out.
+**The last read.** Before you act on a verdict, write a
+`role=implementer` marker or hand the item on, read the narrowing comments
+again, under the law's **When a source closes**. A narrowing you did not see
+when you chose your work, that lists a narrowed source, voids this attempt.
+Act on no verdict, write no marker, release the claim and end the fire. The
+next waking carries that narrowing out.
 
-Write the `role=implementer` marker at the end of the attempt either way,
-carrying the tree id you judged and the outcome, and read it back.
+Otherwise write the `role=implementer` marker at the end of the attempt, on
+either verdict, carrying the tree id you judged and the outcome, and read it
+back.
 
 **A rejected verdict** ends the fire through the slice loop:
 
@@ -585,7 +587,8 @@ The law's table says which field to fetch for each kind of write.
    which you implemented, which you answered in one line and why.
 6. **Blockers**: GitHub errors, a failed unshallow, red CI after two
    attempts, a held or stuck item, a blocking claim, a missing label, a
-   missing `predelete` sha.
+   missing `predelete` sha, a narrowing that voided this attempt, with its
+   comment.
 7. **`git status --porcelain`**: its actual output.
 
 ## Hard constraints

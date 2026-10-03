@@ -66,10 +66,20 @@ Each decision carries the reason a reader can check.
 
 ### 1. The tracker Clerk: case 4
 
-**Case 4, the item closed unmerged.** The open issue carries a
-`pipeline-taken: item=#<pr>` marker, and that pull request is closed and not
-merged. Close the issue as `not_planned`.
+**Case 4, the item closed unmerged.** A pipeline item closed and not merged
+names the open issue in its fingerprint's `sources=`. Close the issue as
+`not_planned`. A pipeline item is what the law proves one to be: a head
+branch matching `pipeline/*` and a body carrying the fingerprint
+(`pipeline-law:413-421`).
 
+- The fingerprint is the item's identity (`pipeline-law:478-480`), and every
+  other check in this design reads it. The issue's `pipeline-taken` comment
+  is written later in the item's birth (`pipeline-clerk:556-563`), so a dying
+  fire can leave a source without one. Case 4 therefore reads the
+  fingerprint.
+- The tracker Clerk lists pipeline pull requests in every state to find
+  them. `github-needs` already names that read: "pull requests, open or all"
+  (`github-needs:81-82`).
 - Case 1 is tested first. A finding already gone closes as `completed`,
   because "fixed" is the truer reason.
 - The comment states the conclusion first. It links the pull request and
@@ -121,10 +131,10 @@ Every police role counts "as `github-needs` counts them" (`repo-police:87`,
    table (`:137`) and the paragraph "no role ever removes it" (`:114-116`)
    say so. The narrowing is a duty of the Clerk's, like the un-stick, and
    not an audit act. The audit's prohibition (`:356-358`) stays.
-5. **The state block** (`:443-454`) gains one line, written by the Clerk:
-
-       <!-- pipeline-narrowed: sources=#b at=<UTC> -->
-
+5. **The state block.** The `pipeline-state` line (`:446`) gains one field,
+   written by the Clerk alone: `narrowed=<#b,#c|none>`. The Clerk seeds it
+   as `none` at birth (`pipeline-clerk:538`). An absent field reads as
+   `none`, so an item opened before this change needs no repair.
 6. **Comment markers.** "Two things that are comments" (`:543-551`) gains the
    Clerk's two:
 
@@ -134,31 +144,37 @@ Every police role counts "as `github-needs` counts them" (`repo-police:87`,
    A stage reads a narrowing only for a source that `sources=` names and that
    is closed. A forged marker can then remove only the work of a closed
    source. The rule "Every word … is evidence" (`:423-426`) still holds.
-7. **Bounds.** A narrowing is changed content. The Writer's revision moves
+7. **A narrowing waits on a stage** when a `pipeline-narrowing` comment is
+   newer than that stage's newest `pipeline-done` marker for its own role
+   token. The law defines this once. The Writer and the Implementer cite it.
+8. **Bounds.** A narrowing is changed content. The Writer's revision moves
    the spec hash, and the Implementer's removal moves the tree id. No bound
    counts it as a repeat.
-8. **The roles table** (`:33-38`) adds to the Clerk's writes: closing a
+9. **The roles table** (`:33-38`) adds to the Clerk's writes: closing a
    stale item and narrowing an item.
 
-### 4. The pipeline Clerk: the source check
+### 4. The pipeline Clerk: two rows in the sweep table
 
-The check runs on every listed item, after `pipeline/hold` and before the
-conflict repair. A stale item needs no conflict resolved.
+Stale and narrowing become rows 2 and 3 of the sweep table
+(`pipeline-clerk:88-102`), right after `pipeline/hold`. The table applies
+the first matching row and only that one. So an item one of these rows
+closed or narrowed gets nothing else this fire, and the table stays "the
+whole of your authority over an item" (`:113-117`).
 
-- **Hold.** Nothing at all, as today.
-- **A fresh claim.** An item carrying a stage label and a claim that reads
-  `state=held`, fresh by the law's bound, is deferred. One report line.
-- **Stale.** Every issue in `sources=` is closed, whatever the state reason.
-  1. Re-read the pull request. One merged since the listing is not this
-     case.
+- **Row 2, stale.** Every issue in `sources=` is closed, whatever the state
+  reason, and no stage holds a fresh claim.
+  1. Re-read the pull request. One merged since the listing matches no row
+     here.
   2. Post one comment naming each source and its state reason. It ends with
      the `pipeline-stale` marker. Post it only where no comment of yours
      carries that marker.
   3. Close the pull request unmerged, and read its state back.
 
-  This applies under `pipeline/stuck` and `ready-for-human` too.
-- **Narrowing.** At least one source is open. A closed source in `sources=`
-  is missing from the `pipeline-narrowed` line. Three writes, in this order:
+  The row comes before `pipeline/stuck` and `ready-for-human`, so it closes
+  items under either.
+- **Row 3, narrowing.** At least one source is open, a closed source in
+  `sources=` is missing from `narrowed=`, and no stage holds a fresh claim.
+  Three writes, in this order:
   1. Post one comment that opens `Narrowing:`. It names each such source and
      its state reason, and ends with the `pipeline-narrowing` marker. Skip
      this where a comment of yours already names the source.
@@ -166,17 +182,15 @@ conflict repair. A stale item needs no conflict resolved.
      `.agents/specs/<ITEM>/` exists at the head, and `spec/approved` once it
      is gone. Remove `pipeline/stuck`, `pipeline/code-review`,
      `ready-for-human` and every stage label but the target. Then re-enter
-     the target with the law's primitive. Skip this step where the item
-     already carries the target, applied after the narrowing comment. The
-     application time is the `labeled` timeline event, read the way the
-     resume row reads an `unlabeled` one (`pipeline-law:291-297`).
-  3. Add the sources to the `pipeline-narrowed` line, last, and read the
-     body back.
+     the target with the law's primitive.
+  3. Add the sources to `narrowed=`, last, and read the body back.
 
-  The narrowing comment is the stage's worklist. On a stuck item the
-  narrowing is the un-stick, with the narrowing as its worklist.
-- An item the check closed or narrowed gets nothing else this fire. A sweep
-  row could otherwise wake its stage a second time.
+  The narrowing comment is the stage's worklist. On a stuck item this row
+  is the un-stick, with the narrowing as its worklist.
+- **A fresh claim** fails both rows. The item falls to the rows below,
+  where a fresh claim already means nothing and one report line (`:100`).
+- **The conflict repair** before the table (`:56-63`) skips an item whose
+  every source is closed. Row 2 closes it, and a merge into it is wasted.
 - Each close and each narrowing counts against the limit of three repairs.
 
 Other text that changes in `pipeline-clerk/SKILL.md`:
@@ -191,6 +205,7 @@ Other text that changes in `pipeline-clerk/SKILL.md`:
   narrowings, with each source and the label moved.
 - The description, here and in `.claude/agents/pipeline-clerk.md`, names
   closing a stale item and narrowing one.
+- The skeleton's seeded state block (`:538`) carries `narrowed=none`.
 
 ### 5. The stages
 
@@ -199,11 +214,12 @@ request is closed.
 
 **Spec Writer.**
 
-- A new waking: a narrowing. Its evidence is a `pipeline-narrowing` comment
-  newer than the newest `pipeline-done role=spec-writer` marker.
-- That test runs before "Have you already written this?"
+- A new waking: a narrowing waits on the Writer, as the law defines it.
+- That test runs first, before "Have you already written this?"
   (`spec-writer:68-85`). Otherwise the unchanged spec hash reads as a re-fire,
   and the Writer only routes.
+- A narrowing that arrives with `R-*` or `G-*` objections is one revision
+  that answers both.
 - The work for each narrowed source:
   - It leaves `## Problem`, `## Proposed change` and `## Acceptance
     criteria`.
@@ -228,11 +244,16 @@ request is closed.
 
 - While the specification is on the branch, a narrowing reaches the
   Implementer only as the Writer's revised plan.
-- A new waking after the specification is deleted: a narrowing. Its
-  evidence is a `pipeline-narrowing` comment newer than the newest
-  `role=implementer` marker.
-- It works the way a return from the code review does, from the body, the
-  comments, the branch history and the diff (`implementer:100-103`).
+- After the specification is deleted, a narrowing is one more kind of
+  return. Its evidence: no `.agents/specs/<ITEM>/` at the head, and a
+  narrowing waits on the Implementer, as the law defines it. That evidence
+  overlaps "a return from the owner" and "a
+  re-entry of your own run" (`implementer:90-95`), so the table tests it
+  first.
+- It takes the path both other returns take, from the body, the comments,
+  the branch history and the diff (`implementer:100-103`). A narrowing that
+  arrives with review findings or the owner's comments is one return that
+  works all of them.
 - Its worklist entry, "remove the work that serves only a narrowed source",
   comes after the owner's comments and the judge's `must_change`.
 - The trio's brief and case file carry the narrowing comments. The task the
@@ -248,11 +269,32 @@ request is closed.
 | `.claude/agents/tracker-clerk.md` | description |
 | `.agents/skills/github-needs/SKILL.md` | the cap count |
 | `.agents/skills/pipeline-law/SKILL.md` | design section 3 |
-| `.agents/skills/pipeline-clerk/SKILL.md` | the source check, constraints, report, description |
+| `.agents/skills/pipeline-clerk/SKILL.md` | sweep rows 2 and 3, the conflict-repair skip, the seed, constraints, report, description |
 | `.claude/agents/pipeline-clerk.md` | description |
 | `.agents/skills/spec-writer/SKILL.md` | closed-item exit, the narrowing waking |
 | `.agents/skills/spec-reviewer/SKILL.md` | closed-item exit, the ninth check |
 | `.agents/skills/implementer/SKILL.md` | closed-item exit, the narrowing waking, the trio, `## Links` |
+
+## Alternatives considered
+
+- **Closing keywords** (`Closes #n`) in every item body, so GitHub closes the
+  sources at merge. Rejected under decision 1: the close skips the tracker
+  Clerk's re-derivation.
+- **The narrowing's last write.** Three places for the mark that a
+  narrowing is done:
+  - A field in the state block, written last. Chosen.
+  - The narrowing comment alone, with the route repaired from timeline
+    events. Rejected: it cannot tell a route never made from one a stage
+    has since moved past, so it repeats or loses the narrowing.
+  - A state field written first. Rejected: a fire that dies before the
+    route leaves the same two states indistinguishable.
+- **A stop for a person instead of a narrowing.** The Clerk would apply
+  `pipeline/stuck` and name the closed source. Rejected under decision 5.
+- **One source per item**, by removing consolidation at intake. Rejected:
+  decision 5 keeps consolidation and handles its consequence instead.
+- **The source check as a section before the sweep table.** Rejected: the
+  table would stop being the whole of the Clerk's authority over an item,
+  and the section would need its own "nothing else this fire" rule.
 
 ## Out of scope
 
@@ -264,9 +306,12 @@ request is closed.
 
 ## Accepted risks
 
-1. A woken stage's first body write can race the Clerk's `pipeline-narrowed`
-   write and drop the line. The next sweep then routes the item once more,
-   and the stage spends one extra round.
+1. A narrowing can route twice. A Clerk fire can die between the route and
+   the `narrowed=` write. A woken stage's first body write can also race
+   that write and drop the field. Either way the next sweep routes the item
+   once more. No narrowing then waits on the stage, so it audits a finished
+   item and hands it on, as the law has it absorb a doubled wake
+   (`pipeline-law:272-275`). The cost is one extra round.
 2. A person who reopens a narrowed source, or a source of a closed item,
    gets it closed again or left with no item. Bringing it back takes a new
    issue (decision 3).

@@ -326,10 +326,10 @@ the spec hash, and one comment saying what would not confirm. Leave the label
 where it is and end.
 
 Then read the narrowing comments again, under the law's
-**When a source closes**. A narrowing created since your first read voids
-this fire's outcome. Write no marker, post no summary and hand nothing on.
-Release the claim and end the fire. Otherwise rewrite the state block with
-your completion marker:
+**When a source closes**. A qualifying narrowing created since your first
+read voids this fire's outcome. Write no marker, post no summary and hand
+nothing on. Release the claim and end the fire. Otherwise rewrite the state
+block with your completion marker:
 
     <!-- pipeline-done: role=spec-writer hash=<SPEC_HASH> outcome=accepted at=<UTC> -->
 

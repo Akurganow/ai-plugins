@@ -74,8 +74,8 @@ Release the claim at every terminal exit, errors included.
 **Detect, audit, complete.** An item that acquires `pipeline/hold` mid-fire is
 left alone from that moment, and so is one that acquires `pipeline/stuck`: the
 Clerk tries to straighten a stuck item on its own run, and you report it and
-stop. A pull request that closes mid-fire ends the fire the same way. Push
-nothing more to it, and write nothing but the claim's release. Everything else
+stop. A pull request that closes mid-fire ends the fire the same way. Write
+nothing to it but the claim's release. Everything else
 your own previous fire left unfinished is yours to finish, per the law's
 **The audit every fire owes**.
 
@@ -154,6 +154,8 @@ Read these, in this order:
 - `spec.md` and `plan.md` in full
 - the rule files the law lists
 - the files the specification proposes to change, as they stand at the head
+- the files the pull request changes against its base, where a narrowing
+  names a source
 
 Read the reviews and review comments too, with each author's login. The
 owner's are decisions and outrank your reading. The automated code review's
@@ -217,7 +219,8 @@ claim there outlives every other defect on this list.
 8. **The plan's steps implement the specification and nothing else.** A step
    touching a file `## Proposed change` never mentions is scope creep. A
    criterion nothing in the plan reaches is the same defect from the other
-   side.
+   side. A step that removes a narrowed source's work is not scope creep,
+   because check 9 requires it.
 
    Where the body carries `## Part of`, work a sibling owns is that same
    defect with a number attached. `## Out of scope` must name every sibling,
@@ -226,10 +229,13 @@ claim there outlives every other defect on this list.
 
 9. **The narrowing is carried out.** Take each source a narrowing marker
    lists, where the fingerprint's `sources=` names it and it is closed now.
-   It appears nowhere in `## Proposed change` or `## Acceptance criteria`, and
-   `## Out of scope` names it. Where the branch already carries work that
-   serves only that source, a step in `## Steps` removes the work. A miss is
-   an objection, because the narrowing is a decision the machine has recorded.
+   It appears nowhere in `## Problem`, `## Proposed change` or `## Acceptance
+   criteria`, and `## Out of scope` names it. No step in `## Steps` and no
+   check in `## Verification` serves only that source. Where the branch
+   already carries work that serves only that source, a step in `## Steps`
+   removes the work. A miss is an objection. Under the law's **When a source
+   closes**, the closed source's work leaves the pull request, and a miss
+   builds it anyway.
 
 ## Round 2, refutation only
 

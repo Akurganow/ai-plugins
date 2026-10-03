@@ -75,8 +75,8 @@ Test this first. A narrowing waits on you as the law's **When a source
 closes** defines it. The spec hash has not moved since your last marker, so
 the test below would read this waking as a re-fire and only route.
 
-For each source a waiting narrowing names, where `sources=` names it and it
-is closed now:
+For each source a waiting narrowing's marker lists, where the fingerprint's
+`sources=` names it and it is closed now:
 
 - Take it out of `## Problem`, `## Proposed change` and `## Acceptance
   criteria`.
@@ -272,8 +272,8 @@ Find these lines, the end of check 8:
 Insert after them, with one blank line before:
 
 ```
-9. **The narrowing is carried out.** Take each source a narrowing comment
-   names, where `sources=` names it and it is closed now. It appears nowhere
+9. **The narrowing is carried out.** Take each source a narrowing marker
+   lists, where the fingerprint's `sources=` names it and it is closed now. It appears nowhere
    in `## Proposed change` or `## Acceptance criteria`, and `## Out of scope`
    names it. Where the branch already carries work that serves only that
    source, a step in `## Steps` removes the work. A miss is an objection,
@@ -423,8 +423,8 @@ with:
 1. Read the item's reviews and review comments, on every waking.
 2. Work the judge's `must_change` list from a rejected verdict.
 3. With no `$SPEC_DIR` at the head, remove the work that serves only a
-   source a waiting narrowing names, where `sources=` names it and it is
-   closed now. While the specification exists, its plan carries that
+   source a waiting narrowing's marker lists, where the fingerprint's
+   `sources=` names it and it is closed now. While the specification exists, its plan carries that
    removal. Where nothing serves only that source, the tree does not move:
    rewrite your `role=implementer` marker with a new `at=`, keeping its
    tree and outcome, so the narrowing stops waiting on you.
@@ -445,7 +445,7 @@ with:
 ```
 Each brief is neutral: the diff, the spec, the plan, every narrowing comment
 on the item, and the commands you ran and their output. The work it judges
-excludes every source a narrowing comment names.
+excludes every source a narrowing marker lists.
 ```
 
 Replace:

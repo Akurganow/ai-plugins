@@ -76,8 +76,8 @@ with:
 
 ```
 Clerk tries to straighten a stuck item on its own run, and you report it and
-stop. A pull request that closes mid-fire ends the fire the same way, before
-any further write to it. Everything else
+stop. A pull request that closes mid-fire ends the fire the same way. Push
+nothing more to it, and write nothing but the claim's release. Everything else
 ```
 
 - [ ] **Step 3: The narrowing test comes first**
@@ -88,12 +88,12 @@ Insert this section immediately before the line `## Have you already written thi
 ## Does a narrowing wait on you?
 
 Test this first. A narrowing waits on you as the law's **When a source
-closes** defines it. Where you have a marker, the spec hash has not moved
-since it. The test below would then read this waking as a re-fire and only
-route.
+closes** defines it. Where your marker's hash still matches the head, the
+test below would read this waking as a re-fire and only route.
 
-For each source a waiting narrowing's marker lists, where the fingerprint's
-`sources=` names it and it is closed now:
+A listed source qualifies where the fingerprint's `sources=` names it and it
+is closed now. A qualifying narrowing is a waiting one whose marker lists at
+least one. For each qualifying source:
 
 - Take it out of `## Problem`, `## Proposed change` and `## Acceptance
   criteria`.
@@ -112,12 +112,15 @@ Where no listed source qualifies, the narrowing asks nothing of you. Go on
 with whatever other waking holds. Where a source qualifies, and the
 specification already carries every edit above and answers every
 objection, a fire died before its marker. Write your completion marker and
-route as a revision would. Where the open sources leave nothing to change,
-**When the item has nothing left to change** applies. That stop takes no
+route as a revision would. Where the open sources leave nothing to change
+on `main`, **When the item has nothing left to change** applies. Judge that
+against `main`, because the head may already carry this item's own
+slices. That stop takes no
 source out, so it has not acted on the narrowing and writes no completion
 marker.
 
-A fresh fill leaves out every source in `narrowed=` the same way.
+A fresh fill leaves out, the same way, every source in `narrowed=` that is
+still closed.
 ```
 
 Then replace:
@@ -143,8 +146,9 @@ re-fire of finished work from fresh work.
 with:
 
 ```
-This test comes right after the narrowing test. Outside a narrowing, it is
-the only one that distinguishes a re-fire of finished work from fresh work.
+This test comes right after the narrowing test. Outside a qualifying
+narrowing, it is the only one that tells a re-fire of finished work from
+fresh work.
 ```
 
 - [ ] **Step 4: The wakings and the routing table**
@@ -281,23 +285,8 @@ with:
 
 ```
 Clerk tries to straighten a stuck item on its own run, and you report it and
-stop. A pull request that closes mid-fire ends the fire the same way, before
-any further write to it. Everything else
-```
-
-- [ ] **Step 2c: A closed pull request releases nothing**
-
-Replace:
-
-```
-Release the claim at every terminal exit, errors included.
-```
-
-with:
-
-```
-Release the claim at every terminal exit, errors included. A closed pull
-request is the one exception: it ends the fire with no write.
+stop. A pull request that closes mid-fire ends the fire the same way. Push
+nothing more to it, and write nothing but the claim's release. Everything else
 ```
 
 - [ ] **Step 3: Read the narrowing comments**
@@ -433,23 +422,8 @@ with:
 
 ```
 Clerk tries to straighten a stuck item on its own run, and you report it and
-stop. A pull request that closes mid-fire ends the fire the same way, before
-any further write to it. Everything else
-```
-
-- [ ] **Step 2c: A closed pull request releases nothing**
-
-Replace:
-
-```
-loop's own re-entry are all terminal exits.
-```
-
-with:
-
-```
-loop's own re-entry are all terminal exits. A closed pull request is the one
-exception: it ends the fire with no write.
+stop. A pull request that closes mid-fire ends the fire the same way. Push
+nothing more to it, and write nothing but the claim's release. Everything else
 ```
 
 - [ ] **Step 3: A narrowing is one more kind of return**

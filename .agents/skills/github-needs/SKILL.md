@@ -90,8 +90,8 @@ in its report.
     alone or beside another label, and none is ever made without it. A
     route may return pull requests in an issue listing: filter them out;
   - pull requests, open or all, with number, title, head, head
-    repository, labels, body, whether it merged, and when it closed, and
-    the paths each one touches;
+    repository, labels, body, whether it merged, when it closed, and the
+    paths each one touches;
   - the comments on one issue, and the labels on one issue;
   - an issue's place in a hierarchy: whether it has a parent and whether
     it has parts, which a listing may not carry; its parts, in the

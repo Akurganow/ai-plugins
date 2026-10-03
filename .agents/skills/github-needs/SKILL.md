@@ -56,6 +56,14 @@ not a second filing of the parent's finding.
 or older prefix, names it. They serve three things its skill gives: its
 backpressure cap, its filing audit, and its note on a stale issue.
 
+**The cap counts fewer.** A role's backpressure cap leaves out a filing
+that an open pipeline pull request names in the `sources=` of its
+fingerprint. The pipeline is already building that finding, so it is not
+the backlog the cap exists to brake. A pull request is a pipeline item when
+its head branch matches `pipeline/*`, its head repository is this
+repository, and its body carries `<!-- pipeline-work-fingerprint:`. The filing audit and
+the stale note still count every filing.
+
 No other issue exists for any role. No role lists it, reads it, comments
 on it, labels it or closes it.
 
@@ -78,8 +86,9 @@ in its report.
     The label is mandatory: every issue listing names `police-report`,
     alone or beside another label, and none is ever made without it. A
     route may return pull requests in an issue listing: filter them out;
-  - pull requests, open or all, with number, title, head, labels and
-    body, and the paths each one touches;
+  - pull requests, open or all, with number, title, head, head
+    repository, labels and body, whether each merged and when it closed,
+    and the paths each one touches;
   - the comments on one issue, and the labels on one issue;
   - an issue's place in a hierarchy: whether it has a parent and whether
     it has parts, which a listing may not carry; its parts, in the

@@ -105,8 +105,9 @@ A fresh fill leaves out every source in `narrowed=` the same way.
 
 ## Have you already written this?
 
-Skip this section while a narrowing waits on you. The section above handles
-it. Otherwise read your own `pipeline-done role=spec-writer` line next.
+Skip this section while a narrowing with a qualifying source waits on you.
+The section above handles it. Otherwise read your own
+`pipeline-done role=spec-writer` line next.
 
 Compute the spec hash at the head, per the law. If the marker's hash equals
 it, you already wrote this content and pushed it. A fire died between the
@@ -133,7 +134,7 @@ Five wakings. Tell them apart from what the item holds.
 | A revision after review | a `spec-reviewer` marker with `outcome=rejected`, and a comment carrying numbered `R-*` objections |
 | A revision after a gate bounce | a `gate` marker with `outcome=rejected`, and a comment carrying numbered `G-*` objections |
 | A narrowing | a `pipeline-narrowing` comment created after your newest `pipeline-done` marker, or any such comment where you have no marker yet. It combines with any other waking |
-| A re-fire of your own run | outside a narrowing, your own marker's hash matches the head, handled above |
+| A re-fire of your own run | outside a narrowing with a qualifying source, your own marker's hash matches the head, handled above |
 
 A gate bounce without a narrowing routes back to `spec/approved`, not to the
 Reviewer. The Implementer's gate objected, so it re-checks its own

@@ -40,7 +40,8 @@ may be written at all.
    environment.
 2. Prove the item is yours by the law's three positive facts.
 3. Confirm it still carries `spec/needs-work`.
-4. Exit if the pull request is closed, or if it carries `pipeline/stuck` or
+4. Exit if the pull request is closed, under the law's **A closed pull
+   request ends the fire**, or if it carries `pipeline/stuck` or
    `pipeline/hold`.
 5. Confirm `spec/awaiting-review` and `spec/approved` exist. A missing name
    is a hard stop.
@@ -63,35 +64,46 @@ Release the claim at every terminal exit, errors included.
 **Detect, audit, complete.** An item that acquires `pipeline/hold` mid-fire is
 left alone from that moment, and so is one that acquires `pipeline/stuck`: the
 Clerk tries to straighten a stuck item on its own run, and you report it and
-stop. Everything else your own previous fire left unfinished is yours to
-finish, per the law's **The audit every fire owes**.
+stop. A pull request that closes mid-fire ends the fire the same way, before
+any further write to it. Everything else your own previous fire left
+unfinished is yours to finish, per the law's **The audit every fire owes**.
 
 ## Does a narrowing wait on you?
 
 Test this first. A narrowing waits on you as the law's **When a source
-closes** defines it. The spec hash has not moved since your last marker, so
-the test below would read this waking as a re-fire and only route.
+closes** defines it. Where you have a marker, the spec hash has not moved
+since it, so the test below would read this waking as a re-fire and only
+route.
 
 For each source a waiting narrowing's marker lists, where the fingerprint's
 `sources=` names it and it is closed now:
 
 - Take it out of `## Problem`, `## Proposed change` and `## Acceptance
   criteria`.
-- Add one line to `## Out of scope` naming it and its state reason.
+- Add one line to `## Out of scope` naming it and the state reason its
+  issue shows.
+- Take out of `## Steps` and `## Verification` every step and check that
+  serves only that source.
 - Where the branch already carries work that serves only that source, add a
   step to `## Steps` that removes the work.
 
 A narrowing that arrives with `R-*` or `G-*` objections is one revision that
-answers both. Where nothing is left to change, **When the item has nothing
-left to change** applies. Otherwise the revision routes to
-`spec/awaiting-review`, because the Reviewer has not read the narrowed
-content.
+answers both. The revision routes to `spec/awaiting-review`, because the
+Reviewer has not read the narrowed content.
+
+Where the specification already carries every edit above, a fire died
+before its marker. Write your completion marker and route as a revision
+would. Where the open sources leave nothing to change, **When the item has
+nothing left to change** applies. That stop writes no completion marker,
+because it writes no revision.
 
 A fresh fill leaves out every source in `narrowed=` the same way.
 
 ## Have you already written this?
 
-Read your own `pipeline-done role=spec-writer` line next.
+Skip this section while a narrowing waits on you. The section above writes
+that revision. Otherwise read your own `pipeline-done role=spec-writer` line
+next.
 
 Compute the spec hash at the head, per the law. If the marker's hash equals
 it, you already wrote this content and pushed it. A fire died between the
@@ -105,8 +117,8 @@ report. Where either is missing or differs, the previous fire died before its
 push landed, so this is not finished work: write the files, push, and route as
 a fresh fill.
 
-This test comes right after the narrowing test, because it is the only one
-that distinguishes a re-fire of finished work from fresh work.
+This test comes right after the narrowing test. Outside a narrowing, it is
+the only one that distinguishes a re-fire of finished work from fresh work.
 
 ## Why you were woken
 
@@ -117,11 +129,12 @@ Five wakings. Tell them apart from what the item holds.
 | A fresh skeleton | every heading holds one `[NEEDS CLARIFICATION: unfilled skeleton …]` line, and no `spec-reviewer` or `gate` marker exists |
 | A revision after review | a `spec-reviewer` marker with `outcome=rejected`, and a comment carrying numbered `R-*` objections |
 | A revision after a gate bounce | a `gate` marker with `outcome=rejected`, and a comment carrying numbered `G-*` objections |
-| A narrowing | a narrowing waits on you, handled first under **Does a narrowing wait on you?**, and it combines with any other waking |
+| A narrowing | a `pipeline-narrowing` comment created after your newest `pipeline-done` marker, or with none yet. It combines with any other waking |
 | A re-fire of your own run | your own marker's hash matches the head, handled above |
 
-A gate bounce routes back to `spec/approved`, not to the Reviewer. The
-Implementer's gate objected, so it re-checks its own objections.
+A gate bounce without a narrowing routes back to `spec/approved`, not to the
+Reviewer. The Implementer's gate objected, so it re-checks its own
+objections.
 
 ## Review comments, read every waking
 
@@ -322,7 +335,7 @@ second, and read the label set back.
 | :-- | :-- | :-- |
 | a fresh fill | `spec/needs-work` | `spec/awaiting-review` |
 | a revision after review | `spec/needs-work` | `spec/awaiting-review` |
-| a revision after a gate bounce | `spec/needs-work` | `spec/approved` |
+| a revision after a gate bounce, without a narrowing | `spec/needs-work` | `spec/approved` |
 | a narrowing, with or without objections | `spec/needs-work` | `spec/awaiting-review` |
 
 **The bound.** Read `review_rounds` from the state block. At 5 or above,

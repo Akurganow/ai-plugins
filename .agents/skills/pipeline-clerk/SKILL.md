@@ -150,7 +150,7 @@ order:
 
 1. Re-read the pull request, its labels and its claim. Where it merged or
    closed, now carries `pipeline/hold`, or a stage holds a fresh claim,
-   stop. A stage that holds the item is mid-fire, and the writes below would
+   stop. A stage that holds the item is mid-fire. The writes below would
    race it.
 2. Post one comment that opens `Narrowing:`. Name each closed source that
    is missing from `narrowed=` and that no `pipeline-narrowing` marker of

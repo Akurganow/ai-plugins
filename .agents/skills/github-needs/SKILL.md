@@ -57,15 +57,17 @@ or older prefix, names it. They serve three things its skill gives: its
 backpressure cap, its filing audit, and its note on a stale issue.
 
 **The cap counts fewer.** A role's backpressure cap leaves out a filing
-that an open pipeline pull request names in the `sources=` of its
-fingerprint. The pipeline is already building that finding, so it is not
-the backlog the cap exists to brake. A pull request is a pipeline item when
-its head branch matches `pipeline/*`, its head repository is this
-repository, and its body carries `<!-- pipeline-work-fingerprint:`. The filing audit and
-the stale note still count every filing.
+that a live pipeline item names in the `sources=` of its fingerprint. A live
+item is an open pipeline pull request that carries neither `pipeline/stuck`
+nor `pipeline/hold`. The pipeline is building that finding now, so it is
+not the backlog the cap exists to brake. A parked item waits on a person,
+and its sources still count. A pull request is a pipeline item when its
+head branch matches `pipeline/*`, its head repository is this repository,
+and its body carries `<!-- pipeline-work-fingerprint:`. The filing audit
+and the stale note still count every filing.
 
-No other issue exists for any role. No role lists it, reads it, comments
-on it, labels it or closes it.
+An issue outside the population exists for no role. No role lists it,
+reads it, comments on it, labels it or closes it.
 
 Every filer applies `police-report` when it files. A filer that cannot
 confirm the label on the repository's label list files nothing, and says so
@@ -87,8 +89,8 @@ in its report.
     alone or beside another label, and none is ever made without it. A
     route may return pull requests in an issue listing: filter them out;
   - pull requests, open or all, with number, title, head, head
-    repository, labels and body, whether each merged and when it closed,
-    and the paths each one touches;
+    repository, labels, body, merge state and closing time, and the paths
+    each one touches;
   - the comments on one issue, and the labels on one issue;
   - an issue's place in a hierarchy: whether it has a parent and whether
     it has parts, which a listing may not carry; its parts, in the

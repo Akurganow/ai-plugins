@@ -349,10 +349,11 @@ second, and read the label set back.
 | a revision after a gate bounce, without a qualifying narrowing | `spec/needs-work` | `spec/approved` |
 | a qualifying narrowing, with or without objections | `spec/needs-work` | `spec/awaiting-review` |
 
-A narrowing comment newer than the newest `spec-reviewer` marker routes to
-`spec/awaiting-review` on a re-fire too, where its marker lists a qualifying
-source. Your completion marker does not record which waking wrote it, and
-the Reviewer has not read the narrowed content.
+A narrowing comment created after the `at=` of the newest
+`pipeline-done role=spec-reviewer` marker routes to `spec/awaiting-review` on
+a re-fire too. Its marker must list a qualifying source. Your completion marker
+does not record which waking wrote it, and the Reviewer has not read the
+narrowed content.
 
 **The bound.** Read `review_rounds` from the state block. At 5 or above,
 compare the current spec hash with the `key=` of the newest `pipeline-stop`

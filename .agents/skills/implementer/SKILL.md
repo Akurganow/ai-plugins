@@ -39,9 +39,9 @@ bad one is whether a reader who acts on the new sentence is right to.
    environment.
 2. Prove the item is yours by the law's three positive facts.
 3. Confirm it still carries `spec/approved`.
-4. Exit if the pull request is closed, under the law's **A closed pull
-   request ends the fire**, or if it carries `pipeline/stuck` or
-   `pipeline/hold`.
+4. Exit if the pull request is closed, under the law's
+   **A closed pull request ends the fire**, or if it carries
+   `pipeline/stuck` or `pipeline/hold`.
 5. Confirm `spec/needs-work`, `spec/approved` and `pipeline/code-review`
    exist.
 6. Read the state block from the pull-request body.
@@ -83,8 +83,8 @@ left alone from that moment, and so is one that acquires `pipeline/stuck`: the
 Clerk tries to straighten a stuck item on its own run, and you report it and
 stop. A pull request that closes mid-fire ends the fire the same way. Push
 nothing more to it, and write nothing but the claim's release. Everything else
-your own previous fire left unfinished is yours to
-finish, per the law's **The audit every fire owes**.
+your own previous fire left unfinished is yours to finish, per the law's
+**The audit every fire owes**.
 
 ## Why you were woken
 
@@ -105,6 +105,8 @@ appears only on an accepted final slice, so it cannot separate them.
 Test the narrowing row before the two returns and the re-entry, because its
 evidence overlaps theirs. A narrowing is one more kind of return. It
 combines with whichever other return holds, and one fire works them all.
+After a narrowing, a lifted `ready-for-human` is the Clerk's route. Only the
+owner's review comments show a return from the owner.
 
 On a return from the code review, from the owner or from a narrowing, the
 specification is already deleted. Work from the pull-request body, the
@@ -130,6 +132,7 @@ and the outcome says what it ruled:
 | `role=gate` at this spec hash, `outcome=accepted` | skip the gate |
 | `role=gate` at this spec hash, `outcome=rejected` | hand back to the Writer, do not re-gate, do not touch `gate_bounces` |
 | `role=implementer` at this tree id, `outcome=rejected` | the trio already rejected this tree, work `must_change`, do not dispatch |
+| `role=implementer` at this tree id, `outcome=accepted` | the trio already accepted this tree, do not dispatch, hand off on the verdict comment it posted |
 
 The second row is a fire that died between two label writes. One comment says
 the `G-*` objections stand. The exception is `gate_bounces` already at 2,
@@ -232,12 +235,14 @@ This fire's worklist, in priority order:
 
 1. Read the item's reviews and review comments, on every waking.
 2. Work the judge's `must_change` list from a rejected verdict.
-3. With no `$SPEC_DIR` at the head, remove the work that serves only a
-   source a waiting narrowing's marker lists, where the fingerprint's
-   `sources=` names it and it is closed now. While the specification exists,
-   its plan carries that removal. Where nothing serves only that source, the
-   tree does not move: rewrite your `role=implementer` marker with a new `at=`,
-   keeping its tree and outcome, so the narrowing stops waiting on you.
+3. A narrowed source is a closed source that a narrowing marker lists and
+   the fingerprint's `sources=` names. With no `$SPEC_DIR` at the head and a
+   narrowing waiting on you, remove the work that serves only a narrowed
+   source. While the specification exists, its plan carries that removal.
+   Where nothing serves only a narrowed source, the tree does not move. Then
+   rewrite your `role=implementer` marker with a new `at=`, keeping its tree
+   and outcome, so the narrowing stops waiting on you. Where you have no
+   such marker yet, the trio's marker answers the narrowing.
 4. Work the remaining plan steps.
 
 **On the review comments.** Read them with each author's login, and
@@ -342,7 +347,8 @@ review will be shown.
 
    Write it as `predelete=<sha>` on the `pipeline-progress` line and read the
    body back. It is the only durable record of where the spec and plan can
-   still be read, and a rejected verdict rewrites nothing else.
+   still be read, and a rejected verdict rewrites nothing else. On a return,
+   the spec is already gone, so keep `predelete=` as it stands.
 
 3. Delete `$SPEC_DIR` entirely.
 4. Commit and push. This is the last push of the item.
@@ -368,8 +374,9 @@ Dispatch three fresh subagents, mutually blind, each with a clean context,
 over the pushed diff. Hand them paths under `$RUN`, never text.
 
 Each brief is neutral: the diff, the spec, the plan, every narrowing comment
-on the item, and the commands you ran and their output. The work it judges
-excludes every source a narrowing marker lists. It carries none of your
+on the item, and the commands you ran and their output. The trio does not
+judge the work of a narrowed source. Its outcome is already decided, under
+the law's **When a source closes**. The brief carries none of your
 reasoning, none of your confidence, how many slices this took, or a hint of
 the answer you want.
 
@@ -500,8 +507,9 @@ accepted is the tree the code review and the owner will read.
        - the spec and plan as they stood:
          https://github.com/Akurganow/ai-plugins/blob/<predelete>/.agents/specs/<ITEM>/spec.md
 
-   Write one `narrowed:` line per source in `narrowed=`, and none where it
-   reads `none`.
+   Write one `narrowed:` line per narrowed source, and none where there is
+   none. That is the set this fire acted on. The Clerk's `narrowed=` reaches
+   the same set once its last write lands.
 
    Keep the whole state block at the foot, the `pipeline-work-fingerprint`
    line included. It is the item's identity. Its `sources=` stops the pipeline

@@ -189,7 +189,9 @@ whole of your authority over an item" (`:113-117`).
   1. Post one comment that opens `Narrowing:`. It names each such source and
      its state reason, and ends with the `pipeline-narrowing` marker. Skip
      this where a comment of yours already names the source.
-  2. Route the item. The target label is `spec/needs-work` while
+  2. Route the item, only while the narrowing waits on the target stage.
+     Otherwise the stage has done the work, and only step 3 is left. The
+     target label is `spec/needs-work` while
      `.agents/specs/<ITEM>/` exists at the head, and `spec/approved` once it
      is gone. Remove `pipeline/stuck`, `pipeline/code-review`,
      `ready-for-human` and every stage label but the target. Then re-enter
@@ -316,12 +318,9 @@ request is closed.
 
 ## Accepted risks
 
-1. A narrowing can route twice. A Clerk fire can die between the route and
-   the `narrowed=` write. A woken stage's first body write can also race
-   that write and drop the field. Either way the next sweep routes the item
-   once more. No narrowing then waits on the stage, so it audits a finished
-   item and hands it on, as the law has it absorb a doubled wake
-   (`pipeline-law:272-275`). The cost is one extra round.
+1. A woken stage's first body write can race the Clerk and drop
+   `narrowed=`. The next sweep writes it again and routes nothing, because
+   the narrowing no longer waits on the stage.
 2. A person who reopens a narrowed source, or a source of a closed item,
    gets it closed again or left with no item. Bringing it back takes a new
    issue (decision 3).

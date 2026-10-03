@@ -99,11 +99,11 @@ because the Reviewer has not read the narrowed content.
 Where no listed source qualifies, the narrowing asks nothing of you. Go on
 with whatever other waking holds. Where a source qualifies, and the
 specification already carries every edit above and answers every
-objection, a fire died before its marker. Write your completion marker and
-route as a revision would. Where the open sources leave nothing to change
-on `main`, **When the item has nothing left to change** applies. That stop
-takes no source out, so it has not acted on the narrowing and writes no
-completion marker.
+objection, a fire died before its marker. Take **The last read**, then
+write your completion marker and route as a revision would. Where the open
+sources leave nothing to change on `main`,
+**When the item has nothing left to change** applies. That stop takes no source
+out, so it has not acted on the narrowing and writes no completion marker.
 
 A fresh fill leaves out, the same way, every source in `narrowed=` that is
 still closed.
@@ -121,10 +121,10 @@ push and the handoff, and the sweep brought the item back.
 **First check the push landed.** The marker says a fire computed this hash;
 it does not say the two files reached the branch. Read both back from the
 pushed branch, as **The self-check** below does. Where both are there and
-match, do the routing only: write no file, push nothing, say so in the
-report. Where either is missing or differs, the previous fire died before its
-push landed, so this is not finished work: write the files, push, and route as
-a fresh fill.
+match, write no file and push nothing. Take **The last read**, keep the
+marker as it stands, and do the routing only. Say so in the report. Where either
+is missing or differs, the previous fire died before its push landed, so this is
+not finished work: write the files, push, and route as a fresh fill.
 
 This test comes right after the narrowing test. Outside a qualifying
 narrowing, it is the only one that tells a re-fire of finished work from
@@ -325,11 +325,11 @@ still does not confirm, that is a stop: record it the law's way, with the
 the spec hash, and one comment saying what would not confirm. Leave the label
 where it is and end.
 
-Then read the narrowing comments again, under the law's
-**When a source closes**. A qualifying narrowing created since your first
-read voids this fire's outcome. Write no marker, post no summary and hand
-nothing on. Release the claim and end the fire. Otherwise rewrite the state
-block with your completion marker:
+**The last read.** Read the narrowing comments again, under the law's
+**When a source closes**. A qualifying narrowing you did not see when you
+chose your work voids this fire's outcome. Write no marker, post no summary
+and hand nothing on. Release the claim and end the fire. Otherwise rewrite
+the state block with your completion marker:
 
     <!-- pipeline-done: role=spec-writer hash=<SPEC_HASH> outcome=accepted at=<UTC> -->
 
@@ -390,7 +390,8 @@ the owner has settled it.
 4. **Unanswered**: review comments and objections judged out of scope, each
    with the reason.
 5. **Blockers**: GitHub errors, a failed unshallow, a missing label, a
-   read-back that would not confirm, a held or stuck item, a blocked source.
+   read-back that would not confirm, a held or stuck item, a blocked source,
+   a narrowing that voided this fire, with its comment.
 6. **`git status --porcelain`**: its actual output.
 
 ## Hard constraints

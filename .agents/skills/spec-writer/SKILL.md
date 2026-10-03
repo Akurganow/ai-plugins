@@ -77,7 +77,7 @@ test below would read this waking as a re-fire and only route.
 
 A listed source qualifies where the fingerprint's `sources=` names it and it
 is closed now. A qualifying narrowing is a waiting one whose marker lists at
-least one. For each qualifying source:
+least one qualifying source. For each qualifying source:
 
 - Take it out of `## Problem`, `## Proposed change` and `## Acceptance
   criteria`.
@@ -88,9 +88,9 @@ least one. For each qualifying source:
 - Where the branch already carries work that serves only that source, add a
   step to `## Steps` that removes the work.
 
-A narrowing that arrives with `R-*` or `G-*` objections is one revision that
-answers both. The revision routes to `spec/awaiting-review`, because the
-Reviewer has not read the narrowed content.
+A qualifying narrowing that arrives with `R-*` or `G-*` objections is one
+revision that answers both. The revision routes to `spec/awaiting-review`,
+because the Reviewer has not read the narrowed content.
 
 Where no listed source qualifies, the narrowing asks nothing of you. Go on
 with whatever other waking holds. Where a source qualifies, and the

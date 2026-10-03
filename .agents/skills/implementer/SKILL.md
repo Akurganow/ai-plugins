@@ -443,12 +443,12 @@ The deletion commit's parent is where the files were still present.
   is not a verdict: ask once for the block in the required form. If it still
   does not come, treat the round as rejected and say so.
 
-**The last read.** Before you act on a verdict, write a
-`role=implementer` marker or hand the item on, read the narrowing comments
-again, under the law's **When a source closes**. A narrowing you did not see
-when you chose your work, that lists a narrowed source, voids this attempt.
-Act on no verdict, write no marker, release the claim and end the fire. The
-next waking carries that narrowing out.
+**The last read.** Read the narrowing comments again, under the law's
+**When a source closes**. Do it before you act on a verdict, write a
+`role=implementer` marker or hand the item on. A narrowing you did not see when
+you chose your work, that lists a narrowed source, voids this attempt. Act on no
+verdict, write no marker, release the claim and end the fire. The next waking
+carries that narrowing out.
 
 Otherwise write the `role=implementer` marker at the end of the attempt, on
 either verdict, carrying the tree id you judged and the outcome, and read it

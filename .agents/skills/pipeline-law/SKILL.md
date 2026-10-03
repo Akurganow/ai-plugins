@@ -250,13 +250,13 @@ A stage acts on a narrowing only for a source that `sources=` names and
 that is closed when the stage reads it. A forged comment can then remove
 only the work of a source already closed.
 
-A stage reads the narrowing comments again just before it writes its
-`pipeline-done` marker or hands the item on. A narrowing comment it did not see
-when it chose its work, for a source it acts on, voids the fire's outcome. The
-stage writes no marker, hands nothing on, releases its claim and ends. The
-Clerk's sweep re-enters a stage whose claim was released and not taken for
-twelve hours, and that waking carries the narrowing out. So a marker newer
-than a narrowing comment proves the stage read the comment.
+The Writer and the Implementer read the narrowing comments again just before
+they write the completion marker named above or hand the item on. A narrowing
+comment the stage did not see when it chose its work, for a source it acts on,
+voids the fire's outcome. The stage writes no marker, hands nothing on, releases
+its claim and ends. The Clerk's sweep later re-enters a stage whose released
+claim nobody took. That waking carries the narrowing out. So a marker newer than
+a narrowing comment proves the stage read the comment.
 
 **A narrowing changes content only where it moves a key.** The Writer's
 revision moves the spec hash. Where the Implementer removes work, its commit

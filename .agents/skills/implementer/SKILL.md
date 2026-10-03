@@ -132,7 +132,7 @@ and the outcome says what it ruled:
 | `role=gate` at this spec hash, `outcome=accepted` | skip the gate |
 | `role=gate` at this spec hash, `outcome=rejected` | hand back to the Writer, do not re-gate, do not touch `gate_bounces` |
 | `role=implementer` at this tree id, `outcome=rejected` | the trio already rejected this tree, work `must_change`, do not dispatch |
-| `role=implementer` at this tree id, `outcome=accepted` | the trio already accepted this tree. Take **The last read**, then hand off on its `verdict: ACCEPTED tree=` comment and dispatch nothing |
+| `role=implementer` at this tree id, `outcome=accepted` | the trio already accepted this tree. Take **The last read**, then go on from handoff step 3 and dispatch nothing |
 
 The second row is a fire that died between two label writes. One comment says
 the `G-*` objections stand. The exception is `gate_bounces` already at 2,
@@ -251,8 +251,8 @@ This fire's worklist, in priority order:
    Take **The last read**, then rewrite your `role=implementer` marker with
    `at=` the time of that read, keeping its tree and outcome. The narrowing then
    stops waiting on you, and that marker's row in the gate's table decides what
-   follows. Where you have no such marker yet, the `role=implementer` marker you
-   write after this fire's trio answers the narrowing.
+   follows. Where you have no such marker yet, the next `role=implementer`
+   marker this fire writes answers the narrowing.
 4. Work the remaining plan steps.
 
 **On the review comments.** Read them with each author's login, and
@@ -375,10 +375,12 @@ review will be shown.
 
 7. Dispatch the trio over the pushed diff, unless a `role=implementer`
    marker already names this tree id. Then that marker's row in the gate's
-   table decides. A `verdict: ACCEPTED tree=` comment of yours for this tree
-   with no marker is a fire that died between the two. Then take **The last
-   read**, write the accepted marker for that tree, and go on from handoff
-   step 3.
+   table decides. A comment of yours for this tree with no marker is a fire
+   that died between the two. A judgement a comment records is never run again.
+   For a `verdict: ACCEPTED tree=` comment, take **The last read**, then do
+   handoff step 2's marker write and go on from step 3. For a keyed
+   `must_change` comment, take **The last read**, then do step 2 of
+   **A rejected verdict**.
 8. On an accepted verdict only, and never before, do the handoff.
 
 The specification is process scaffolding. It lives on in the branch history,
@@ -461,10 +463,12 @@ comment first, in handoff step 2.
 
 **A rejected verdict** ends the fire through the slice loop:
 
-1. Post the `must_change` list as the round's worklist.
-2. Increment `judge_rejects` in the state block.
-3. Write the marker with `outcome=rejected`.
-4. End the slice.
+1. Post the `must_change` list as the round's worklist. Its last line is
+   `<!-- pipeline-comment: role=implementer key=<TREE_ID> at=<UTC> -->`.
+   Post it only where no comment of yours carries that key.
+2. In one body write, increment `judge_rejects` and write the marker with
+   `outcome=rejected`. One write keeps the count and the marker together.
+3. End the slice.
 
 Nothing is retitled and nothing is rewritten. The pull request keeps the
 Clerk's title and body until a verdict accepts the work.
@@ -507,8 +511,9 @@ accepted is the tree the code review and the owner will read.
 
    The confidence and the struck list go in your report instead. They are the
    session's machinery, and this comment outlives the session. Read the
-   comment back. Then write the `role=implementer` marker with
-   `outcome=accepted` and this tree id, and read it back.
+   comment back. Then, in one body write, write the `role=implementer`
+   marker with `outcome=accepted` and this tree id, and set
+   `judge_rejects=0`. Read it back.
 
 3. **Rewrite the pull-request body for the owner**, replacing the Clerk's
    process-era body:

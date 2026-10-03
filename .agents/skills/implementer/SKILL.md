@@ -132,7 +132,7 @@ and the outcome says what it ruled:
 | `role=gate` at this spec hash, `outcome=accepted` | skip the gate |
 | `role=gate` at this spec hash, `outcome=rejected` | hand back to the Writer, do not re-gate, do not touch `gate_bounces` |
 | `role=implementer` at this tree id, `outcome=rejected` | the trio already rejected this tree, work `must_change`, do not dispatch |
-| `role=implementer` at this tree id, `outcome=accepted` | the trio already accepted this tree, do not dispatch, hand off on the verdict comment it posted |
+| `role=implementer` at this tree id, `outcome=accepted` | the trio already accepted this tree. Hand off on its `verdict: ACCEPTED tree=` comment and dispatch nothing. With no such comment, dispatch the trio again |
 
 The second row is a fire that died between two label writes. One comment says
 the `G-*` objections stand. The exception is `gate_bounces` already at 2,
@@ -141,7 +141,8 @@ below.
 The third row re-opens the moment you commit, because the tree id moves.
 
 After the final slice deletes the specification, the spec hash cannot be
-computed and the gate is over for this item.
+computed and the gate is over for this item. Its two `role=implementer` rows
+still apply.
 
 The gate is four checks.
 
@@ -165,6 +166,8 @@ The gate is four checks.
 
 4. **Commission one clean-context subagent** on plan against spec against the
    rule files. Its brief carries the case-file path and the question. It
+   also lists the narrowed sources, as the worklist below defines them. A
+   step that removes their work then does not read as scope creep. It
    carries none of your reasoning and no preferred answer.
 
    It applies the Reviewer's threshold: a contradiction with a recorded
@@ -231,6 +234,11 @@ the body beside it:
     - [x] 1. <plan step>, <commit sha>
     - [ ] 2. <plan step>
 
+A narrowing can revise the plan after slices have landed. When it does,
+rebuild the checklist from the revised plan, and tick each step the head
+already carries. The old list would send the next slice to a step the
+revision dropped.
+
 This fire's worklist, in priority order:
 
 1. Read the item's reviews and review comments, on every waking.
@@ -239,10 +247,12 @@ This fire's worklist, in priority order:
    the fingerprint's `sources=` names. With no `$SPEC_DIR` at the head and a
    narrowing waiting on you, remove the work that serves only a narrowed
    source. While the specification exists, its plan carries that removal.
-   Where nothing serves only a narrowed source, the tree does not move. Then
-   rewrite your `role=implementer` marker with a new `at=`, keeping its tree
-   and outcome, so the narrowing stops waiting on you. Where you have no
-   such marker yet, the trio's marker answers the narrowing.
+   Where nothing serves only a narrowed source, the tree does not move.
+   Rewrite your `role=implementer` marker with a new `at=`, keeping its tree
+   and outcome. The narrowing then stops waiting on you, and that marker's
+   row in the gate's table decides what follows. Where you have no such
+   marker yet, the `role=implementer` marker you write after this fire's
+   trio answers the narrowing.
 4. Work the remaining plan steps.
 
 **On the review comments.** Read them with each author's login, and
@@ -347,8 +357,9 @@ review will be shown.
 
    Write it as `predelete=<sha>` on the `pipeline-progress` line and read the
    body back. It is the only durable record of where the spec and plan can
-   still be read, and a rejected verdict rewrites nothing else. On a return,
-   the spec is already gone, so keep `predelete=` as it stands.
+   still be read, and a rejected verdict rewrites nothing else. Where
+   `$SPEC_DIR` is already absent at the head, keep `predelete=` as it
+   stands. A sha read then would name a tree without the spec and plan.
 
 3. Delete `$SPEC_DIR` entirely.
 4. Commit and push. This is the last push of the item.
@@ -362,7 +373,9 @@ review will be shown.
    filenames. Either check failing means the item is not finished: fix it in
    this fire and go back to step 4.
 
-7. Dispatch the trio over the pushed diff.
+7. Dispatch the trio over the pushed diff, unless a `role=implementer`
+   marker already names this tree id. Then that marker's row in the gate's
+   table decides.
 8. On an accepted verdict only, and never before, do the handoff.
 
 The specification is process scaffolding. It lives on in the branch history,
@@ -373,12 +386,13 @@ and the finished pull request is the implementation and nothing else.
 Dispatch three fresh subagents, mutually blind, each with a clean context,
 over the pushed diff. Hand them paths under `$RUN`, never text.
 
-Each brief is neutral: the diff, the spec, the plan, every narrowing comment
-on the item, and the commands you ran and their output. The trio does not
-judge the work of a narrowed source. Its outcome is already decided, under
-the law's **When a source closes**. The brief carries none of your
-reasoning, none of your confidence, how many slices this took, or a hint of
-the answer you want.
+Each brief is neutral: the diff, the spec, the plan, the narrowed sources
+as the worklist above defines them, and the commands you ran and their
+output. The trio does not judge the work of a narrowed source. That
+source's outcome is already decided, under the law's
+**When a source closes**. The brief carries none of your reasoning, none of
+your confidence, how many slices this took, or a hint of the answer you
+want.
 
 **Build the case file in this fire if it is not already there.** A multi-slice
 item skipped the gate on its final fire, and `$RUN` does not survive a fire.
@@ -412,7 +426,7 @@ The deletion commit's parent is where the files were still present.
   does that the prosecution passed over. It concedes what the evidence does
   not support.
 
-- **Judge.** Read the diff, the spec, the narrowing comments and both
+- **Judge.** Read the diff, the spec, the list of narrowed sources and both
   reports, and nothing else.
   Strike assertions with no exhibit and list them. Re-run the single most
   decisive exhibit. Return exactly this block:

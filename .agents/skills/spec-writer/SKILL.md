@@ -330,7 +330,8 @@ where it is and end.
 chose your work voids this fire's outcome. Write no marker, post no summary
 and hand nothing on. Release the claim and end the fire.
 
-Otherwise rewrite the state block with your completion marker:
+Otherwise rewrite the state block with your completion marker. Its `at=` is
+the time of **The last read**, not of this write:
 
     <!-- pipeline-done: role=spec-writer hash=<SPEC_HASH> outcome=accepted at=<UTC> -->
 

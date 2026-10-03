@@ -59,25 +59,25 @@ fire that died, and a `state=released` claim never blocks: take either
 over under your own role, and go on to the audit the law owes. Another role's
 claim you leave exactly as it stands.
 
-Release the claim at every terminal exit, errors included. A closed pull
-request is the one exception: it ends the fire with no write.
+Release the claim at every terminal exit, errors included.
 
 **Detect, audit, complete.** An item that acquires `pipeline/hold` mid-fire is
 left alone from that moment, and so is one that acquires `pipeline/stuck`: the
 Clerk tries to straighten a stuck item on its own run, and you report it and
-stop. A pull request that closes mid-fire ends the fire the same way, before
-any further write to it. Everything else your own previous fire left
-unfinished is yours to finish, per the law's **The audit every fire owes**.
+stop. A pull request that closes mid-fire ends the fire the same way. Push
+nothing more to it, and write nothing but the claim's release. Everything
+else your own previous fire left unfinished is yours to finish, per the
+law's **The audit every fire owes**.
 
 ## Does a narrowing wait on you?
 
 Test this first. A narrowing waits on you as the law's **When a source
-closes** defines it. Where you have a marker, the spec hash has not moved
-since it. The test below would then read this waking as a re-fire and only
-route.
+closes** defines it. Where your marker's hash still matches the head, the
+test below would read this waking as a re-fire and only route.
 
-For each source a waiting narrowing's marker lists, where the fingerprint's
-`sources=` names it and it is closed now:
+A listed source qualifies where the fingerprint's `sources=` names it and it
+is closed now. A qualifying narrowing is a waiting one whose marker lists at
+least one. For each qualifying source:
 
 - Take it out of `## Problem`, `## Proposed change` and `## Acceptance
   criteria`.
@@ -96,17 +96,19 @@ Where no listed source qualifies, the narrowing asks nothing of you. Go on
 with whatever other waking holds. Where a source qualifies, and the
 specification already carries every edit above and answers every
 objection, a fire died before its marker. Write your completion marker and
-route as a revision would. Where the open sources leave nothing to change,
-**When the item has nothing left to change** applies. That stop takes no
-source out, so it has not acted on the narrowing and writes no completion
-marker.
+route as a revision would. Where the open sources leave nothing to change
+on `main`, **When the item has nothing left to change** applies. Judge that
+against `main`, because the head may already carry this item's own
+slices. That stop takes no source out, so it has not acted on the narrowing
+and writes no completion marker.
 
-A fresh fill leaves out every source in `narrowed=` the same way.
+A fresh fill leaves out, the same way, every source in `narrowed=` that is
+still closed.
 
 ## Have you already written this?
 
-Skip this section while a narrowing with a qualifying source waits on you.
-The section above handles it. Otherwise read your own
+Skip this section while a qualifying narrowing waits on you. The section
+above handles it. Otherwise read your own
 `pipeline-done role=spec-writer` line next.
 
 Compute the spec hash at the head, per the law. If the marker's hash equals
@@ -121,8 +123,9 @@ report. Where either is missing or differs, the previous fire died before its
 push landed, so this is not finished work: write the files, push, and route as
 a fresh fill.
 
-This test comes right after the narrowing test. Outside a narrowing, it is
-the only one that distinguishes a re-fire of finished work from fresh work.
+This test comes right after the narrowing test. Outside a qualifying
+narrowing, it is the only one that tells a re-fire of finished work from
+fresh work.
 
 ## Why you were woken
 
@@ -134,10 +137,10 @@ Five wakings. Tell them apart from what the item holds.
 | A revision after review | a `spec-reviewer` marker with `outcome=rejected`, and a comment carrying numbered `R-*` objections |
 | A revision after a gate bounce | a `gate` marker with `outcome=rejected`, and a comment carrying numbered `G-*` objections |
 | A narrowing | a `pipeline-narrowing` comment created after your newest `pipeline-done` marker, or any such comment where you have no marker yet. It combines with any other waking |
-| A re-fire of your own run | outside a narrowing with a qualifying source, your own marker's hash matches the head, handled above |
+| A re-fire of your own run | outside a qualifying narrowing, your own marker's hash matches the head, handled above |
 
-A gate bounce without a narrowing routes back to `spec/approved`, not to the
-Reviewer. The Implementer's gate objected, so it re-checks its own
+A gate bounce without a qualifying narrowing routes back to `spec/approved`,
+not to the Reviewer. The Implementer's gate objected, so it re-checks its own
 objections.
 
 ## Review comments, read every waking
@@ -339,8 +342,8 @@ second, and read the label set back.
 | :-- | :-- | :-- |
 | a fresh fill | `spec/needs-work` | `spec/awaiting-review` |
 | a revision after review | `spec/needs-work` | `spec/awaiting-review` |
-| a revision after a gate bounce, without a narrowing | `spec/needs-work` | `spec/approved` |
-| a narrowing, with or without objections | `spec/needs-work` | `spec/awaiting-review` |
+| a revision after a gate bounce, without a qualifying narrowing | `spec/needs-work` | `spec/approved` |
+| a qualifying narrowing, with or without objections | `spec/needs-work` | `spec/awaiting-review` |
 
 **The bound.** Read `review_rounds` from the state block. At 5 or above,
 compare the current spec hash with the `key=` of the newest `pipeline-stop`

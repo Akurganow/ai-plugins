@@ -37,7 +37,19 @@ grep -c '^Four wakings\.' .agents/skills/spec-writer/SKILL.md
 
 Expected: `0`, then `1`.
 
-- [ ] **Step 2: Exit on a closed pull request**
+- [ ] **Step 2: Three facts, and exit on a closed pull request**
+
+Replace:
+
+```
+2. Prove the item is yours by the law's two positive facts.
+```
+
+with:
+
+```
+2. Prove the item is yours by the law's three positive facts.
+```
 
 Replace:
 
@@ -160,13 +172,14 @@ Run:
 f=.agents/skills/spec-writer/SKILL.md
 grep -c '^## Does a narrowing wait on you?$' $f
 grep -c '^4\. Exit if the pull request is closed' $f
+grep -c "law's three positive facts" $f
 grep -c '^Five wakings\.' $f
 grep -c '^| a narrowing, with or without objections |' $f
 grep -n 'line before anything else\.$\|^This test comes first' $f
 git diff --check
 ```
 
-Expected: `1` four times, then nothing from the last two commands.
+Expected: `1` five times, then nothing from the last two commands.
 
 - [ ] **Step 7: Commit**
 
@@ -201,7 +214,19 @@ Run: `grep -c 'Run all eight checks' .agents/skills/spec-reviewer/SKILL.md`
 
 Expected: `1`.
 
-- [ ] **Step 2: Exit on a closed pull request**
+- [ ] **Step 2: Three facts, and exit on a closed pull request**
+
+Replace:
+
+```
+2. Prove the item is yours by the law's two positive facts.
+```
+
+with:
+
+```
+2. Prove the item is yours by the law's three positive facts.
+```
 
 Replace:
 
@@ -265,11 +290,12 @@ grep -c '^9\. \*\*The narrowing is carried out\.\*\*' $f
 grep -c 'Run all nine checks' $f
 grep -c "the Clerk's narrowing comments, each ending" $f
 grep -c '^4\. Exit if the pull request is closed' $f
+grep -c "law's three positive facts" $f
 grep -n 'Run all eight checks' $f
 git diff --check
 ```
 
-Expected: `1` four times, then nothing from the last two commands.
+Expected: `1` five times, then nothing from the last two commands.
 
 - [ ] **Step 6: Commit**
 
@@ -309,7 +335,19 @@ grep -c '^Four wakings look alike' .agents/skills/implementer/SKILL.md
 
 Expected: `0`, then `1`.
 
-- [ ] **Step 2: Exit on a closed pull request**
+- [ ] **Step 2: Three facts, and exit on a closed pull request**
+
+Replace:
+
+```
+2. Prove the item is yours by the law's two positive facts.
+```
+
+with:
+
+```
+2. Prove the item is yours by the law's three positive facts.
+```
 
 Replace:
 
@@ -467,12 +505,13 @@ grep -c '^| A narrowing | no `\$SPEC_DIR` at the head' $f
 grep -c '^Five wakings look alike' $f
 grep -c '^Test the narrowing row before the two returns' $f
 grep -c '^4\. Exit if the pull request is closed' $f
+grep -c "law's three positive facts" $f
 grep -c 'narrowed: #<b>, closed as <its state reason>' $f
 grep -n 'Four wakings\|four wakings' $f
 git diff --check
 ```
 
-Expected: `1` five times, then nothing from the last two commands.
+Expected: `1` six times, then nothing from the last two commands.
 
 - [ ] **Step 9: Commit**
 

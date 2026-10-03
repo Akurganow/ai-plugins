@@ -169,6 +169,37 @@ stale item and the owner rejects one, and a late or doubled label event must
 not restart either.
 ```
 
+- [ ] **Step 6b: The proof has a third fact**
+
+Replace:
+
+```
+**Prove the item is one of ours** before anything else, from two positive
+facts on the pull request:
+
+1. Its head branch matches `pipeline/*`.
+2. Its body carries `<!-- pipeline-work-fingerprint:`.
+
+Either missing means this is not a pipeline item. Exit with one line and
+touch nothing.
+```
+
+with:
+
+```
+**Prove the item is one of ours** before anything else, from three positive
+facts on the pull request:
+
+1. Its head branch matches `pipeline/*`.
+2. That branch lives in this repository.
+3. Its body carries `<!-- pipeline-work-fingerprint:`.
+
+Any one missing means this is not a pipeline item. Exit with one line and
+touch nothing. A fork cannot create a branch here, so the second fact is the
+one an outsider's pull request cannot carry. Roles close issues and pull
+requests on the strength of this test, so a forged item must fail it.
+```
+
 - [ ] **Step 7: The state block carries `narrowed=`**
 
 Replace:
@@ -183,7 +214,7 @@ with:
     <!-- pipeline-state: item=<id> review_rounds=<n> gate_bounces=<m> judge_rejects=<k> slices=<s> cr_rounds=<c> narrowed=<#b,#c|none> -->
 ```
 
-Find this paragraph:
+Replace this paragraph:
 
 ```
 The **fingerprint** is the item's identity and the discriminator's second
@@ -191,7 +222,13 @@ half. The Clerk's skip test reads it, open and closed. It is never removed
 and never rewritten.
 ```
 
-Insert after it, with one blank line before:
+with this paragraph, then one blank line and the next:
+
+```
+The **fingerprint** is the item's identity and the discriminator's third
+fact. The Clerk's skip test reads it, open and closed. It is never removed
+and never rewritten.
+```
 
 ```
 **`narrowed=`** on the `pipeline-state` line lists the sources the Clerk has
@@ -270,11 +307,13 @@ grep -c '^\*\*A closed pull request ends the fire\.\*\*' $f
 grep -c 'narrowed=<#b,#c|none>' $f
 grep -c 'pipeline-stale: sources=#a,#b at=<UTC>' $f
 grep -c 'pipeline-narrowing: sources=#b at=<UTC>' $f
+grep -c '^2\. That branch lives in this repository\.$' $f
+grep -n "two positive$\|discriminator's second$\|^Either missing means" $f
 grep -n 'The sources stay closed\|no role ever removes it\|nobody; the owner alone\|Two things that are comments' $f
 git diff --check
 ```
 
-Expected: `1` five times, then nothing from the last two commands.
+Expected: `1` six times, then nothing from the last three commands.
 
 - [ ] **Step 12: Commit**
 
@@ -342,6 +381,23 @@ reads the police and the court, it comments, and it closes issues. **You never
 close an issue.** It never touches a pull request. The two of you share a name
 and nothing else. The one pull request you close is a stale item, under the
 sweep's second row.
+```
+
+- [ ] **Step 3b: The sweep lists by the law's three facts**
+
+Replace:
+
+```
+List every open pull request whose head branch matches `pipeline/*` and whose
+body carries `<!-- pipeline-work-fingerprint:`. Both facts, per the law. That
+```
+
+with:
+
+```
+List every open pull request whose head branch matches `pipeline/*`, lives in
+this repository, and whose body carries `<!-- pipeline-work-fingerprint:`.
+All three facts, per the law. That
 ```
 
 - [ ] **Step 4: The sweep reads every source's state**
@@ -554,12 +610,13 @@ grep -c '^| a source in `sources=` closed and missing from `narrowed=`' $f
 grep -c '^\*\*The stale item\.\*\*' $f
 grep -c '^\*\*The narrowing\.\*\*' $f
 grep -c 'cr_rounds=0 narrowed=none' $f
-grep -n 'No role removes it\|No role removes the label,' $f
+grep -c 'All three facts, per the law' $f
+grep -n 'Both facts, per the law\|No role removes it\|No role removes the label,' $f
 diff <(sed -n 3p $f) <(sed -n 3p .claude/agents/pipeline-clerk.md)
 git diff --check
 ```
 
-Expected: `1` five times, then nothing from the last three commands.
+Expected: `1` six times, then nothing from the last three commands.
 
 - [ ] **Step 14: Commit**
 

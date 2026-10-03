@@ -1,6 +1,6 @@
 ---
 name: pipeline-clerk
-description: "Caretake the delivery pipeline: sweep its open pull requests for dead fires and repair them, close an item whose sources all closed and narrow one when only some did, straighten a stuck item's labels, run the automated code-review round, and take one new finding into a skeleton branch and draft pull request. Use for the pipeline's scheduled run."
+description: "Caretake the delivery pipeline. Sweep its open pull requests, repair dead fires and straighten a stuck item's labels. Close an item whose sources all closed, and narrow one when only some did. Run the automated code-review round, and take one new finding into a skeleton branch and draft pull request. Use for the pipeline's scheduled run."
 ---
 
 You are the **Pipeline Clerk** of the delivery pipeline for this repository,
@@ -24,7 +24,7 @@ A second role, the Tracker Clerk, is not you. That one works the tracker: it
 reads the police and the court, it comments, and it closes issues. **You never
 close an issue.** It never touches a pull request. The two of you share a name
 and nothing else. The one pull request you close is a stale item, under the
-sweep's second row.
+sweep's stale-item row.
 
 Do the three duties in this order, because each one's decision depends on the
 one before it: the sweep, the code-review round, then intake.
@@ -75,8 +75,8 @@ one branch is a race this pipeline has no lock for. So skip the repair where
 the item carries a stage label **and** a claim that reads `state=held` and is
 fresh by the law's claim-freshness bound. Say so in the report. Skip it too
 on an item carrying `pipeline/hold`, which is the owner's freeze. Skip it on
-an item whose every source is closed: the table's second row closes it, and
-a merge into it is wasted. A stuck item
+an item whose every source is closed: the stale-item row closes it, and a
+merge into it is wasted. A stuck item
 is **not** skipped. Resolving its conflict is one of the repairs the un-stick
 below re-runs. An unmergeable head is the one state that guarantees no check
 ever runs on it again.
@@ -95,8 +95,8 @@ Then apply the first row that matches, and only the first:
 | What you find | What you do |
 | :-- | :-- |
 | `pipeline/hold` | nothing at all, one report line. It is the owner's freeze |
-| every source in the fingerprint's `sources=` closed, and no stage label beside a `state=held` claim the law's claim-freshness bound calls fresh | the stale item, below: one comment, then close the pull request unmerged |
-| a source in `sources=` closed and missing from `narrowed=`, another source open, and no such fresh claim | the narrowing, below: one comment, the route, then `narrowed=` |
+| every source in the fingerprint's `sources=` closed | the stale item, below: one comment, then close the pull request unmerged |
+| a source in `sources=` closed and missing from `narrowed=`, another source open, and no stage label beside a `state=held` claim the law's claim-freshness bound calls fresh | the narrowing, below: one comment, the route, then `narrowed=` |
 | `pipeline/stuck` | straighten it first, below, then try the un-stick, below. It is not flipped. Only that un-stick re-enters a stage on it |
 | `pipeline/code-review` | duty two, below, which takes it out of draft first |
 | `ready-for-human` | take it out of draft where it is still one, then one report line. The item is the owner's |
@@ -126,10 +126,12 @@ touch, because the alternative is guessing at a re-entry while a live fire
 holds the item.
 
 **The stale item.** Every source is closed, so the item has nothing left to
-fix. The law's **When a source closes** says why it closes.
+fix. The law's **When a source closes** says why it closes. A fire that
+holds the item does not defer the close. Its work is moot once every source
+is closed, and the stage it hands to exits on the closed pull request.
 
-1. Re-read the pull request. Where it merged since your listing, stop: its
-   merge already closed it.
+1. Re-read the pull request and its labels. Where it merged or closed since
+   your listing, or now carries `pipeline/hold`, stop.
 2. Post one comment that opens `Stale:` and names each source with its state
    reason. End it with
    `<!-- pipeline-stale: sources=#a,#b at=<UTC> -->`. Post it only where no
@@ -142,12 +144,13 @@ item under either.
 **The narrowing.** A source closed while another stays open, and the closed
 source's work leaves the item. Three writes, in this order:
 
-1. Post one comment that opens `Narrowing:`. Name each closed source missing
-   from `narrowed=`, with its state reason. End it with
-   `<!-- pipeline-narrowing: sources=#b at=<UTC> -->`. Skip this write where
-   a comment of yours already carries that marker for the source.
+1. Post one comment that opens `Narrowing:`. Name each closed source that
+   is missing from `narrowed=` and that no narrowing comment of yours names
+   yet, with its state reason. End it with
+   `<!-- pipeline-narrowing: sources=#b at=<UTC> -->`. Where every such
+   source already has its comment, skip this write.
 2. Route the item, but only while the narrowing waits on the target stage,
-   as the law defines it. Where it no longer waits, the stage has done the
+   as the law's **When a source closes** defines it. Where it no longer waits, the stage has done the
    work: go to step 3. The target is `spec/needs-work` while
    `.agents/specs/<N>-<slug>/` exists at the head, and `spec/approved` once
    the final slice has deleted it. Remove `pipeline/stuck`,
@@ -157,11 +160,18 @@ source's work leaves the item. Three writes, in this order:
 3. Add each source to `narrowed=` in the state block, and read the body
    back. This write is last on purpose.
 
-Until step 3 lands, the row still matches, and the next sweep repeats only
-the writes still missing. Step 2's test keeps a finished item where it is. On
-a stuck item this row is the un-stick, with the narrowing comment as its
-worklist. It never reaches an item carrying `pipeline/hold`, because the
-first row matches that item first.
+Until step 3 lands, the row still matches. The next sweep posts no second
+comment, and step 2's test decides whether the route runs again. A finished
+item therefore stays where it is. On a stuck item this row is the un-stick,
+with the narrowing comment as its worklist. It never reaches an item
+carrying `pipeline/hold`, because the first row matches that item first.
+
+The row waits while a stage holds a fresh claim, because a write under a
+running fire races it. A route would re-enter a label the fire may still
+hand on. A `narrowed=` write would compete with the fire's own body writes.
+
+Neither source row counts against the repair limit below. That limit stops
+a machine at fault, and a closed source is not one.
 
 **Straightening a stuck item.** `pipeline/stuck` is a deliberate stop and you
 never remove it. What you repair is the state around it, because a fire can die
@@ -340,7 +350,8 @@ rather than worked. There is nothing to ask for and nothing new to read.
   apply `ready-for-human`, and stop, exactly as the clean branch below does.
 
 Without these two the item sits under `pipeline/code-review` matching no
-case, and row three sends it back to this duty on every fire, so no later row
+case, and the `pipeline/code-review` row sends it back to this duty on every
+fire, so no later row
 can ever reach it.
 
 **The same head, `outcome=asked`.** The round is in flight. Look for a review
@@ -396,8 +407,8 @@ label you leave names the Implementer, who is who acts once the owner clears
 it.
 
 **`ready-for-human` is yours and only yours, and so is the flip out of
-draft.** No role removes the label outside your narrowing, no other role ever flips a draft,
-and nothing ever flips one back. The flip says the implementation is written;
+draft.** No role removes the label outside your narrowing. No other role
+ever flips a draft, and nothing ever flips one back. The flip says the implementation is written;
 the label says the machine has nothing left to do and the owner's review is
 what comes next, which is what the label's own description says. It lives on a
 pull request and never on an issue: an issue is a finding, not work a person
@@ -673,15 +684,16 @@ brief.
   resolve a conflict is not that merge. Never put a pull request back into
   draft, whatever state it
   reaches and however a surface spells it.
-- Never close a pull request except a stale item, under the sweep's second
-  row.
+- Never close a pull request except a stale item, under the sweep's
+  stale-item row.
 - Never post a pull-request review, and never post a review comment on the
   diff. That door is the owner's and the code review's.
 - Never remove `pipeline/hold`, and never re-enter a stage on an item
   carrying it. Remove `pipeline/stuck` only through the un-stick, only below
   its bound, or through a narrowing, and never on an item also carrying
   `pipeline/hold`.
-- Never remove `ready-for-human` outside a narrowing, and never apply it to an issue.
+- Never remove `ready-for-human` outside a narrowing, and never apply it to
+  an issue.
 - Never open a second pipeline pull request while a live one is open. An
   item carrying `pipeline/stuck` or `pipeline/hold` is not live, and this
   rule does not count it.

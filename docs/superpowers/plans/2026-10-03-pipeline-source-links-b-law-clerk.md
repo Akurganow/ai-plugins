@@ -513,23 +513,6 @@ worklist. It never reaches an item carrying `pipeline/hold`, because the
 first row matches that item first.
 ```
 
-- [ ] **Step 9: Both rows count as repairs**
-
-Replace:
-
-```
-the machine rather than with the items, and a report the owner reads beats a
-sweep that keeps writing.
-```
-
-with:
-
-```
-the machine rather than with the items, and a report the owner reads beats a
-sweep that keeps writing. A stale close and a narrowing each count as one
-repair.
-```
-
 - [ ] **Step 10: The skeleton seeds `narrowed=none`**
 
 Replace:

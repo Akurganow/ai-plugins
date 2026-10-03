@@ -111,9 +111,11 @@ Text that changes in `tracker-clerk/SKILL.md`:
 ### 2. `github-needs`: the cap count
 
 Add one rule to "A role's filings" (`github-needs:55-57`). For the
-backpressure cap alone, leave out an issue that the `sources=` of an open
-pipeline pull request's fingerprint names. The filing audit and the note on
-a stale issue still count it.
+backpressure cap alone, leave out an issue that the `sources=` of a live
+pipeline item's fingerprint names. A live item is open and carries neither
+`pipeline/stuck` nor `pipeline/hold`. A parked item waits on a person, so
+its sources still count. The filing audit and the note on a stale issue
+still count every filing.
 
 Every police role counts "as `github-needs` counts them" (`repo-police:87`,
 `slop-police:141`, `agent-police:287`). So does the tracker Clerk's report
@@ -200,7 +202,6 @@ whole of your authority over an item" (`:113-117`).
   where a fresh claim already means nothing and one report line (`:100`).
 - **The conflict repair** before the table (`:56-63`) skips an item whose
   every source is closed. Row 2 closes it, and a merge into it is wasted.
-- Each close and each narrowing counts against the limit of three repairs.
 
 Other text that changes in `pipeline-clerk/SKILL.md`:
 

@@ -496,9 +496,9 @@ Insert this text immediately before the paragraph that opens `**Straightening a 
 **The stale item.** Every source is closed, so the item has nothing left to
 fix. The law's **When a source closes** says why it closes. A fire that
 holds the item does not defer the close. Its work is moot once every source
-is closed. The close claims nothing, so it takes the item from no fire. The
-stage that fire hands to then exits, under the law's **A closed pull request
-ends the fire**.
+is closed. The close writes no claim, so the law's claim-freshness bound
+does not hold it. The stage that fire hands to then exits, under the law's
+**A closed pull request ends the fire**.
 
 1. Re-read the pull request and its labels. Where it merged or closed since
    your listing, or now carries `pipeline/hold`, stop.
@@ -519,27 +519,29 @@ source's work leaves the item. Three writes, in this order:
    yours lists in `sources=`, with its state reason. End it with
    `<!-- pipeline-narrowing: sources=#b at=<UTC> -->`. Where no such source
    is left, skip this write.
-2. Route the item, but only while the narrowing waits on the target stage,
-   as the law's **When a source closes** defines it. Where it no longer
-   waits, the stage has done the work: go to step 3. The target is `spec/needs-work` while
-   `.agents/specs/<N>-<slug>/` exists at the head, and `spec/approved` once
-   the final slice has deleted it. Remove `pipeline/stuck`,
-   `pipeline/code-review`, `ready-for-human` and every stage label but the
-   target. Then re-enter the target by the law's primitive, and read the
-   label set back.
-3. Add to `narrowed=` each source a `pipeline-narrowing` marker of yours
-   lists, and read the body back. This write is last on purpose.
+2. Route the item, but only while a narrowing comment of yours that lists a
+   source missing from `narrowed=` waits on the target stage. The law's
+   **When a source closes** defines that wait. Where no such comment waits,
+   the stage has done the work: go to step 3. The target is
+   `spec/needs-work` while `.agents/specs/<N>-<slug>/` exists at the head,
+   and `spec/approved` once the final slice has deleted it. Remove
+   `pipeline/stuck`, `pipeline/code-review`, `ready-for-human` and every
+   stage label but the target. Then re-enter the target by the law's
+   primitive, and read the label set back.
+3. Add to `narrowed=` each closed source a `pipeline-narrowing` marker of
+   yours lists, and read the body back. This write is last on purpose.
 
 Until step 3 lands, the row still matches. The next sweep posts no comment
-for a source a marker already lists, and step 2's test decides whether the
-route runs again. A finished
-item therefore stays where it is. On a stuck item this row is the un-stick,
-with the narrowing comment as its worklist. It never reaches an item
-carrying `pipeline/hold`, because the `pipeline/hold` row sits above it.
+for a source a marker already lists. Step 2's test decides whether the route
+runs again, so a finished item stays where it is. On a stuck item this row
+is the un-stick, with the narrowing comment as its worklist. It never
+reaches an item carrying `pipeline/hold`, because the `pipeline/hold` row
+sits above it.
 
-The narrowing row waits while a stage holds a fresh claim, because a write
-under a running fire races it. A route would re-enter a label the fire may still
-hand on. A `narrowed=` write would compete with the fire's own body writes.
+The narrowing row does not match while a stage holds a fresh claim, because
+a write under a running fire races it. A route would re-enter a label the
+fire may still hand on. A `narrowed=` write would compete with the fire's
+own body writes.
 
 Neither source row counts against the repair limit below. That limit stops
 a machine at fault, and a closed source is not one.

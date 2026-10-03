@@ -128,7 +128,9 @@ holds the item.
 **The stale item.** Every source is closed, so the item has nothing left to
 fix. The law's **When a source closes** says why it closes. A fire that
 holds the item does not defer the close. Its work is moot once every source
-is closed, and the stage it hands to exits on the closed pull request.
+is closed. The close claims nothing, so it takes the item from no fire. The
+stage that fire hands to then exits, under the law's **A closed pull request
+ends the fire**.
 
 1. Re-read the pull request and its labels. Where it merged or closed since
    your listing, or now carries `pipeline/hold`, stop.
@@ -145,29 +147,30 @@ item under either.
 source's work leaves the item. Three writes, in this order:
 
 1. Post one comment that opens `Narrowing:`. Name each closed source that
-   is missing from `narrowed=` and that no narrowing comment of yours names
-   yet, with its state reason. End it with
-   `<!-- pipeline-narrowing: sources=#b at=<UTC> -->`. Where every such
-   source already has its comment, skip this write.
+   is missing from `narrowed=` and that no `pipeline-narrowing` marker of
+   yours lists in `sources=`, with its state reason. End it with
+   `<!-- pipeline-narrowing: sources=#b at=<UTC> -->`. Where no such source
+   is left, skip this write.
 2. Route the item, but only while the narrowing waits on the target stage,
-   as the law's **When a source closes** defines it. Where it no longer waits, the stage has done the
-   work: go to step 3. The target is `spec/needs-work` while
+   as the law's **When a source closes** defines it. Where it no longer
+   waits, the stage has done the work: go to step 3. The target is `spec/needs-work` while
    `.agents/specs/<N>-<slug>/` exists at the head, and `spec/approved` once
    the final slice has deleted it. Remove `pipeline/stuck`,
    `pipeline/code-review`, `ready-for-human` and every stage label but the
    target. Then re-enter the target by the law's primitive, and read the
    label set back.
-3. Add each source to `narrowed=` in the state block, and read the body
-   back. This write is last on purpose.
+3. Add to `narrowed=` each source a `pipeline-narrowing` marker of yours
+   lists, and read the body back. This write is last on purpose.
 
-Until step 3 lands, the row still matches. The next sweep posts no second
-comment, and step 2's test decides whether the route runs again. A finished
+Until step 3 lands, the row still matches. The next sweep posts no comment
+for a source a marker already lists, and step 2's test decides whether the
+route runs again. A finished
 item therefore stays where it is. On a stuck item this row is the un-stick,
 with the narrowing comment as its worklist. It never reaches an item
-carrying `pipeline/hold`, because the first row matches that item first.
+carrying `pipeline/hold`, because the `pipeline/hold` row sits above it.
 
-The row waits while a stage holds a fresh claim, because a write under a
-running fire races it. A route would re-enter a label the fire may still
+The narrowing row waits while a stage holds a fresh claim, because a write
+under a running fire races it. A route would re-enter a label the fire may still
 hand on. A `narrowed=` write would compete with the fire's own body writes.
 
 Neither source row counts against the repair limit below. That limit stops
@@ -350,9 +353,8 @@ rather than worked. There is nothing to ask for and nothing new to read.
   apply `ready-for-human`, and stop, exactly as the clean branch below does.
 
 Without these two the item sits under `pipeline/code-review` matching no
-case, and the `pipeline/code-review` row sends it back to this duty on every
-fire, so no later row
-can ever reach it.
+case. The `pipeline/code-review` row then sends it back to this duty on
+every fire, so no later row can ever reach it.
 
 **The same head, `outcome=asked`.** The round is in flight. Look for a review
 posted after that `at=`:
@@ -408,8 +410,8 @@ it.
 
 **`ready-for-human` is yours and only yours, and so is the flip out of
 draft.** No role removes the label outside your narrowing. No other role
-ever flips a draft, and nothing ever flips one back. The flip says the implementation is written;
-the label says the machine has nothing left to do and the owner's review is
+ever flips a draft, and nothing ever flips one back. The flip says the
+implementation is written; the label says the machine has nothing left to do and the owner's review is
 what comes next, which is what the label's own description says. It lives on a
 pull request and never on an issue: an issue is a finding, not work a person
 can review, and the tracker Clerk is under the same rule.
@@ -653,7 +655,8 @@ brief.
    say that no worklist named work a stage can do.
    **Stale and narrowed**: each item closed as stale, with every source and
    its state reason. Each narrowing, with every source it took out, the label
-   set before and after, and `narrowed=` read back.
+   set before and after, and `narrowed=` read back. Neither counts against
+   the limit of three.
 3. **Code review**: per item, the draft field before and after, the marker
    before and after, whether a round was asked, what came back, how many
    findings were actionable, where the item went, and the label set as you
@@ -700,4 +703,4 @@ brief.
 - Never rewrite pushed history. Never force-push. Never push to `main`.
 - Never create a label.
 - Never repair more than three items in one fire, a conflict resolution
-  counted as a repair like any other.
+  counted as a repair like any other. A source row is not a repair.

@@ -237,21 +237,22 @@ The route lifts `pipeline/stuck`, `pipeline/code-review` and
 stage works an item under any of those three labels.
 
 **A narrowing waits on a stage** while that stage has not acted on it. The
-Writer's record is its `pipeline-done role=spec-writer` marker, and the
-Implementer's is its `pipeline-done role=implementer` marker. The narrowing
+Writer's completion marker is `pipeline-done role=spec-writer`, and the
+Implementer's is `pipeline-done role=implementer`. The narrowing
 waits when its comment was created after that marker's `at=`, or when the
 stage has no such marker yet. The comment's creation time is GitHub's, so a
 forged `at=` in the narrowing marker changes nothing. A stage that acts on a
-narrowing writes that marker again with a new `at=`, even where its content
-did not move.
+narrowing writes its `pipeline-done` marker again with a new `at=`, even
+where its content did not move.
 
 A stage acts on a narrowing only for a source that `sources=` names and
 that is closed when the stage reads it. A forged comment can then remove
 only the work of a source already closed.
 
-**A narrowing is changed content.** The Writer's revision moves the spec
-hash. Where the Implementer removes work, its commit moves the tree id. So
-a narrowing that moves its key is never counted as a repeat.
+**A narrowing changes content only where it moves a key.** The Writer's
+revision moves the spec hash. Where the Implementer removes work, its commit
+moves the tree id. Where it removes nothing, the tree id stays, and each
+bound reads the item as unchanged.
 
 **A narrowing routes only while it waits.** A fire can die after the route
 and before `narrowed=` is written. The next sweep then matches the row

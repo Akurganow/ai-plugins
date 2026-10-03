@@ -425,7 +425,9 @@ with:
 3. With no `$SPEC_DIR` at the head, remove the work that serves only a
    source a waiting narrowing names, where `sources=` names it and it is
    closed now. While the specification exists, its plan carries that
-   removal.
+   removal. Where nothing serves only that source, the tree does not move:
+   rewrite your `role=implementer` marker with a new `at=`, keeping its
+   tree and outcome, so the narrowing stops waiting on you.
 4. Work the remaining plan steps.
 ```
 

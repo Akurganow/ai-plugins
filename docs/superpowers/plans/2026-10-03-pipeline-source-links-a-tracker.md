@@ -271,6 +271,22 @@ and its body carries `<!-- pipeline-work-fingerprint:`. The filing audit
 and the stale note still count every filing.
 ```
 
+- [ ] **Step 2a: Keep "no other issue" unambiguous after the insertion**
+
+Replace:
+
+```
+No other issue exists for any role. No role lists it, reads it, comments
+on it, labels it or closes it.
+```
+
+with:
+
+```
+An issue outside the population exists for no role. No role lists it,
+reads it, comments on it, labels it or closes it.
+```
+
 - [ ] **Step 2b: Name what a run reads of a pull request**
 
 Replace:

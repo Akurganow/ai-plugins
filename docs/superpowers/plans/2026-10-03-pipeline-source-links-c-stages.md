@@ -60,8 +60,24 @@ Replace:
 with:
 
 ```
-4. Exit if the pull request is closed, or if it carries `pipeline/stuck` or
+4. Exit if the pull request is closed, under the law's **A closed pull
+   request ends the fire**, or if it carries `pipeline/stuck` or
    `pipeline/hold`.
+```
+
+Then replace:
+
+```
+Clerk tries to straighten a stuck item on its own run, and you report it and
+stop. Everything else
+```
+
+with:
+
+```
+Clerk tries to straighten a stuck item on its own run, and you report it and
+stop. A pull request that closes mid-fire ends the fire the same way, before
+any further write to it. Everything else
 ```
 
 - [ ] **Step 3: The narrowing test comes first**
@@ -72,23 +88,31 @@ Insert this section immediately before the line `## Have you already written thi
 ## Does a narrowing wait on you?
 
 Test this first. A narrowing waits on you as the law's **When a source
-closes** defines it. The spec hash has not moved since your last marker, so
-the test below would read this waking as a re-fire and only route.
+closes** defines it. Where you have a marker, the spec hash has not moved
+since it, so the test below would read this waking as a re-fire and only
+route.
 
 For each source a waiting narrowing's marker lists, where the fingerprint's
 `sources=` names it and it is closed now:
 
 - Take it out of `## Problem`, `## Proposed change` and `## Acceptance
   criteria`.
-- Add one line to `## Out of scope` naming it and its state reason.
+- Add one line to `## Out of scope` naming it and the state reason its
+  issue shows.
+- Take out of `## Steps` and `## Verification` every step and check that
+  serves only that source.
 - Where the branch already carries work that serves only that source, add a
   step to `## Steps` that removes the work.
 
 A narrowing that arrives with `R-*` or `G-*` objections is one revision that
-answers both. Where nothing is left to change, **When the item has nothing
-left to change** applies. Otherwise the revision routes to
-`spec/awaiting-review`, because the Reviewer has not read the narrowed
-content.
+answers both. The revision routes to `spec/awaiting-review`, because the
+Reviewer has not read the narrowed content.
+
+Where the specification already carries every edit above, a fire died
+before its marker. Write your completion marker and route as a revision
+would. Where the open sources leave nothing to change, **When the item has
+nothing left to change** applies. That stop writes no completion marker,
+because it writes no revision.
 
 A fresh fill leaves out every source in `narrowed=` the same way.
 ```
@@ -102,7 +126,9 @@ Read your own `pipeline-done role=spec-writer` line before anything else.
 with:
 
 ```
-Read your own `pipeline-done role=spec-writer` line next.
+Skip this section while a narrowing waits on you. The section above writes
+that revision. Otherwise read your own `pipeline-done role=spec-writer` line
+next.
 ```
 
 And replace:
@@ -115,8 +141,8 @@ re-fire of finished work from fresh work.
 with:
 
 ```
-This test comes right after the narrowing test, because it is the only one
-that distinguishes a re-fire of finished work from fresh work.
+This test comes right after the narrowing test. Outside a narrowing, it is
+the only one that distinguishes a re-fire of finished work from fresh work.
 ```
 
 - [ ] **Step 4: The wakings and the routing table**
@@ -132,13 +158,13 @@ Find this row:
 Insert this row directly below it:
 
 ```
-| A narrowing | a narrowing waits on you, handled first under **Does a narrowing wait on you?**, and it combines with any other waking |
+| A narrowing | a `pipeline-narrowing` comment created after your newest `pipeline-done` marker, or with none yet. It combines with any other waking |
 ```
 
 Find this row:
 
 ```
-| a revision after a gate bounce | `spec/needs-work` | `spec/approved` |
+| a revision after a gate bounce, without a narrowing | `spec/needs-work` | `spec/approved` |
 ```
 
 Insert this row directly below it:
@@ -237,8 +263,24 @@ Replace:
 with:
 
 ```
-4. Exit if the pull request is closed, or if it carries `pipeline/stuck` or
+4. Exit if the pull request is closed, under the law's **A closed pull
+   request ends the fire**, or if it carries `pipeline/stuck` or
    `pipeline/hold`.
+```
+
+Then replace:
+
+```
+Clerk tries to straighten a stuck item on its own run, and you report it and
+stop. Everything else
+```
+
+with:
+
+```
+Clerk tries to straighten a stuck item on its own run, and you report it and
+stop. A pull request that closes mid-fire ends the fire the same way, before
+any further write to it. Everything else
 ```
 
 - [ ] **Step 3: Read the narrowing comments**
@@ -358,8 +400,24 @@ Replace:
 with:
 
 ```
-4. Exit if the pull request is closed, or if it carries `pipeline/stuck` or
+4. Exit if the pull request is closed, under the law's **A closed pull
+   request ends the fire**, or if it carries `pipeline/stuck` or
    `pipeline/hold`.
+```
+
+Then replace:
+
+```
+Clerk tries to straighten a stuck item on its own run, and you report it and
+stop. Everything else
+```
+
+with:
+
+```
+Clerk tries to straighten a stuck item on its own run, and you report it and
+stop. A pull request that closes mid-fire ends the fire the same way, before
+any further write to it. Everything else
 ```
 
 - [ ] **Step 3: A narrowing is one more kind of return**

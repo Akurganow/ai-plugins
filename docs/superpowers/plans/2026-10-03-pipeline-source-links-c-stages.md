@@ -89,7 +89,7 @@ Insert this section immediately before the line `## Have you already written thi
 
 Test this first. A narrowing waits on you as the law's **When a source
 closes** defines it. Where you have a marker, the spec hash has not moved
-since it, so the test below would read this waking as a re-fire and only
+since it. The test below would then read this waking as a re-fire and only
 route.
 
 For each source a waiting narrowing's marker lists, where the fingerprint's
@@ -108,11 +108,14 @@ A narrowing that arrives with `R-*` or `G-*` objections is one revision that
 answers both. The revision routes to `spec/awaiting-review`, because the
 Reviewer has not read the narrowed content.
 
-Where the specification already carries every edit above, a fire died
-before its marker. Write your completion marker and route as a revision
-would. Where the open sources leave nothing to change, **When the item has
-nothing left to change** applies. That stop writes no completion marker,
-because it writes no revision.
+Where no listed source qualifies, the narrowing asks nothing of you. Go on
+with whatever other waking holds. Where a source qualifies, and the
+specification already carries every edit above and answers every
+objection, a fire died before its marker. Write your completion marker and
+route as a revision would. Where the open sources leave nothing to change,
+**When the item has nothing left to change** applies. That stop takes no
+source out, so it has not acted on the narrowing and writes no completion
+marker.
 
 A fresh fill leaves out every source in `narrowed=` the same way.
 ```
@@ -126,9 +129,8 @@ Read your own `pipeline-done role=spec-writer` line before anything else.
 with:
 
 ```
-Skip this section while a narrowing waits on you. The section above writes
-that revision. Otherwise read your own `pipeline-done role=spec-writer` line
-next.
+Skip this section while a narrowing waits on you. The section above handles
+it. Otherwise read your own `pipeline-done role=spec-writer` line next.
 ```
 
 And replace:
@@ -283,6 +285,21 @@ stop. A pull request that closes mid-fire ends the fire the same way, before
 any further write to it. Everything else
 ```
 
+- [ ] **Step 2c: A closed pull request releases nothing**
+
+Replace:
+
+```
+Release the claim at every terminal exit, errors included.
+```
+
+with:
+
+```
+Release the claim at every terminal exit, errors included. A closed pull
+request is the one exception: it ends the fire with no write.
+```
+
 - [ ] **Step 3: Read the narrowing comments**
 
 Replace:
@@ -418,6 +435,21 @@ with:
 Clerk tries to straighten a stuck item on its own run, and you report it and
 stop. A pull request that closes mid-fire ends the fire the same way, before
 any further write to it. Everything else
+```
+
+- [ ] **Step 2c: A closed pull request releases nothing**
+
+Replace:
+
+```
+loop's own re-entry are all terminal exits.
+```
+
+with:
+
+```
+loop's own re-entry are all terminal exits. A closed pull request is the one
+exception: it ends the fire with no write.
 ```
 
 - [ ] **Step 3: A narrowing is one more kind of return**

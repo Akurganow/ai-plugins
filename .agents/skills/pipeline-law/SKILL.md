@@ -232,7 +232,8 @@ While `.agents/specs/<N>-<slug>/` exists at the head, that is the Writer,
 which takes the source out of the specification. Once the final slice has
 deleted it, that is the Implementer, which removes the work. The Clerk adds
 the source to `narrowed=` only once the narrowing no longer waits on that
-stage.
+stage. A narrowing the stage never read then routes again rather than
+reading as done.
 
 The route lifts `pipeline/stuck`, `pipeline/code-review` and
 `ready-for-human`. Work leaves a pull request only through a stage, and no
@@ -266,14 +267,17 @@ revision moves the spec hash. Where the Implementer removes work, its commit
 moves the tree id. Where it removes nothing, the tree id stays, and each
 bound reads the item as unchanged.
 
-**A narrowing routes until the stage answers it.** The row matches on every
-sweep until `narrowed=` names the source. While the narrowing waits on the
+**A narrowing routes until the stage answers it.** Until `narrowed=` names
+the source, the row can match on any sweep. While the narrowing waits on the
 target stage, the Clerk routes again. A route the stage has not answered yet
 meets a label still hanging, which **The baton** absorbs. Once the narrowing
 no longer waits, the stage has done the work, and the Clerk only records the
 source. Where the stage's newest record since the comment is a stop, the
-row does not match. The Clerk's last-gate case handles that stop, and a
-later marker answers the narrowing.
+row does not match. A stage's records are its `pipeline-done` marker and a
+`pipeline-stop` recorded while its stage label stands. A stop carries no
+`role=`, so that label names its stage. The Clerk's last-gate case handles
+the stop, so a stopped stage is not woken every day. A later marker answers
+the narrowing.
 
 ### The automated code review
 

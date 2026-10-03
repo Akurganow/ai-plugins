@@ -55,7 +55,9 @@ list is the whole of the machine's live state.
 
 Read each one's labels, body and comments, **and its mergeability**. Read
 the state of every issue its fingerprint's `sources=` names, with its state
-reason.
+reason. Where a source's state does not read back, neither source row
+matches. Report it. A stale close is final, so it never rests on a state the
+fire did not read.
 
 **One repair comes before the table and consumes no item: a head that does
 not merge with its base.** Resolve it under the law's rule. Merge
@@ -76,19 +78,18 @@ the item carries a stage label **and** a claim that reads `state=held` and is
 fresh by the law's claim-freshness bound. Say so in the report. Skip it too
 on an item carrying `pipeline/hold`, which is the owner's freeze. Skip it on
 an item whose every source is closed: the stale-item row closes it, and a
-merge into it is wasted. A stuck item
-is **not** skipped. Resolving its conflict is one of the repairs the un-stick
-below re-runs. An unmergeable head is the one state that guarantees no check
-ever runs on it again.
+merge into it is wasted. A stuck item is **not** skipped. Resolving its
+conflict is one of the repairs the un-stick below re-runs. An unmergeable
+head is the one state that guarantees no check ever runs on it again.
 
 **A resolution on an item carrying `ready-for-human` moves a head the round
 already passed.** The label stays. No role removes it but you, on a
 narrowing, and your merge does not send the owner's item back into the
-machine. Read the check runs on
-the new head through the API, and write their state into the same comment as
-the resolution, so the owner reads one event rather than two. A check that
-now fails is named there. Do not ask for a fresh code-review round: that
-round is per head, and the head that moved is your own merge.
+machine. Read the check runs on the new head through the API, and write
+their state into the same comment as the resolution, so the owner reads one
+event rather than two. A check that now fails is named there. Do not ask for
+a fresh code-review round: that round is per head, and the head that moved
+is your own merge.
 
 Then apply the first row that matches, and only the first:
 
@@ -97,7 +98,7 @@ Then apply the first row that matches, and only the first:
 | `pipeline/hold` | nothing at all, one report line. It is the owner's freeze |
 | every source in the fingerprint's `sources=` closed | the stale item, below: one comment, then close the pull request unmerged |
 | a source in `sources=` closed and missing from `narrowed=`, another source open, and no stage label beside a `state=held` claim the law's claim-freshness bound calls fresh | the narrowing, below: one comment, the route, then `narrowed=` |
-| `pipeline/stuck` | straighten it first, below, then try the un-stick, below. It is not flipped. Only that un-stick re-enters a stage on it |
+| `pipeline/stuck` | straighten it first, below, then try the un-stick, below. It is not flipped. Only that un-stick, or the narrowing row above, re-enters a stage on it |
 | `pipeline/code-review` | duty two, below, which takes it out of draft first |
 | `ready-for-human` | take it out of draft where it is still one, then one report line. The item is the owner's |
 | an `unlabeled` event removing `pipeline/stuck` or `pipeline/hold`, newer than the item's newest machine marker | the owner has settled it: re-enter the stage label the item still carries, and say which removal you acted on, by label and time |
@@ -129,7 +130,7 @@ holds the item.
 fix. The law's **When a source closes** says why it closes. A fire that
 holds the item does not defer the close. Its work is moot once every source
 is closed. The close writes no claim, so the law's claim-freshness bound
-does not hold it. The stage that fire hands to then exits, under the law's
+does not block it. The stage that fire hands to then exits, under the law's
 **A closed pull request ends the fire**.
 
 1. Re-read the pull request and its labels. Where it merged or closed since
@@ -144,27 +145,32 @@ The row sits above `pipeline/stuck` and `ready-for-human`, so it closes an
 item under either.
 
 **The narrowing.** A source closed while another stays open, and the closed
-source's work leaves the item. Three writes, in this order:
+source's work leaves the item. One re-read, then three writes, in this
+order:
 
-1. Post one comment that opens `Narrowing:`. Name each closed source that
+1. Re-read the pull request, its labels and its claim. Where it merged or
+   closed, now carries `pipeline/hold`, or a stage holds a fresh claim,
+   stop. A stage that took the item after your listing would not read your
+   comment. Its next marker would still end the narrowing's wait.
+2. Post one comment that opens `Narrowing:`. Name each closed source that
    is missing from `narrowed=` and that no `pipeline-narrowing` marker of
    yours lists in `sources=`, with its state reason. End it with
    `<!-- pipeline-narrowing: sources=#b at=<UTC> -->`. Where no such source
    is left, skip this write.
-2. Route the item, but only while a narrowing comment of yours that lists a
-   source missing from `narrowed=` waits on the target stage. The law's
-   **When a source closes** defines that wait. Where no such comment waits,
-   the stage has done the work: go to step 3. The target is
+3. Route the item, but only while a narrowing comment of yours whose marker
+   lists a source missing from `narrowed=` waits on the target stage. The
+   law's **When a source closes** defines that wait. Where no such comment
+   waits, the stage has done the work: go to step 4. The target is
    `spec/needs-work` while `.agents/specs/<N>-<slug>/` exists at the head,
    and `spec/approved` once the final slice has deleted it. Remove
    `pipeline/stuck`, `pipeline/code-review`, `ready-for-human` and every
    stage label but the target. Then re-enter the target by the law's
    primitive, and read the label set back.
-3. Add to `narrowed=` each closed source a `pipeline-narrowing` marker of
+4. Add to `narrowed=` each closed source a `pipeline-narrowing` marker of
    yours lists, and read the body back. This write is last on purpose.
 
-Until step 3 lands, the row still matches. The next sweep posts no comment
-for a source a marker already lists. Step 2's test decides whether the route
+Until step 4 lands, the row still matches. The next sweep posts no comment
+for a source a marker already lists. Step 3's test decides whether the route
 runs again, so a finished item stays where it is. On a stuck item this row
 is the un-stick, with the narrowing comment as its worklist. It never
 reaches an item carrying `pipeline/hold`, because the `pipeline/hold` row
@@ -178,11 +184,12 @@ own body writes.
 Neither source row counts against the repair limit below. That limit stops
 a machine at fault, and a closed source is not one.
 
-**Straightening a stuck item.** `pipeline/stuck` is a deliberate stop and you
-never remove it. What you repair is the state around it, because a fire can die
-inside the sequence that applies it and leave the item unroutable: the law
-promises every stuck path leaves exactly one stage label, and a half-executed
-sequence breaks that promise, with nothing else in the machine to notice.
+**Straightening a stuck item.** `pipeline/stuck` is a deliberate stop and
+straightening never removes it. What you repair is the state around it,
+because a fire can die inside the sequence that applies it and leave the
+item unroutable: the law promises every stuck path leaves exactly one stage
+label, and a half-executed sequence breaks that promise, with nothing else in
+the machine to notice.
 
 So on a stuck item, read the state block and the labels and fix only this:
 where no stage label stands, apply the one the state block implies; where two
@@ -413,18 +420,21 @@ it.
 **`ready-for-human` is yours and only yours, and so is the flip out of
 draft.** No role removes the label outside your narrowing. No other role
 ever flips a draft, and nothing ever flips one back. The flip says the
-implementation is written; the label says the machine has nothing left to do and the owner's review is
-what comes next, which is what the label's own description says. It lives on a
-pull request and never on an issue: an issue is a finding, not work a person
-can review, and the tracker Clerk is under the same rule.
+implementation is written. The label says the machine has nothing left to do
+and the owner's review is what comes next. That is what the label's own
+description says. It lives on a pull request and never on an issue: an issue
+is a finding, not work a person can review, and the tracker Clerk is under
+the same rule.
 
 ## Duty three: intake
 
 Do this last, and only when the machine has room.
 
-**One live pipeline pull request is in flight at a time.** If duty one listed
-any open pipeline pull request **carrying neither `pipeline/stuck` nor
-`pipeline/hold`**, there is no intake this fire. Say so in one line and stop.
+**One live pipeline pull request is in flight at a time.** If any pipeline
+pull request duty one listed **is still open and carries neither
+`pipeline/stuck` nor `pipeline/hold`**, there is no intake this fire. Say
+so in one line and stop. A stale item the sweep just closed then frees the
+slot in the same fire.
 
 A pull request waiting on the owner's review still holds the slot. It is going
 to merge, and the next branch should be cut from a `main` that carries it.
@@ -453,8 +463,9 @@ item is open, whatever else is parked.
    order. A part outside it is a report line.
 4. Read each candidate's full body, never its title alone.
 5. Drop any whose number already appears in the `sources=` of a pipeline
-   pull request's fingerprint, open or closed. A closed one means the item
-   was tried and settled.
+   item's fingerprint, open or closed. The item must pass the law's three
+   facts. A fork's pull request then cannot keep a finding out of the
+   pipeline. A closed one means the item was tried and settled.
 6. Consolidate: two issues naming the same file and the same rule are one
    item, and both numbers go in `sources=`. Never consolidate across a
    family, because those parts were separated on purpose.

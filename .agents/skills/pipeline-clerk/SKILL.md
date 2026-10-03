@@ -168,9 +168,9 @@ order:
    primitive, and read the label set back.
 4. Add to `narrowed=` each closed source whose narrowing comment no longer
    waits on the target stage, and read the body back. A source whose comment
-   still waits stays out, so the row matches again on the next sweep.
+   still waits stays out, so the row can match again on the next sweep.
 
-The row matches on every sweep until `narrowed=` names the source. The next
+Until `narrowed=` names the source, the row can match on any sweep. The next
 sweep posts no comment for a source a marker already lists. Step 3's test
 decides whether the route runs again, so a finished item stays where it is. On a
 stuck item this row is the un-stick, with the narrowing comment as its worklist.
@@ -669,7 +669,8 @@ brief.
    say that no worklist named work a stage can do.
    **Stale and narrowed**: each item closed as stale, with every source and
    its state reason. Each narrowing, with every source it took out, the label
-   set before and after, and `narrowed=` read back. Neither counts against
+   set before and after, `narrowed=` read back, and each source still waiting
+   on its stage. Neither counts against
    the limit of three.
 3. **Code review**: per item, the draft field before and after, the marker
    before and after, whether a round was asked, what came back, how many

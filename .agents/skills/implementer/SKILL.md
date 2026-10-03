@@ -100,7 +100,7 @@ the payload.
 | A re-entry of your own run | a `pipeline-progress` line exists |
 
 The first and the last are told apart by that line alone. A verdict marker
-appears only on an accepted final slice, so it cannot separate them.
+appears only on a final slice, so it cannot separate them.
 
 Test the narrowing row before the two returns and the re-entry, because its
 evidence overlaps theirs. A narrowing is one more kind of return. It
@@ -375,11 +375,11 @@ review will be shown.
 
 7. Dispatch the trio over the pushed diff, unless a `role=implementer`
    marker already names this tree id. Then that marker's row in the gate's
-   table decides. A comment of yours for this tree with no marker is a fire
-   that died between the two. A judgement a comment records is never run again.
-   For a `verdict: ACCEPTED tree=` comment, take **The last read**, then do
-   handoff step 2's marker write and go on from step 3. For a keyed
-   `must_change` comment, take **The last read**, then do step 2 of
+   table decides. A verdict comment of yours for this tree with no marker is
+   a fire that died between the two. A judgement a comment records is never
+   run again. For `verdict: ACCEPTED`, take **The last read**, then do
+   handoff step 2's marker write and go on from step 3. For
+   `verdict: REJECTED`, take **The last read**, then go on from step 2 of
    **A rejected verdict**.
 8. On an accepted verdict only, and never before, do the handoff.
 
@@ -464,23 +464,28 @@ comment first, in handoff step 2.
 **A rejected verdict** ends the fire through the slice loop:
 
 1. Post the `must_change` list as the round's worklist. Its last line is
-   `<!-- pipeline-comment: role=implementer key=<TREE_ID> at=<UTC> -->`.
-   Post it only where no comment of yours carries that key.
+   `<!-- verdict: REJECTED tree=<TREE_ID> -->`. Post it only where no
+   comment of yours carries that line.
 2. In one body write, increment `judge_rejects` and write the marker with
    `outcome=rejected`. One write keeps the count and the marker together.
-3. End the slice.
+3. End the slice. At the bound, below, stop without re-entering instead.
+
+The verdict line stands in for the shared comment key. Your other comments
+for this tree carry that key: a conflict resolution, the day's cap. A check
+on that key would find one of them and post no worklist.
+
+**The bound.** A second consecutive rejection, one that brings
+`judge_rejects` to 2 or above, reaches the law's bound. Its `must_change`
+comment also names the bound and the tree id and summarises both positions.
+Its body write also carries the law's `pipeline-stop` marker with
+`kind=bound`, `key_kind=tree-id` and `key=` the tree id, so the count, the
+marker and the stop land together. `spec/approved` stays where it is.
+`judge_rejects` at 2 or above follows the law's bound rule: a changed tree
+id grants one more trio, an unchanged one is recorded again and left to the
+Clerk. Any accepted verdict resets `judge_rejects` to 0.
 
 Nothing is retitled and nothing is rewritten. The pull request keeps the
 Clerk's title and body until a verdict accepts the work.
-
-A second consecutive rejection keeps `spec/approved`, writes the law's
-`pipeline-stop` marker with `kind=bound`, `key_kind=tree-id` and `key=` the
-tree id, summarises
-both positions in one comment naming the bound and that tree id, and stops
-without re-entering. `judge_rejects` at 2 or above follows the
-law's bound rule: a changed tree id grants one more trio, an unchanged one is
-recorded again and left to the Clerk. Any accepted verdict
-resets `judge_rejects` to 0.
 
 You may not overrule the judge, soften a rejection, or hand off on anything
 but an accepted verdict you have quoted in your report.

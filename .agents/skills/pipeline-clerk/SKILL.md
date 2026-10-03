@@ -670,8 +670,7 @@ brief.
    **Stale and narrowed**: each item closed as stale, with every source and
    its state reason. Each narrowing, with every source it took out, the label
    set before and after, `narrowed=` read back, and each source still waiting
-   on its stage. Neither counts against
-   the limit of three.
+   on its stage. Neither counts against the limit of three.
 3. **Code review**: per item, the draft field before and after, the marker
    before and after, whether a round was asked, what came back, how many
    findings were actionable, where the item went, and the label set as you

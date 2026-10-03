@@ -634,7 +634,10 @@ Two writers on one counter make the bound fire early.
 The **verdict**, posted by the Implementer, quoting the judge's block, with
 this as its last line:
 
-    <!-- verdict: ACCEPTED tree=<12 hex> -->
+    <!-- verdict: <ACCEPTED|REJECTED> tree=<12 hex> -->
+
+That line stands in for the stage comment key. The Implementer posts other
+comments for the same tree, and the line tells a verdict from them.
 
 The **findings** each stage posts: objections, the gate's bounce, the summary.
 Those are a record. Nothing reads them back as state.

@@ -61,11 +61,12 @@ Each decision carries the reason a reader can check.
 6. **The police cap leaves out a source an open item is building.** The cap
    brakes a filer whose findings nobody takes. An open item has taken this
    one.
-7. **A pipeline item's head branch lives in this repository.** The law
+7. **A pipeline item's head repository is this repository.** The law
    proved an item by its branch name and its fingerprint, and a fork's pull
    request carries both. Case 4 and the Clerk's rows write on the strength
-   of that proof, so a forged item must fail it. A fork cannot create a
-   branch here.
+   of that proof, so a forged item must fail it. A fork's pull request has
+   the fork as its head repository. The field stays on a closed pull
+   request, where the branch itself may be gone.
 
 ## Design
 
@@ -157,8 +158,8 @@ Every police role counts "as `github-needs` counts them" (`repo-police:87`,
    counts it as a repeat.
 9. **The roles table** (`:33-38`) adds to the Clerk's writes: closing a
    stale item and narrowing an item.
-10. **The proof of an item** (`:413-421`) gains a third fact: the head
-    branch lives in this repository. Case 4, the cap count, the Clerk's
+10. **The proof of an item** (`:413-421`) gains a third fact: its head
+    repository is this repository. Case 4, the cap count, the Clerk's
     sweep and every stage use the same three facts.
 
 ### 4. The pipeline Clerk: two rows in the sweep table

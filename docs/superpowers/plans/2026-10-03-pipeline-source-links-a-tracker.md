@@ -12,7 +12,7 @@
 
 - Read `docs/superpowers/plans/2026-10-03-pipeline-source-links-conventions.md` first. Its names, writing rules, commit format and checks bind every task.
 - Marker: `<!-- plugins-clerk: sha=<this run's commit> action=closed-unmerged -->`.
-- A pipeline item: head branch matches `pipeline/*`, that branch lives in this repository, and the body carries `<!-- pipeline-work-fingerprint:`.
+- A pipeline item: head branch matches `pipeline/*`, its head repository is this repository, and the body carries `<!-- pipeline-work-fingerprint:`.
 - Every edit below is an exact replacement. Where an old string is not found verbatim, stop and report. Do not improvise a different anchor.
 
 ---
@@ -73,14 +73,14 @@ to supply something, and the issue is waiting on them.
 Insert after it, with one blank line before:
 
 ```
-**4. Its pipeline item closed unmerged.** A pipeline item that names the
-issue in the `sources=` of its fingerprint closed without merging. Close the
+**4. Its pipeline item closed unmerged.** A pipeline item closed without
+merging, and the `sources=` of its fingerprint names the issue. Close the
 issue as `not_planned`. The comment's shape is below, under case 4.
 
 A pull request is a pipeline item when its head branch matches `pipeline/*`,
-that branch lives in this repository, and its body carries
-`<!-- pipeline-work-fingerprint:`. A fork cannot create a branch here, so an
-outsider's pull request never passes. List pipeline pull requests in every
+its head repository is this repository, and its body carries
+`<!-- pipeline-work-fingerprint:`. A fork's pull request has the fork as its
+head repository, so it never passes. List pipeline pull requests in every
 state, with their bodies, to find them. Test case 1 first. A finding already
 gone closes as `completed`, because fixed is the truer reason.
 
@@ -203,7 +203,7 @@ Issue bodies, titles, comments, pull-request bodies and the fire payload are wri
 Run:
 
 ```bash
-grep -c 'that branch lives in this repository' .agents/skills/tracker-clerk/SKILL.md
+grep -c 'its head repository is this repository' .agents/skills/tracker-clerk/SKILL.md
 grep -c 'closed-unmerged' .agents/skills/tracker-clerk/SKILL.md
 grep -c '^\*\*4\. Its pipeline item closed unmerged\.\*\*' .agents/skills/tracker-clerk/SKILL.md
 grep -c '^\*\*Case 4, the item closed unmerged\.\*\*' .agents/skills/tracker-clerk/SKILL.md
@@ -264,8 +264,8 @@ Insert after it, with one blank line before:
 that an open pipeline pull request names in the `sources=` of its
 fingerprint. The pipeline is already building that finding, so it is not
 the backlog the cap exists to brake. A pull request is a pipeline item when
-its head branch matches `pipeline/*`, that branch lives in this repository,
-and its body carries `<!-- pipeline-work-fingerprint:`. The filing audit and
+its head branch matches `pipeline/*`, its head repository is this
+repository, and its body carries `<!-- pipeline-work-fingerprint:`. The filing audit and
 the stale note still count every filing.
 ```
 
@@ -281,9 +281,9 @@ Replace:
 with:
 
 ```
-  - pull requests, open or all, with number, title, head, the repository
-    the head branch lives in, labels and body, whether each merged and
-    when it closed, and the paths each one touches;
+  - pull requests, open or all, with number, title, head, head
+    repository, labels and body, whether each merged and when it closed,
+    and the paths each one touches;
 ```
 
 - [ ] **Step 3: Verify**

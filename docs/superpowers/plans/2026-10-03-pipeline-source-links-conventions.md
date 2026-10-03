@@ -31,9 +31,9 @@ stages cite the law section plan B adds. Plan A depends on neither. The
 - The state field is `narrowed=<#b,#c|none>`, the last field of the
   `pipeline-state` line.
 - A pull request is a pipeline item when its head branch matches
-  `pipeline/*`, that branch lives in this repository, and its body carries
-  `<!-- pipeline-work-fingerprint:`. A fork cannot create a branch here, so
-  an outsider's pull request never passes. Plan B states these three facts
+  `pipeline/*`, its head repository is this repository, and its body
+  carries `<!-- pipeline-work-fingerprint:`. A fork's pull request has the
+  fork as its head repository, so it never passes. Plan B states these three facts
   in the law's **Prove the item is one of ours**.
 - A narrowing's target label is `spec/needs-work` while
   `.agents/specs/<N>-<slug>/` exists at the head. It is `spec/approved` once

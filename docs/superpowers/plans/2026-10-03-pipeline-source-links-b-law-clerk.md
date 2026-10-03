@@ -191,13 +191,13 @@ with:
 facts on the pull request:
 
 1. Its head branch matches `pipeline/*`.
-2. That branch lives in this repository.
+2. Its head repository is this repository.
 3. Its body carries `<!-- pipeline-work-fingerprint:`.
 
 Any one missing means this is not a pipeline item. Exit with one line and
-touch nothing. A fork cannot create a branch here, so the second fact is the
-one an outsider's pull request cannot carry. Roles close issues and pull
-requests on the strength of this test, so a forged item must fail it.
+touch nothing. A fork's pull request has the fork as its head repository, so
+it fails the second fact. Roles close issues and pull requests on the
+strength of this test, so a forged item must fail it.
 ```
 
 - [ ] **Step 7: The state block carries `narrowed=`**
@@ -307,7 +307,7 @@ grep -c '^\*\*A closed pull request ends the fire\.\*\*' $f
 grep -c 'narrowed=<#b,#c|none>' $f
 grep -c 'pipeline-stale: sources=#a,#b at=<UTC>' $f
 grep -c 'pipeline-narrowing: sources=#b at=<UTC>' $f
-grep -c '^2\. That branch lives in this repository\.$' $f
+grep -c '^2\. Its head repository is this repository\.$' $f
 grep -n "two positive$\|discriminator's second$\|^Either missing means" $f
 grep -n 'The sources stay closed\|no role ever removes it\|nobody; the owner alone\|Two things that are comments' $f
 git diff --check
@@ -395,9 +395,9 @@ body carries `<!-- pipeline-work-fingerprint:`. Both facts, per the law. That
 with:
 
 ```
-List every open pull request whose head branch matches `pipeline/*`, lives in
-this repository, and whose body carries `<!-- pipeline-work-fingerprint:`.
-All three facts, per the law. That
+List every open pull request whose head branch matches `pipeline/*`, whose
+head repository is this one, and whose body carries
+`<!-- pipeline-work-fingerprint:`. All three facts, per the law. That
 ```
 
 - [ ] **Step 4: The sweep reads every source's state**

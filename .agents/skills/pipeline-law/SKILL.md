@@ -250,9 +250,9 @@ A stage acts on a narrowing only for a source that `sources=` names and
 that is closed when the stage reads it. A forged comment can then remove
 only the work of a source already closed.
 
-A stage reads the narrowing comments again just before it writes that
-marker or hands the item on. A narrowing comment it did not see when it
-chose its work, for a source it acts on, voids the fire's outcome. The
+A stage reads the narrowing comments again just before it writes its
+`pipeline-done` marker or hands the item on. A narrowing comment it did not see
+when it chose its work, for a source it acts on, voids the fire's outcome. The
 stage writes no marker, hands nothing on, releases its claim and ends. The
 Clerk's sweep re-enters a stage whose claim was released and not taken for
 twelve hours, and that waking carries the narrowing out. So a marker newer

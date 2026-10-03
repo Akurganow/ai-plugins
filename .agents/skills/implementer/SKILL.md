@@ -467,7 +467,8 @@ comment first, in handoff step 2.
    `<!-- verdict: REJECTED tree=<TREE_ID> -->`. Post it only where no
    comment of yours carries that line.
 2. In one body write, increment `judge_rejects` and write the marker with
-   `outcome=rejected`. One write keeps the count and the marker together.
+   `outcome=rejected`. At the bound, below, that write also carries the
+   stop. One write keeps the count and the marker together.
 3. End the slice. At the bound, below, stop without re-entering instead.
 
 The verdict line stands in for the shared comment key. Your other comments
@@ -478,10 +479,10 @@ on that key would find one of them and post no worklist.
 `judge_rejects` to 2 or above, reaches the law's bound. Its `must_change`
 comment also names the bound and the tree id and summarises both positions.
 Its body write also carries the law's `pipeline-stop` marker with
-`kind=bound`, `key_kind=tree-id` and `key=` the tree id, so the count, the
-marker and the stop land together. `spec/approved` stays where it is.
-`judge_rejects` at 2 or above follows the law's bound rule: a changed tree
-id grants one more trio, an unchanged one is recorded again and left to the
+`kind=bound`, `key_kind=tree-id` and `key=` the tree id. The count, the
+marker and the stop then land together. `spec/approved` stays where it is.
+`judge_rejects` at 2 or above follows the law's bound rule. A changed tree
+id grants one more trio. An unchanged one is recorded again and left to the
 Clerk. Any accepted verdict resets `judge_rejects` to 0.
 
 Nothing is retitled and nothing is rewritten. The pull request keeps the

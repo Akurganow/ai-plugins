@@ -40,9 +40,9 @@ may be written at all.
    environment.
 2. Prove the item is yours by the law's three positive facts.
 3. Confirm it still carries `spec/needs-work`.
-4. Exit if the pull request is closed, under the law's **A closed pull
-   request ends the fire**, or if it carries `pipeline/stuck` or
-   `pipeline/hold`.
+4. Exit if the pull request is closed, under the law's
+   **A closed pull request ends the fire**, or if it carries
+   `pipeline/stuck` or `pipeline/hold`.
 5. Confirm `spec/awaiting-review` and `spec/approved` exist. A missing name
    is a hard stop.
 6. Read the state block from the pull-request body.
@@ -71,20 +71,24 @@ law's **The audit every fire owes**.
 
 ## Does a narrowing wait on you?
 
-Test this first. A narrowing waits on you as the law's **When a source
-closes** defines it. Where your marker's hash still matches the head, the
-test below would read this waking as a re-fire and only route.
+Test this first. A narrowing waits on you as the law's
+**When a source closes** defines it. Where your completion marker's hash
+still matches the head, the test below would read this waking as a re-fire
+and only route.
 
 A listed source qualifies where the fingerprint's `sources=` names it and it
-is closed now. A qualifying narrowing is a waiting one whose marker lists at
-least one qualifying source. For each qualifying source:
+is closed now. A qualifying narrowing is a waiting one whose
+`pipeline-narrowing` marker lists at least one qualifying source. For each
+qualifying source:
 
-- Take it out of `## Problem`, `## Proposed change` and `## Acceptance
-  criteria`.
+- Take out of `## Problem`, `## Proposed change` and
+  `## Acceptance criteria` every mention of it, and every part that serves
+  only it.
 - Add one line to `## Out of scope` naming it and the state reason its
   issue shows.
 - Take out of `## Steps` and `## Verification` every step and check that
-  serves only that source.
+  serves only that source, except the step that removes the work, and its
+  check.
 - Where the branch already carries work that serves only that source, add a
   step to `## Steps` that removes the work.
 
@@ -97,10 +101,9 @@ with whatever other waking holds. Where a source qualifies, and the
 specification already carries every edit above and answers every
 objection, a fire died before its marker. Write your completion marker and
 route as a revision would. Where the open sources leave nothing to change
-on `main`, **When the item has nothing left to change** applies. Judge that
-against `main`, because the head may already carry this item's own
-slices. That stop takes no source out, so it has not acted on the narrowing
-and writes no completion marker.
+on `main`, **When the item has nothing left to change** applies. That stop
+takes no source out, so it has not acted on the narrowing and writes no
+completion marker.
 
 A fresh fill leaves out, the same way, every source in `narrowed=` that is
 still closed.
@@ -180,7 +183,8 @@ run's own decision, so absence of a quote is not a defect.
 
 Three cases end an item here rather than in implementation:
 
-1. The sources are already fixed at the head.
+1. The sources are already fixed on `main`. The head may already carry
+   this item's own slices, so it does not settle this case.
 2. What they ask for is a forbidden path.
 3. What they ask for is not a file at all, such as a repository setting.
 
@@ -344,6 +348,11 @@ second, and read the label set back.
 | a revision after review | `spec/needs-work` | `spec/awaiting-review` |
 | a revision after a gate bounce, without a qualifying narrowing | `spec/needs-work` | `spec/approved` |
 | a qualifying narrowing, with or without objections | `spec/needs-work` | `spec/awaiting-review` |
+
+A narrowing comment newer than the newest `spec-reviewer` marker routes to
+`spec/awaiting-review` on a re-fire too, where its marker lists a qualifying
+source. Your completion marker does not record which waking wrote it, and
+the Reviewer has not read the narrowed content.
 
 **The bound.** Read `review_rounds` from the state block. At 5 or above,
 compare the current spec hash with the `key=` of the newest `pipeline-stop`

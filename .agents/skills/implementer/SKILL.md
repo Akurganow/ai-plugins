@@ -167,7 +167,7 @@ The gate is four checks.
 4. **Commission one clean-context subagent** on plan against spec against the
    rule files. Its brief carries the case-file path and the question. It
    also lists the narrowed sources, as the worklist below defines them. A
-   step that removes their work then does not read as scope creep. It
+   step that removes their work then does not read as scope creep. The brief
    carries none of your reasoning and no preferred answer.
 
    It applies the Reviewer's threshold: a contradiction with a recorded
@@ -386,8 +386,8 @@ and the finished pull request is the implementation and nothing else.
 Dispatch three fresh subagents, mutually blind, each with a clean context,
 over the pushed diff. Hand them paths under `$RUN`, never text.
 
-Each brief is neutral: the diff, the spec, the plan, the narrowed sources
-as the worklist above defines them, and the commands you ran and their
+Each brief is neutral. It carries the diff, the spec, the plan, the narrowed
+sources as the worklist above defines them, and the commands you ran with their
 output. The trio does not judge the work of a narrowed source. That
 source's outcome is already decided, under the law's
 **When a source closes**. The brief carries none of your reasoning, none of

@@ -60,11 +60,12 @@ backpressure cap, its filing audit, and its note on a stale issue.
 that a live pipeline item names in the `sources=` of its fingerprint. A live
 item is an open pipeline pull request that carries neither `pipeline/stuck`
 nor `pipeline/hold`. The pipeline is building that finding now, so it is
-not the backlog the cap exists to brake. A parked item waits on a person,
-and its sources still count. A pull request is a pipeline item when its
-head branch matches `pipeline/*`, its head repository is this repository,
-and its body carries `<!-- pipeline-work-fingerprint:`. The filing audit
-and the stale note still count every filing.
+not the backlog the cap exists to brake. A parked item carries
+`pipeline/stuck` or `pipeline/hold`, and nothing promises it will merge. Its
+sources still count. A pull request is a pipeline item when its head branch
+matches `pipeline/*`, its head repository is this repository, and its body
+carries `<!-- pipeline-work-fingerprint:`. The filing audit and the stale
+note still count every filing.
 
 An issue outside the population exists for no role. No role lists it,
 reads it, comments on it, labels it or closes it.
@@ -89,8 +90,8 @@ in its report.
     alone or beside another label, and none is ever made without it. A
     route may return pull requests in an issue listing: filter them out;
   - pull requests, open or all, with number, title, head, head
-    repository, labels, body, merge state and closing time, and the paths
-    each one touches;
+    repository, labels, body, whether it merged, and when it closed, and
+    the paths each one touches;
   - the comments on one issue, and the labels on one issue;
   - an issue's place in a hierarchy: whether it has a parent and whether
     it has parts, which a listing may not carry; its parts, in the

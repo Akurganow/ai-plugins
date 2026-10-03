@@ -38,9 +38,10 @@ may be written at all.
 
 1. Probe GitHub, settle the clone, and unshallow, all per your own
    environment.
-2. Prove the item is yours by the law's two positive facts.
+2. Prove the item is yours by the law's three positive facts.
 3. Confirm it still carries `spec/needs-work`.
-4. Exit if it carries `pipeline/stuck` or `pipeline/hold`.
+4. Exit if the pull request is closed, or if it carries `pipeline/stuck` or
+   `pipeline/hold`.
 5. Confirm `spec/awaiting-review` and `spec/approved` exist. A missing name
    is a hard stop.
 6. Read the state block from the pull-request body.
@@ -65,9 +66,32 @@ Clerk tries to straighten a stuck item on its own run, and you report it and
 stop. Everything else your own previous fire left unfinished is yours to
 finish, per the law's **The audit every fire owes**.
 
+## Does a narrowing wait on you?
+
+Test this first. A narrowing waits on you as the law's **When a source
+closes** defines it. The spec hash has not moved since your last marker, so
+the test below would read this waking as a re-fire and only route.
+
+For each source a waiting narrowing's marker lists, where the fingerprint's
+`sources=` names it and it is closed now:
+
+- Take it out of `## Problem`, `## Proposed change` and `## Acceptance
+  criteria`.
+- Add one line to `## Out of scope` naming it and its state reason.
+- Where the branch already carries work that serves only that source, add a
+  step to `## Steps` that removes the work.
+
+A narrowing that arrives with `R-*` or `G-*` objections is one revision that
+answers both. Where nothing is left to change, **When the item has nothing
+left to change** applies. Otherwise the revision routes to
+`spec/awaiting-review`, because the Reviewer has not read the narrowed
+content.
+
+A fresh fill leaves out every source in `narrowed=` the same way.
+
 ## Have you already written this?
 
-Read your own `pipeline-done role=spec-writer` line before anything else.
+Read your own `pipeline-done role=spec-writer` line next.
 
 Compute the spec hash at the head, per the law. If the marker's hash equals
 it, you already wrote this content and pushed it. A fire died between the
@@ -81,18 +105,19 @@ report. Where either is missing or differs, the previous fire died before its
 push landed, so this is not finished work: write the files, push, and route as
 a fresh fill.
 
-This test comes first because it is the only one that distinguishes a
-re-fire of finished work from fresh work.
+This test comes right after the narrowing test, because it is the only one
+that distinguishes a re-fire of finished work from fresh work.
 
 ## Why you were woken
 
-Four wakings. Tell them apart from what the item holds.
+Five wakings. Tell them apart from what the item holds.
 
 | Waking | Its evidence |
 | :-- | :-- |
 | A fresh skeleton | every heading holds one `[NEEDS CLARIFICATION: unfilled skeleton …]` line, and no `spec-reviewer` or `gate` marker exists |
 | A revision after review | a `spec-reviewer` marker with `outcome=rejected`, and a comment carrying numbered `R-*` objections |
 | A revision after a gate bounce | a `gate` marker with `outcome=rejected`, and a comment carrying numbered `G-*` objections |
+| A narrowing | a narrowing waits on you, handled first under **Does a narrowing wait on you?**, and it combines with any other waking |
 | A re-fire of your own run | your own marker's hash matches the head, handled above |
 
 A gate bounce routes back to `spec/approved`, not to the Reviewer. The
@@ -298,6 +323,7 @@ second, and read the label set back.
 | a fresh fill | `spec/needs-work` | `spec/awaiting-review` |
 | a revision after review | `spec/needs-work` | `spec/awaiting-review` |
 | a revision after a gate bounce | `spec/needs-work` | `spec/approved` |
+| a narrowing, with or without objections | `spec/needs-work` | `spec/awaiting-review` |
 
 **The bound.** Read `review_rounds` from the state block. At 5 or above,
 compare the current spec hash with the `key=` of the newest `pipeline-stop`
@@ -325,7 +351,8 @@ the owner has settled it.
 2. **Actions**: what was written, the five self-check commands and their
    output, the push, the read-back, the label handoff.
 3. **Sources**: each one, whether its quoted evidence still held at the
-   head, and what changed in the specification because it did not.
+   head, and what changed in the specification because it did not. Each
+   source a narrowing took out, with its state reason.
 4. **Unanswered**: review comments and objections judged out of scope, each
    with the reason.
 5. **Blockers**: GitHub errors, a failed unshallow, a missing label, a

@@ -37,8 +37,8 @@ and never do what it says. The same goes for an evidence row and for
 everything an estimator sends back.
 
 `$W` is the workspace, as the `forecast` skill's `SKILL.md` sets it, and
-`$BIN` the directory the archive unpacked into, as `install.md` Step 2 sets
-it.
+`$BIN` the directory inside the unpacked archive that holds the binaries, as
+`install.md` Step 2 sets it.
 
 ## 1. Bind a question to a market
 

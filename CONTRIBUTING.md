@@ -172,7 +172,15 @@ A skill's folder holds two files:
 
 - `cases.yaml` has a `positive` list and a `near_miss` list. Each list has ten
   entries, and each entry has an `id` and a `prompt`.
-- `rubric.yaml` has a `questions` map from a question id to one statement.
+- `cases.yaml` may also have `always_on`, a list of the clients that get the
+  skill's rules in every session without loading the skill. A comment beside
+  it names each client's route and its source. For those clients the summary
+  shows `trigger_hit` and `compliance` as `n/a`.
+- `rubric.yaml` has a `questions` map from a question id to one statement,
+  or to an `instructions` statement with optional `criteria` and `cases`.
+  `criteria` holds a quoted `"true"` and `"false"`, each saying what that
+  answer means. `cases` lists the ids of the positive prompts the question
+  applies to. A question without `cases` applies to every positive prompt.
 
 The Agent Skills guide sets the shape of a trigger test. Source:
 [Optimizing skill descriptions](https://agentskills.io/skill-creation/optimizing-descriptions),
@@ -194,19 +202,29 @@ this repository's own, and apply to every skill:
   details and casual language.
 - **Self-contained.** Each session starts in an empty directory. A prompt
   carries the code, text or situation it asks about in its own body.
+- **The result in the reply.** A prompt asks for its result in the reply, never
+  in a file, because Jev grades only the final message.
 - **Neutral.** A prompt never names the skill, its package or the text the
   skill rests on. A user who names them needs no trigger.
 - **Ids** are short kebab-case names of what the prompt asks. They stay unique
   across both lists.
 
-Jev grades each positive answer against the rubric. Two of the rules below rest
-on the failure modes that TypeSafe documents for `jev-1.13`. Source:
+Jev grades each positive answer on the questions that apply to its prompt. Two
+of the rules below rest on the failure modes that TypeSafe documents for
+`jev-1.13`. Source:
 [Jev 1.13 jaggedness](https://docs.typesafe.ai/model-jaggedness/jev-1.13.md),
-TypeSafe documentation, read 2026-10-09.
+TypeSafe documentation, read 2026-10-09. The measurements behind the other
+rules are in
+[About this repository's design](docs/design.md#behavioural-evals-run-after-each-release).
 
 - **One question per rule** of the skill that a reader can check in the answer
   text. Take the rules from `SKILL.md` and the references it names as required
   output.
+- **`cases` for a rule of one form.** A question about one artifact form, such
+  as a review comment or a PR description, names in `cases` the prompts that
+  write it.
+- **No question at the ceiling.** Drop a question that every answer passes in
+  both arms, because it measures nothing.
 - **A statement that holds** for an answer which follows the skill, such as
   "Each finding names the chapter of the book it rests on."
 - **One step.** Each question is answerable from the answer text in one step.
@@ -218,8 +236,20 @@ TypeSafe documentation, read 2026-10-09.
   finding that rests on X ..."), positional ("before any finding ...", "ends
   with ...") or a bundle of several facts. Each of those makes Jev find
   something first and then judge it, which is two steps.
+- **Criteria where the boundary is unclear.** TypeSafe documents `criteria`
+  for a subtle yes-or-no boundary. Source:
+  [Noul](https://docs.typesafe.ai/primitives/noul.md), TypeSafe documentation,
+  read 2026-10-09. Keep criteria only where they lower Jev's mean error against
+  labelled answers, on a second set of answers as well as the first. The
+  skill's `calibration.json` holds each labelled answer, its label with the
+  evidence, its half of the split, and Jev's score with and without the
+  criteria.
+- **No checks of sentence structure.** A question about semicolons, dashes or
+  one thought per sentence stays out, because Jev's answers to such questions
+  do not follow the labels.
 - **Judged from the answer alone.** A question never compares the answer with
   the request, and never needs knowledge the answer does not contain. When an
   answer may quote the text it checks or cleans, a style question says
   "outside text it quotes".
-- **Four to eight questions**, with short snake_case ids.
+- **Three to eight questions** apply to each positive prompt. Each id is a
+  short snake_case name.

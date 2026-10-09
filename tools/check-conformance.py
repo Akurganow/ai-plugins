@@ -157,7 +157,7 @@ def load_schema_validator():
 
 
 def parse_frontmatter(text: str):
-    """Return the YAML frontmatter of a SKILL.md as a dict, or None.
+    r"""Return the YAML frontmatter of a SKILL.md as a dict, or None.
 
     The block ends at the first *line* that is `---`, which is how a client
     finds it: Hermes reads the closer with `re.search(r"\n---\s*\n", ...)`

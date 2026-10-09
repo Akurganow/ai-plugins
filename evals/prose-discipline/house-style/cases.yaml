@@ -1,3 +1,13 @@
+# The package puts this skill's core rules into every session of these clients,
+# so the skill need not load for its rules to apply. Claude Code adds the
+# stdout of the package's SessionStart hook to the context (documentation:
+# https://code.claude.com/docs/en/hooks, "SessionStart", read 2026-10-09).
+# Oh-My-Pi puts a plugin rule with `alwaysApply: true` into the system prompt
+# (documentation:
+# https://github.com/can1357/oh-my-pi/blob/ba56afb26280a6a3195c329fa66a3f8fb52f82eb/docs/rulebook-matching-pipeline.md#L248-L262).
+# Codex is absent, because it skips a plugin's hooks until the user trusts them
+# (plugins/prose-discipline/README.md, "Codex").
+always_on: [claude, omp]
 positive:
   - id: commit-msg-backoff-fix
     prompt: |
@@ -77,7 +87,8 @@ positive:
       - Customers on the Enterprise plan can request a higher limit from their account
         manager.
 
-      Please write the page. It is Markdown and goes to docs/api/rate-limits.md.
+      Please write the page and reply with it. It is Markdown, and I will add it as
+      docs/api/rate-limits.md myself.
   - id: export-fix-pr-description
     prompt: |
       can you clean up my notes into the PR description? our template is just Summary and
@@ -97,8 +108,8 @@ positive:
   - id: issue-triage-agent
     prompt: |
       We are adding an agent to our repository that triages new GitHub issues before a
-      maintainer looks at them. Please write its instructions, which go into
-      .github/agents/triage.md. The agent should:
+      maintainer looks at them. Please write its instructions and reply with them. I will
+      commit them as .github/agents/triage.md myself. The agent should:
 
       - add exactly one of the labels bug, feature or question
       - search open and closed issues for a duplicate, and when it finds one, link it and add

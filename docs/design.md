@@ -315,7 +315,7 @@ Oh-My-Pi disables every skill with `--no-skills` and every rule with `--no-rules
 (documentation: [CLI reference, `--no-skills` and `--no-rules`](https://github.com/can1357/oh-my-pi/blob/40e9368ef0458fd9073329cdff4174895f91bc6b/docs/cli-reference.md#L159-L160))
 So a comparison of `improvement` across clients compares different removals.
 
-Each session records the tools the model called.
+Each session records the tools the model called: the skill or file for Claude Code, the whole command for Codex, and the path for Oh-My-Pi.
 They show which of the skill's files the model read.
 A Claude Code session also records the plugins and skills that its `init` event lists.
 (running: Claude Code 2.1.293, [run 37789029106](https://github.com/Akurganow/ai-plugins/actions/runs/37789029106), 2026-10-08)

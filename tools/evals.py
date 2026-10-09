@@ -175,7 +175,7 @@ class Codex:
             kind, item = e.get("type"), e.get("item") or {}
             if kind == "item.completed" and item.get("type") == "command_execution":
                 command = item.get("command", "")
-                tools.append(f"command {command[:200]}")
+                tools.append(f"command {command}")
                 if cache_path in command and skill_path in command:
                     fired = True
             elif kind == "item.completed" and item.get("type") == "agent_message":
@@ -273,6 +273,10 @@ def load_cases(skill_dir: Path) -> tuple[dict, dict]:
 
     cases = yaml.safe_load((skill_dir / "cases.yaml").read_text())
     rubric = yaml.safe_load((skill_dir / "rubric.yaml").read_text())
+    return check_cases(skill_dir, cases, rubric)
+
+
+def check_cases(skill_dir: Path, cases, rubric) -> tuple[dict, dict]:
     if not isinstance(cases, dict):
         raise SystemExit(f"{skill_dir}/cases.yaml: expected a map with positive and near_miss.")
     for kind in ("positive", "near_miss"):
@@ -299,6 +303,10 @@ def load_cases(skill_dir: Path) -> tuple[dict, dict]:
             if case_id not in positive_ids:
                 raise SystemExit(f"{skill_dir}/rubric.yaml: {qid} names a case that is not a positive case: "
                                  f"{case_id}.")
+    # Jev would otherwise get a request with no question for that prompt.
+    for c in cases["positive"]:
+        if not applicable(questions, c["id"]):
+            raise SystemExit(f"{skill_dir}/rubric.yaml: no question applies to {c['id']}.")
     return cases, questions
 
 
@@ -873,8 +881,6 @@ def _selftest_parsers() -> None:
     assert codex.loaded is None and len(codex.tools) == 3, codex
     assert all(t.startswith("command ") for t in codex.tools), codex.tools
     assert codex.tools[0].endswith("red-flags/SKILL.md'"), codex.tools[0]
-    long = {"type": "item.completed", "item": {"type": "command_execution", "command": "x" * 300}}
-    assert Codex("p", "s").parse([long]).tools == ["command " + "x" * 200]
     retry = {"type": "error", "message": "Reconnecting... 1/5"}
     assert Codex("design-review", "red-flags").parse([retry] + events("codex")).error is None
     failed = {"type": "turn.failed", "error": {"message": "quota exceeded"}}
@@ -1077,6 +1083,17 @@ def _selftest_core() -> None:
         assert not is_question(bad), bad
     pool = {"q1": "Q1?", "q2": scoped, "q3": bounded}
     assert applicable(pool, "p") == pool and applicable(pool, "o") == {"q1": "Q1?", "q3": bounded}
+    ten = {kind: [{"id": f"{kind[0]}{i}", "prompt": "T"} for i in range(CASES_PER_KIND)]
+           for kind in ("positive", "near_miss")}
+    assert check_cases(Path("d"), ten, {"questions": {"q": "Q?"}}) == (ten, {"q": "Q?"})
+    for rubric, needle in (({"questions": {"q": {"instructions": "Q?", "cases": ["n0"]}}}, "not a positive case: n0"),
+                           ({"questions": {"q": {"instructions": "Q?", "cases": ["p0"]}}}, "no question applies to p1"),
+                           ({"questions": {"q": {"instructions": "Q?", "cases": []}}}, "optional cases"),
+                           ({"questions": {}}, "questions must map")):
+        _expect_error(lambda: check_cases(Path("d"), ten, rubric), needle)
+    _expect_error(lambda: check_cases(Path("d"), ten | {"always_on": ["hermes"]}, {"questions": {"q": "Q?"}}), "always_on")
+    _expect_error(lambda: check_cases(Path("d"), ten | {"near_miss": ten["near_miss"][:3]}, {"questions": {"q": "Q?"}}),
+                  "near_miss must list exactly")
     grade("R", "A", {"q": scoped}, send=lambda body: sent.update(body) or {"answers": {"q": {"noul": 0.9}}})
     assert sent["questions"] == {"q": {"type": "noul", "instructions": "Q2?"}}, sent
     try:

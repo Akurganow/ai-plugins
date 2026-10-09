@@ -13,20 +13,24 @@ on:
   push:
     branches: [main]
 
-# One release at a time; the next run starts from the main this one pushed.
-concurrency:
-  group: release
-  cancel-in-progress: false
-
 permissions:
   contents: read
 
 jobs:
   release:
     runs-on: ubuntu-latest
+    # One release at a time; the next run starts from the main this one pushed.
+    # The group sits on this job, not on the workflow, so the evals job below
+    # does not hold the next release back while it runs.
+    concurrency:
+      group: release
+      cancel-in-progress: false
     # Pushing the commit and the tags and creating releases need contents: write.
     permissions:
       contents: write
+    outputs:
+      released: ${{ steps.bump.outputs.released }}
+      tags: ${{ steps.bump.outputs.tags }}
     steps:
       # Pinned to a commit sha; the comment records the release. ref: main
       # takes the newest main; fetch-depth: 0 brings the history and the tags.
@@ -83,6 +87,7 @@ jobs:
           fi
           git tag --points-at HEAD | grep -e '--v' > "$RUNNER_TEMP/new-tags"
           echo "New tags:"; cat "$RUNNER_TEMP/new-tags"
+          echo "tags=$(tr '\n' ' ' < "$RUNNER_TEMP/new-tags")" >> "$GITHUB_OUTPUT"
           echo "released=true" >> "$GITHUB_OUTPUT"
 
       - name: Push the version commit and its tags
@@ -106,3 +111,23 @@ jobs:
             [ -s "$notes" ] || { echo "::error::no changelog section for $tag"; exit 1; }
             gh release create "$tag" --verify-tag --title "$tag" --notes-file "$notes"
           done
+
+  # A job of this run, not a workflow of its own. The tags and releases above
+  # are made with GITHUB_TOKEN, and events from GITHUB_TOKEN start no workflow
+  # run. A called workflow can only lower the GITHUB_TOKEN permissions its caller
+  # passes, so evals.yml may lower these but not raise them
+  # (documentation: https://github.com/github/docs/blob/75ea7dd097a5564f27364a5b70eaa1979106eabd/content/actions/reference/workflows-and-actions/reusing-workflow-configurations.md#L91).
+  evals:
+    needs: release
+    if: needs.release.outputs.released == 'true'
+    permissions:
+      contents: write
+      issues: write
+    uses: ./.github/workflows/evals.yml
+    with:
+      tags: ${{ needs.release.outputs.tags }}
+    secrets:
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+      TYPESAFE_API_KEY: ${{ secrets.TYPESAFE_API_KEY }}

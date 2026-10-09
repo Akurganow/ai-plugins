@@ -50,6 +50,10 @@ MODELS = {
 }
 CASES_PER_KIND = 10
 METRICS = ("trigger_hit", "false_fire", "compliance", "improvement")
+# A client listed under `always_on` in cases.yaml gets the skill's rules in every
+# session without loading the skill. Its load then says nothing about the package,
+# and compliance would grade only the few answers that loaded it anyway.
+NOT_APPLICABLE_ALWAYS_ON = ("trigger_hit", "compliance")
 
 JEV_URL = "https://api.typesafe.ai/v1/systemone"
 # Pinned because the `jev-latest` alias moves with each Jev release
@@ -185,6 +189,9 @@ class Omp:
     def __init__(self, package: str, skill: str):
         self.package, self.skill = package, skill
 
+    # `--no-rules` removes a package's rules as `--no-skills` removes its skills, so
+    # the without arm drops the whole package (documentation:
+    # https://github.com/can1357/oh-my-pi/blob/40e9368ef0458fd9073329cdff4174895f91bc6b/docs/cli-reference.md#L159-L160).
     # Oh-My-Pi thinks at `high` unless told otherwise (documentation:
     # https://github.com/can1357/oh-my-pi/blob/cde91bb38674d365e8c3916d05d2292273bb8554/docs/settings.md#L495).
     # On three red-flags cases `low` took 116 s against 472 s at `high`, and loaded
@@ -194,7 +201,7 @@ class Omp:
         cmd = ["omp", "-p", "--mode", "json", "--no-session", "--no-title", "--auto-approve",
                "--model", MODELS["omp"], "--thinking", "low"]
         if arm == "without":
-            cmd.append("--no-skills")
+            cmd += ["--no-skills", "--no-rules"]
         return cmd + [prompt]
 
     def switch_to_without(self) -> None:
@@ -263,6 +270,9 @@ def load_cases(skill_dir: Path) -> tuple[dict, dict]:
         if not all(isinstance(c, dict) and isinstance(c.get("id"), str) and isinstance(c.get("prompt"), str)
                    for c in entries):
             raise SystemExit(f"{skill_dir}/cases.yaml: every {kind} entry needs a string id and prompt.")
+    always_on = cases.get("always_on", [])
+    if not isinstance(always_on, list) or not set(always_on) <= set(CLIENTS):
+        raise SystemExit(f"{skill_dir}/cases.yaml: always_on must list client names from {', '.join(CLIENTS)}.")
     ids = [c["id"] for kind in ("positive", "near_miss") for c in cases[kind]]
     if len(ids) != len(set(ids)):
         raise SystemExit(f"{skill_dir}/cases.yaml: case ids repeat.")
@@ -382,7 +392,7 @@ def run_broke(sessions: list[dict]) -> bool:
     return all(s["error"] for s in sessions) or (bool(gradable) and all(s["grade_error"] for s in gradable))
 
 
-def metrics(sessions: list[dict]) -> dict:
+def metrics(sessions: list[dict], always_on: bool = False) -> dict:
     done = [s for s in sessions if not s["error"]]
     pos_with = [s for s in done if s["kind"] == "positive" and s["arm"] == "with"]
     pos_without = [s for s in done if s["kind"] == "positive" and s["arm"] == "without"]
@@ -397,7 +407,7 @@ def metrics(sessions: list[dict]) -> dict:
 
     with_mean, without_mean = pooled(pos_with), pooled(pos_without)
     fired_with = [s for s in pos_with if s["fired"]]
-    return {
+    result = {
         "trigger_hit": share(pos_with),
         "false_fire": share(near),
         "compliance": pooled(fired_with),
@@ -410,6 +420,9 @@ def metrics(sessions: list[dict]) -> dict:
             "graded_without": sum(1 for s in pos_without if s["nouls"]),
         },
     }
+    if always_on:
+        result.update(dict.fromkeys(NOT_APPLICABLE_ALWAYS_ON))
+    return result
 
 
 # Values compare at the two decimals the summary shows. Means over pools of
@@ -429,8 +442,8 @@ def compare(old_runs: list[dict], new_runs: list[dict]) -> dict:
             return {"comparable": False, "reason": f"not comparable: {label} changed"}
     found = {}
     for metric in METRICS:
-        old = [v for r in old_runs if (v := metrics(r["sessions"])[metric]) is not None]
-        new = [v for r in new_runs if (v := metrics(r["sessions"])[metric]) is not None]
+        old = [v for r in old_runs if (v := metrics(r["sessions"], r.get("always_on", False))[metric]) is not None]
+        new = [v for r in new_runs if (v := metrics(r["sessions"], r.get("always_on", False))[metric]) is not None]
         # A range needs all three repeats on both sides.
         if len(old) == REPEATS and len(new) == REPEATS and regressed(metric, old, new):
             found[metric] = (old, new)
@@ -507,7 +520,8 @@ def cmd_run(args) -> int:
     record = {
         "tag": args.tag, "package": package, "skill": args.skill, "client": args.client, "repeat": args.repeat,
         "client_version": version, "model": next((s["model"] for s in sessions if s["model"]), None),
-        "jev_model": JEV_MODEL, "cases_sha256": sha256(skill_dir / "cases.yaml"),
+        "always_on": args.client in cases.get("always_on", []), "jev_model": JEV_MODEL,
+        "cases_sha256": sha256(skill_dir / "cases.yaml"),
         "rubric_sha256": sha256(skill_dir / "rubric.yaml"), "sessions": sessions,
     }
     Path(args.out).write_text(redact(json.dumps(record, indent=1)))
@@ -676,13 +690,15 @@ def cmd_report(args) -> int:
 def report_tag(tag, package, runs, no_cases, previous, seen, run_url, repo, can_file, file=file_issue) -> list[str]:
     lines = [f"## `{tag}`", "", "| Skill | Client | " + " | ".join(f"`{m}`" for m in METRICS) + " | Cost | Compared |",
              "| :-- | :-- | " + "".join(":-- | " for _ in METRICS) + ":-- | :-- |"]
-    excluded = []
+    excluded, marked_na = [], False
     for skill in sorted({r["skill"] for r in runs}):
         for client in CLIENTS:
             group = [r for r in runs if r["skill"] == skill and r["client"] == client]
             if not group:
                 continue
-            values = {m: [v for r in group if (v := metrics(r["sessions"])[m]) is not None] for m in METRICS}
+            values = {m: [v for r in group if (v := metrics(r["sessions"], r.get("always_on", False))[m]) is not None]
+                      for m in METRICS}
+            always_on = all(r.get("always_on", False) for r in group)
             sessions = [s for r in group for s in r["sessions"]]
             cost = sum(s["cost_usd"] or 0 for s in sessions)
             tokens = sum((s["tokens"] or {}).get("input_tokens", 0) + (s["tokens"] or {}).get("output_tokens", 0)
@@ -710,9 +726,13 @@ def report_tag(tag, package, runs, no_cases, previous, seen, run_url, repo, can_
                 else:
                     status = "no regression"
             spent = f"${cost:.2f}" if client != "codex" else f"{tokens} tokens"
-            cells = " | ".join(f"{span(values[m])} (n={counted(group, m)}, {covers(values[m])})" for m in METRICS)
+            cells = " | ".join("n/a" if always_on and m in NOT_APPLICABLE_ALWAYS_ON
+                               else f"{span(values[m])} (n={counted(group, m)}, {covers(values[m])})" for m in METRICS)
+            marked_na = marked_na or always_on
             lines.append(f"| {skill} | {client} | {cells} | {spent} | {status} |")
     lines.append("")
+    if marked_na:
+        lines += ["n/a: the client gets the skill's rules without loading the skill (`always_on` in cases.yaml).", ""]
     if no_cases:
         lines += ["No cases: " + ", ".join(no_cases), ""]
     if excluded:
@@ -759,7 +779,7 @@ def _selftest_parsers() -> None:
     assert Omp("design-review", "red-flags").parse(events("omp") + [broken]).error == "429 rate limited"
 
     assert Codex("p", "s").command("q", "without")[-3:] == ["--disable", "plugins", "q"]
-    assert Omp("p", "s").command("q", "without")[-2:] == ["--no-skills", "q"]
+    assert Omp("p", "s").command("q", "without")[-3:] == ["--no-skills", "--no-rules", "q"]
 
 
 def _session(case, kind, arm, fired, nouls=None, error=None) -> dict:
@@ -795,6 +815,9 @@ def _selftest_core() -> None:
     assert got["trigger_hit"] == 0.5 and got["counts"]["positive_with"] == 2, got
     assert got["false_fire"] == 0.5 and got["compliance"] == 0.75, got
     assert got["improvement"] == 0.625 - 0.25, got
+    rules = metrics(sample, always_on=True)
+    assert rules["trigger_hit"] is None and rules["compliance"] is None, rules
+    assert rules["false_fire"] == 0.5 and rules["improvement"] == got["improvement"], rules
 
     old = [{"cases_sha256": "a", "rubric_sha256": "r", "sessions": sample}]
     assert compare(old, [{"cases_sha256": "b", "rubric_sha256": "r", "sessions": sample}]) == {
@@ -971,6 +994,10 @@ def _selftest_publish() -> None:
     assert len(filed) == 1 and any("not comparable: cases changed" in line for line in lines), lines
     lines = report(current, False, set())
     assert len(filed) == 1 and any("not on the label list" in line for line in lines), lines
+    lines = report([dict(r, always_on=True) for r in current], True, set())
+    row = next(line for line in lines if line.startswith("| s | claude |"))
+    assert row.startswith("| s | claude | n/a | ") and "regressed" not in row and len(filed) == 1, row
+    assert any(line.startswith("n/a: ") for line in lines), lines
 
 
 def _selftest_gh() -> None:

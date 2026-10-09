@@ -172,6 +172,10 @@ A skill's folder holds two files:
 
 - `cases.yaml` has a `positive` list and a `near_miss` list. Each list has ten
   entries, and each entry has an `id` and a `prompt`.
+- `cases.yaml` may also have `always_on`, a list of the clients that get the
+  skill's rules in every session without loading the skill. A comment beside
+  it names each client's route and its source. For those clients the summary
+  shows `trigger_hit` and `compliance` as `n/a`.
 - `rubric.yaml` has a `questions` map from a question id to one statement.
 
 The Agent Skills guide sets the shape of a trigger test. Source:

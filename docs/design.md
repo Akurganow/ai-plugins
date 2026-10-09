@@ -310,8 +310,8 @@ Codex turns off its `plugins` feature with `--disable plugins`.
 source: [`Feature::Plugins`](https://github.com/openai/codex/blob/979011409de0a60b52f179721948e65531d26144/codex-rs/features/src/lib.rs#L257-L258))
 With it, Codex 0.161.0 listed only its four built-in skills and none from this package.
 (running: [run 37789029106](https://github.com/Akurganow/ai-plugins/actions/runs/37789029106), 2026-10-08)
-Oh-My-Pi disables every skill with `--no-skills`.
-(documentation: [CLI reference, `--no-skills`](https://github.com/can1357/oh-my-pi/blob/40e9368ef0458fd9073329cdff4174895f91bc6b/docs/cli-reference.md#L159))
+Oh-My-Pi disables every skill with `--no-skills` and every rule with `--no-rules`.
+(documentation: [CLI reference, `--no-skills` and `--no-rules`](https://github.com/can1357/oh-my-pi/blob/40e9368ef0458fd9073329cdff4174895f91bc6b/docs/cli-reference.md#L159-L160))
 So a comparison of `improvement` across clients compares different removals.
 
 Each skill and client gets four numbers per repeat:
@@ -326,9 +326,12 @@ Each skill and client gets four numbers per repeat:
 A session that errored leaves every denominator, and an answer Jev did not grade leaves the two Jev means.
 The job summary lists both under `Excluded` with the reason.
 It shows each figure with the sessions or answers behind it, so a share of 7 sessions is never read as a share of 10.
-In `prose-discipline--v2.0.0`, a hook also prints the package's rules into every Claude Code session (see [the rules route](#one-rules-file-one-documented-route-per-client)).
-It does the same in a Codex session once the user trusts the hook ([Codex](clients.md#codex)).
-A with-package answer in such a session can follow the rules without the model loading `house-style`, and `trigger_hit` counts only that load.
+In `prose-discipline--v2.0.0`, the package's rules reach two clients without the skill (see [the rules route](#one-rules-file-one-documented-route-per-client)).
+A hook prints them into every Claude Code session, and Oh-My-Pi puts the rules file into every system prompt.
+The hook does the same in a Codex session once the user trusts it ([Codex](clients.md#codex)), and no evals session trusts it.
+A with-package answer in Claude Code or Oh-My-Pi can follow the rules without the model loading `house-style`, and `trigger_hit` counts only that load.
+So `cases.yaml` lists such clients under `always_on`.
+For them the summary shows `trigger_hit` and `compliance` as `n/a`, and `compare` skips both.
 
 The run attaches its results to the release as `evals.json`.
 Workflow artifacts would not serve as the record, because a public repository keeps them 90 days at most.

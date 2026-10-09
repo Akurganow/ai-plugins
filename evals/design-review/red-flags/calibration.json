@@ -1,0 +1,3114 @@
+{
+ "answers": {
+  "re01": {
+   "arm": "with",
+   "case": "sdk-client-interface",
+   "client": "claude",
+   "repeat": 1
+  },
+  "re02": {
+   "arm": "with",
+   "case": "merge-invoice-packages",
+   "client": "codex",
+   "repeat": 1
+  },
+  "re03": {
+   "arm": "with",
+   "case": "session-delete-try-except",
+   "client": "codex",
+   "repeat": 3
+  },
+  "re04": {
+   "arm": "with",
+   "case": "name-for-batch-function",
+   "client": "codex",
+   "repeat": 1
+  },
+  "re05": {
+   "arm": "with",
+   "case": "tangled-cart-totals",
+   "client": "omp",
+   "repeat": 1
+  },
+  "re06": {
+   "arm": "without",
+   "case": "session-delete-try-except",
+   "client": "codex",
+   "repeat": 2
+  },
+  "re07": {
+   "arm": "without",
+   "case": "sdk-client-interface",
+   "client": "codex",
+   "repeat": 1
+  },
+  "re08": {
+   "arm": "without",
+   "case": "user-service-split-plan",
+   "client": "omp",
+   "repeat": 2
+  },
+  "re09": {
+   "arm": "with",
+   "case": "merge-invoice-packages",
+   "client": "claude",
+   "repeat": 2
+  },
+  "re10": {
+   "arm": "with",
+   "case": "name-for-batch-function",
+   "client": "omp",
+   "repeat": 1
+  },
+  "re11": {
+   "arm": "with",
+   "case": "six-layer-customer-api",
+   "client": "claude",
+   "repeat": 2
+  },
+  "re12": {
+   "arm": "without",
+   "case": "tangled-cart-totals",
+   "client": "claude",
+   "repeat": 1
+  },
+  "re13": {
+   "arm": "with",
+   "case": "order-status-five-repos",
+   "client": "codex",
+   "repeat": 2
+  },
+  "re14": {
+   "arm": "with",
+   "case": "order-status-five-repos",
+   "client": "omp",
+   "repeat": 3
+  },
+  "re15": {
+   "arm": "with",
+   "case": "session-delete-try-except",
+   "client": "omp",
+   "repeat": 1
+  },
+  "re16": {
+   "arm": "without",
+   "case": "session-delete-try-except",
+   "client": "claude",
+   "repeat": 3
+  },
+  "re17": {
+   "arm": "with",
+   "case": "name-for-batch-function",
+   "client": "claude",
+   "repeat": 1
+  },
+  "re18": {
+   "arm": "with",
+   "case": "sdk-client-interface",
+   "client": "omp",
+   "repeat": 1
+  },
+  "re19": {
+   "arm": "with",
+   "case": "user-service-split-plan",
+   "client": "claude",
+   "repeat": 2
+  },
+  "re20": {
+   "arm": "with",
+   "case": "blob-store-abstraction",
+   "client": "codex",
+   "repeat": 2
+  },
+  "rx01": {
+   "arm": "with",
+   "case": "tangled-cart-totals",
+   "client": "claude",
+   "repeat": 3
+  },
+  "rx02": {
+   "arm": "with",
+   "case": "sdk-client-interface",
+   "client": "claude",
+   "repeat": 3
+  },
+  "rx03": {
+   "arm": "with",
+   "case": "name-for-batch-function",
+   "client": "codex",
+   "repeat": 2
+  },
+  "rx04": {
+   "arm": "with",
+   "case": "order-status-five-repos",
+   "client": "codex",
+   "repeat": 1
+  },
+  "rx05": {
+   "arm": "without",
+   "case": "name-for-batch-function",
+   "client": "codex",
+   "repeat": 1
+  },
+  "rx06": {
+   "arm": "with",
+   "case": "blob-store-abstraction",
+   "client": "claude",
+   "repeat": 3
+  },
+  "rx07": {
+   "arm": "with",
+   "case": "tangled-cart-totals",
+   "client": "codex",
+   "repeat": 1
+  },
+  "rx08": {
+   "arm": "without",
+   "case": "order-status-five-repos",
+   "client": "codex",
+   "repeat": 2
+  },
+  "rx09": {
+   "arm": "with",
+   "case": "user-service-split-plan",
+   "client": "omp",
+   "repeat": 2
+  },
+  "rx10": {
+   "arm": "without",
+   "case": "sdk-client-interface",
+   "client": "claude",
+   "repeat": 1
+  },
+  "rx11": {
+   "arm": "without",
+   "case": "six-layer-customer-api",
+   "client": "claude",
+   "repeat": 1
+  },
+  "rx12": {
+   "arm": "with",
+   "case": "cleanup-sprint-priorities",
+   "client": "omp",
+   "repeat": 3
+  },
+  "rx13": {
+   "arm": "with",
+   "case": "user-service-split-plan",
+   "client": "claude",
+   "repeat": 3
+  },
+  "rx14": {
+   "arm": "without",
+   "case": "six-layer-customer-api",
+   "client": "omp",
+   "repeat": 1
+  },
+  "rx15": {
+   "arm": "with",
+   "case": "session-delete-try-except",
+   "client": "codex",
+   "repeat": 2
+  },
+  "rx16": {
+   "arm": "with",
+   "case": "sdk-client-interface",
+   "client": "codex",
+   "repeat": 2
+  },
+  "rx17": {
+   "arm": "with",
+   "case": "merge-invoice-packages",
+   "client": "omp",
+   "repeat": 2
+  },
+  "rx18": {
+   "arm": "with",
+   "case": "merge-invoice-packages",
+   "client": "omp",
+   "repeat": 3
+  },
+  "rx19": {
+   "arm": "with",
+   "case": "tangled-cart-totals",
+   "client": "claude",
+   "repeat": 2
+  },
+  "rx20": {
+   "arm": "with",
+   "case": "six-layer-customer-api",
+   "client": "omp",
+   "repeat": 3
+  }
+ },
+ "grader": "jev-1.13.0",
+ "labelled": "2026-10-09",
+ "questions": {
+  "change_cost": {
+   "labels": {
+    "re01": {
+     "ambiguous": null,
+     "evidence": "Every numbered finding has a '**Cost:**' line (finding 1, 2, 3, 4, 5).",
+     "label": "yes"
+    },
+    "re02": {
+     "ambiguous": null,
+     "evidence": "Only a benefit: 'centralizing that calculation should save repeated, error-prone updates'; no cost of the change is stated.",
+     "label": "no"
+    },
+    "re03": {
+     "ambiguous": null,
+     "evidence": "No cost of the change is stated; it only lists gains such as removing the race.",
+     "label": "no"
+    },
+    "re04": {
+     "ambiguous": null,
+     "evidence": "No cost of renaming or adding the docstring is stated.",
+     "label": "no"
+    },
+    "re05": {
+     "ambiguous": "One shared cost line covers findings 1-3 and a lenient reader could count it for all four.",
+     "evidence": "'Cost: trivially small' is stated once for the whole fix; finding 4 gets no change and so no cost.",
+     "label": "no"
+    },
+    "re06": {
+     "ambiguous": null,
+     "evidence": "No cost of the change is stated.",
+     "label": "no"
+    },
+    "re07": {
+     "ambiguous": null,
+     "evidence": "No cost of any proposed change is stated.",
+     "label": "no"
+    },
+    "re08": {
+     "ambiguous": "Item 5 says the 'marginal cost of fixing imports at call sites is low', so one finding has a cost.",
+     "evidence": "Item 6 recommendation 'no interfaces at v1' states no cost of dropping them; the missing-pain and validator findings state none either.",
+     "label": "no"
+    },
+    "re09": {
+     "ambiguous": null,
+     "evidence": "No cost of the proposed changes is stated.",
+     "label": "no"
+    },
+    "re10": {
+     "ambiguous": null,
+     "evidence": "No cost of renaming or documenting is stated.",
+     "label": "no"
+    },
+    "re11": {
+     "ambiguous": "Findings 1, 2, 4 have Cost lines; finding 3 does not.",
+     "evidence": "Finding 3 (\"There for when we need it\") has no Cost line; it says only that adding a layer later is a cheap refactor.",
+     "label": "no"
+    },
+    "re12": {
+     "ambiguous": null,
+     "evidence": "The fix is given with no cost stated; caveats list assumptions, not what the change costs.",
+     "label": "no"
+    },
+    "re13": {
+     "ambiguous": null,
+     "evidence": "No change states what it would cost.",
+     "label": "no"
+    },
+    "re14": {
+     "ambiguous": null,
+     "evidence": "Finding 1 \"Cost: small\", finding 2 \"A few lines per consumer\", finding 3 \"A CI dependency on the schema package.\"",
+     "label": "yes"
+    },
+    "re15": {
+     "ambiguous": "Migration steps stand in for a cost statement.",
+     "evidence": "\"Migration: update the nine call sites by deleting the try/except wrappers, then drop SessionNotFound. Grep for any other raisers/catchers.\"",
+     "label": "yes"
+    },
+    "re16": {
+     "ambiguous": "Migration notes stand in for a cost statement.",
+     "evidence": "Migration notes: remove the nine try/except blocks, grep for other catchers of SessionNotFound, map the 404 via the bool return.",
+     "label": "yes"
+    },
+    "re17": {
+     "ambiguous": null,
+     "evidence": "No change states what it would cost.",
+     "label": "no"
+    },
+    "re18": {
+     "ambiguous": null,
+     "evidence": "Only finding 1 has a cost (\"small now; after 1.0 freeze, a coordinated release across 14 services\"); findings 3 and 4 give none.",
+     "label": "no"
+    },
+    "re19": {
+     "ambiguous": null,
+     "evidence": "Finding 4 has no cost line; its Change line is not followed by a cost.",
+     "label": "no"
+    },
+    "re20": {
+     "ambiguous": null,
+     "evidence": "No change states what it would cost.",
+     "label": "no"
+    },
+    "rx01": {
+     "ambiguous": "The two caveats could be read as the cost of the fix, but they are not tied to any finding.",
+     "evidence": "\"`cart.baseShipping` is my invention.\" and the float-cents caveat are flaws of the sketch, not a stated cost of each change.",
+     "label": "no"
+    },
+    "rx02": {
+     "ambiguous": null,
+     "evidence": "Each of the four findings has a \"Cost:\" line (policy ownership, two methods, extra concept, loss of backoff flexibility).",
+     "label": "yes"
+    },
+    "rx03": {
+     "ambiguous": "Treated the hard-to-name flag as the single finding; if the answer has no findings, this would be no anyway.",
+     "evidence": "No cost of renaming is stated anywhere in the answer.",
+     "label": "no"
+    },
+    "rx04": {
+     "ambiguous": null,
+     "evidence": "\"Neither removes the need for teams to define their own behavior, and both add coordination.\" is about rejected options; no cost is stated for the proposed changes.",
+     "label": "no"
+    },
+    "rx05": {
+     "ambiguous": null,
+     "evidence": "No cost of the rename is stated.",
+     "label": "no"
+    },
+    "rx06": {
+     "ambiguous": "A single Cost section exists, so a lenient reader could say yes.",
+     "evidence": "One shared \"Cost\" section covers callers with non-default acl and \"a bit more code\"; the leaking-exceptions and whole-object-read findings get no cost.",
+     "label": "no"
+    },
+    "rx07": {
+     "ambiguous": null,
+     "evidence": "No cost of the single-pass change is stated; only \"decide whether that's intentional before changing the calculation.\"",
+     "label": "no"
+    },
+    "rx08": {
+     "ambiguous": null,
+     "evidence": "\"This won't eliminate coordination when a new state truly changes a consumer's behavior.\" Residual limit, not a cost of each change.",
+     "label": "no"
+    },
+    "rx09": {
+     "ambiguous": "\"Cost to fix\" is used as a label, so a lenient reader could take it as a cost statement.",
+     "evidence": "\"Cost to fix: delete it; controllers inject `UserReader`/`UserWriter` directly.\" The label says cost but the text describes the change; finding 4 has none.",
+     "label": "no"
+    },
+    "rx10": {
+     "ambiguous": null,
+     "evidence": "No finding states what its change would cost; the closing note covers only the freeze-time asymmetry of breaking changes.",
+     "label": "no"
+    },
+    "rx11": {
+     "ambiguous": null,
+     "evidence": "\"Remove the empty ones as you touch them. You don't need a big-bang refactor.\" Gives no cost of the cut; the ten-minute figure is for adding a layer later.",
+     "label": "no"
+    },
+    "rx12": {
+     "ambiguous": null,
+     "evidence": "\"Fix: one registry entry as the single source of truth\" and \"split by case into independently testable functions\"; no finding states what the fix costs.",
+     "label": "no"
+    },
+    "rx13": {
+     "ambiguous": "Findings 1-3 each state a cost; only finding 4 omits it.",
+     "evidence": "Finding 4 ends \"keeps that knowledge in one place.\" and states no cost. Findings 1-3 each say \"The cost is...\".",
+     "label": "no"
+    },
+    "rx14": {
+     "ambiguous": null,
+     "evidence": "\"Stop routing new code through Facade/Manager... mark them deprecated... Six months later they delete cleanly.\" Describes a plan, not what the cut costs.",
+     "label": "no"
+    },
+    "rx15": {
+     "ambiguous": null,
+     "evidence": "\"If no caller needs to know whether anything was removed, keep the return type as `None`.\" No cost of the change is stated.",
+     "label": "no"
+    },
+    "rx16": {
+     "ambiguous": null,
+     "evidence": "Finding 1: \"one-time migration cost\". Finding 2: \"changing the request method and migrating call sites, including the two streaming services.\"",
+     "label": "yes"
+    },
+    "rx17": {
+     "ambiguous": null,
+     "evidence": "\"Then tax changes touch exactly one file.\" States the benefit; no cost of the change appears.",
+     "label": "no"
+    },
+    "rx18": {
+     "ambiguous": null,
+     "evidence": "\"Bonus: render becomes trivially testable\" and a grep check. No cost of the change is stated.",
+     "label": "no"
+    },
+    "rx19": {
+     "ambiguous": "That one sentence could be read as the cost of the single shared change.",
+     "evidence": "\"This needs a `baseShipping` (or similar) field so the original shipping value isn't overwritten.\" One precondition for the whole fix, not a cost per finding.",
+     "label": "no"
+    },
+    "rx20": {
+     "ambiguous": "One cost paragraph for the single cut that removes all three findings, not a cost under each.",
+     "evidence": "\"Cost of the change: mechanical, and you lose the 'we'll need a facade someday' argument.\"",
+     "label": "yes"
+    }
+   },
+   "scores": {
+    "re01": {
+     "with_criteria": 0.7,
+     "without_criteria": 0.89
+    },
+    "re02": {
+     "with_criteria": 0.08,
+     "without_criteria": 0.11
+    },
+    "re03": {
+     "with_criteria": 0.09,
+     "without_criteria": 0.14
+    },
+    "re04": {
+     "with_criteria": 0.04,
+     "without_criteria": 0.07
+    },
+    "re05": {
+     "with_criteria": 0.28,
+     "without_criteria": 0.17
+    },
+    "re06": {
+     "with_criteria": 0.09,
+     "without_criteria": 0.13
+    },
+    "re07": {
+     "with_criteria": 0.03,
+     "without_criteria": 0.05
+    },
+    "re08": {
+     "with_criteria": 0.54,
+     "without_criteria": 0.69
+    },
+    "re09": {
+     "with_criteria": 0.04,
+     "without_criteria": 0.05
+    },
+    "re10": {
+     "with_criteria": 0.05,
+     "without_criteria": 0.06
+    },
+    "re11": {
+     "with_criteria": 0.64,
+     "without_criteria": 0.85
+    },
+    "re12": {
+     "with_criteria": 0.07,
+     "without_criteria": 0.05
+    },
+    "re13": {
+     "with_criteria": 0.04,
+     "without_criteria": 0.06
+    },
+    "re14": {
+     "with_criteria": 0.76,
+     "without_criteria": 0.83
+    },
+    "re15": {
+     "with_criteria": 0.23,
+     "without_criteria": 0.19
+    },
+    "re16": {
+     "with_criteria": 0.32,
+     "without_criteria": 0.26
+    },
+    "re17": {
+     "with_criteria": 0.08,
+     "without_criteria": 0.09
+    },
+    "re18": {
+     "with_criteria": 0.07,
+     "without_criteria": 0.14
+    },
+    "re19": {
+     "with_criteria": 0.6,
+     "without_criteria": 0.66
+    },
+    "re20": {
+     "with_criteria": 0.1,
+     "without_criteria": 0.14
+    },
+    "rx01": {
+     "with_criteria": 0.1,
+     "without_criteria": 0.08
+    },
+    "rx02": {
+     "with_criteria": 0.8,
+     "without_criteria": 0.91
+    },
+    "rx03": {
+     "with_criteria": 0.04,
+     "without_criteria": 0.06
+    },
+    "rx04": {
+     "with_criteria": 0.04,
+     "without_criteria": 0.03
+    },
+    "rx05": {
+     "with_criteria": 0.05,
+     "without_criteria": 0.06
+    },
+    "rx06": {
+     "with_criteria": 0.15,
+     "without_criteria": 0.41
+    },
+    "rx07": {
+     "with_criteria": 0.05,
+     "without_criteria": 0.07
+    },
+    "rx08": {
+     "with_criteria": 0.05,
+     "without_criteria": 0.04
+    },
+    "rx09": {
+     "with_criteria": 0.57,
+     "without_criteria": 0.83
+    },
+    "rx10": {
+     "with_criteria": 0.06,
+     "without_criteria": 0.12
+    },
+    "rx11": {
+     "with_criteria": 0.13,
+     "without_criteria": 0.2
+    },
+    "rx12": {
+     "with_criteria": 0.27,
+     "without_criteria": 0.64
+    },
+    "rx13": {
+     "with_criteria": 0.69,
+     "without_criteria": 0.83
+    },
+    "rx14": {
+     "with_criteria": 0.14,
+     "without_criteria": 0.18
+    },
+    "rx15": {
+     "with_criteria": 0.1,
+     "without_criteria": 0.16
+    },
+    "rx16": {
+     "with_criteria": 0.63,
+     "without_criteria": 0.47
+    },
+    "rx17": {
+     "with_criteria": 0.07,
+     "without_criteria": 0.11
+    },
+    "rx18": {
+     "with_criteria": 0.07,
+     "without_criteria": 0.11
+    },
+    "rx19": {
+     "with_criteria": 0.08,
+     "without_criteria": 0.11
+    },
+    "rx20": {
+     "with_criteria": 0.15,
+     "without_criteria": 0.23
+    }
+   },
+   "split": {
+    "re01": "first",
+    "re02": "first",
+    "re03": "first",
+    "re04": "first",
+    "re05": "first",
+    "re06": "first",
+    "re07": "first",
+    "re08": "first",
+    "re09": "first",
+    "re10": "first",
+    "re11": "first",
+    "re12": "first",
+    "re13": "first",
+    "re14": "first",
+    "re15": "first",
+    "re16": "first",
+    "re17": "first",
+    "re18": "first",
+    "re19": "first",
+    "re20": "first",
+    "rx01": "holdout",
+    "rx02": "holdout",
+    "rx03": "holdout",
+    "rx04": "holdout",
+    "rx05": "holdout",
+    "rx06": "holdout",
+    "rx07": "holdout",
+    "rx08": "holdout",
+    "rx09": "holdout",
+    "rx10": "holdout",
+    "rx11": "holdout",
+    "rx12": "holdout",
+    "rx13": "holdout",
+    "rx14": "holdout",
+    "rx15": "holdout",
+    "rx16": "holdout",
+    "rx17": "holdout",
+    "rx18": "holdout",
+    "rx19": "holdout",
+    "rx20": "holdout"
+   }
+  },
+  "cites_chapter": {
+   "labels": {
+    "re01": {
+     "ambiguous": null,
+     "evidence": "Finding 5: '**Flags:** Information Leakage and Repetition.' names no chapter or section number.",
+     "label": "no"
+    },
+    "re02": {
+     "ambiguous": null,
+     "evidence": "'Information Leakage (chapter 5) and Repetition (chapter 9)' for the one finding.",
+     "label": "yes"
+    },
+    "re03": {
+     "ambiguous": null,
+     "evidence": "No chapter or section of the book is cited anywhere.",
+     "label": "no"
+    },
+    "re04": {
+     "ambiguous": "The docstring/mutation remark is not cited; read as advice rather than a separate finding.",
+     "evidence": "'Hard to Pick Name' red flag (Chapter 14) is cited for the naming finding.",
+     "label": "yes"
+    },
+    "re05": {
+     "ambiguous": null,
+     "evidence": "'**4. Fragile edge**' cites no chapter or section.",
+     "label": "no"
+    },
+    "re06": {
+     "ambiguous": null,
+     "evidence": "No chapter or section of the book is cited.",
+     "label": "no"
+    },
+    "re07": {
+     "ambiguous": null,
+     "evidence": "No chapter or section of the book is cited.",
+     "label": "no"
+    },
+    "re08": {
+     "ambiguous": null,
+     "evidence": "No chapter or section of the book is cited.",
+     "label": "no"
+    },
+    "re09": {
+     "ambiguous": null,
+     "evidence": "No chapter or section of the book is cited.",
+     "label": "no"
+    },
+    "re10": {
+     "ambiguous": null,
+     "evidence": "No chapter or section of the book is cited.",
+     "label": "no"
+    },
+    "re11": {
+     "ambiguous": null,
+     "evidence": "Finding 3: \"Flag: Speculative generality. The opposing text I have is Google's reviewer guide\" and finding 4 \"Not a flag\" cite no book chapter.",
+     "label": "no"
+    },
+    "re12": {
+     "ambiguous": null,
+     "evidence": "No finding cites any chapter of the book; the book is never mentioned.",
+     "label": "no"
+    },
+    "re13": {
+     "ambiguous": null,
+     "evidence": "No finding cites any chapter of the book.",
+     "label": "no"
+    },
+    "re14": {
+     "ambiguous": "Finding 3's citation is hedged as \"adjacent\".",
+     "evidence": "Finding 1 \"(§5.2, Ch. 5)\", finding 2 \"(Ch. 10, errors)\", finding 3 \"(§5.3-adjacent...)\".",
+     "label": "yes"
+    },
+    "re15": {
+     "ambiguous": null,
+     "evidence": "No finding cites any chapter of the book.",
+     "label": "no"
+    },
+    "re16": {
+     "ambiguous": null,
+     "evidence": "No finding cites any chapter of the book.",
+     "label": "no"
+    },
+    "re17": {
+     "ambiguous": null,
+     "evidence": "No finding cites any chapter of the book.",
+     "label": "no"
+    },
+    "re18": {
+     "ambiguous": "The Minor item may not count as a finding.",
+     "evidence": "\"Minor: `body?: unknown` doesn't respect `method`\" cites no chapter.",
+     "label": "no"
+    },
+    "re19": {
+     "ambiguous": null,
+     "evidence": "Finding 4: \"Flag: probably Shallow Module and Conjoined Methods\" cites no chapter.",
+     "label": "no"
+    },
+    "re20": {
+     "ambiguous": null,
+     "evidence": "\"Overexposure (Chapter 5)\" and \"Shallow Module warning (Chapter 4)\".",
+     "label": "yes"
+    },
+    "rx01": {
+     "ambiguous": null,
+     "evidence": "No finding cites a chapter of the book; \"Module-level `discountApplied` is shared state across all carts.\" cites nothing.",
+     "label": "no"
+    },
+    "rx02": {
+     "ambiguous": null,
+     "evidence": "Findings 1-4 each carry a chapter in the heading: ch. 5/ch. 8, ch. 9/ch. 2, ch. 5/ch. 9, ch. 15 (with section §10.6).",
+     "label": "yes"
+    },
+    "rx03": {
+     "ambiguous": "Treated the hard-to-name flag as the single finding; if the answer has no findings, this would be no.",
+     "evidence": "\"fits the 'Hard to Pick Name' flag (Chapter 14)\" for the one problem it raises.",
+     "label": "yes"
+    },
+    "rx04": {
+     "ambiguous": null,
+     "evidence": "No finding cites a chapter of the book, e.g. \"`status` has become a shared protocol, but each service has its own copy of the rules.\"",
+     "label": "no"
+    },
+    "rx05": {
+     "ambiguous": "Treated the vague name as the single finding; if the answer has no findings, this is no anyway.",
+     "evidence": "\"`prepare_batch` describes when or why it runs, not what it does.\" No chapter named.",
+     "label": "no"
+    },
+    "rx06": {
+     "ambiguous": null,
+     "evidence": "\"The interface mirrors boto3 one to one.\" No finding names a chapter of the book.",
+     "label": "no"
+    },
+    "rx07": {
+     "ambiguous": null,
+     "evidence": "The never-reset shipping finding and the throw-before-reset guard finding name no chapter; only the recursion finding cites ch. 18 and ch. 9.",
+     "label": "no"
+    },
+    "rx08": {
+     "ambiguous": null,
+     "evidence": "Cites Confluent and Microsoft pages only; no chapter of A Philosophy of Software Design appears.",
+     "label": "no"
+    },
+    "rx09": {
+     "ambiguous": "Cites section numbers, not chapter names or numbers.",
+     "evidence": "Findings cite §2.2/§5.2, §7.1, §4.6/§4.5, §5.3, which identify chapters 2, 5, 7, 4, 5.",
+     "label": "yes"
+    },
+    "rx10": {
+     "ambiguous": null,
+     "evidence": "\"## 1. `Promise<T | Response>` is a type-safety hole\" and the other findings cite no chapter of the book.",
+     "label": "no"
+    },
+    "rx11": {
+     "ambiguous": null,
+     "evidence": "No finding names a chapter or the book; \"speculative generality\" is the only label.",
+     "label": "no"
+    },
+    "rx12": {
+     "ambiguous": null,
+     "evidence": "Findings cite §5.2, §2.2 and §2.1 (chapters 5 and 2).",
+     "label": "yes"
+    },
+    "rx13": {
+     "ambiguous": "Finding 4 is flagged 'lower weight' and half-withdrawn; findings 1-3 cite §5.2, §5.3, §7.1, §4.6.",
+     "evidence": "Finding 4: \"A mapper is a thin adapter and cheap by nature (step 3.4)... It still carries the same field knowledge as the DTO and entity.\" No book chapter.",
+     "label": "no"
+    },
+    "rx14": {
+     "ambiguous": null,
+     "evidence": "No book or chapter is cited; arguments rest on YAGNI and general principle.",
+     "label": "no"
+    },
+    "rx15": {
+     "ambiguous": null,
+     "evidence": "No book or chapter is cited.",
+     "label": "no"
+    },
+    "rx16": {
+     "ambiguous": null,
+     "evidence": "Finding 1 cites \"Overexposure (chapter 5)\"; finding 2 cites \"chapter 4 principle\".",
+     "label": "yes"
+    },
+    "rx17": {
+     "ambiguous": null,
+     "evidence": "No book or chapter is cited.",
+     "label": "no"
+    },
+    "rx18": {
+     "ambiguous": null,
+     "evidence": "No book or chapter is cited.",
+     "label": "no"
+    },
+    "rx19": {
+     "ambiguous": null,
+     "evidence": "No book or chapter is cited.",
+     "label": "no"
+    },
+    "rx20": {
+     "ambiguous": null,
+     "evidence": "Findings cite §7.1, §5.2 (finding 1), §14.3 (finding 2) and §5.3 (finding 3).",
+     "label": "yes"
+    }
+   },
+   "scores": {
+    "re01": {
+     "with_criteria": 0.22,
+     "without_criteria": 0.25
+    },
+    "re02": {
+     "with_criteria": 0.68,
+     "without_criteria": 0.59
+    },
+    "re03": {
+     "with_criteria": 0.02,
+     "without_criteria": 0.04
+    },
+    "re04": {
+     "with_criteria": 0.54,
+     "without_criteria": 0.27
+    },
+    "re05": {
+     "with_criteria": 0.44,
+     "without_criteria": 0.7
+    },
+    "re06": {
+     "with_criteria": 0.02,
+     "without_criteria": 0.03
+    },
+    "re07": {
+     "with_criteria": 0.01,
+     "without_criteria": 0.01
+    },
+    "re08": {
+     "with_criteria": 0.01,
+     "without_criteria": 0.01
+    },
+    "re09": {
+     "with_criteria": 0.01,
+     "without_criteria": 0.01
+    },
+    "re10": {
+     "with_criteria": 0.01,
+     "without_criteria": 0.02
+    },
+    "re11": {
+     "with_criteria": 0.09,
+     "without_criteria": 0.18
+    },
+    "re12": {
+     "with_criteria": 0.01,
+     "without_criteria": 0.01
+    },
+    "re13": {
+     "with_criteria": 0.01,
+     "without_criteria": 0.02
+    },
+    "re14": {
+     "with_criteria": 0.44,
+     "without_criteria": 0.59
+    },
+    "re15": {
+     "with_criteria": 0.01,
+     "without_criteria": 0.03
+    },
+    "re16": {
+     "with_criteria": 0.01,
+     "without_criteria": 0.02
+    },
+    "re17": {
+     "with_criteria": 0.01,
+     "without_criteria": 0.02
+    },
+    "re18": {
+     "with_criteria": 0.66,
+     "without_criteria": 0.87
+    },
+    "re19": {
+     "with_criteria": 0.12,
+     "without_criteria": 0.45
+    },
+    "re20": {
+     "with_criteria": 0.61,
+     "without_criteria": 0.66
+    },
+    "rx01": {
+     "with_criteria": 0.01,
+     "without_criteria": 0.01
+    },
+    "rx02": {
+     "with_criteria": 0.59,
+     "without_criteria": 0.8
+    },
+    "rx03": {
+     "with_criteria": 0.59,
+     "without_criteria": 0.32
+    },
+    "rx04": {
+     "with_criteria": 0.01,
+     "without_criteria": 0.01
+    },
+    "rx05": {
+     "with_criteria": 0.04,
+     "without_criteria": 0.03
+    },
+    "rx06": {
+     "with_criteria": 0.01,
+     "without_criteria": 0.02
+    },
+    "rx07": {
+     "with_criteria": 0.09,
+     "without_criteria": 0.38
+    },
+    "rx08": {
+     "with_criteria": 0.01,
+     "without_criteria": 0.01
+    },
+    "rx09": {
+     "with_criteria": 0.64,
+     "without_criteria": 0.67
+    },
+    "rx10": {
+     "with_criteria": 0.01,
+     "without_criteria": 0.01
+    },
+    "rx11": {
+     "with_criteria": 0.01,
+     "without_criteria": 0.01
+    },
+    "rx12": {
+     "with_criteria": 0.72,
+     "without_criteria": 0.73
+    },
+    "rx13": {
+     "with_criteria": 0.28,
+     "without_criteria": 0.43
+    },
+    "rx14": {
+     "with_criteria": 0.01,
+     "without_criteria": 0.01
+    },
+    "rx15": {
+     "with_criteria": 0.01,
+     "without_criteria": 0.03
+    },
+    "rx16": {
+     "with_criteria": 0.5,
+     "without_criteria": 0.4
+    },
+    "rx17": {
+     "with_criteria": 0.01,
+     "without_criteria": 0.03
+    },
+    "rx18": {
+     "with_criteria": 0.01,
+     "without_criteria": 0.02
+    },
+    "rx19": {
+     "with_criteria": 0.01,
+     "without_criteria": 0.01
+    },
+    "rx20": {
+     "with_criteria": 0.5,
+     "without_criteria": 0.76
+    }
+   },
+   "split": {
+    "re01": "first",
+    "re02": "first",
+    "re03": "first",
+    "re04": "first",
+    "re05": "first",
+    "re06": "first",
+    "re07": "first",
+    "re08": "first",
+    "re09": "first",
+    "re10": "first",
+    "re11": "first",
+    "re12": "first",
+    "re13": "first",
+    "re14": "first",
+    "re15": "first",
+    "re16": "first",
+    "re17": "first",
+    "re18": "first",
+    "re19": "first",
+    "re20": "first",
+    "rx01": "holdout",
+    "rx02": "holdout",
+    "rx03": "holdout",
+    "rx04": "holdout",
+    "rx05": "holdout",
+    "rx06": "holdout",
+    "rx07": "holdout",
+    "rx08": "holdout",
+    "rx09": "holdout",
+    "rx10": "holdout",
+    "rx11": "holdout",
+    "rx12": "holdout",
+    "rx13": "holdout",
+    "rx14": "holdout",
+    "rx15": "holdout",
+    "rx16": "holdout",
+    "rx17": "holdout",
+    "rx18": "holdout",
+    "rx19": "holdout",
+    "rx20": "holdout"
+   }
+  },
+  "common_operation": {
+   "labels": {
+    "re01": {
+     "ambiguous": null,
+     "evidence": "'I assumed the typical call site is a GET with the values you showed. That assumption sets the ranking below.'",
+     "label": "yes"
+    },
+    "re02": {
+     "ambiguous": null,
+     "evidence": "No statement or question about the most common operation.",
+     "label": "no"
+    },
+    "re03": {
+     "ambiguous": null,
+     "evidence": "'Deleting an already-expired session is a normal outcome' is about an outcome, not the most common operation on the design.",
+     "label": "no"
+    },
+    "re04": {
+     "ambiguous": null,
+     "evidence": "Does not say what the most common operation on the function is.",
+     "label": "no"
+    },
+    "re05": {
+     "ambiguous": null,
+     "evidence": "'call `recalcTotals` once from one place after any cart mutation' is advice, not a statement of the most common operation.",
+     "label": "no"
+    },
+    "re06": {
+     "ambiguous": null,
+     "evidence": "Says 'already absent' is a normal outcome but not what the most common operation is.",
+     "label": "no"
+    },
+    "re07": {
+     "ambiguous": null,
+     "evidence": "'make the common path easy to call' never says what the common operation is.",
+     "label": "no"
+    },
+    "re08": {
+     "ambiguous": "Restates the user's own statement of the most frequent change.",
+     "evidence": "'[INFERENCE from team goal: most-changed path is profile fields...]' and the epic's 'The dominant change type — adding a user-profile field'.",
+     "label": "yes"
+    },
+    "re09": {
+     "ambiguous": null,
+     "evidence": "Notes 'only one consumer' but not what the most common operation is.",
+     "label": "no"
+    },
+    "re10": {
+     "ambiguous": null,
+     "evidence": "Mentions callers but not what the most common operation is.",
+     "label": "no"
+    },
+    "re11": {
+     "ambiguous": null,
+     "evidence": "Frame: \"The common operation is CRUD on customers.\"",
+     "label": "yes"
+    },
+    "re12": {
+     "ambiguous": null,
+     "evidence": "The answer never states or asks the most common operation on the cart code.",
+     "label": "no"
+    },
+    "re13": {
+     "ambiguous": null,
+     "evidence": "\"Because statuses are added only occasionally and reads dominate, keep the current status directly on the order for fast reads.\"",
+     "label": "yes"
+    },
+    "re14": {
+     "ambiguous": null,
+     "evidence": "Frame: \"Most common operation: read an order's current state.\"",
+     "label": "yes"
+    },
+    "re15": {
+     "ambiguous": null,
+     "evidence": "The answer never states or asks the most common operation on the store.",
+     "label": "no"
+    },
+    "re16": {
+     "ambiguous": null,
+     "evidence": "The answer never states or asks the most common operation on the store.",
+     "label": "no"
+    },
+    "re17": {
+     "ambiguous": null,
+     "evidence": "The answer never states or asks the most common operation; it only restates the two callers.",
+     "label": "no"
+    },
+    "re18": {
+     "ambiguous": null,
+     "evidence": "Frame: \"Most common operation: a request call site.\"",
+     "label": "yes"
+    },
+    "re19": {
+     "ambiguous": "States the most frequent change rather than operation.",
+     "evidence": "\"Your most frequent change is adding a profile field.\"",
+     "label": "yes"
+    },
+    "re20": {
+     "ambiguous": null,
+     "evidence": "The answer never states or asks the most common operation on BlobStore.",
+     "label": "no"
+    }
+   },
+   "scores": {
+    "re01": {
+     "with_criteria": null,
+     "without_criteria": 0.92
+    },
+    "re02": {
+     "with_criteria": null,
+     "without_criteria": 0.11
+    },
+    "re03": {
+     "with_criteria": null,
+     "without_criteria": 0.29
+    },
+    "re04": {
+     "with_criteria": null,
+     "without_criteria": 0.19
+    },
+    "re05": {
+     "with_criteria": null,
+     "without_criteria": 0.22
+    },
+    "re06": {
+     "with_criteria": null,
+     "without_criteria": 0.18
+    },
+    "re07": {
+     "with_criteria": null,
+     "without_criteria": 0.49
+    },
+    "re08": {
+     "with_criteria": null,
+     "without_criteria": 0.97
+    },
+    "re09": {
+     "with_criteria": null,
+     "without_criteria": 0.27
+    },
+    "re10": {
+     "with_criteria": null,
+     "without_criteria": 0.3
+    },
+    "re11": {
+     "with_criteria": null,
+     "without_criteria": 0.96
+    },
+    "re12": {
+     "with_criteria": null,
+     "without_criteria": 0.12
+    },
+    "re13": {
+     "with_criteria": null,
+     "without_criteria": 0.89
+    },
+    "re14": {
+     "with_criteria": null,
+     "without_criteria": 0.98
+    },
+    "re15": {
+     "with_criteria": null,
+     "without_criteria": 0.38
+    },
+    "re16": {
+     "with_criteria": null,
+     "without_criteria": 0.25
+    },
+    "re17": {
+     "with_criteria": null,
+     "without_criteria": 0.28
+    },
+    "re18": {
+     "with_criteria": null,
+     "without_criteria": 0.98
+    },
+    "re19": {
+     "with_criteria": null,
+     "without_criteria": 0.98
+    },
+    "re20": {
+     "with_criteria": null,
+     "without_criteria": 0.36
+    }
+   },
+   "split": {
+    "re01": "first",
+    "re02": "first",
+    "re03": "first",
+    "re04": "first",
+    "re05": "first",
+    "re06": "first",
+    "re07": "first",
+    "re08": "first",
+    "re09": "first",
+    "re10": "first",
+    "re11": "first",
+    "re12": "first",
+    "re13": "first",
+    "re14": "first",
+    "re15": "first",
+    "re16": "first",
+    "re17": "first",
+    "re18": "first",
+    "re19": "first",
+    "re20": "first"
+   }
+  },
+  "names_cause": {
+   "labels": {
+    "re01": {
+     "ambiguous": null,
+     "evidence": "Finding 2: '**Root cause:** `HttpClient` has no state beyond `fetchImpl`' is neither dependency nor obscurity; findings 3-5 say neither.",
+     "label": "no"
+    },
+    "re02": {
+     "ambiguous": null,
+     "evidence": "Calls the leak 'duplicated tax policy'; never says dependency or obscurity.",
+     "label": "no"
+    },
+    "re03": {
+     "ambiguous": null,
+     "evidence": "Never says the cause is a dependency or obscurity.",
+     "label": "no"
+    },
+    "re04": {
+     "ambiguous": null,
+     "evidence": "No cause named as dependency or obscurity.",
+     "label": "no"
+    },
+    "re05": {
+     "ambiguous": "Finding 3 says 'information leakage' and 'temporal coupling', which are not the words dependency or obscurity.",
+     "evidence": "Only finding 2 says 'obscurity'; findings 1, 3 and 4 name no dependency or obscurity cause.",
+     "label": "no"
+    },
+    "re06": {
+     "ambiguous": null,
+     "evidence": "Never says the cause is a dependency or obscurity.",
+     "label": "no"
+    },
+    "re07": {
+     "ambiguous": null,
+     "evidence": "No finding names dependency or obscurity as its cause.",
+     "label": "no"
+    },
+    "re08": {
+     "ambiguous": null,
+     "evidence": "No finding names dependency or obscurity as its cause.",
+     "label": "no"
+    },
+    "re09": {
+     "ambiguous": null,
+     "evidence": "No finding names dependency or obscurity as its cause.",
+     "label": "no"
+    },
+    "re10": {
+     "ambiguous": null,
+     "evidence": "No cause named as dependency or obscurity.",
+     "label": "no"
+    },
+    "re11": {
+     "ambiguous": "A single cause statement in the Frame could be read as covering all findings.",
+     "evidence": "Only the Frame says \"The cause is dependencies\"; findings 1-4 each name no cause.",
+     "label": "no"
+    },
+    "re12": {
+     "ambiguous": null,
+     "evidence": "No finding says its cause is a dependency or obscurity.",
+     "label": "no"
+    },
+    "re13": {
+     "ambiguous": "Prose answer with no enumerated findings.",
+     "evidence": "No finding says its cause is a dependency or obscurity.",
+     "label": "no"
+    },
+    "re14": {
+     "ambiguous": null,
+     "evidence": "Finding 2 (Billing's default branch) and finding 3 name no cause as dependency or obscurity.",
+     "label": "no"
+    },
+    "re15": {
+     "ambiguous": null,
+     "evidence": "No finding says its cause is a dependency or obscurity.",
+     "label": "no"
+    },
+    "re16": {
+     "ambiguous": null,
+     "evidence": "No finding says its cause is a dependency or obscurity.",
+     "label": "no"
+    },
+    "re17": {
+     "ambiguous": null,
+     "evidence": "No finding says its cause is a dependency or obscurity.",
+     "label": "no"
+    },
+    "re18": {
+     "ambiguous": null,
+     "evidence": "Findings 1-5 name no cause as dependency or obscurity; finding 2 says only \"an unknown unknown\".",
+     "label": "no"
+    },
+    "re19": {
+     "ambiguous": null,
+     "evidence": "Only finding 1 says \"Cause: a dependency\"; findings 2-4 do not.",
+     "label": "no"
+    },
+    "re20": {
+     "ambiguous": null,
+     "evidence": "Neither finding says its cause is a dependency or obscurity.",
+     "label": "no"
+    }
+   },
+   "scores": {
+    "re01": {
+     "with_criteria": null,
+     "without_criteria": 0.13
+    },
+    "re02": {
+     "with_criteria": null,
+     "without_criteria": 0.19
+    },
+    "re03": {
+     "with_criteria": null,
+     "without_criteria": 0.12
+    },
+    "re04": {
+     "with_criteria": null,
+     "without_criteria": 0.11
+    },
+    "re05": {
+     "with_criteria": null,
+     "without_criteria": 0.3
+    },
+    "re06": {
+     "with_criteria": null,
+     "without_criteria": 0.12
+    },
+    "re07": {
+     "with_criteria": null,
+     "without_criteria": 0.04
+    },
+    "re08": {
+     "with_criteria": null,
+     "without_criteria": 0.06
+    },
+    "re09": {
+     "with_criteria": null,
+     "without_criteria": 0.1
+    },
+    "re10": {
+     "with_criteria": null,
+     "without_criteria": 0.14
+    },
+    "re11": {
+     "with_criteria": null,
+     "without_criteria": 0.11
+    },
+    "re12": {
+     "with_criteria": null,
+     "without_criteria": 0.15
+    },
+    "re13": {
+     "with_criteria": null,
+     "without_criteria": 0.24
+    },
+    "re14": {
+     "with_criteria": null,
+     "without_criteria": 0.36
+    },
+    "re15": {
+     "with_criteria": null,
+     "without_criteria": 0.12
+    },
+    "re16": {
+     "with_criteria": null,
+     "without_criteria": 0.08
+    },
+    "re17": {
+     "with_criteria": null,
+     "without_criteria": 0.07
+    },
+    "re18": {
+     "with_criteria": null,
+     "without_criteria": 0.1
+    },
+    "re19": {
+     "with_criteria": null,
+     "without_criteria": 0.17
+    },
+    "re20": {
+     "with_criteria": null,
+     "without_criteria": 0.12
+    }
+   },
+   "split": {
+    "re01": "first",
+    "re02": "first",
+    "re03": "first",
+    "re04": "first",
+    "re05": "first",
+    "re06": "first",
+    "re07": "first",
+    "re08": "first",
+    "re09": "first",
+    "re10": "first",
+    "re11": "first",
+    "re12": "first",
+    "re13": "first",
+    "re14": "first",
+    "re15": "first",
+    "re16": "first",
+    "re17": "first",
+    "re18": "first",
+    "re19": "first",
+    "re20": "first"
+   }
+  },
+  "names_change": {
+   "labels": {
+    "re01": {
+     "ambiguous": null,
+     "evidence": "Every numbered finding has a '**Change:**' line.",
+     "label": "yes"
+    },
+    "re02": {
+     "ambiguous": null,
+     "evidence": "'Have the invoice calculation produce the facts the PDF needs' so Render only prints and lays out.",
+     "label": "yes"
+    },
+    "re03": {
+     "ambiguous": null,
+     "evidence": "'Make `delete()` idempotent: issue one Redis `DELETE` and return whether it removed a key.'",
+     "label": "yes"
+    },
+    "re04": {
+     "ambiguous": null,
+     "evidence": "Rename to `enrich_unseen_payment_rows` and add a docstring about mutation.",
+     "label": "yes"
+    },
+    "re05": {
+     "ambiguous": "Findings 1-3 are removed by the one pure function; only finding 4 is left without a change.",
+     "evidence": "Finding 4 has no change; the proposed function still sets shipping only when a discount exists.",
+     "label": "no"
+    },
+    "re06": {
+     "ambiguous": null,
+     "evidence": "'Make deletion idempotent and let Redis delete the key directly.'",
+     "label": "yes"
+    },
+    "re07": {
+     "ambiguous": "The PATCH/HEAD remark ends in 'verify whether the restricted method union is intentional', not a concrete change.",
+     "evidence": "Each finding has a change: requestJson/requestRaw split, client defaults, optional headers, remove throwOnNon2xx, retry policy, separate json/body, tracing hook.",
+     "label": "yes"
+    },
+    "re08": {
+     "ambiguous": null,
+     "evidence": "Item 5: skip or deprecated shim; item 6: no interfaces at v1; missing pain: document the field-addition flow; validator: pin the decision.",
+     "label": "yes"
+    },
+    "re09": {
+     "ambiguous": "The 'only one consumer' bullet's remedy is the optional merge in step 3.",
+     "evidence": "One owner for the tax math: `Price()` in `invoice`, `Render` takes `invoice.Priced`; basis points; rates as data.",
+     "label": "yes"
+    },
+    "re10": {
+     "ambiguous": "The 'Watch the mutation' point ends 'That's fine' and names no change.",
+     "evidence": "Rename to `screen_new_payments` and write a docstring of the contract.",
+     "label": "yes"
+    },
+    "re11": {
+     "ambiguous": "Finding 3 has no explicit Change line, only an implied one.",
+     "evidence": "Findings 1, 2, 4 have a Change line; finding 3 argues for removing unused layers and adding later.",
+     "label": "yes"
+    },
+    "re12": {
+     "ambiguous": "Fixes are given in one shared section, not per finding.",
+     "evidence": "The \"Fix\" section (pure straight-line calculation, small pure functions) removes all three findings.",
+     "label": "yes"
+    },
+    "re13": {
+     "ambiguous": "Findings are informal prose, not enumerated.",
+     "evidence": "Each problem has a change: billing unknown-status handling and invoice signal, order lifecycle contract, mappings kept at consumer boundaries.",
+     "label": "yes"
+    },
+    "re14": {
+     "ambiguous": null,
+     "evidence": "Each finding has a change: publish versioned contract with CI check, ignore or dead-letter unknowns, validate mapping against the enum.",
+     "label": "yes"
+    },
+    "re15": {
+     "ambiguous": null,
+     "evidence": "Both the exception design and the race are removed by making delete() a single idempotent redis delete.",
+     "label": "yes"
+    },
+    "re16": {
+     "ambiguous": null,
+     "evidence": "Both findings are removed by making delete() idempotent, or returning a bool.",
+     "label": "yes"
+    },
+    "re17": {
+     "ambiguous": "The retry-endpoint check names a thing to verify rather than a change.",
+     "evidence": "Splitting into drop_seen, enrich, needs_review; the checks name docstring, set False explicitly, and retry-safe dedupe.",
+     "label": "yes"
+    },
+    "re18": {
+     "ambiguous": null,
+     "evidence": "Findings 1, 3, 4 give a Change; 2 and 5 point to the fixes above; Minor names method-specific helpers.",
+     "label": "yes"
+    },
+    "re19": {
+     "ambiguous": null,
+     "evidence": "Each of findings 1-4 has a Change line (split by concept, drop the facade, interfaces only when needed, keep validation near the field).",
+     "label": "yes"
+    },
+    "re20": {
+     "ambiguous": "Moving defaults inside put is the change for Overexposure and arguably also reduces the forwarding.",
+     "evidence": "The Shallow Module finding names no removing change: \"keep it if this is the place for shared storage behavior.\"",
+     "label": "no"
+    },
+    "rx01": {
+     "ambiguous": "Findings are not individually mapped to a change; one combined fix block serves all four, and findings 3 and 4 name no change inside their own item.",
+     "evidence": "One \"Fix: compute everything in one pass, with no flag and no recursion\" plus the baseShipping caveat covers findings 1, 2, 4 and the order dependence of 3.",
+     "label": "yes"
+    },
+    "rx02": {
+     "ambiguous": null,
+     "evidence": "Each of the four findings has a \"Change:\" line (constructor defaults, json/raw split, withContext, masked retry policy).",
+     "label": "yes"
+    },
+    "rx03": {
+     "ambiguous": "Treated the hard-to-name flag as the single finding; if the answer has no findings, this would be no.",
+     "evidence": "\"Call it `deduplicate_and_enrich_payments`.\"",
+     "label": "yes"
+    },
+    "rx04": {
+     "ambiguous": "Changes are given in a separate section rather than per finding; the \"flat status list\" finding has only an indirect change.",
+     "evidence": "Shared copies: versioned contract from order-service; generic event: replace switches with fact events; billing fallthrough: \"invoice only for an explicit, defined condition\".",
+     "label": "yes"
+    },
+    "rx05": {
+     "ambiguous": "Treated the vague name as the single finding; if the answer has no findings, this would be no.",
+     "evidence": "\"Call it `deduplicate_and_enrich_payments`.\"",
+     "label": "yes"
+    },
+    "rx06": {
+     "ambiguous": "Changes sit in one section rather than inside each finding.",
+     "evidence": "\"What I'd do\" code and bullets map each finding: defaults for ACL/class, BlobNotFound, return nothing, streaming get, ACL fixed to private.",
+     "label": "yes"
+    },
+    "rx07": {
+     "ambiguous": null,
+     "evidence": "Single pass in dependency order; shipping rule in a helper returning a complete value; \"A single pass removes that global state and the recursive call.\"",
+     "label": "yes"
+    },
+    "rx08": {
+     "ambiguous": null,
+     "evidence": "Two-jobs status: separate state updates from business actions; billing fallthrough: allowlist; warehouse: mapping decision checked in CI; copied rules: lifecycle contract.",
+     "label": "yes"
+    },
+    "rx09": {
+     "ambiguous": "Finding 4 states its change only implicitly and in the plan section.",
+     "evidence": "Findings 1-3 state a fix (single owner mapper, delete facade, drop interfaces); finding 4 resolved by the recommended plan (validator as collaborator of Writer, Mapper owns boundary).",
+     "label": "yes"
+    },
+    "rx10": {
+     "ambiguous": null,
+     "evidence": "Every finding states a fix: overloads/separate methods, constructor defaults, retry policy by method, context hook, throw by default, plus a fix per small point.",
+     "label": "yes"
+    },
+    "rx11": {
+     "ambiguous": null,
+     "evidence": "Facade, Manager and Dao each end in \"What I'd cut\" with the Controller -> Service -> Repository code.",
+     "label": "yes"
+    },
+    "rx12": {
+     "ambiguous": null,
+     "evidence": "Each has a fix: one registry entry; split proration by case with characterization tests; delete or leave the fax exporter.",
+     "label": "yes"
+    },
+    "rx13": {
+     "ambiguous": null,
+     "evidence": "Findings 1-4 each name a change: split by concept, controllers depend on one piece, interfaces only for a second implementation, keep the mapper as a package-private helper.",
+     "label": "yes"
+    },
+    "rx14": {
+     "ambiguous": null,
+     "evidence": "Facade, Manager and DAO are each \"Dead weight\" and the answer says \"What I'd cut: 3 of 5 layers\" with an end state.",
+     "label": "yes"
+    },
+    "rx15": {
+     "ambiguous": null,
+     "evidence": "Makes delete() idempotent with the code shown; Redis handles the missing-key and race cases.",
+     "label": "yes"
+    },
+    "rx16": {
+     "ambiguous": null,
+     "evidence": "Finding 1: defaults on HttpClient, optional headers. Finding 2: requestJson and requestRaw methods.",
+     "label": "yes"
+    },
+    "rx17": {
+     "ambiguous": null,
+     "evidence": "Move rates and LineTotal into internal/invoice so invoicepdf stops recomputing; pass a built result to Render.",
+     "label": "yes"
+    },
+    "rx18": {
+     "ambiguous": null,
+     "evidence": "Steps 1-3: move tax knowledge into internal/invoice, Render only draws, Line carries the label.",
+     "label": "yes"
+    },
+    "rx19": {
+     "ambiguous": "One fix covers all findings; renaming is not stated separately.",
+     "evidence": "Every listed problem is removed by the pure `computeTotals` rewrite with no flag and no recursion.",
+     "label": "yes"
+    },
+    "rx20": {
+     "ambiguous": null,
+     "evidence": "Delete Facade, Manager and Dao; keep Service, Mapper and Repository (Controller -> Service -> Repository).",
+     "label": "yes"
+    }
+   },
+   "scores": {
+    "re01": {
+     "with_criteria": 0.8,
+     "without_criteria": 0.95
+    },
+    "re02": {
+     "with_criteria": 0.76,
+     "without_criteria": 0.66
+    },
+    "re03": {
+     "with_criteria": 0.89,
+     "without_criteria": 0.67
+    },
+    "re04": {
+     "with_criteria": 0.76,
+     "without_criteria": 0.4
+    },
+    "re05": {
+     "with_criteria": 0.74,
+     "without_criteria": 0.44
+    },
+    "re06": {
+     "with_criteria": 0.88,
+     "without_criteria": 0.71
+    },
+    "re07": {
+     "with_criteria": 0.74,
+     "without_criteria": 0.81
+    },
+    "re08": {
+     "with_criteria": 0.58,
+     "without_criteria": 0.49
+    },
+    "re09": {
+     "with_criteria": 0.71,
+     "without_criteria": 0.65
+    },
+    "re10": {
+     "with_criteria": 0.42,
+     "without_criteria": 0.28
+    },
+    "re11": {
+     "with_criteria": 0.56,
+     "without_criteria": 0.8
+    },
+    "re12": {
+     "with_criteria": 0.56,
+     "without_criteria": 0.56
+    },
+    "re13": {
+     "with_criteria": 0.81,
+     "without_criteria": 0.68
+    },
+    "re14": {
+     "with_criteria": 0.83,
+     "without_criteria": 0.85
+    },
+    "re15": {
+     "with_criteria": 0.91,
+     "without_criteria": 0.77
+    },
+    "re16": {
+     "with_criteria": 0.91,
+     "without_criteria": 0.81
+    },
+    "re17": {
+     "with_criteria": 0.71,
+     "without_criteria": 0.45
+    },
+    "re18": {
+     "with_criteria": 0.53,
+     "without_criteria": 0.84
+    },
+    "re19": {
+     "with_criteria": 0.76,
+     "without_criteria": 0.86
+    },
+    "re20": {
+     "with_criteria": 0.34,
+     "without_criteria": 0.53
+    },
+    "rx01": {
+     "with_criteria": 0.58,
+     "without_criteria": 0.47
+    },
+    "rx02": {
+     "with_criteria": 0.87,
+     "without_criteria": 0.96
+    },
+    "rx03": {
+     "with_criteria": 0.76,
+     "without_criteria": 0.32
+    },
+    "rx04": {
+     "with_criteria": 0.65,
+     "without_criteria": 0.51
+    },
+    "rx05": {
+     "with_criteria": 0.78,
+     "without_criteria": 0.31
+    },
+    "rx06": {
+     "with_criteria": 0.72,
+     "without_criteria": 0.72
+    },
+    "rx07": {
+     "with_criteria": 0.4,
+     "without_criteria": 0.53
+    },
+    "rx08": {
+     "with_criteria": 0.74,
+     "without_criteria": 0.62
+    },
+    "rx09": {
+     "with_criteria": 0.81,
+     "without_criteria": 0.78
+    },
+    "rx10": {
+     "with_criteria": 0.72,
+     "without_criteria": 0.8
+    },
+    "rx11": {
+     "with_criteria": 0.61,
+     "without_criteria": 0.52
+    },
+    "rx12": {
+     "with_criteria": 0.84,
+     "without_criteria": 0.81
+    },
+    "rx13": {
+     "with_criteria": 0.68,
+     "without_criteria": 0.78
+    },
+    "rx14": {
+     "with_criteria": 0.82,
+     "without_criteria": 0.51
+    },
+    "rx15": {
+     "with_criteria": 0.86,
+     "without_criteria": 0.69
+    },
+    "rx16": {
+     "with_criteria": 0.92,
+     "without_criteria": 0.9
+    },
+    "rx17": {
+     "with_criteria": 0.83,
+     "without_criteria": 0.7
+    },
+    "rx18": {
+     "with_criteria": 0.84,
+     "without_criteria": 0.74
+    },
+    "rx19": {
+     "with_criteria": 0.52,
+     "without_criteria": 0.49
+    },
+    "rx20": {
+     "with_criteria": 0.61,
+     "without_criteria": 0.32
+    }
+   },
+   "split": {
+    "re01": "first",
+    "re02": "first",
+    "re03": "first",
+    "re04": "first",
+    "re05": "first",
+    "re06": "first",
+    "re07": "first",
+    "re08": "first",
+    "re09": "first",
+    "re10": "first",
+    "re11": "first",
+    "re12": "first",
+    "re13": "first",
+    "re14": "first",
+    "re15": "first",
+    "re16": "first",
+    "re17": "first",
+    "re18": "first",
+    "re19": "first",
+    "re20": "first",
+    "rx01": "holdout",
+    "rx02": "holdout",
+    "rx03": "holdout",
+    "rx04": "holdout",
+    "rx05": "holdout",
+    "rx06": "holdout",
+    "rx07": "holdout",
+    "rx08": "holdout",
+    "rx09": "holdout",
+    "rx10": "holdout",
+    "rx11": "holdout",
+    "rx12": "holdout",
+    "rx13": "holdout",
+    "rx14": "holdout",
+    "rx15": "holdout",
+    "rx16": "holdout",
+    "rx17": "holdout",
+    "rx18": "holdout",
+    "rx19": "holdout",
+    "rx20": "holdout"
+   }
+  },
+  "not_covered": {
+   "labels": {
+    "re01": {
+     "ambiguous": null,
+     "evidence": "Closing '## Not covered' section: implementation, call sites, quality trade-offs, retry and timeout behavior.",
+     "label": "yes"
+    },
+    "re02": {
+     "ambiguous": "Could be read as an implicit scope limit; it does not say what was not covered.",
+     "evidence": "'This recommendation is based on the snippet and the change history you gave' gives the basis but names nothing left unreviewed.",
+     "label": "no"
+    },
+    "re03": {
+     "ambiguous": null,
+     "evidence": "Nothing about what the review did not cover.",
+     "label": "no"
+    },
+    "re04": {
+     "ambiguous": null,
+     "evidence": "No statement of what the review did not cover.",
+     "label": "no"
+    },
+    "re05": {
+     "ambiguous": null,
+     "evidence": "No statement of what the review did not cover; it ends with a question about other callers.",
+     "label": "no"
+    },
+    "re06": {
+     "ambiguous": null,
+     "evidence": "Nothing about what the review did not cover.",
+     "label": "no"
+    },
+    "re07": {
+     "ambiguous": null,
+     "evidence": "No statement of what the review did not cover.",
+     "label": "no"
+    },
+    "re08": {
+     "ambiguous": null,
+     "evidence": "No statement of what the review did not cover; 'Scope (out)' belongs to the epic, not the review.",
+     "label": "no"
+    },
+    "re09": {
+     "ambiguous": null,
+     "evidence": "'I haven't seen the rest of the code, so I'm going only on the snippets you pasted.'",
+     "label": "yes"
+    },
+    "re10": {
+     "ambiguous": null,
+     "evidence": "No statement of what the review did not cover.",
+     "label": "no"
+    },
+    "re11": {
+     "ambiguous": null,
+     "evidence": "\"Not covered: I only had the snippets you pasted... I didn't weigh any trade-off between qualities\"",
+     "label": "yes"
+    },
+    "re12": {
+     "ambiguous": "Caveats section partly reads as limits of the review.",
+     "evidence": "Caveats list assumptions (\"I assumed shipping should reset...\") but never say what the review did not cover.",
+     "label": "no"
+    },
+    "re13": {
+     "ambiguous": null,
+     "evidence": "The answer never says what the review did not cover.",
+     "label": "no"
+    },
+    "re14": {
+     "ambiguous": "Dropped items are covered but deprioritised.",
+     "evidence": "\"Dropped / noted\" lists items judged and set aside, not what the review did not cover.",
+     "label": "no"
+    },
+    "re15": {
+     "ambiguous": null,
+     "evidence": "The answer never says what it did not cover; it only advises grepping to confirm the nine sites.",
+     "label": "no"
+    },
+    "re16": {
+     "ambiguous": "States the repo was not available rather than listing uncovered areas.",
+     "evidence": "\"I can find the nine call sites and make the change if you point me at the repo. The working directory here doesn't contain it.\"",
+     "label": "yes"
+    },
+    "re17": {
+     "ambiguous": null,
+     "evidence": "The answer never says what it did not cover.",
+     "label": "no"
+    },
+    "re18": {
+     "ambiguous": "\"no opposing text was read\" is a limit on sources.",
+     "evidence": "\"Dropped\" lists items judged fine and the position note says no opposing text was read; no statement of what the review left uncovered.",
+     "label": "no"
+    },
+    "re19": {
+     "ambiguous": null,
+     "evidence": "\"Not covered: I did not read the code, measure anything, or weigh other qualities such as performance against testability.\"",
+     "label": "yes"
+    },
+    "re20": {
+     "ambiguous": null,
+     "evidence": "\"I haven't checked call sites or how often this code changes, so I can't weigh that tradeoff further.\"",
+     "label": "yes"
+    },
+    "rx01": {
+     "ambiguous": "The offer implies Cart and callers were not examined, but the answer never says so as a limit.",
+     "evidence": "\"If you can share how `Cart` is defined and where `recalcTotals` is called, I can check...\" is an offer, not a statement of what the review left out.",
+     "label": "no"
+    },
+    "rx02": {
+     "ambiguous": null,
+     "evidence": "\"## Not covered ... I did not weigh quality trade-offs such as test isolation against ergonomics, and I read no code beyond what you pasted.\"",
+     "label": "yes"
+    },
+    "rx03": {
+     "ambiguous": null,
+     "evidence": "The answer states no limit of the review.",
+     "label": "no"
+    },
+    "rx04": {
+     "ambiguous": null,
+     "evidence": "No statement of what the review did not cover.",
+     "label": "no"
+    },
+    "rx05": {
+     "ambiguous": null,
+     "evidence": "No statement of what was not covered.",
+     "label": "no"
+    },
+    "rx06": {
+     "ambiguous": null,
+     "evidence": "\"I answered from the code you pasted and didn't open the reference files the skill points to, so this isn't a full red-flags review.\"",
+     "label": "yes"
+    },
+    "rx07": {
+     "ambiguous": null,
+     "evidence": "\"I'm judging only this snippet, so I can't rank the cleanup by how often the code changes.\"",
+     "label": "yes"
+    },
+    "rx08": {
+     "ambiguous": null,
+     "evidence": "No statement of what the review did not cover.",
+     "label": "no"
+    },
+    "rx09": {
+     "ambiguous": null,
+     "evidence": "\"The code isn't in this workspace, so this is a review of the plan as stated\" and \"I assumed the 11 controllers each use a subset of methods.\"",
+     "label": "yes"
+    },
+    "rx10": {
+     "ambiguous": null,
+     "evidence": "\"I haven't seen the implementation, so I can't comment on how it handles retries, timeouts, or error bodies.\"",
+     "label": "yes"
+    },
+    "rx11": {
+     "ambiguous": null,
+     "evidence": "\"I'm only seeing the `getCustomer` path. If the Manager or Facade does real work on other methods...\"",
+     "label": "yes"
+    },
+    "rx12": {
+     "ambiguous": null,
+     "evidence": "No limitation or uncovered area is stated anywhere in the answer.",
+     "label": "no"
+    },
+    "rx13": {
+     "ambiguous": null,
+     "evidence": "\"**Not covered:** I did not read the code, call graph or change history.\"",
+     "label": "yes"
+    },
+    "rx14": {
+     "ambiguous": "Caveat implies other Facade uses were not seen, but never says so.",
+     "evidence": "\"Worth grepping Facade for any method longer than one line before deleting.\" A conditional caveat; it never states what the review did not look at.",
+     "label": "no"
+    },
+    "rx15": {
+     "ambiguous": null,
+     "evidence": "No statement of what the review left out.",
+     "label": "no"
+    },
+    "rx16": {
+     "ambiguous": null,
+     "evidence": "\"I can't assess retry safety... I also can't judge whether `HttpClient` is a shallow module without seeing what its implementation hides.\"",
+     "label": "yes"
+    },
+    "rx17": {
+     "ambiguous": null,
+     "evidence": "No limitation or uncovered area is stated.",
+     "label": "no"
+    },
+    "rx18": {
+     "ambiguous": null,
+     "evidence": "No limitation or uncovered area is stated.",
+     "label": "no"
+    },
+    "rx19": {
+     "ambiguous": null,
+     "evidence": "\"is the `< 50` rule meant to apply only when a discount is present?\" is a question about intent, not a statement of what the review skipped.",
+     "label": "no"
+    },
+    "rx20": {
+     "ambiguous": null,
+     "evidence": "No statement of what the review did not cover.",
+     "label": "no"
+    }
+   },
+   "scores": {
+    "re01": {
+     "with_criteria": 0.99,
+     "without_criteria": 0.98
+    },
+    "re02": {
+     "with_criteria": 0.62,
+     "without_criteria": 0.32
+    },
+    "re03": {
+     "with_criteria": 0.08,
+     "without_criteria": 0.38
+    },
+    "re04": {
+     "with_criteria": 0.12,
+     "without_criteria": 0.39
+    },
+    "re05": {
+     "with_criteria": 0.69,
+     "without_criteria": 0.39
+    },
+    "re06": {
+     "with_criteria": 0.06,
+     "without_criteria": 0.36
+    },
+    "re07": {
+     "with_criteria": 0.31,
+     "without_criteria": 0.28
+    },
+    "re08": {
+     "with_criteria": 0.66,
+     "without_criteria": 0.39
+    },
+    "re09": {
+     "with_criteria": 0.94,
+     "without_criteria": 0.38
+    },
+    "re10": {
+     "with_criteria": 0.29,
+     "without_criteria": 0.43
+    },
+    "re11": {
+     "with_criteria": 0.98,
+     "without_criteria": 0.96
+    },
+    "re12": {
+     "with_criteria": 0.68,
+     "without_criteria": 0.45
+    },
+    "re13": {
+     "with_criteria": 0.08,
+     "without_criteria": 0.28
+    },
+    "re14": {
+     "with_criteria": 0.26,
+     "without_criteria": 0.36
+    },
+    "re15": {
+     "with_criteria": 0.47,
+     "without_criteria": 0.4
+    },
+    "re16": {
+     "with_criteria": 0.88,
+     "without_criteria": 0.43
+    },
+    "re17": {
+     "with_criteria": 0.46,
+     "without_criteria": 0.62
+    },
+    "re18": {
+     "with_criteria": 0.52,
+     "without_criteria": 0.5
+    },
+    "re19": {
+     "with_criteria": 0.99,
+     "without_criteria": 0.97
+    },
+    "re20": {
+     "with_criteria": 0.95,
+     "without_criteria": 0.66
+    },
+    "rx01": {
+     "with_criteria": 0.81,
+     "without_criteria": 0.44
+    },
+    "rx02": {
+     "with_criteria": 0.99,
+     "without_criteria": 0.97
+    },
+    "rx03": {
+     "with_criteria": 0.1,
+     "without_criteria": 0.37
+    },
+    "rx04": {
+     "with_criteria": 0.06,
+     "without_criteria": 0.27
+    },
+    "rx05": {
+     "with_criteria": 0.11,
+     "without_criteria": 0.41
+    },
+    "rx06": {
+     "with_criteria": 0.96,
+     "without_criteria": 0.88
+    },
+    "rx07": {
+     "with_criteria": 0.89,
+     "without_criteria": 0.39
+    },
+    "rx08": {
+     "with_criteria": 0.17,
+     "without_criteria": 0.3
+    },
+    "rx09": {
+     "with_criteria": 0.96,
+     "without_criteria": 0.85
+    },
+    "rx10": {
+     "with_criteria": 0.97,
+     "without_criteria": 0.76
+    },
+    "rx11": {
+     "with_criteria": 0.92,
+     "without_criteria": 0.37
+    },
+    "rx12": {
+     "with_criteria": 0.1,
+     "without_criteria": 0.27
+    },
+    "rx13": {
+     "with_criteria": 0.98,
+     "without_criteria": 0.96
+    },
+    "rx14": {
+     "with_criteria": 0.79,
+     "without_criteria": 0.32
+    },
+    "rx15": {
+     "with_criteria": 0.15,
+     "without_criteria": 0.39
+    },
+    "rx16": {
+     "with_criteria": 0.97,
+     "without_criteria": 0.88
+    },
+    "rx17": {
+     "with_criteria": 0.14,
+     "without_criteria": 0.36
+    },
+    "rx18": {
+     "with_criteria": 0.1,
+     "without_criteria": 0.39
+    },
+    "rx19": {
+     "with_criteria": 0.65,
+     "without_criteria": 0.4
+    },
+    "rx20": {
+     "with_criteria": 0.07,
+     "without_criteria": 0.23
+    }
+   },
+   "split": {
+    "re01": "first",
+    "re02": "first",
+    "re03": "first",
+    "re04": "first",
+    "re05": "first",
+    "re06": "first",
+    "re07": "first",
+    "re08": "first",
+    "re09": "first",
+    "re10": "first",
+    "re11": "first",
+    "re12": "first",
+    "re13": "first",
+    "re14": "first",
+    "re15": "first",
+    "re16": "first",
+    "re17": "first",
+    "re18": "first",
+    "re19": "first",
+    "re20": "first",
+    "rx01": "holdout",
+    "rx02": "holdout",
+    "rx03": "holdout",
+    "rx04": "holdout",
+    "rx05": "holdout",
+    "rx06": "holdout",
+    "rx07": "holdout",
+    "rx08": "holdout",
+    "rx09": "holdout",
+    "rx10": "holdout",
+    "rx11": "holdout",
+    "rx12": "holdout",
+    "rx13": "holdout",
+    "rx14": "holdout",
+    "rx15": "holdout",
+    "rx16": "holdout",
+    "rx17": "holdout",
+    "rx18": "holdout",
+    "rx19": "holdout",
+    "rx20": "holdout"
+   }
+  },
+  "ranked_by_weight": {
+   "labels": {
+    "re01": {
+     "ambiguous": "Rationale is cost-after-freeze plus typical call site, not literally frequency x cost.",
+     "evidence": "Findings are 'ranked' and the ranking is tied to the typical GET call and to what is expensive to fix after the freeze.",
+     "label": "yes"
+    },
+    "re02": {
+     "ambiguous": "Only one finding, so there is nothing to order.",
+     "evidence": "A single finding (duplicated tax policy); no ordering of findings.",
+     "label": "no"
+    },
+    "re03": {
+     "ambiguous": "Only one finding.",
+     "evidence": "Single finding; no ordering.",
+     "label": "no"
+    },
+    "re04": {
+     "ambiguous": null,
+     "evidence": "No ordering of findings; the answer is a rename plus a docstring note.",
+     "label": "no"
+    },
+    "re05": {
+     "ambiguous": null,
+     "evidence": "Findings 1-4 follow code order and kinds of complexity; no weighting by touch frequency or cost.",
+     "label": "no"
+    },
+    "re06": {
+     "ambiguous": "Only one finding.",
+     "evidence": "Single finding; no ordering.",
+     "label": "no"
+    },
+    "re07": {
+     "ambiguous": null,
+     "evidence": "Opens with 'The main design smell' then 'A few other changes'; no weighting by touch frequency x cost.",
+     "label": "no"
+    },
+    "re08": {
+     "ambiguous": null,
+     "evidence": "Findings follow plan order (item 5, item 6, missing, validator question); no touches x cost ranking.",
+     "label": "no"
+    },
+    "re09": {
+     "ambiguous": null,
+     "evidence": "Findings are a bullet list with no ordering by touch frequency x cost.",
+     "label": "no"
+    },
+    "re10": {
+     "ambiguous": null,
+     "evidence": "No ordering of findings by touch frequency x cost.",
+     "label": "no"
+    },
+    "re11": {
+     "ambiguous": "Ordered by cost, frequency is not part of the stated basis.",
+     "evidence": "\"Findings, most costly first. The ranking is my own judgement.\" Orders by cost only, with no frequency times cost.",
+     "label": "no"
+    },
+    "re12": {
+     "ambiguous": null,
+     "evidence": "Three findings listed 1-3 with no ranking basis stated.",
+     "label": "no"
+    },
+    "re13": {
+     "ambiguous": null,
+     "evidence": "Orders by \"First... Next...\" with no weighting by touch frequency times cost.",
+     "label": "no"
+    },
+    "re14": {
+     "ambiguous": "Rank basis is implied by the Frame, not stated at the ranking itself.",
+     "evidence": "\"Findings, in rank order\" after the Frame ties it to \"frequency x blast radius is exactly the weighting problem.\"",
+     "label": "yes"
+    },
+    "re15": {
+     "ambiguous": null,
+     "evidence": "Findings (exception design, TOCTOU race) are not ranked by touch frequency times cost.",
+     "label": "no"
+    },
+    "re16": {
+     "ambiguous": null,
+     "evidence": "Findings are not ranked by touch frequency times cost.",
+     "label": "no"
+    },
+    "re17": {
+     "ambiguous": null,
+     "evidence": "No ranking by touch frequency times cost.",
+     "label": "no"
+    },
+    "re18": {
+     "ambiguous": null,
+     "evidence": "\"Findings, ranked by weight (touched x cost)\"",
+     "label": "yes"
+    },
+    "re19": {
+     "ambiguous": null,
+     "evidence": "\"I ranked by how often the part is touched times what it costs to touch.\"",
+     "label": "yes"
+    },
+    "re20": {
+     "ambiguous": null,
+     "evidence": "Two findings (Overexposure, Shallow Module) with no ranking by touch frequency times cost.",
+     "label": "no"
+    },
+    "rx01": {
+     "ambiguous": null,
+     "evidence": "Problems 1-4 are listed with no frequency-times-cost ordering or mention of how often any part is touched.",
+     "label": "no"
+    },
+    "rx02": {
+     "ambiguous": "Heading says \"Findings, ranked\" and uses frequency, but the question needs frequency times cost; cost is not part of the stated ordering.",
+     "evidence": "\"I ranked findings by how often a caller meets them.\" Frequency only; the answer also says the book gives no ordering for its cost-based judgement.",
+     "label": "no"
+    },
+    "rx03": {
+     "ambiguous": null,
+     "evidence": "At most one item is raised, so nothing is ordered by frequency times cost.",
+     "label": "no"
+    },
+    "rx04": {
+     "ambiguous": null,
+     "evidence": "\"What to change first\" orders actions, but no frequency-times-cost reasoning ranks the findings.",
+     "label": "no"
+    },
+    "rx05": {
+     "ambiguous": null,
+     "evidence": "No ordering of findings; at most one point is made.",
+     "label": "no"
+    },
+    "rx06": {
+     "ambiguous": null,
+     "evidence": "The \"What's wrong\" bullets carry no frequency-times-cost ordering.",
+     "label": "no"
+    },
+    "rx07": {
+     "ambiguous": null,
+     "evidence": "\"I'm judging only this snippet, so I can't rank the cleanup by how often the code changes.\"",
+     "label": "no"
+    },
+    "rx08": {
+     "ambiguous": null,
+     "evidence": "No ordering by frequency times cost; \"Start by making the lifecycle contract explicit\" is a sequence of actions.",
+     "label": "no"
+    },
+    "rx09": {
+     "ambiguous": null,
+     "evidence": "\"### Findings, ranked by weight (frequency × cost)\"; finding 1 is the most frequent change (adding a profile field).",
+     "label": "yes"
+    },
+    "rx10": {
+     "ambiguous": "Ordering by importance may loosely track weight, but the answer does not state frequency or cost as the basis.",
+     "evidence": "\"Here are the issues, most important first.\" Ordered by importance, with no frequency-times-cost reasoning.",
+     "label": "no"
+    },
+    "rx11": {
+     "ambiguous": null,
+     "evidence": "Layers are listed in code order (Facade, Manager, Dao, Service...) with verdicts; no weight ordering.",
+     "label": "no"
+    },
+    "rx12": {
+     "ambiguous": null,
+     "evidence": "Table titled \"by the book's weight formula (frequency touched x cost per touch)\" with annual weight per candidate.",
+     "label": "yes"
+    },
+    "rx13": {
+     "ambiguous": null,
+     "evidence": "\"Findings, ranked by weight. Weight here means how often the part is touched times what it costs to touch.\"",
+     "label": "yes"
+    },
+    "rx14": {
+     "ambiguous": null,
+     "evidence": "Layers are tabled in code order with verdicts; no ordering by touch frequency times cost.",
+     "label": "no"
+    },
+    "rx15": {
+     "ambiguous": null,
+     "evidence": "Store mismatch and the exists() race are given without any ordering by weight.",
+     "label": "no"
+    },
+    "rx16": {
+     "ambiguous": "Ranking basis is call-site frequency and impact, not an explicit frequency-times-cost formula.",
+     "evidence": "\"Findings, ranked\"; finding 1 is \"likely the highest-impact change because the repetition affects calls across all 14 services.\"",
+     "label": "yes"
+    },
+    "rx17": {
+     "ambiguous": null,
+     "evidence": "One main finding plus an \"Also worth doing\"; no ordering by weight.",
+     "label": "no"
+    },
+    "rx18": {
+     "ambiguous": null,
+     "evidence": "A single leak is described; no ordering by weight.",
+     "label": "no"
+    },
+    "rx19": {
+     "ambiguous": null,
+     "evidence": "Two bullet groups without any ordering by touch frequency times cost.",
+     "label": "no"
+    },
+    "rx20": {
+     "ambiguous": "Frame names touch frequency but the order is not tied to frequency times cost.",
+     "evidence": "\"Findings, ranked\" but no basis is given; the stack-wide Temporal Decomposition comes last, after the Manager naming finding.",
+     "label": "no"
+    }
+   },
+   "scores": {
+    "re01": {
+     "with_criteria": null,
+     "without_criteria": 0.39
+    },
+    "re02": {
+     "with_criteria": null,
+     "without_criteria": 0.1
+    },
+    "re03": {
+     "with_criteria": null,
+     "without_criteria": 0.06
+    },
+    "re04": {
+     "with_criteria": null,
+     "without_criteria": 0.02
+    },
+    "re05": {
+     "with_criteria": null,
+     "without_criteria": 0.07
+    },
+    "re06": {
+     "with_criteria": null,
+     "without_criteria": 0.1
+    },
+    "re07": {
+     "with_criteria": null,
+     "without_criteria": 0.16
+    },
+    "re08": {
+     "with_criteria": null,
+     "without_criteria": 0.16
+    },
+    "re09": {
+     "with_criteria": null,
+     "without_criteria": 0.16
+    },
+    "re10": {
+     "with_criteria": null,
+     "without_criteria": 0.04
+    },
+    "re11": {
+     "with_criteria": null,
+     "without_criteria": 0.29
+    },
+    "re12": {
+     "with_criteria": null,
+     "without_criteria": 0.08
+    },
+    "re13": {
+     "with_criteria": null,
+     "without_criteria": 0.24
+    },
+    "re14": {
+     "with_criteria": null,
+     "without_criteria": 0.3
+    },
+    "re15": {
+     "with_criteria": null,
+     "without_criteria": 0.13
+    },
+    "re16": {
+     "with_criteria": null,
+     "without_criteria": 0.21
+    },
+    "re17": {
+     "with_criteria": null,
+     "without_criteria": 0.06
+    },
+    "re18": {
+     "with_criteria": null,
+     "without_criteria": 0.95
+    },
+    "re19": {
+     "with_criteria": null,
+     "without_criteria": 0.96
+    },
+    "re20": {
+     "with_criteria": null,
+     "without_criteria": 0.08
+    },
+    "rx01": {
+     "with_criteria": null,
+     "without_criteria": 0.04
+    },
+    "rx02": {
+     "with_criteria": null,
+     "without_criteria": 0.63
+    },
+    "rx03": {
+     "with_criteria": null,
+     "without_criteria": 0.03
+    },
+    "rx04": {
+     "with_criteria": null,
+     "without_criteria": 0.14
+    },
+    "rx05": {
+     "with_criteria": null,
+     "without_criteria": 0.03
+    },
+    "rx06": {
+     "with_criteria": null,
+     "without_criteria": 0.11
+    },
+    "rx07": {
+     "with_criteria": null,
+     "without_criteria": 0.05
+    },
+    "rx08": {
+     "with_criteria": null,
+     "without_criteria": 0.13
+    },
+    "rx09": {
+     "with_criteria": null,
+     "without_criteria": 0.94
+    },
+    "rx10": {
+     "with_criteria": null,
+     "without_criteria": 0.19
+    },
+    "rx11": {
+     "with_criteria": null,
+     "without_criteria": 0.09
+    },
+    "rx12": {
+     "with_criteria": null,
+     "without_criteria": 0.98
+    },
+    "rx13": {
+     "with_criteria": null,
+     "without_criteria": 0.96
+    },
+    "rx14": {
+     "with_criteria": null,
+     "without_criteria": 0.13
+    },
+    "rx15": {
+     "with_criteria": null,
+     "without_criteria": 0.08
+    },
+    "rx16": {
+     "with_criteria": null,
+     "without_criteria": 0.56
+    },
+    "rx17": {
+     "with_criteria": null,
+     "without_criteria": 0.16
+    },
+    "rx18": {
+     "with_criteria": null,
+     "without_criteria": 0.11
+    },
+    "rx19": {
+     "with_criteria": null,
+     "without_criteria": 0.05
+    },
+    "rx20": {
+     "with_criteria": null,
+     "without_criteria": 0.43
+    }
+   },
+   "split": {
+    "re01": "first",
+    "re02": "first",
+    "re03": "first",
+    "re04": "first",
+    "re05": "first",
+    "re06": "first",
+    "re07": "first",
+    "re08": "first",
+    "re09": "first",
+    "re10": "first",
+    "re11": "first",
+    "re12": "first",
+    "re13": "first",
+    "re14": "first",
+    "re15": "first",
+    "re16": "first",
+    "re17": "first",
+    "re18": "first",
+    "re19": "first",
+    "re20": "first",
+    "rx01": "holdout",
+    "rx02": "holdout",
+    "rx03": "holdout",
+    "rx04": "holdout",
+    "rx05": "holdout",
+    "rx06": "holdout",
+    "rx07": "holdout",
+    "rx08": "holdout",
+    "rx09": "holdout",
+    "rx10": "holdout",
+    "rx11": "holdout",
+    "rx12": "holdout",
+    "rx13": "holdout",
+    "rx14": "holdout",
+    "rx15": "holdout",
+    "rx16": "holdout",
+    "rx17": "holdout",
+    "rx18": "holdout",
+    "rx19": "holdout",
+    "rx20": "holdout"
+   }
+  },
+  "who_changes": {
+   "labels": {
+    "re01": {
+     "ambiguous": "Restates the request's maintainer count rather than adding a claim about who changes the API.",
+     "evidence": "States the review is from the caller's side because 14 services call it and three people maintain it.",
+     "label": "yes"
+    },
+    "re02": {
+     "ambiguous": null,
+     "evidence": "Mentions 'tax rates changed twice this year' but never says who changes the design.",
+     "label": "no"
+    },
+    "re03": {
+     "ambiguous": null,
+     "evidence": "No statement or question about who changes the store.",
+     "label": "no"
+    },
+    "re04": {
+     "ambiguous": null,
+     "evidence": "No statement or question about who changes the function.",
+     "label": "no"
+    },
+    "re05": {
+     "ambiguous": null,
+     "evidence": "Only asks whether anything else calls `applyDiscount`; never says who changes the cart code.",
+     "label": "no"
+    },
+    "re06": {
+     "ambiguous": null,
+     "evidence": "No statement or question about who changes the store.",
+     "label": "no"
+    },
+    "re07": {
+     "ambiguous": null,
+     "evidence": "'Since 14 services consume this SDK' names consumers, not who changes the SDK.",
+     "label": "no"
+    },
+    "re08": {
+     "ambiguous": null,
+     "evidence": "Mentions 'the team' and call sites but never states or asks who changes UserService.",
+     "label": "no"
+    },
+    "re09": {
+     "ambiguous": null,
+     "evidence": "Says rates 'changed twice this year' but never who changes the design.",
+     "label": "no"
+    },
+    "re10": {
+     "ambiguous": null,
+     "evidence": "No statement or question about who changes the function.",
+     "label": "no"
+    },
+    "re11": {
+     "ambiguous": null,
+     "evidence": "Frame: \"your team is the only one changing it.\"",
+     "label": "yes"
+    },
+    "re12": {
+     "ambiguous": null,
+     "evidence": "No sentence states or asks who changes the cart code.",
+     "label": "no"
+    },
+    "re13": {
+     "ambiguous": "Ownership by order-service is stated, which is close to who changes.",
+     "evidence": "The answer says contracts are \"owned by order-service\" and to \"keep a record of consumers\" but never states who changes the design.",
+     "label": "no"
+    },
+    "re14": {
+     "ambiguous": null,
+     "evidence": "Frame: \"Readers: four consumer teams; owner: order-service team... Design changes: once a quarter.\"",
+     "label": "yes"
+    },
+    "re15": {
+     "ambiguous": null,
+     "evidence": "The answer never states or asks who changes the session store.",
+     "label": "no"
+    },
+    "re16": {
+     "ambiguous": null,
+     "evidence": "The answer never states or asks who changes the session store.",
+     "label": "no"
+    },
+    "re17": {
+     "ambiguous": null,
+     "evidence": "The answer never states or asks who changes the function.",
+     "label": "no"
+    },
+    "re18": {
+     "ambiguous": null,
+     "evidence": "Frame: \"Readers: 14 consuming services; maintainers: 3 of you.\"",
+     "label": "yes"
+    },
+    "re19": {
+     "ambiguous": null,
+     "evidence": "The answer never states or asks who changes UserService.",
+     "label": "no"
+    },
+    "re20": {
+     "ambiguous": null,
+     "evidence": "The answer never states or asks who changes BlobStore; it only notes call sites and change frequency were unchecked.",
+     "label": "no"
+    },
+    "rx01": {
+     "ambiguous": null,
+     "evidence": "Only offer: \"If you can share how `Cart` is defined and where `recalcTotals` is called, I can check whether the shipping behavior was intentional.\" No statement or question about who changes the code.",
+     "label": "no"
+    },
+    "rx02": {
+     "ambiguous": "Names the readers/maintainers as the frame; also reads callers rather than changers, but the three maintainers are stated.",
+     "evidence": "\"I read it from the caller's side, since 14 services consume it and three people maintain it.\"",
+     "label": "yes"
+    },
+    "rx03": {
+     "ambiguous": null,
+     "evidence": "Answer is a rename plus one sentence on the \"Hard to Pick Name\" flag; no mention of who changes the function.",
+     "label": "no"
+    },
+    "rx04": {
+     "ambiguous": "The teams and owner are discussed, but the answer never states who changes the design.",
+     "evidence": "\"There's no clear owner or change process to tell teams what a new value means and who needs to act on it.\" Describes a missing owner, does not state or ask who changes the design.",
+     "label": "no"
+    },
+    "rx05": {
+     "ambiguous": null,
+     "evidence": "No mention of who changes the function.",
+     "label": "no"
+    },
+    "rx06": {
+     "ambiguous": null,
+     "evidence": "Only question is \"do any callers genuinely pass non-default ACL or storage class, and for what?\" That asks about caller values, not who changes the design.",
+     "label": "no"
+    },
+    "rx07": {
+     "ambiguous": "Touches on change frequency but not on who changes the design.",
+     "evidence": "\"I can't rank the cleanup by how often the code changes.\" Notes change frequency is unknown, does not state or ask who changes the code.",
+     "label": "no"
+    },
+    "rx08": {
+     "ambiguous": "Teams and an owner are discussed, but who changes the design is not stated or asked.",
+     "evidence": "\"there's no reliable way to see who must decide what a new state means.\" Raises ownership of decisions, never states who changes the design.",
+     "label": "no"
+    },
+    "rx09": {
+     "ambiguous": "The Frame line states callers and the most common change, which a lenient reader might accept as the frame the question asks for.",
+     "evidence": "\"Frame (from your message): plan under review; callers are 11 controllers; most common change is adding a profile field\" names callers and the change, not who changes the design.",
+     "label": "no"
+    },
+    "rx10": {
+     "ambiguous": null,
+     "evidence": "\"adding optional fields later is cheap, but removing or retyping required ones is a breaking change across 14 services.\" Mentions consumers, not who changes the SDK.",
+     "label": "no"
+    },
+    "rx11": {
+     "ambiguous": "Implicit mention of the asker as the one who pays per change; no statement or question about who changes the design.",
+     "evidence": "\"You pay for the layers every day, on every field you add.\" Only the asker is implied; nobody is named or asked about.",
+     "label": "no"
+    },
+    "rx12": {
+     "ambiguous": null,
+     "evidence": "\"six people, 27 changes a year\" and \"only known by one person\" state who changes each candidate.",
+     "label": "yes"
+    },
+    "rx13": {
+     "ambiguous": "States what changes most often, not who changes it.",
+     "evidence": "\"Your most frequent change shows the cost\" and \"set that expectation with the team\" name the change and the team, but never who changes UserService.",
+     "label": "no"
+    },
+    "rx14": {
+     "ambiguous": "Other teams are mentioned conditionally; nothing says who changes this design.",
+     "evidence": "No statement or question about who changes the code; \"modules owned by other teams\" appears only in a hypothetical caveat.",
+     "label": "no"
+    },
+    "rx15": {
+     "ambiguous": null,
+     "evidence": "No mention of who changes the store or the callers.",
+     "label": "no"
+    },
+    "rx16": {
+     "ambiguous": null,
+     "evidence": "\"This is a public client API used by 14 services and maintained by a team of three.\"",
+     "label": "yes"
+    },
+    "rx17": {
+     "ambiguous": null,
+     "evidence": "No statement or question about who edits the tax rates or the packages; only that rates \"changed twice\" (from the request).",
+     "label": "no"
+    },
+    "rx18": {
+     "ambiguous": null,
+     "evidence": "\"someone updated `invoice.Total` and missed `render.go`\" is an unnamed, invented person; no statement or question about who changes the design.",
+     "label": "no"
+    },
+    "rx19": {
+     "ambiguous": null,
+     "evidence": "No statement or question about who changes the cart code.",
+     "label": "no"
+    },
+    "rx20": {
+     "ambiguous": "States how often it changes, not who.",
+     "evidence": "Frame says \"touched every feature... changed constantly\" and \"the day you spent\"; it never names or asks who changes the stack.",
+     "label": "no"
+    }
+   },
+   "scores": {
+    "re01": {
+     "with_criteria": 0.94,
+     "without_criteria": 0.41
+    },
+    "re02": {
+     "with_criteria": 0.05,
+     "without_criteria": 0.12
+    },
+    "re03": {
+     "with_criteria": 0.06,
+     "without_criteria": 0.22
+    },
+    "re04": {
+     "with_criteria": 0.04,
+     "without_criteria": 0.08
+    },
+    "re05": {
+     "with_criteria": 0.16,
+     "without_criteria": 0.27
+    },
+    "re06": {
+     "with_criteria": 0.06,
+     "without_criteria": 0.27
+    },
+    "re07": {
+     "with_criteria": 0.09,
+     "without_criteria": 0.2
+    },
+    "re08": {
+     "with_criteria": 0.66,
+     "without_criteria": 0.43
+    },
+    "re09": {
+     "with_criteria": 0.08,
+     "without_criteria": 0.2
+    },
+    "re10": {
+     "with_criteria": 0.09,
+     "without_criteria": 0.14
+    },
+    "re11": {
+     "with_criteria": 0.91,
+     "without_criteria": 0.88
+    },
+    "re12": {
+     "with_criteria": 0.04,
+     "without_criteria": 0.1
+    },
+    "re13": {
+     "with_criteria": 0.74,
+     "without_criteria": 0.22
+    },
+    "re14": {
+     "with_criteria": 0.96,
+     "without_criteria": 0.76
+    },
+    "re15": {
+     "with_criteria": 0.17,
+     "without_criteria": 0.39
+    },
+    "re16": {
+     "with_criteria": 0.25,
+     "without_criteria": 0.39
+    },
+    "re17": {
+     "with_criteria": 0.07,
+     "without_criteria": 0.16
+    },
+    "re18": {
+     "with_criteria": 0.93,
+     "without_criteria": 0.28
+    },
+    "re19": {
+     "with_criteria": 0.79,
+     "without_criteria": 0.5
+    },
+    "re20": {
+     "with_criteria": 0.08,
+     "without_criteria": 0.13
+    },
+    "rx01": {
+     "with_criteria": 0.08,
+     "without_criteria": 0.16
+    },
+    "rx02": {
+     "with_criteria": 0.94,
+     "without_criteria": 0.47
+    },
+    "rx03": {
+     "with_criteria": 0.03,
+     "without_criteria": 0.07
+    },
+    "rx04": {
+     "with_criteria": 0.68,
+     "without_criteria": 0.33
+    },
+    "rx05": {
+     "with_criteria": 0.04,
+     "without_criteria": 0.08
+    },
+    "rx06": {
+     "with_criteria": 0.11,
+     "without_criteria": 0.31
+    },
+    "rx07": {
+     "with_criteria": 0.05,
+     "without_criteria": 0.1
+    },
+    "rx08": {
+     "with_criteria": 0.84,
+     "without_criteria": 0.36
+    },
+    "rx09": {
+     "with_criteria": 0.69,
+     "without_criteria": 0.3
+    },
+    "rx10": {
+     "with_criteria": 0.27,
+     "without_criteria": 0.22
+    },
+    "rx11": {
+     "with_criteria": 0.39,
+     "without_criteria": 0.33
+    },
+    "rx12": {
+     "with_criteria": 0.94,
+     "without_criteria": 0.84
+    },
+    "rx13": {
+     "with_criteria": 0.83,
+     "without_criteria": 0.59
+    },
+    "rx14": {
+     "with_criteria": 0.41,
+     "without_criteria": 0.31
+    },
+    "rx15": {
+     "with_criteria": 0.07,
+     "without_criteria": 0.24
+    },
+    "rx16": {
+     "with_criteria": 0.91,
+     "without_criteria": 0.23
+    },
+    "rx17": {
+     "with_criteria": 0.06,
+     "without_criteria": 0.17
+    },
+    "rx18": {
+     "with_criteria": 0.19,
+     "without_criteria": 0.26
+    },
+    "rx19": {
+     "with_criteria": 0.04,
+     "without_criteria": 0.16
+    },
+    "rx20": {
+     "with_criteria": 0.48,
+     "without_criteria": 0.43
+    }
+   },
+   "split": {
+    "re01": "first",
+    "re02": "first",
+    "re03": "first",
+    "re04": "first",
+    "re05": "first",
+    "re06": "first",
+    "re07": "first",
+    "re08": "first",
+    "re09": "first",
+    "re10": "first",
+    "re11": "first",
+    "re12": "first",
+    "re13": "first",
+    "re14": "first",
+    "re15": "first",
+    "re16": "first",
+    "re17": "first",
+    "re18": "first",
+    "re19": "first",
+    "re20": "first",
+    "rx01": "holdout",
+    "rx02": "holdout",
+    "rx03": "holdout",
+    "rx04": "holdout",
+    "rx05": "holdout",
+    "rx06": "holdout",
+    "rx07": "holdout",
+    "rx08": "holdout",
+    "rx09": "holdout",
+    "rx10": "holdout",
+    "rx11": "holdout",
+    "rx12": "holdout",
+    "rx13": "holdout",
+    "rx14": "holdout",
+    "rx15": "holdout",
+    "rx16": "holdout",
+    "rx17": "holdout",
+    "rx18": "holdout",
+    "rx19": "holdout",
+    "rx20": "holdout"
+   }
+  }
+ },
+ "rubric_sha256": "2854ef80f8f2b579c8b0d66e3a2e58eaf4da59bac5491dddacd464e463c64a2f",
+ "run": 37882206779
+}

@@ -203,10 +203,7 @@ this repository's own, and apply to every skill:
 - **Self-contained.** Each session starts in an empty directory. A prompt
   carries the code, text or situation it asks about in its own body.
 - **The result in the reply.** A prompt asks for its result in the reply, never
-  in a file, because Jev grades only the final message. In
-  [run 37882206779](https://github.com/Akurganow/ai-plugins/actions/runs/37882206779),
-  Codex and Oh-My-Pi wrote a requested file and replied with a summary of it.
-  Claude Code was refused the write and replied with an apology.
+  in a file, because Jev grades only the final message.
 - **Neutral.** A prompt never names the skill, its package or the text the
   skill rests on. A user who names them needs no trigger.
 - **Ids** are short kebab-case names of what the prompt asks. They stay unique
@@ -216,7 +213,9 @@ Jev grades each positive answer on the questions that apply to its prompt. Two
 of the rules below rest on the failure modes that TypeSafe documents for
 `jev-1.13`. Source:
 [Jev 1.13 jaggedness](https://docs.typesafe.ai/model-jaggedness/jev-1.13.md),
-TypeSafe documentation, read 2026-10-09.
+TypeSafe documentation, read 2026-10-09. The measurements behind the other
+rules are in
+[About this repository's design](docs/design.md#behavioural-evals-run-after-each-release).
 
 - **One question per rule** of the skill that a reader can check in the answer
   text. Take the rules from `SKILL.md` and the references it names as required
@@ -225,11 +224,7 @@ TypeSafe documentation, read 2026-10-09.
   as a review comment or a PR description, names in `cases` the prompts that
   write it.
 - **No question at the ceiling.** Drop a question that every answer passes in
-  both arms, because it measures nothing. In
-  [run 37882206779](https://github.com/Akurganow/ai-plugins/actions/runs/37882206779),
-  `no_filler`, `no_inflation` and `plain_verbs` were yes on all 20
-  `house-style` answers labelled for them, from both arms. Jev's mean for each
-  lay between 0.87 and 0.97, on 90 answers with the package and 90 without.
+  both arms, because it measures nothing.
 - **A statement that holds** for an answer which follows the skill, such as
   "Each finding names the chapter of the book it rests on."
 - **One step.** Each question is answerable from the answer text in one step.
@@ -245,18 +240,13 @@ TypeSafe documentation, read 2026-10-09.
   for a subtle yes-or-no boundary. Source:
   [Noul](https://docs.typesafe.ai/primitives/noul.md), TypeSafe documentation,
   read 2026-10-09. Keep criteria only where they lower Jev's mean error against
-  labelled answers, on a second set of answers as well as the first. Fourteen
-  questions of `red-flags` and `house-style` carry criteria. Claude labelled 40
-  `red-flags` answers and 144 `house-style` answers from
-  [run 37882206779](https://github.com/Akurganow/ai-plugins/actions/runs/37882206779).
-  Each criteria text lowered Jev's error on both halves of its sample.
-- **No checks of sentence structure.** `jev-1.13.0` graded 20 `house-style`
-  answers from
-  [run 37882206779](https://github.com/Akurganow/ai-plugins/actions/runs/37882206779)
-  on "never joins two thoughts with a semicolon or a dash". It gave a mean of
-  0.26 to the 12 answers with neither and 0.24 to the 8 with one. On "each
-  sentence the answer writes carries one thought", it gave 0.51 to the 3
-  answers labelled yes and 0.34 to the 17 labelled no.
+  labelled answers, on a second set of answers as well as the first. The
+  skill's `calibration.json` holds each labelled answer, its label with the
+  evidence, its half of the split, and Jev's score with and without the
+  criteria.
+- **No checks of sentence structure.** A question about semicolons, dashes or
+  one thought per sentence stays out, because Jev's answers to such questions
+  do not follow the labels.
 - **Judged from the answer alone.** A question never compares the answer with
   the request, and never needs knowledge the answer does not contain. When an
   answer may quote the text it checks or cleans, a style question says

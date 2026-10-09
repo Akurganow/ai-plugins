@@ -303,6 +303,21 @@ It is pinned to `jev-1.13.0`, because `jev-latest` moves to each new stable rele
 (documentation: [Models](https://docs.typesafe.ai/models.md), read 2026-10-08)
 A question that lists `cases` is asked only of the answers to those positive prompts.
 
+Four of the rubric rules in [CONTRIBUTING.md](../CONTRIBUTING.md#write-a-skills-evals-cases) rest on one run of `design-review--v0.2.0` and `prose-discipline--v2.0.0`.
+(running: [run 37882206779](https://github.com/Akurganow/ai-plugins/actions/runs/37882206779), 2026-10-09)
+A prompt asks for its result in the reply.
+On the two prompts that asked for a file, Codex and Oh-My-Pi wrote the file and replied with a summary of it, and Claude Code was refused the write and replied with an apology.
+A question every answer passes is dropped.
+`no_filler`, `no_inflation` and `plain_verbs` were yes on all 20 `house-style` answers labelled for them, from both arms.
+Jev's mean for each lay between 0.87 and 0.97, on 90 answers with the package and 90 without.
+No question asks about sentence structure.
+On "never joins two thoughts with a semicolon or a dash", `jev-1.13.0` gave a mean of 0.26 to the 12 answers with neither and 0.24 to the 8 with one.
+On "each sentence the answer writes carries one thought", it gave 0.51 to the 3 answers labelled yes and 0.34 to the 17 labelled no.
+Criteria stay only where they lower Jev's error on both halves of a labelled sample.
+`evals/<package>/<skill>/calibration.json` holds each labelled answer with its evidence, its half of the split, and Jev's score with and without the criteria.
+The samples are 144 `house-style` answers and 40 `red-flags` answers from that run, or 20 for `names_cause` and `common_operation`.
+The `red-flags` labels for `cites_chapter` were made against its earlier wording, which named a chapter only, and the scores use the committed wording.
+
 The without arm removes a different set in each client.
 Claude Code disables this package alone, with `claude plugin disable` and the package name.
 (documentation: [Plugins CLI reference, plugin disable](https://code.claude.com/docs/en/plugins/cli-reference#plugin-disable), read 2026-10-09)

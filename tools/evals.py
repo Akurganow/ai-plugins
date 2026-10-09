@@ -580,7 +580,7 @@ def cmd_run(args) -> int:
     record = {
         "tag": args.tag, "package": package, "skill": args.skill, "client": args.client, "repeat": args.repeat,
         "client_version": version, "model": next((s["model"] for s in sessions if s["model"]), None),
-        "always_on": args.client in cases.get("always_on", []), "jev_model": JEV_MODEL,
+        "always_on": args.client in cases.get("always_on", []), "questions": list(questions), "jev_model": JEV_MODEL,
         "cases_sha256": sha256(skill_dir / "cases.yaml"),
         "rubric_sha256": sha256(skill_dir / "rubric.yaml"), "sessions": sessions,
     }
@@ -770,7 +770,10 @@ def question_detail(package, skill, client, group, always_on) -> list[str]:
         values = [s["nouls"][qid] for s in answers if qid in s["nouls"]]
         return f"{statistics.fmean(values):.2f} (n={len(values)})" if values else "–"
 
-    qids = dict.fromkeys(qid for s in sessions if s["nouls"] for qid in s["nouls"])
+    # The rubric's list keeps a question whose every answer failed grading. Older
+    # records carry no list, so their graded answers supply the ids.
+    qids = dict.fromkeys([q for r in group for q in r.get("questions") or []]
+                         + [q for s in sessions if s["nouls"] for q in s["nouls"]])
     rows = [f"| {qid} | " + " | ".join(cell(answers, qid) for answers in columns.values()) + " |" for qid in qids]
     lines = [f"### {skill} on {client}", "", "| Question | " + " | ".join(columns) + " |",
              "| :-- |" + " :-- |" * len(columns), *rows, ""]
@@ -1174,7 +1177,7 @@ def _selftest_publish() -> None:
                     answered("p1", "positive", "without", False, {"a": 0.0}, bare),
                     answered("p2", "positive", "without", False, {"a": 0.0}, bare)]
         return {"tag": "t", "skill": "s", "client": "claude", "repeat": repeat, "client_version": "1", "model": "m",
-                "cases_sha256": "a", "rubric_sha256": "r", "sessions": sessions}
+                "cases_sha256": "a", "rubric_sha256": "r", "questions": ["a", "b", "c"], "sessions": sessions}
 
     def detail(runs):
         return report_tag("p--v1.1.0", "p", runs, ["other"], None, set(), "RUN", "o/r", False)
@@ -1184,6 +1187,7 @@ def _selftest_publish() -> None:
     assert "| Question | Skill loaded | With package | Without package |" in lines, lines
     assert "| a | 1.00 (n=2) | 0.75 (n=4) | 0.00 (n=4) |" in lines, lines
     assert "| b | 0.00 (n=2) | 0.00 (n=2) | – |" in lines, lines
+    assert "| c | – | – | – |" in lines, "a question with no graded answer keeps its row"
     assert "Loads per positive prompt: p2 0/2, p1 2/2" in lines, lines
     assert "Loads per near-miss prompt: n1 2/2" in lines, lines
     assert "Package in the session's plugin list: 6 of 8 sessions with it, 0 of 4 without." in lines, lines

@@ -200,6 +200,11 @@ this repository's own, and apply to every skill:
   details and casual language.
 - **Self-contained.** Each session starts in an empty directory. A prompt
   carries the code, text or situation it asks about in its own body.
+- **The result in the reply.** A prompt asks for its result in the reply, never
+  in a file, because Jev grades only the final message. In
+  [run 37882206779](https://github.com/Akurganow/ai-plugins/actions/runs/37882206779),
+  Codex and Oh-My-Pi wrote a requested file and replied with a summary of it.
+  Claude Code was refused the write and replied with an apology.
 - **Neutral.** A prompt never names the skill, its package or the text the
   skill rests on. A user who names them needs no trigger.
 - **Ids** are short kebab-case names of what the prompt asks. They stay unique

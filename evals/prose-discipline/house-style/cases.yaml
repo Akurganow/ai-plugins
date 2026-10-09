@@ -87,7 +87,8 @@ positive:
       - Customers on the Enterprise plan can request a higher limit from their account
         manager.
 
-      Please write the page. It is Markdown and goes to docs/api/rate-limits.md.
+      Please write the page and reply with it. It is Markdown, and I will add it as
+      docs/api/rate-limits.md myself.
   - id: export-fix-pr-description
     prompt: |
       can you clean up my notes into the PR description? our template is just Summary and
@@ -107,8 +108,8 @@ positive:
   - id: issue-triage-agent
     prompt: |
       We are adding an agent to our repository that triages new GitHub issues before a
-      maintainer looks at them. Please write its instructions, which go into
-      .github/agents/triage.md. The agent should:
+      maintainer looks at them. Please write its instructions and reply with them. I will
+      commit them as .github/agents/triage.md myself. The agent should:
 
       - add exactly one of the labels bug, feature or question
       - search open and closed issues for a duplicate, and when it finds one, link it and add

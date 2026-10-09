@@ -277,9 +277,22 @@ def load_cases(skill_dir: Path) -> tuple[dict, dict]:
     if len(ids) != len(set(ids)):
         raise SystemExit(f"{skill_dir}/cases.yaml: case ids repeat.")
     questions = rubric.get("questions") if isinstance(rubric, dict) else None
-    if not isinstance(questions, dict) or not questions or not all(isinstance(q, str) for q in questions.values()):
-        raise SystemExit(f"{skill_dir}/rubric.yaml: questions must map each id to one statement.")
+    if not isinstance(questions, dict) or not questions or not all(map(is_question, questions.values())):
+        raise SystemExit(f"{skill_dir}/rubric.yaml: questions must map each id to one statement, or to "
+                         'instructions and criteria with a quoted "true" and "false".')
     return cases, questions
+
+
+# Criteria describe what a yes and a no mean (documentation:
+# https://docs.typesafe.ai/primitives/noul.md, read 2026-10-09). YAML reads an
+# unquoted `true:` key as a boolean, so only the quoted keys pass.
+def is_question(q) -> bool:
+    if isinstance(q, str):
+        return True
+    criteria = q.get("criteria") if isinstance(q, dict) else None
+    return (isinstance(q, dict) and set(q) == {"instructions", "criteria"} and isinstance(q["instructions"], str)
+            and isinstance(criteria, dict) and set(criteria) == {"true", "false"}
+            and all(isinstance(v, str) for v in criteria.values()))
 
 
 def sha256(path: Path) -> str:
@@ -353,7 +366,8 @@ def grade(request_text: str, answer: str, questions: dict, send=jev_request) -> 
     body = {
         "model": JEV_MODEL,
         "state": {"request": request_text, "answer": answer},
-        "questions": {qid: {"type": "noul", "instructions": text} for qid, text in questions.items()},
+        "questions": {qid: {"type": "noul", **(q if isinstance(q, dict) else {"instructions": q})}
+                      for qid, q in questions.items()},
     }
     reply = send(body)
     try:
@@ -935,6 +949,12 @@ def _selftest_core() -> None:
     grade("R", "A", {"q": "Q?"}, send=lambda body: sent.update(body) or {"answers": {"q": {"noul": 0.9}}})
     assert sent["model"] == JEV_MODEL and sent["state"] == {"request": "R", "answer": "A"}, sent
     assert sent["questions"] == {"q": {"type": "noul", "instructions": "Q?"}}, sent
+    bounded = {"instructions": "Q?", "criteria": {"true": "T", "false": "F"}}
+    grade("R", "A", {"q": bounded}, send=lambda body: sent.update(body) or {"answers": {"q": {"noul": 0.9}}})
+    assert sent["questions"] == {"q": {"type": "noul", **bounded}}, sent
+    assert is_question("Q?") and is_question(bounded)
+    assert not is_question({"instructions": "Q?", "criteria": {True: "T", False: "F"}})
+    assert not is_question({"instructions": "Q?"}) and not is_question(["Q?"])
     try:
         grade("R", "A", {"q": "Q?"}, send=lambda body: {"answers": {"q": {"error": "state too long"}}})
     except JevError as e:

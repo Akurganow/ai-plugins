@@ -1,20 +1,59 @@
 questions:
-  who_changes: >-
-    The answer states or asks who changes the design under review.
+  who_changes:
+    instructions: >-
+      The answer states or asks who changes the design under review.
+    criteria:
+      "true": >-
+        The answer names who maintains or modifies the design, such as a team,
+        its size or the people who own it, or asks the user who does. Restating
+        the request's own figure counts.
+      "false": >-
+        The answer never mentions who maintains or modifies the design.
   common_operation: >-
     The answer states or asks what the most common operation on the design
     under review is.
   ranked_by_weight: >-
     The answer orders its findings by how often each part is touched times what
     touching it costs.
-  cites_chapter: >-
-    Each finding names the chapter of John Ousterhout's book A Philosophy of
-    Software Design that it rests on.
+  cites_chapter:
+    instructions: >-
+      Each finding names the chapter of John Ousterhout's book A Philosophy of
+      Software Design that it rests on.
+    criteria:
+      "true": >-
+        Every problem the answer reports names a chapter or section of the book,
+        by number or by title.
+      "false": >-
+        At least one reported problem names no chapter or section, or the answer
+        cites no chapter at all.
   names_cause: >-
     Each finding says whether its cause is a dependency or obscurity.
-  names_change: >-
-    Each finding names the change that would remove it.
-  change_cost: >-
-    Each finding says what that change would cost.
-  not_covered: >-
-    The answer says what the review did not cover.
+  names_change:
+    instructions: >-
+      Each finding names the change that would remove it.
+    criteria:
+      "true": >-
+        Every problem the answer reports comes with a concrete change to the
+        design, such as a rename, a split, a merged interface or a moved
+        default.
+      "false": >-
+        At least one reported problem has no change named for it.
+  change_cost:
+    instructions: >-
+      Each finding says what that change would cost.
+    criteria:
+      "true": >-
+        Every proposed change comes with its cost: the effort, the risk, the
+        migration work or what is given up.
+      "false": >-
+        At least one proposed change has no cost stated, or the answer proposes
+        changes with no cost at all.
+  not_covered:
+    instructions: >-
+      The answer says what the review did not cover.
+    criteria:
+      "true": >-
+        The answer names something it did not review or could not see, such as
+        code it was not shown or a quality it left out.
+      "false": >-
+        The answer never says what it left out or could not see.

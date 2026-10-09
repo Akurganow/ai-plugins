@@ -176,7 +176,9 @@ A skill's folder holds two files:
   skill's rules in every session without loading the skill. A comment beside
   it names each client's route and its source. For those clients the summary
   shows `trigger_hit` and `compliance` as `n/a`.
-- `rubric.yaml` has a `questions` map from a question id to one statement.
+- `rubric.yaml` has a `questions` map from a question id to one statement,
+  or to an `instructions` statement with `criteria`. `criteria` holds a quoted
+  `"true"` and `"false"`, each saying what that answer means.
 
 The Agent Skills guide sets the shape of a trigger test. Source:
 [Optimizing skill descriptions](https://agentskills.io/skill-creation/optimizing-descriptions),
@@ -222,6 +224,19 @@ TypeSafe documentation, read 2026-10-09.
   finding that rests on X ..."), positional ("before any finding ...", "ends
   with ...") or a bundle of several facts. Each of those makes Jev find
   something first and then judge it, which is two steps.
+- **Criteria where the boundary is unclear.** TypeSafe documents `criteria`
+  for a subtle yes-or-no boundary. Source:
+  [Noul](https://docs.typesafe.ai/primitives/noul.md), TypeSafe documentation,
+  read 2026-10-09. Keep criteria only where they lower Jev's mean error against
+  labelled answers, on a second set of answers as well as the first. Six
+  questions of `red-flags` and `house-style` carry criteria. Claude labelled 40
+  answers from
+  [run 37882206779](https://github.com/Akurganow/ai-plugins/actions/runs/37882206779)
+  for each skill, and the criteria lowered the error on both halves.
+- **No punctuation checks.** `jev-1.13.0` graded 20 `house-style` answers from
+  [run 37882206779](https://github.com/Akurganow/ai-plugins/actions/runs/37882206779)
+  on "never joins two thoughts with a semicolon or a dash". It gave a mean of
+  0.26 to the 12 answers with neither and 0.24 to the 8 with one.
 - **Judged from the answer alone.** A question never compares the answer with
   the request, and never needs knowledge the answer does not contain. When an
   answer may quote the text it checks or cleans, a style question says

@@ -17,15 +17,15 @@ questions:
     touching it costs.
   cites_chapter:
     instructions: >-
-      Each finding names the chapter of John Ousterhout's book A Philosophy of
-      Software Design that it rests on.
+      Each finding names the chapter or section of John Ousterhout's book A
+      Philosophy of Software Design that it rests on.
     criteria:
       "true": >-
         Every problem the answer reports names a chapter or section of the book,
         by number or by title.
       "false": >-
-        At least one reported problem names no chapter or section, or the answer
-        cites no chapter at all.
+        At least one reported problem names neither a chapter nor a section of
+        the book.
   names_cause: >-
     Each finding says whether its cause is a dependency or obscurity.
   names_change:

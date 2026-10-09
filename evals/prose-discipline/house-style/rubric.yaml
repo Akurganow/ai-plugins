@@ -1,32 +1,144 @@
 questions:
-  no_announcement_or_offer:
+  no_preamble:
     instructions: >-
-      The answer contains no sentence that announces its own content or offers
-      more help.
+      The answer has no sentence whose only job is to announce what follows,
+      such as "Here is the commit message:" or "Here's what I'd change."
     criteria:
       "true": >-
-        Every sentence states a fact, an instruction or a result. A heading, a
-        lead-in that names a file or step, or a note about what was left out is
-        not an announcement.
+        Every sentence states a fact, an instruction or a result. A heading or
+        a short label ending in a colon, such as "Shortened version:" or
+        "Suggested comment:", is not an announcement. An instruction that
+        introduces code is not one either.
       "false": >-
-        A sentence offers more help, such as 'Let me know if you want...' or 'I
-        can also...', or only announces what follows, such as 'Here is the
-        commit message:'.
-  plain_verbs: >-
-    Outside text it quotes, the answer uses no weak-verb phrase such as
-    "leverage", "utilize", "make use of" or "perform validation".
-  no_filler: >-
-    Outside text it quotes, the answer uses no filler phrase such as "it is
-    important to note", "it's worth noting" or "rest assured".
-  no_inflation: >-
-    Outside text it quotes, the answer uses no hype word such as "crucial",
-    "powerful", "comprehensive" or "game-changer".
-  no_hedging: >-
-    Outside text it quotes, the answer states its claims without hedges such
-    as "probably", "I think" or "should work".
-  direct_facts: >-
-    Outside text it quotes, the answer states each fact directly, with no
-    setup such as "it's not just X, it's Y" or "here's the thing".
-  one_thought: >-
-    Outside text it quotes, each sentence the answer writes carries one
-    thought, not a chain of clauses.
+        A full sentence only announces what comes next, such as "Here is the
+        changed function:", "Here's a comment you can post:" or "Here's what
+        I'd change."
+  no_offer:
+    instructions: >-
+      The answer never offers the user more help, such as "Let me know if you
+      want..." or "I can also...".
+    criteria:
+      "true": >-
+        No sentence offers the user further work. An offer inside a text the
+        answer drafts for someone else, such as "Happy to pair on this" in a
+        review comment, does not count.
+      "false": >-
+        A sentence offers the user more help, such as "Say so if you want that
+        case handled too" or "If you point me to the repo, I can check it."
+  no_hedging:
+    instructions: >-
+      Outside text it quotes, the answer states its claims without hedges such
+      as "probably", "I think" or "should work".
+    criteria:
+      "true": >-
+        Claims are stated flatly. A condition such as "if X fails", a note that
+        something was not run or not checked, or uncertainty the request itself
+        states is not a hedge.
+      "false": >-
+        The answer softens a claim of its own with a word such as "probably",
+        "likely", "might", "may" or "I think".
+  artifact_alone:
+    instructions: >-
+      The answer is the artifact alone, such as a commit message, a PR
+      description or a page, with no note before or after it.
+    criteria:
+      "true": >-
+        The answer is the artifact and nothing else. Headings and sections
+        inside the artifact are part of it.
+      "false": >-
+        A note sits before or after the artifact, such as what was left out,
+        what was not run, or another version to choose from.
+    cases:
+      - commit-msg-backoff-fix
+      - api-rate-limits-docs
+      - export-fix-pr-description
+      - issue-triage-agent
+  review_label:
+    instructions: >-
+      The review comment the answer drafts carries a Conventional Comments
+      label, such as "issue (blocking):" or "suggestion:".
+    criteria:
+      "true": >-
+        The drafted comment carries a label such as "issue:", "issue
+        (blocking):", "suggestion:", "question:" or "nitpick:".
+      "false": >-
+        The drafted comment carries no such label. A bold title such as
+        "Blocking: ..." or a lead-in such as "PR comment:" is not one.
+    cases:
+      - webhook-review-comment
+  fix_not_wish:
+    instructions: >-
+      The review comment the answer drafts states its fix as an instruction or
+      as code, not as a question such as "Could we...?".
+    criteria:
+      "true": >-
+        The fix is an imperative instruction, such as "Log with
+        logger.exception and re-raise", or a code block given as the change.
+      "false": >-
+        The fix is asked as a question, such as "Could we let this exception
+        propagate?" or "Would something like this work instead?".
+    cases:
+      - webhook-review-comment
+  no_process_narrative:
+    instructions: >-
+      The PR description tells nothing about how the work went, such as an
+      approach tried and reverted, the time spent or a bot's review.
+    criteria:
+      "true": >-
+        The description states the change, its cause and its test results
+        only. A note to the user outside the description does not count.
+      "false": >-
+        The description mentions an approach tried and reverted, such as the
+        OFFSET attempt, the time spent, or a bot's review.
+    cases:
+      - export-fix-pr-description
+  agent_step_imperative:
+    instructions: >-
+      Each step of the agent's instructions is one imperative sentence.
+    cases:
+      - issue-triage-agent
+  findings_not_rewrite:
+    instructions: >-
+      The answer lists what to change and gives no rewritten version of the
+      whole text.
+    cases:
+      - go-comments-before-merge
+      - check-issue-reply
+  severity_named:
+    instructions: >-
+      Each finding in the answer carries a severity, such as major, minor or
+      nit.
+    criteria:
+      "true": >-
+        Every finding carries a word such as major, minor or nit.
+      "false": >-
+        Some or all findings carry no severity word such as major, minor or
+        nit.
+    cases:
+      - go-comments-before-merge
+      - check-issue-reply
+  hedge_comment_dropped:
+    instructions: >-
+      The answer never suggests keeping the "should work for negative values
+      too" comment in another wording.
+    criteria:
+      "true": >-
+        The answer says to delete that comment, and to test or fix the code
+        instead.
+      "false": >-
+        The answer offers to keep a comment about negative values in new
+        words, such as a note that states the behaviour or documents it.
+    cases:
+      - go-comments-before-merge
+  cuts_quoted:
+    instructions: >-
+      The answer quotes the words it cut, such as "It's worth noting that",
+      instead of describing them, such as "the promotional language".
+    cases:
+      - deslop-webhooks-intro
+  no_sign_off:
+    instructions: >-
+      The shortened update has no greeting or sign-off, such as "Hi all" or
+      "Thanks for your patience".
+    cases:
+      - shorten-incident-update

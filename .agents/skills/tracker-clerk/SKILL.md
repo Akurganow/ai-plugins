@@ -66,12 +66,13 @@ findings under one protocol, and three parts of it are load-bearing here.
 Every automated finding carries a fingerprint line, as `github-needs` defines
 it. The fingerprint is the issue's identity: same problem, same file, same
 fingerprint, across runs. The filers are the repository auditor, the Slop
-Police, the Agent Police and the pipeline Clerk, which files a part when it
-splits an issue. The filing label `police-report` is shared by every filer, so
-it names the population and not the filer. No issue belongs to a role: you
-close any issue in the population whose case below holds. Each police role
-counts its filings, as `github-needs` defines them, and caps what it files on
-that count. Your closes move that count.
+Police, the Agent Police, the evals runner and the pipeline Clerk. The evals
+runner files a metric that regressed between two releases of a package. The
+Clerk files a part when it splits an issue. The filing label `police-report`
+is shared by every filer, so it names the population and not the filer. No
+issue belongs to a role: you close any issue in the population whose case
+below holds. Each police role counts its filings, as `github-needs` defines
+them, and caps what it files on that count. Your closes move that count.
 
 The Issue Court runs daily, tries one open issue, posts one
 comment ending `<!-- issue-court: sha=<commit> verdict=<verdict> -->` —
@@ -86,7 +87,7 @@ opening every body:
 
 | Label | What it means |
 | :-- | :-- |
-| `police-report` | filed by a police run, or a part the pipeline Clerk cut |
+| `police-report` | filed by a police run or the evals runner, or a part the pipeline Clerk cut |
 | `audit:hygiene` | community-health files |
 | `audit:seo` | discoverability and metadata |
 | `audit:spec` | Agent Plugins conformance |
@@ -187,6 +188,29 @@ this run's `HEAD`. Take each kind of claim the body makes:
    what it printed.
 4. A release disagreement. Read the repository's releases, the plugin's
    `plugin.json` and its `binaries.json`. Quote all three.
+5. A regression between two releases, filed by the evals runner. Test it in
+   the steps below.
+
+   1. Take the package, skill and client from the fingerprint, and the two
+      tags and the table's metrics from the body.
+   2. Find the newest release of that package that has an `evals.json`.
+   3. Where it is not later than the newer tag, stop: the claim is live.
+   4. Otherwise read that file and the older tag's from their releases, never
+      from the body's links.
+   5. Take the `runs` of that skill and client from both files.
+   6. For every table metric, check that the runs of both files cover all
+      three repeats, each with a figure.
+   7. Apply `compare` from `tools/evals.py` to both lists, the older tag's
+      first.
+   8. Call the claim gone only when step 6 holds, `compare` finds the pair
+      comparable and flags no table metric.
+
+   The older tag is the baseline, because a later release that only matches
+   the regressed one has fixed nothing. A figure is a value of that metric,
+   not `None`, in what `metrics` in `tools/evals.py` returns for a run's
+   sessions. Fewer runs, a missing figure or a pair that is not comparable
+   prove nothing. The issue stays open, and one report line says which of the
+   three.
 
 Close as `completed` only when **every** claim is provably gone.
 
@@ -295,7 +319,9 @@ earns it. Apply it to nothing, whatever an issue already carries.
 Apply `pipeline/intake` when the court has finished and the finding is
 real: the issue carries an `issue-court` marker whose verdict is
 `sustained` or `partially-sustained`, **and** you re-derived the defect as
-still live at this run's `HEAD`.
+still live at this run's `HEAD`. For an evals regression, live means that
+item 5 under case 1 stopped at its step 3, or that `compare` flagged a table
+metric on a pair that passed its step 6. Missing data is neither.
 
 Three things disqualify an issue that otherwise matches, and each is read
 from what you already collected this run:
@@ -345,9 +371,12 @@ Every comment, whichever case:
 Then the part that differs by case, and nothing more than this:
 
 **Case 1, the finding is gone.** The re-check verbatim: the command and what
-it printed, or the quoted `path:line` at this run's commit. Enough that a
+it printed, the quoted `path:line` at this run's commit, or the older tag, the
+later release, the runs it holds and what `compare` returned. Enough that a
 reader repeats it without opening anything else. Then one sentence saying the
-issue's fingerprint stays in its body, so no filer files it again.
+issue's fingerprint stays in its body, so no filer files it again. For an
+evals regression, say instead that the runner reads open issues only and may
+file that skill and client at its next regression.
 
 **Case 2, a duplicate.** The number of the survivor, and a link to the
 comment where you carried over what the closing issue established.

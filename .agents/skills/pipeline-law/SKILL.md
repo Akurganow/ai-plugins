@@ -12,10 +12,10 @@ changing one is a pull request he reviews, rather than four hand edits in a
 web form.
 
 **There is still no spec template, no lint script and no gate script.**
-`.agents/rules/conformance.md` names the two programs this repository runs,
-its check and its regeneration entry point, and the pipeline adds none. What
-the repository carries is the law and the roles; what it does not carry is
-anything that executes them.
+`.agents/rules/conformance.md` names the three programs this repository runs,
+its check, its regeneration entry point and its evals runner, and the pipeline
+adds none. What the repository carries is the law and the roles; what it does
+not carry is anything that executes them.
 
 **Two things are deliberately not here, and they belong to whatever fires the
 agent**: the measured facts of that caller's environment, and the clone
@@ -884,10 +884,11 @@ The check is mechanical. That makes it cheap and repeatable, not
 unarguable: a reader who thinks it is wrong should say so.
 
 `plan.md` has no `## Tests first`, and the omission is deliberate. This
-repository ships prose, manifests, one check and one regeneration entry
-point. Its verification is `bash tools/regenerate.sh`, which must leave
-nothing to commit, then `tools/check-conformance.py`, plus re-reading every
-line the change quotes.
+repository ships prose, manifests and three programs: its check, its
+regeneration entry point and its evals runner. Its verification is
+`bash tools/regenerate.sh`, which must leave nothing to commit, then
+`tools/check-conformance.py` and the `selftest` and `validate` of
+`tools/evals.py`, plus re-reading every line the change quotes.
 
 Where a change touches `tools/check-conformance.py`, `## Verification` names
 the malformed package the new rule must reject, and the command that

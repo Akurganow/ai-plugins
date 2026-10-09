@@ -32,9 +32,12 @@ An issue is in the machine population when both hold:
 A marker quoted in a sentence or in a code block counts for nothing.
 
 Every filer writes `<!-- police-fingerprint: <role> <value> -->`. `<role>` is
-the skill name of the role that filed it. `<value>` is the finding's
-identity, in the form the filer's skill gives. The four other prefixes
-stand on issues already filed, and no filer writes them.
+the skill name of the role that filed it. `<value>` is the finding's identity,
+in the form the filer's skill gives. One filer is not a role: the evals
+runner, `tools/evals.py`, writes `evals` as `<role>` and
+`<package>/<skill>@<client>` as `<value>`. It files nothing whose fingerprint
+line is already on an open issue. The four other prefixes stand on issues
+already filed, and no filer writes them.
 
 An older prefix names its filer: `repo-audit-routine:` names `repo-police`,
 `slop-police-fingerprint:` names `slop-police`, and
@@ -84,7 +87,8 @@ in its report.
   - metadata: description, homepage, license — and topics, which a
     route may not return: where it does not, report topics as not
     checked;
-  - releases, and tags;
+  - releases, and tags, and a release's assets by name, which is how
+    `evals.json` is read;
   - issues by label and state, with full bodies, paginated to the end.
     The label is mandatory: every issue listing names `police-report`,
     alone or beside another label, and none is ever made without it. A

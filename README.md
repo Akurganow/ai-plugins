@@ -135,6 +135,8 @@ plugins/<name>/
   binaries.json                   howp only: released binaries and their sha256,
                                   written by the howp release
 tools/check-conformance.py        the conformance check
+tools/evals.py                    the post-release evals runner, with selftest and validate
+tools/evals-fixtures/             event streams recorded from the clients, for the selftest
 tools/regenerate.sh               rewrites every generated file from its source
 tools/templates/                  sources of generated text
 tools/schemas/                    vendored Agent Plugins manifest schema
@@ -142,6 +144,7 @@ tools/package.json                pins doctoc for tools/regenerate.sh
 tools/package-lock.json           pins doctoc's dependency tree
 docs/clients.md                   how each client loads a package, with sources
 docs/design.md                    why the repository is built this way
+evals/<name>/<skill>/             prompts and Jev questions for one skill's evals
 cog.toml                          release configuration, one entry per package
                                   but howp
 .github/                          CI workflows and issue forms

@@ -337,6 +337,7 @@ A package can go longer than that between releases.
 A metric regressed when the three repeats of this release and of the package's previous release do not overlap, and the new ones are worse.
 The spread between repeats is the tolerance, so the rule has no threshold.
 Where a package's previous release has no `evals.json`, nothing is compared.
+`release.yml` runs one release at a time, its evals included, so a release's `evals.json` exists before the next release compares against it.
 A regression opens an issue in the machine population, where the Issue Court and the delivery pipeline take it up.
 Two releases are compared only when their `cases.yaml` and their `rubric.yaml` are byte-identical.
 Each run installs the client's latest release, so the issue shows both client versions.

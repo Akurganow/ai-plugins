@@ -16,15 +16,15 @@ on:
 permissions:
   contents: read
 
+# One run at a time, its evals job included. The next run starts from the main
+# this one pushed, and its evals compare against the evals.json this run writes.
+concurrency:
+  group: release
+  cancel-in-progress: false
+
 jobs:
   release:
     runs-on: ubuntu-latest
-    # One release at a time; the next run starts from the main this one pushed.
-    # The group sits on this job, not on the workflow, so the evals job below
-    # does not hold the next release back while it runs.
-    concurrency:
-      group: release
-      cancel-in-progress: false
     # Pushing the commit and the tags and creating releases need contents: write.
     permissions:
       contents: write

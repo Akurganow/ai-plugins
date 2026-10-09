@@ -1,0 +1,254 @@
+positive:
+  - id: offline-maps-vs-install-size
+    prompt: |
+      Our hiking app (React Native 0.74, iOS and Android) ships offline maps for 12 regions
+      inside the app bundle, so it works on a trail with no signal from the very first launch.
+      Each region adds about 3 MB. The Android download is now 61 MB, and our Play Console
+      experiments show install conversion dropping by roughly 1% for every 6 MB we add.
+      Product wants offline maps for all 40 regions in the next release, which would push the
+      download past 130 MB.
+
+      The more regions we bundle, the fewer people install the app at all. How do we get out
+      of this?
+  - id: debug-logs-vs-log-bill
+    prompt: |
+      we get maybe 20 weird payment failures a day that we cant diagnoze because prod logs are
+      at INFO. flipping to DEBUG would show us whats going on but our log bill would roughly
+      triple (we already ingest ~400 GB/day). is there a smarter way than just picking one?
+  - id: e2e-notes-vs-server-search
+    prompt: |
+      We are adding end-to-end encryption to our note-taking product (about 180,000 paying
+      users; web, iOS and Android clients; Postgres and Elasticsearch on the server). Two
+      requirements now look incompatible:
+
+      - Security: the server must never see note plaintext. Keys stay on the client, and the
+        server stores ciphertext only.
+      - Product: full-text search across all of a user's notes must keep working on the web
+        client, which cannot hold a local index (the median user has 4,000 notes, the
+        heaviest have 90,000), and must return results in under a second.
+
+      Today search runs in Elasticsearch over plaintext. The security review is in three
+      weeks. How do we satisfy both?
+  - id: reproducible-build-vs-timestamp
+    prompt: |
+      Two teams have handed us demands for the release pipeline of our Go CLI (`acmectl`,
+      built in GitHub Actions for six OS/arch targets):
+
+      1. Compliance wants every binary to report its build time and commit when run with
+         `acmectl version`, because auditors ask which build was deployed where.
+      2. The supply-chain team wants byte-for-byte reproducible builds: building the same
+         commit twice, on any runner, must give the same SHA-256, so they can verify our
+         published artifacts.
+
+      Right now we inject the time with `-ldflags "-X main.buildTime=$(date -u +%FT%TZ)"`, so
+      two builds of one commit never match. Work out how we give both teams what they need,
+      then write the comment I can paste into ticket REL-88 explaining the change.
+  - id: api-burst-limit-middle-ground
+    prompt: |
+      I'm about to sign off on the rate limits for our public REST API, and I'm not happy with
+      the proposal. Our largest customers run nightly sync jobs that burst to about 2,000
+      requests per second for 10 to 15 minutes. At that rate a single tenant saturates the
+      shared Postgres primary, and p99 latency for everyone else goes from 120 ms to 4 s.
+
+      The design doc's only proposal is a flat limit of 500 req/s per tenant. The big
+      customers' syncs would take four times longer, and the small ones would still feel it
+      when three big tenants sync at once. Splitting the difference seems to be the only thing
+      on the table. Is there a better option?
+  - id: photo-quality-middle-setting
+    prompt: |
+      real estate listing site. agents want their photos sharp at full res, but on mobile the
+      gallery takes 9s to load on 4G. the team's answer is "set jpeg quality to 60 for
+      everyone" as a middle ground. agents will hate it and mobile still wont be great.
+      anythign better?
+  - id: reset-code-long-and-short
+    prompt: |
+      Some of our insurance customers have no email address, so we send their password reset
+      code by post. Security requires the code to resist guessing: today it is a 32-character
+      random token, the same one we put in emailed reset links. Customers who get it by letter
+      have to type it in by hand, and our call centre takes about 300 calls a month from
+      people who mistyped it.
+
+      The code has to be long for security and short enough to type from a letter. What can
+      we do? Please also draft the two sentences for the letter that explain how to use the
+      code.
+  - id: paid-order-frozen-yet-editable
+    prompt: |
+      In our order service (Kotlin, Spring Boot, Postgres 16), a row in `orders` becomes
+      read-only once it is paid. Finance reconciles against those rows every night and treats
+      any later change as an error, and a trigger rejects UPDATEs on paid orders. Customer
+      support now needs to change the delivery address of a paid order until the parcel leaves
+      the warehouse, which happens on average 26 hours after payment. About 2% of orders need
+      it.
+
+      So a paid order has to be frozen for finance and editable for support. How should we
+      model this?
+  - id: ci-speed-vs-e2e-coverage
+    prompt: |
+      Our monorepo's CI takes 38 minutes per pull request, and 26 of those are the Playwright
+      end-to-end suite (410 tests, sharded across 6 runners). Developers have started merging
+      without waiting for it. Dropping the end-to-end suite from PR checks would cut CI to 12
+      minutes, but over the last quarter it caught 7 of the 10 regressions that would
+      otherwise have reached production.
+
+      I need two things: a way to get fast feedback on pull requests without losing what that
+      suite catches, and the opening paragraph of an RFC that proposes it to the engineering
+      org.
+  - id: session-timeout-vs-loan-form
+    prompt: |
+      banking web app. security policy says sessions expire after 5 min of inactivity. our
+      loan aplication form takes people 20-40 min (they go and find payslips etc) and they
+      lose everything when the session dies. so the session basically has to be short and
+      long at the same time. ideas?
+near_miss:
+  - id: order-count-reports-disagree
+    prompt: |
+      Finance and the ops dashboard contradict each other on September: finance says 1,204
+      orders, the dashboard says 1,187. Both read the same Postgres table. Which number is
+      right, and why do they differ?
+
+      Finance (Metabase):
+
+      ```sql
+      SELECT count(*) FROM orders
+      WHERE created_at >= '2026-09-01' AND created_at < '2026-10-01'
+        AND status <> 'cancelled';
+      ```
+
+      Dashboard (Grafana panel):
+
+      ```sql
+      SELECT count(*) FROM orders
+      WHERE created_at AT TIME ZONE 'Europe/Berlin' >= '2026-09-01'
+        AND created_at AT TIME ZONE 'Europe/Berlin' < '2026-10-01'
+        AND status NOT IN ('cancelled', 'refunded');
+      ```
+
+      `created_at` is `timestamptz`, and the Metabase connection runs with the session time
+      zone set to UTC.
+  - id: consistency-availability-explainer
+    prompt: |
+      I'm writing onboarding material for backend engineers joining our payments team. Write
+      a one-page explainer (about 500 words, Markdown) of the consistency versus availability
+      trade-off in distributed databases: what CAP actually says, what PACELC adds about
+      latency, and one worked example of a payment ledger replicated across two regions.
+      Plain language, no proofs.
+  - id: dedupe-takes-forty-seconds
+    prompt: |
+      I need to improve the run time of this. It runs on every import and takes about 40
+      seconds for 200,000 rows. Memory is not a concern: the worker has 64 GB and this uses a
+      few hundred MB.
+
+      ```python
+      def dedupe(rows):
+          seen = []
+          out = []
+          for row in rows:
+              key = (row["email"].lower(), row["country"])
+              if key not in seen:
+                  seen.append(key)
+                  out.append(row)
+          return out
+      ```
+
+      `out` must keep the input order.
+  - id: bloom-filter-sizing
+    prompt: |
+      We want a Bloom filter in front of our Redis lookups for "has this coupon code been
+      used". About 10 million codes, and product's requirement is a false positive rate of at
+      most 1%. I know there's a trade-off between memory and false positives. How many bits
+      and how many hash functions do we need, and does it fit in the 16 MB we have per
+      instance? Show the formulas.
+  - id: split-express-handler
+    prompt: |
+      Apply separation of concerns to this Express handler: pull the validation, the pricing
+      logic and the database access out into their own functions, and keep the route thin.
+      Same behaviour, same responses, TypeScript.
+
+      ```ts
+      app.post("/api/quotes", async (req, res) => {
+        const { sku, qty, country } = req.body;
+        if (typeof sku !== "string" || !/^[A-Z0-9-]{4,20}$/.test(sku))
+          return res.status(400).json({ error: "bad sku" });
+        if (!Number.isInteger(qty) || qty < 1 || qty > 500)
+          return res.status(400).json({ error: "bad qty" });
+        if (!["DE", "FR", "NL", "AT"].includes(country))
+          return res.status(400).json({ error: "bad country" });
+
+        const product = await db.query(
+          "SELECT price_cents, vat_class FROM products WHERE sku = $1", [sku]);
+        if (product.rowCount === 0) return res.status(404).json({ error: "unknown sku" });
+
+        const rates = { DE: { std: 0.19, red: 0.07 }, FR: { std: 0.2, red: 0.055 },
+                        NL: { std: 0.21, red: 0.09 }, AT: { std: 0.2, red: 0.1 } };
+        const vat = rates[country][product.rows[0].vat_class];
+        const net = product.rows[0].price_cents * qty * (qty >= 100 ? 0.9 : 1);
+        const gross = Math.round(net * (1 + vat));
+
+        await db.query(
+          "INSERT INTO quotes (sku, qty, country, gross_cents) VALUES ($1, $2, $3, $4)",
+          [sku, qty, country, gross]);
+        res.json({ sku, qty, country, gross_cents: gross });
+      });
+      ```
+  - id: mutually-exclusive-cli-flags
+    prompt: |
+      `--json` and `--quiet` are incompatible in our CLI: one prints machine-readable output,
+      the other prints nothing. Make argparse reject the combination with a clear error, and
+      add a pytest for it.
+
+      ```python
+      parser = argparse.ArgumentParser(prog="shipctl")
+      parser.add_argument("--json", action="store_true", help="print results as JSON")
+      parser.add_argument("--quiet", action="store_true", help="print nothing, exit code only")
+      parser.add_argument("target")
+      ```
+  - id: down-migration-for-split
+    prompt: |
+      Write the down migration for this one, the exact opposite, so `migrate down 1` leaves
+      the schema as it was. Postgres 16, golang-migrate.
+
+      ```sql
+      -- 000042_split_customer_name.up.sql
+      ALTER TABLE customers ADD COLUMN first_name text, ADD COLUMN last_name text;
+      UPDATE customers
+        SET first_name = split_part(full_name, ' ', 1),
+            last_name  = nullif(substr(full_name, length(split_part(full_name, ' ', 1)) + 2), '');
+      ALTER TABLE customers DROP COLUMN full_name;
+      CREATE INDEX customers_last_name_idx ON customers (last_name);
+      ```
+  - id: env-overrides-config-file
+    prompt: |
+      Our service reads its settings from `config.yaml` and from environment variables. When
+      both set the same key to different values, which one wins depends on import order. We
+      agreed that the environment always wins. Write `load_settings()` in Python 3.12 that
+      does that (env `POOL_SIZE` overrides `pool_size`, and so on), with a pytest for the
+      conflicting case.
+
+      ```yaml
+      # config.yaml
+      pool_size: 10
+      db_url: postgres://app@db:5432/app
+      request_timeout_s: 30
+      ```
+  - id: typescript-never-branch
+    prompt: |
+      After my refactor TypeScript reports errors in this function, and hovering `value`
+      inside the `if` shows `never`, as if the two checks contradict each other. What did I
+      break?
+
+      ```ts
+      function formatCell(value: string | number | null): string {
+        if (value === null) return "";
+        if (typeof value === "string" && typeof value === "number") {
+          // these were two separate branches before the refactor
+          return value.trim();
+        }
+        return value.toFixed(2);
+      }
+      ```
+  - id: editorconfig-agreed-compromise
+    prompt: |
+      After a long thread the team agreed on a compromise for indentation: tabs in Go (gofmt
+      insists anyway) and in Makefiles, 4 spaces in Python, 2 spaces in TypeScript, YAML and
+      JSON. Write the .editorconfig for the repo root. Final newline everywhere, and trim
+      trailing whitespace except in Markdown.

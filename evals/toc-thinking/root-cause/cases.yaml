@@ -1,0 +1,278 @@
+positive:
+  - id: checkout-problems-pile-up
+    prompt: |
+      I lead the backend team of an online furniture store (Django monolith, Postgres 15,
+      Celery on RabbitMQ, Stripe for payments). Over the last six weeks we have collected a
+      list of problems that nobody can tie together:
+
+      - Checkout p95 latency rises from about 800 ms to 6-9 s between 12:00 and 13:30, and
+        again after 19:00, on most weekdays.
+      - About 30 customers a week receive two confirmation emails for one order.
+      - Stock counts for popular items go negative a few times a week, so we sell sofas we
+        do not have.
+      - Support gets 5 to 10 tickets a week about a card charged twice. Stripe shows two
+        PaymentIntents in each case.
+      - Postgres CPU sits above 90% in the same lunchtime and evening windows.
+      - The Celery queue `orders` backs up to 20,000 messages at those times.
+
+      We fixed each one on its own: a bigger database instance, a dedupe check in the email
+      task, a nightly script that corrects stock. Each fix helped for a week or two. What is
+      actually going on here, and what should we change?
+  - id: mobile-app-worse-since-march
+    prompt: |
+      our react native app got worse in like four ways at once since march and i cant tell
+      if its one thing or four. login takes 8s on android (2s on ios), push notifs show up
+      late or twice, the offline cart sometimes looses items, and crash rate went from 0.3%
+      to 1.1%. in march we switched to the new api gateway and also upgraded RN 0.72 -> 0.74.
+      where do i even start
+  - id: billing-export-fourth-failure
+    prompt: |
+      Our nightly billing export (Airflow DAG `billing_daily`, 02:00 UTC, loads usage from
+      the events warehouse into the invoicing service) failed for the fourth time this
+      quarter. Each time, the morning on-call fixed something different:
+
+      - January: the `aggregate_usage` task hit its 2-hour timeout. We raised it to 4 hours.
+      - February: the worker ran out of memory. We moved the DAG to a 32 GB worker.
+      - Early March: the invoicing API answered with 429s. We added retries with backoff.
+      - Late March: the DAG finished, but 1,800 accounts had no usage rows. We re-ran it by
+        hand at 09:00.
+
+      Each incident has its own postmortem with its own cause and action items, and every
+      action item is closed. Event volume has grown about 40% since December. For Friday's
+      quarterly ops review I need two things: an analysis of why this keeps failing, and a
+      three-sentence summary of it for the slide.
+  - id: tls-cert-expired-again
+    prompt: |
+      a tls cert expired in prod AGAIN, third time this year. today it was the partner api,
+      before that the admin panel and the webhook receiver. every time we renew it, add a
+      calendar reminder and move on. the platform team buys the certs, whoever owns the
+      service installs them, and we have ~40 of them across aws, gcp and one old on-prem box.
+      whats actually wrong here?
+  - id: audit-log-vs-erasure
+    prompt: |
+      We are stuck between two requirements, and I would like help getting out of it.
+
+      Our B2B accounting product keeps an append-only audit log of every change to customer
+      records (table `audit_events`, about 900 million rows). Our external auditors require
+      that log to be complete and unaltered for seven years, and security treats any UPDATE
+      or DELETE on it as a finding.
+
+      At the same time, we must honour GDPR erasure requests within 30 days. Legal says that
+      covers the audit log too, because its `before` and `after` JSON columns hold names,
+      email addresses and phone numbers. We receive about 60 erasure requests a month and
+      currently answer each one by hand with an exception note.
+
+      Both teams say their requirement is not negotiable. What do we do?
+  - id: freeze-vs-checkout-tests
+    prompt: |
+      every october we have the same fight. platform wants a 3 week code freeze before black
+      friday so prod stays stable (two years ago a deploy on the wednesday before took
+      checkout down for 40 min). growth wants to keep shipping checkout a/b tests right up to
+      the day, because thats when traffic is 6x and the tests finally reach signifcance. it
+      always ends with the vp picking a side and the other side being mad till january.
+
+      im running the planning meeting on thursday. help me figure out if theres a way out
+      that isnt just splitting the difference, and give me 3 talking points for the meeting.
+  - id: mysql-to-aurora-postgres
+    prompt: |
+      We have to move the primary database of our Rails 7.1 app from MySQL 5.7 on RDS to
+      Aurora PostgreSQL by the end of Q1. The facts:
+
+      - 1.2 TB in 340 tables. The largest, `events`, is 610 GB.
+      - Peak writes are about 3,000 rows per second, on weekdays from 09:00 to 18:00 CET.
+      - 14 raw SQL queries use MySQL-only syntax (GROUP_CONCAT, ON DUPLICATE KEY UPDATE,
+        backtick quoting). Most sit in app/queries/, the rest in two reporting jobs.
+      - A nightly Metabase sync and a finance export read from a MySQL read replica.
+      - The business has agreed to at most 15 minutes of write downtime, on a Sunday.
+      - We are four backend engineers, and one of us has done a Postgres migration before.
+
+      Please put together the migration plan.
+  - id: retire-python27-cron-box
+    prompt: |
+      ok so we finally have to kill cron01, the old python 2.7 box. it runs 23 cron scripts.
+      some write to the shared nfs mount, two talk to a vendor's SOAP api thru suds, and
+      nobody knows who owns about half of them. target is k8s CronJobs on python 3.12 by end
+      of Q1, and the box gets switched off in april no matter what. how do we sequence this
+      so nothing silently stops running? also i need a short slack msg for #eng annoucing it
+  - id: sessions-to-redis-proposal
+    prompt: |
+      A colleague has proposed moving user sessions from Postgres to Redis, and I would like
+      the proposal checked before we spend a sprint on it. The summary from her doc:
+
+      - Today: sessions live in the `sessions` table, about 2.1 million rows. Every
+        authenticated request reads one row and updates `last_seen_at`. Login p95 is 1.4 s,
+        and `sessions` is the most written table in the database.
+      - Proposal: keep sessions in a single ElastiCache Redis node with a 24-hour TTL,
+        refreshed on each request. Keep the Postgres table as a read fallback for two weeks,
+        then drop it.
+      - Expected result: login p95 under 300 ms and about 40% less write load on Postgres.
+
+      Our admin panel lists a user's active sessions and lets support revoke them, and the
+      fraud team runs a nightly SQL report of sessions per IP address. What would this change
+      actually achieve, and what could it break?
+  - id: retries-on-every-call
+    prompt: |
+      lead wants us to add automatic retries (3 attempts, exponential backoff) to every
+      outbound http call in our go services, to get rid of the timeout errors we see from
+      the inventory service. we have ~30 services. sounds reasonable to me, but before we
+      roll it out: anything it could make worse?
+near_miss:
+  - id: npe-after-todays-deploy
+    prompt: |
+      Our Spring Boot order service started throwing this after this morning's deploy. Find
+      the root cause and give me the fix.
+
+      ```
+      java.lang.NullPointerException: Cannot invoke "java.math.BigDecimal.multiply(java.math.BigDecimal)" because the return value of "com.acme.orders.LineItem.getDiscountRate()" is null
+          at com.acme.orders.PriceCalculator.lineTotal(PriceCalculator.java:42)
+          at com.acme.orders.PriceCalculator.total(PriceCalculator.java:28)
+          at com.acme.orders.CheckoutController.checkout(CheckoutController.java:71)
+      ```
+
+      ```java
+      // PriceCalculator.java
+      BigDecimal lineTotal(LineItem item) {
+          BigDecimal gross = item.getUnitPrice().multiply(BigDecimal.valueOf(item.getQuantity()));
+          return gross.subtract(gross.multiply(item.getDiscountRate()));  // line 42
+      }
+
+      // LineItem.java, changed in this morning's PR
+      private BigDecimal discountRate;  // was: private BigDecimal discountRate = BigDecimal.ZERO;
+      ```
+
+      It only happens for line items without a discount.
+  - id: slow-dashboard-query
+    prompt: |
+      This query is the bottleneck of our admin dashboard: 4.2 seconds on every page load,
+      and pg_stat_statements puts it at 60% of the database time for that page. Postgres 16,
+      `orders` has 18 million rows. Make it fast, and give me the SQL for any index you add.
+
+      ```sql
+      SELECT c.id, c.name, count(o.id) AS open_orders, sum(o.total_cents) AS open_cents
+      FROM customers c
+      JOIN orders o ON o.customer_id = c.id
+      WHERE o.status = 'open' AND o.created_at > now() - interval '90 days'
+      GROUP BY c.id, c.name
+      ORDER BY open_cents DESC
+      LIMIT 50;
+      ```
+
+      ```
+      Limit  (actual time=4187.2..4187.3 rows=50 loops=1)
+        ->  Sort  (actual time=4187.2..4187.2 rows=50 loops=1)
+              ->  HashAggregate  (actual time=4120.5..4169.8 rows=41230 loops=1)
+                    ->  Hash Join  (actual time=310.4..3988.1 rows=212004 loops=1)
+                          ->  Seq Scan on orders o  (actual time=0.03..3602.7 rows=212004 loops=1)
+                                Filter: ((status = 'open') AND (created_at > (now() - '90 days'::interval)))
+                                Rows Removed by Filter: 17788120
+                          ->  Hash  (actual time=301.2..301.2 rows=950000 loops=1)
+                                ->  Seq Scan on customers c  (actual time=0.01..180.4 rows=950000 loops=1)
+      ```
+  - id: estimate-sprint-tickets
+    prompt: |
+      Sprint planning is tomorrow and I'd like a first pass at estimates before the meeting.
+      Give each ticket a story-point estimate (1, 2, 3, 5, 8, 13) with a one-line reason. Our
+      constraint is capacity: the team averages 34 points a sprint, and Dana is out for three
+      of the ten days. If the total is more than we can take, tell me which tickets to move
+      to the next sprint.
+
+      - WEB-412: Export invoices as CSV from the invoices list page (the filters exist).
+      - WEB-418: Dark mode toggle in user settings, saved per user.
+      - API-201: Add X-RateLimit-* headers to all public API responses.
+      - API-207: GET /users returns the same user on two pages when sorted by name.
+      - WEB-421: New copy for the password reset email (text from marketing attached).
+      - OPS-77: Sentry alert when the API's 5xx rate exceeds 1% for 5 minutes.
+      - WEB-425: A "last login" column in the admin users table.
+  - id: postmortem-from-notes
+    prompt: |
+      Can you turn my notes into a postmortem? Our template has Summary, Impact, Timeline,
+      Root cause and Action items. Keep it factual and blameless.
+
+      - Tue 14:02 UTC: config deploy to api-gateway (PR #2291, a routine timeout change)
+      - 14:04: 502 rate on /api/* jumps from 0.1% to 38%, PagerDuty fires
+      - 14:11: on-call sees "connection pool exhausted" in the gateway logs
+      - 14:19: the diff shows PR #2291 also changed upstream_pool_max from 50 to 5, a typo
+        in the YAML that review missed
+      - 14:23: revert deployed, 502s back to baseline by 14:26
+      - about 4,100 failed requests, 312 of them checkout attempts, no data lost
+      - we already added a CI schema check that rejects upstream_pool_max below 20
+      - first incident on the gateway this year
+  - id: oncall-rotation-generator
+    prompt: |
+      Write a Python function that builds our on-call rotation for the next 12 weeks. Six
+      engineers: ana, ben, chen, dev, eli, fay. The constraints:
+
+      - each engineer is on call for exactly 2 weeks
+      - nobody is on call two weeks in a row
+      - ana is on leave in weeks 5 and 6, chen in week 12
+      - ben and dev are never on call in adjacent weeks
+
+      Return a list of 12 names, week 1 first, and raise ValueError if no rotation fits. I
+      worked one out by hand, so a valid rotation exists. I just want the function so we can
+      rerun it every quarter with new leave dates.
+  - id: kafka-consumer-sizing
+    prompt: |
+      We launch in the EU next month and I need numbers for the capacity review. Our order
+      pipeline is the Kafka topic `orders.v2` with 12 partitions, consumed by the `enricher`
+      service. Each enricher instance handles about 800 messages per second, single-threaded,
+      one partition per consumer. Today we peak at 5,000 msg/s and run 8 instances. After the
+      launch we expect a peak of 14,000 msg/s. Downstream, the enricher writes to a Postgres
+      instance benchmarked at 20,000 inserts per second.
+
+      How many partitions and enricher instances do we need with 30% headroom, and which
+      part becomes the bottleneck after that?
+  - id: interview-notes-to-stories
+    prompt: |
+      Turn these customer interview notes into user stories with acceptance criteria in
+      Given/When/Then, one story per requirement, for our Jira import.
+
+      From three interviews about the invoicing module (accounting firms, 5 to 40 staff):
+      - "I need to export all invoices for a client as CSV for the year-end."
+      - "Overdue invoices should be at the top of the list, I don't want to hunt for them."
+      - "Our accountant needs our VAT number printed on every PDF invoice."
+      - "When a client pays, I want an email, not just a status change in the app."
+      - "Let me filter invoices by client and by month."
+  - id: five-whys-fishbone-guide
+    prompt: |
+      I'm putting together onboarding material for our new SREs. Write a one-page Markdown
+      guide to the two root cause analysis techniques we use in postmortems: the 5 Whys and
+      the fishbone (Ishikawa) diagram. For each, explain how to run it in a 30-minute
+      meeting and when it works badly, and give one short worked example from a web
+      service. 600 words at most.
+  - id: probable-cause-alert-grouping
+    prompt: |
+      Our alert dashboard should mark which firing alerts are the probable root cause and
+      which are only symptoms. The rule we agreed on: a firing service is a probable root
+      cause when none of the services it depends on, directly or through other services, is
+      firing. Write the function in TypeScript, with a few Vitest cases.
+
+      ```ts
+      type ServiceId = string;
+
+      // deps.get("checkout") is ["payments", "inventory"]: checkout calls both.
+      // The graph has no cycles.
+      export function probableRootCauses(
+        deps: Map<ServiceId, ServiceId[]>,
+        firing: Set<ServiceId>,
+      ): ServiceId[] {
+        // TODO
+      }
+      ```
+  - id: codeowners-review-bottleneck
+    prompt: |
+      Our platform team has become the bottleneck for code review, because CODEOWNERS sends
+      every PR in the monorepo to them. Last week we agreed who owns what, so please rewrite
+      the file:
+
+      - platform: /infra/, /.github/ and /ci/
+      - payments: /services/payments/ and /libs/money/
+      - growth: /services/web/ and /services/emails/
+      - data: /pipelines/ and every file ending in .sql
+      - everything else: no owner, one approval from anyone is enough
+
+      The current .github/CODEOWNERS:
+
+      ```
+      * @acme/platform
+      /services/payments/ @acme/payments
+      ```

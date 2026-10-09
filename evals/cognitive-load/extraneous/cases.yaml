@@ -1,0 +1,476 @@
+positive:
+  - id: promo-rules-in-my-head
+    prompt: |
+      honestly every time i open apply_promotions() i have to keep like eight things in my
+      head at once and i still get it wrong. it's checkout/promotions.py. i'm the one who adds
+      new promo types, about one a month, and teh last two each shipped with a bug.
+
+      ```python
+      def apply_promotions(cart, user, now):
+          total = cart.subtotal
+          for p in cart.promos:
+              if p.kind == 1:
+                  if not (user.tier >= 2 or (p.first_order and user.order_count == 0)) or now > p.ends_at:
+                      continue
+                  total -= total * p.value
+              elif p.kind == 2:
+                  if cart.item_count >= p.min_items:
+                      if not p.stackable and cart.discount_applied:
+                          continue
+                      total -= p.value
+                      cart.discount_applied = True
+              elif p.kind == 3:
+                  if user.country in p.countries and not (p.excludes_sale and any(i.on_sale for i in cart.items)):
+                      if cart.discount_applied and not p.stackable:
+                          continue
+                      total -= min(p.value, total * 0.5)
+                      cart.discount_applied = True
+          return max(total, 0)
+      ```
+
+      what makes this so hard to work in, and what should i change?
+  - id: export-view-review-files
+    prompt: |
+      Code review on our reporting app has become slow, and I would like to understand why.
+      Reviewing even a two-line change to an export view means opening six or seven files.
+      This is one of them, reports/views/invoice_export.py (Django 5):
+
+      ```python
+      class InvoiceExportView(TenantScopedMixin, PermissionRequiredMixin, AuditLogMixin,
+                              DateRangeFilterMixin, CsvExportView):
+          permission_required = "billing.export_invoice"
+          model = Invoice
+
+          def get_queryset(self):
+              qs = super().get_queryset()
+              return qs.filter(status__in=self.exportable_statuses)
+      ```
+
+      To know what get_queryset() returns, a reviewer has to know that:
+
+      - TenantScopedMixin (core/mixins/tenant.py) filters by request.tenant;
+      - DateRangeFilterMixin (reports/mixins.py) reads ?from= and ?to= and filters again,
+        unless the user is staff;
+      - CsvExportView (core/exports/base.py) extends ExportView (core/exports/views.py),
+        which extends ListView and adds select_related(*self.export_relations);
+      - exportable_statuses is defined on AuditLogMixin (core/mixins/audit.py), for
+        historical reasons;
+      - the order of the parent classes decides which of these runs first.
+
+      We have 19 export views built this way. Two senior engineers review them and, since
+      last month, two junior engineers as well. A review of a change to an export view takes
+      the juniors most of a day. Please explain what makes these reviews slow and what we
+      should change.
+  - id: new-hires-stuck-on-events
+    prompt: |
+      The last three engineers who joined my team each got stuck on the same thing in their
+      first month: how an order event reaches the code that handles it. One of them spent
+      most of a day on it. The two of us who wrote it find it obvious, so we are probably
+      not the right people to judge.
+
+      ```ts
+      // src/events/registry.ts
+      export const handlers: Record<number, Array<(e: OrderEvent) => Promise<void>>> = {};
+
+      export function on(code: number) {
+        return (target: any, key: string) => {
+          (handlers[code] ??= []).push(target[key]);
+        };
+      }
+
+      // src/orders/OrderHandlers.ts
+      export class OrderHandlers {
+        @on(12) async reserveStock(e: OrderEvent) { /* ... */ }
+        @on(12) @on(31) async notifyCustomer(e: OrderEvent) { /* ... */ }
+        @on(47) async releaseStock(e: OrderEvent) { /* ... */ }
+      }
+
+      // src/index.ts
+      import "./orders/OrderHandlers"; // registers the handlers as a side effect
+      ```
+
+      What the codes mean is on a wiki page: 12 is order placed, 31 is payment captured,
+      47 is order cancelled. The dispatcher in src/events/bus.ts looks up
+      handlers[event.code] and runs them in parallel.
+
+      Why do new people find this so hard, and what would help them? I'd rather fix the code
+      than write another wiki page.
+  - id: carrier-onboarding-two-months
+    prompt: |
+      We are a team of nine working on a logistics platform. A new backend engineer takes
+      about two months before they can ship a feature without help, and my VP wants that
+      halved. The usual first feature is adding a shipping carrier, which we do about every
+      six weeks. From the notes of our last two hires, this is what they had to learn first:
+
+      - Adding a carrier touches four of our eleven services: carrier-registry, rate-engine,
+        label-service and tracking-poller.
+      - Rate rules are written in "rateflow", a YAML language we built ourselves and
+        interpret at runtime. There is no editor support, and its only documentation is a
+        Confluence page from 2023.
+      - The services call each other through "pipe", our in-house RPC library. Its retry and
+        timeout defaults differ from the HTTP client everyone already knows.
+      - Carriers are identified by two-letter codes ("DH", "UP", "FX") kept in four places,
+        and the four lists do not quite agree.
+      - Running the stack locally needs six services in docker-compose plus the shared
+        staging Kafka.
+
+      What should we change first so the next hire becomes productive sooner? After that,
+      draft three agenda items for Thursday's onboarding retrospective.
+  - id: vat-bug-took-two-days
+    prompt: |
+      ok so i've maintained this billing code for 3 years and it still took me two days to
+      find why some austrian invoices had the wrong VAT. turns out the rate gets overriden in
+      a signal handler i forgot exists. this is the path one invoice line takes:
+
+      ```python
+      # billing/models.py
+      class InvoiceLine(BaseLine):
+          def tax(self):
+              return self.net * self.rate()
+
+      # billing/base.py
+      class BaseLine(TaxableMixin, models.Model):
+          class Meta:
+              abstract = True
+
+      # billing/mixins.py
+      class TaxableMixin:
+          def rate(self):
+              if getattr(self, "rate_override", None) is not None:
+                  return self.rate_override
+              return settings.VAT_RATES.get(self.country, settings.DEFAULT_VAT)
+
+      # billing/eu/overrides.py, imported from BillingConfig.ready() in billing/apps.py
+      @receiver(pre_save, sender=InvoiceLine)
+      def apply_reduced_rates(sender, instance, **kwargs):
+          if instance.category in REDUCED_CATEGORIES.get(instance.country, ()):
+              instance.rate_override = EU_REDUCED[instance.country]
+      ```
+
+      the bug was that REDUCED_CATEGORIES (in billing/eu/tables.py) had books for germany but
+      not austria. a one line fix after two days. why was this so hard to find when i know
+      this code inside out, and what should change so the next one doesnt take two days?
+  - id: notifications-too-complex
+    prompt: |
+      everyone on my team says notifications/ is "too complex" but when i ask what exactly,
+      nobody can say. this is the function they all complain about:
+
+      ```python
+      def send(user, kind, payload, channel=None, template=None, retry=True,
+               batch=False, dry_run=False, locale=None, legacy=False):
+          ch = channel or user.prefs.get(kind, {}).get("channel") or ("sms" if kind in URGENT else "email")
+          tpl = (LEGACY_TEMPLATES if legacy else TEMPLATES)[ch][template or kind]
+          body = render(tpl, payload, locale or (None if kind in URGENT else user.locale))
+          if dry_run:
+              return body
+          if batch and kind not in URGENT:
+              return digest_queue.add(user.id, ch, body)
+          return deliver(ch, user, body, retries=3 if retry else 0)
+      ```
+
+      password reset and the weekly marketing digest both go through it, and each team adds
+      a flag every month or so.
+  - id: release-runbook-first-timers
+    prompt: |
+      Our iOS release follows a 23-step runbook in Notion. Only two of the eight people on
+      the team can run a release without a mistake. Each of the last three people who ran it
+      for the first time broke something: once a wrong build number, once a forgotten API
+      flag, and once a release that went to all users instead of 10%. These are the steps
+      that went wrong, abridged:
+
+      4. Set CFBundleVersion in Info.plist to the last number in the "Builds" Google Sheet,
+         plus one.
+      9. In LaunchDarkly, set ios-min-api to the value from step 6 of the backend release
+         runbook (a separate Notion page).
+      12. Run scripts/release.sh from the release branch, at least ten minutes after step 9.
+          It exits with 3 if the flag has not propagated yet and with 4 if the build number
+          is already taken. The runbook's appendix explains the codes.
+      17. In App Store Connect, choose phased release. The "Release to all users" box is
+          ticked by default; untick it.
+      21. Post the build number from step 4 and the flag value from step 9 in #releases.
+
+      We release every two weeks, and we want anyone on the team to be able to do it. What
+      makes this process so easy to get wrong the first time, and what should we change?
+  - id: terraform-review-five-files
+    prompt: |
+      reviewing any change to our terraform is painfull. to check which instance type prod's
+      api ends up with i have to open five files:
+
+      ```hcl
+      # envs/prod/main.tf
+      module "api" {
+        source = "../../stacks/web"
+        size   = var.size
+      }
+
+      # envs/prod/terraform.tfvars
+      size = "large"
+
+      # stacks/web/main.tf
+      module "service" {
+        source = "../../modules/service"
+        tier   = local.size_to_tier[var.size]
+      }
+
+      # stacks/web/locals.tf
+      locals {
+        size_to_tier = { small = "t1", large = "t3" }
+      }
+
+      # modules/service/main.tf
+      locals {
+        tier_types = { t1 = "t3.small", t3 = "m6i.large" }
+      }
+      resource "aws_instance" "this" {
+        instance_type = local.tier_types[var.tier]
+      }
+      ```
+
+      four of us on the platform team each review about ten of these PRs a week. is this
+      just how terraform is or did we overdo it?
+  - id: ledger-design-doc-risks
+    prompt: |
+      I'm writing the design document for multi-currency support in our ledger service
+      (Kotlin), and I need its section "Risks in the current posting code", about 200 words.
+      Two engineers join the project next month, and neither has worked on the ledger
+      before. The reviewers of the last three changes to this function said they could only
+      follow it with the account table and the flags file open beside it. Every currency
+      change will go through this function:
+
+      ```kotlin
+      // ledger/src/main/kotlin/posting/Poster.kt
+      fun post(tx: Transaction) {
+          for (leg in tx.legs) {
+              val sign = if (leg.side == 'D') 1 else -1
+              val normal = if (leg.account.type in "AE") 1 else -1   // types: A, L, Q, R, E
+              val amount = leg.minorUnits * sign * normal
+              if ((leg.account.flags and 0x4) != 0 && balances.of(leg.account.id) + amount < 0 && !tx.override) {
+                  throw OverdraftException(leg)
+              }
+              balances.add(leg.account.id, amount)
+              if ((leg.account.flags and 0x10) != 0) {
+                  mirror.post(leg.copy(side = if (leg.side == 'D') 'C' else 'D'))
+              }
+          }
+      }
+      ```
+
+      The account types and flag bits are listed in ledger/docs/accounts.md. Write the
+      section so it can go straight into the document.
+  - id: upload-form-slow-bugs
+    prompt: |
+      Our UploadForm component has caused four bugs this quarter, and each one took days to
+      track down, even for Priya, who wrote it and knows it best. The latest: after a user
+      cancelled an upload, the progress bar never appeared again for their next upload.
+      Here is the state and the render logic from src/components/UploadForm.tsx:
+
+      ```tsx
+      const [isUploading, setIsUploading] = useState(false);
+      const [isDone, setIsDone] = useState(false);
+      const [hasError, setHasError] = useState(false);
+      const [isRetrying, setIsRetrying] = useState(false);
+      const [isCancelled, setIsCancelled] = useState(false);
+
+      // ...nine handlers set these, for example:
+      const onRetry = () => { setIsRetrying(true); setHasError(false); setIsUploading(true); };
+      const onCancel = () => { setIsCancelled(true); setIsUploading(false); };
+
+      return (
+        <>
+          {isUploading && !isCancelled && !hasError && <Progress />}
+          {(isDone || (hasError && !isRetrying)) && !isCancelled && <Summary />}
+          {hasError && !isRetrying && <RetryButton onClick={onRetry} />}
+          {!isUploading && !isDone && <DropZone />}
+        </>
+      );
+      ```
+
+      We touch this component in most sprints. Why do bugs here take so long to find, and
+      what would you change?
+near_miss:
+  - id: speed-up-contact-dedupe
+    prompt: |
+      I know this function is hard to follow, but readability isn't today's problem: it takes
+      nine seconds on a 50k-contact CSV and freezes the import screen. Make it fast. The
+      output must stay exactly the same, including which duplicate is kept and the order.
+
+      ```ts
+      // src/import/dedupe.ts
+      export function dedupeContacts(contacts: Contact[]): Contact[] {
+        const kept: Contact[] = [];
+        for (const c of contacts) {
+          let dup = false;
+          for (const k of kept) {
+            const samePhone = !!k.phone && !!c.phone &&
+              k.phone.replace(/\D/g, "") === c.phone.replace(/\D/g, "");
+            if (k.email.toLowerCase() === c.email.toLowerCase() || samePhone) {
+              dup = true;
+              break;
+            }
+          }
+          if (!dup) kept.push(c);
+        }
+        return kept;
+      }
+      ```
+  - id: rename-cryptic-locals
+    prompt: |
+      My reviewer says the names in this function are unreadable. Rename the parameters and
+      local variables to something clear and give me the function back. Don't restructure
+      anything and keep the function's name, it's called from 30 places.
+
+      ```go
+      // pricing/total.go
+      func calc(o Order, r []Rate) int64 {
+          var t int64
+          for _, l := range o.Lines {
+              x := l.Qty * l.Cents
+              for _, rr := range r {
+                  if rr.Code == l.TaxCode {
+                      x += x * rr.Bps / 10000
+                  }
+              }
+              t += x
+          }
+          return t
+      }
+      ```
+  - id: style-guide-lint-overtime
+    prompt: |
+      Check this file against our team's style guide and list each violation with the rule
+      number. Don't fix anything, I'm pasting the list into a PR comment.
+
+      Style guide, docs/STYLE.md (abridged):
+      1. A function is at most 30 lines.
+      2. Nesting is at most 3 levels deep.
+      3. No single-letter names, except i and j as loop indices.
+      4. Boolean parameters are keyword-only.
+      5. Module-level constants are UPPER_CASE.
+
+      ```python
+      # payroll/overtime.py
+      weekly_limit = 40
+
+      def overtime_pay(e, hours, holiday=False):
+          pay = 0
+          for d in hours:
+              if d.worked > 8:
+                  if holiday:
+                      if e.contract == "hourly":
+                          pay += (d.worked - 8) * e.rate * 2
+                  else:
+                      pay += (d.worked - 8) * e.rate * 1.5
+          if sum(d.worked for d in hours) > weekly_limit:
+              pay += 50
+          return pay
+      ```
+  - id: first-week-onboarding-checklist
+    prompt: |
+      Tomás joins our backend team on Monday. Our last new hire spent most of his first week
+      waiting for access, so this time I want a checklist ready. Write it as a Markdown list
+      grouped by day: the accounts to request (GitHub org, AWS SSO, PagerDuty, Sentry,
+      1Password), the repos to clone (api, web, infra), who to meet (his buddy Ana, the tech
+      lead, the product manager), and a starter ticket on Thursday.
+  - id: explain-cron-expand
+    prompt: |
+      I'm two weeks into this job and I'm confused by this helper in our scheduler. Can you
+      walk me through what it does, line by line, and tell me what it returns for
+      expand("*/15", 0, 59) and expand("9-17", 0, 23)?
+
+      ```python
+      # scheduler/cron.py
+      def expand(field, lo, hi):
+          out = set()
+          for part in field.split(","):
+              step = 1
+              if "/" in part:
+                  part, step = part.split("/")
+                  step = int(step)
+              if part == "*":
+                  a, b = lo, hi
+              elif "-" in part:
+                  a, b = map(int, part.split("-"))
+              else:
+                  a = b = int(part)
+              out.update(range(a, b + 1, step))
+          return sorted(out)
+      ```
+  - id: big-o-sliding-window
+    prompt: |
+      I'm prepping for an interview and this solution passes, but I find it hard to follow:
+      there's a loop inside a loop, and the editorial still says it's linear. What are its
+      time and space complexity in Big-O, and why? Just the analysis, I don't want it
+      rewritten.
+
+      ```python
+      def longest_unique_substring(s):
+          seen = set()
+          best = left = 0
+          for right, ch in enumerate(s):
+              while ch in seen:
+                  seen.remove(s[left])
+                  left += 1
+              seen.add(ch)
+              best = max(best, right - left + 1)
+          return best
+      ```
+  - id: split-multi-currency-pr
+    prompt: |
+      My PR is 2,400 lines across 38 files, and both reviewers said they can't review it in
+      one go. Help me split it into a stack of smaller PRs. This is what the branch
+      feat/multi-currency changes, grouped by purpose:
+
+      - migrations/0042_add_currency.py and billing/money.py: a new Money type and its column
+      - 14 files under billing/: Decimal amounts switched to Money
+      - 6 files under api/serializers/: currency fields added to the responses
+      - 9 files under web/src/components/Price*.tsx: price formatting
+      - 8 test files across all of the above
+
+      Tell me the order of the PRs, what goes in each, and the git commands to cut them from
+      my branch.
+  - id: docstring-for-reconcile
+    prompt: |
+      Write a Google-style docstring for this function. It's hard to follow, which is exactly
+      why it needs one. No code changes, just the docstring, so I can paste it in.
+
+      ```python
+      # finance/reconcile.py
+      def reconcile(statement, ledger, tolerance_cents=0):
+          unmatched = []
+          by_ref = {e.ref: e for e in ledger if e.ref}
+          for line in statement:
+              e = by_ref.pop(line.ref, None) if line.ref else None
+              if e is None:
+                  e = next((x for x in ledger
+                            if not x.ref and abs(x.cents - line.cents) <= tolerance_cents
+                            and x.date == line.date), None)
+              if e is None or abs(e.cents - line.cents) > tolerance_cents:
+                  unmatched.append(line)
+          return unmatched, list(by_ref.values())
+      ```
+  - id: pr-template-review-checklist
+    prompt: |
+      Our code reviews keep missing the same things: no test plan, migrations that can't be
+      reversed, feature flags nobody named. Write a pull request template we can save as
+      .github/pull_request_template.md, so reviewers know what they are reading before they
+      open the diff. It needs a summary, a "How to test" section, a checklist (tests added,
+      migration reversible, feature flag named, docs updated, screenshots for UI changes)
+      and a line for the ticket link. Markdown only, no commentary.
+  - id: untangle-rebased-branch
+    prompt: |
+      I'm confused about what state my branch is in. I rebased feat/money onto main, then a
+      teammate told me to merge main as well, and now the history looks like this:
+
+      ```
+      *   9f1c2ab (HEAD -> feat/money) Merge branch 'main' into feat/money
+      |\
+      | * 7e4d901 (origin/main, main) Bump pydantic to 2.9
+      | * 3b8a6f2 Fix flaky login test
+      * | c41d9e7 Use Money in invoices
+      * | 52aa0b3 Add currency column
+      |/
+      * 1d0e8c4 Release 4.12.0
+      ```
+
+      I want the branch to be main plus my two commits on top, with no merge commit, and
+      then to update the open PR. Give me the exact commands.

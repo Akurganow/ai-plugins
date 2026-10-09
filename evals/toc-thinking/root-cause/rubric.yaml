@@ -1,0 +1,19 @@
+questions:
+  entry_point: >-
+    The answer states which diagram it chose as its entry point: a current
+    reality tree, an evaporating cloud, a prerequisite tree or a future
+    reality tree.
+  link_form: >-
+    The answer writes the links of its reasoning as "if A, then B" or "to
+    have A, we must have B" sentences.
+  challenges_links: >-
+    The answer raises an objection to at least one link of its own reasoning,
+    such as an insufficient cause, a reversed cause and effect, or an
+    assumption that may not hold.
+  conditions_not_interpretations: >-
+    The answer states each problem as a condition someone can observe, such
+    as "p99 latency exceeds 5 seconds during concurrent writes", not as an
+    interpretation such as "the system is slow".
+  asks_for_facts: >-
+    The answer asks the user to confirm, correct or supply a fact about their
+    system.

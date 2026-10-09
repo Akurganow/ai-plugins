@@ -1,0 +1,21 @@
+questions:
+  study_warning: >-
+    The answer says that the method calls for at least 80 hours of study
+    before it is applied to a new practical problem.
+  if_then_but: >-
+    The answer writes the conflict in sentences of the form "if …, then …,
+    but …".
+  tool_and_product: >-
+    The answer names the conflicting pair: the tool that acts and the product
+    it acts upon.
+  minimum_change: >-
+    The answer states the required result as something to reach with minimum
+    changes to the system.
+  intensified: >-
+    The answer pushes the conflict to an extreme, such as "an entry that is
+    never evicted" in place of "a long cache lifetime".
+  x_element: >-
+    The answer says what an unknown "X-element" must do.
+  asks_user: >-
+    The answer asks the user to confirm, correct or supply a fact about their
+    system.

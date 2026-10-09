@@ -1,0 +1,265 @@
+positive:
+  - id: commit-msg-backoff-fix
+    prompt: |
+      commit msg for this pls, it goes straight to main
+
+      ```diff
+      --- a/sync/retry.py
+      +++ b/sync/retry.py
+      @@ -9,4 +9,4 @@ def backoff_delays(base=0.5, cap=30.0, attempts=6):
+           delays = []
+           for n in range(attempts):
+      -        delays.append(min(cap, base * 2 * n))
+      +        delays.append(min(cap, base * 2 ** n))
+           return delays
+      ```
+
+      the old formula grew linearly and started at 0, so the first retry fired instantly and
+      we hammered the partner api during tuesdays outage
+  - id: webhook-review-comment
+    prompt: |
+      Reviewing a teammate's PR on our payments service. There's one thing in this diff I
+      don't want merged as is, but I can't figure out how to say it without sounding like a
+      jerk. Can you find it and write the comment I should leave on the PR?
+
+      ```diff
+      --- a/payments/webhooks.py
+      +++ b/payments/webhooks.py
+      @@ -18,3 +18,6 @@ def stripe_webhook(request):
+           event = verify_signature(request)
+      -    apply_payment(event["data"]["object"])
+      +    try:
+      +        apply_payment(event["data"]["object"])
+      +    except Exception:
+      +        logger.info("webhook failed")
+           return Response(status=200)
+      ```
+  - id: deploy-cli-missing-region
+    prompt: |
+      People keep opening support tickets with this traceback from our deploy CLI, and none
+      of them can tell what to do about it:
+
+      ```
+      Traceback (most recent call last):
+        File "/usr/local/bin/shipctl", line 8, in <module>
+          sys.exit(main())
+        File "/usr/local/lib/python3.12/site-packages/shipctl/deploy.py", line 41, in deploy
+          region = cfg["region"]
+      KeyError: 'region'
+      ```
+
+      It happens when ~/.shipctl/config.toml has no region key, which is the case for
+      everyone who installed before v2.3. Running `shipctl configure --region <name>` fixes
+      it, and the valid regions are eu-west, us-east and ap-south. This is the function:
+
+      ```python
+      def deploy(args):
+          cfg = load_config(Path.home() / ".shipctl" / "config.toml")
+          region = cfg["region"]
+          client = ShipClient(region=region, token=cfg["token"])
+          client.deploy(args.service, args.image)
+      ```
+
+      Change it so this case exits with status 2 and tells people what to do instead of
+      printing the traceback.
+  - id: api-rate-limits-docs
+    prompt: |
+      We publish the documentation for our public REST API next week, and the page on rate
+      limits is still empty. These are the facts from the gateway configuration:
+
+      - Each API token may send 600 requests per minute, counted over a rolling 60-second
+        window.
+      - Bursts of up to 50 requests in one second are allowed.
+      - Over the limit, the API answers 429 Too Many Requests with a Retry-After header in
+        seconds.
+      - Every response carries the headers X-RateLimit-Limit, X-RateLimit-Remaining and
+        X-RateLimit-Reset.
+      - Customers on the Enterprise plan can request a higher limit from their account
+        manager.
+
+      Please write the page. It is Markdown and goes to docs/api/rate-limits.md.
+  - id: export-fix-pr-description
+    prompt: |
+      can you clean up my notes into the PR description? our template is just Summary and
+      Testing
+
+      - spent most of yesterday chasing why the nightly export sometimes has duplicate rows
+      - turns out the cursor pagination used created_at only, so rows with the same
+        timestamp came back on two pages
+      - switched the cursor key to (created_at, id), added a composite index in migration
+        0057
+      - tried an OFFSET approach first but it was way too slow on teh 40M row table,
+        reverted that
+      - ran the export against a staging snapshot: 0 duplicates, 41,210,377 rows, same as
+        SELECT COUNT(*)
+      - pytest tests/export -q all green
+      - had the AI review bot look at it twice, it said LGTM
+  - id: issue-triage-agent
+    prompt: |
+      We are adding an agent to our repository that triages new GitHub issues before a
+      maintainer looks at them. Please write its instructions, which go into
+      .github/agents/triage.md. The agent should:
+
+      - add exactly one of the labels bug, feature or question
+      - search open and closed issues for a duplicate, and when it finds one, link it and add
+        the label duplicate
+      - ask the reporter for a minimal reproduction when a bug report has none
+      - never close an issue and never assign anyone
+
+      The agent can run the gh CLI and has read access to the code.
+  - id: go-comments-before-merge
+    prompt: |
+      my lead says the comments in this file are noise but i think most of them are fine.
+      which ones should stay before i merge? i'll edit them myself, just tell me what to
+      change and why
+
+      ```go
+      // ===================== Helpers =====================
+
+      // This function handles parsing of the TTL string.
+      func parseTTL(s string) (time.Duration, error) {
+          // Step 1: trim the input
+          s = strings.TrimSpace(s)
+          // Step 2: parse it
+          d, err := time.ParseDuration(s)
+          if err != nil {
+              return 0, err
+          }
+          // Redis rejects an EX of 0, so round sub-second TTLs up to one second.
+          if d > 0 && d < time.Second {
+              d = time.Second
+          }
+          // should work for negative values too
+          return d, nil
+      }
+      ```
+  - id: deslop-webhooks-intro
+    prompt: |
+      this intro for our webhooks docs reads like a press release. de-slop it, and list what
+      you changed so i can check
+
+      "In today's fast-paced world, real-time data is more important than ever. That's why
+      we're thrilled to introduce Webhooks, a powerful and seamless way to leverage events
+      from your account. It's worth noting that webhooks aren't just notifications, they're
+      the backbone of a truly event-driven architecture. Simply register an endpoint and
+      you'll be up and running in no time!"
+
+      the actual facts: you register an HTTPS endpoint under Settings > Webhooks, we POST a
+      JSON event for every order, payment or refund change, each request is signed with
+      HMAC-SHA256 in the Signature header, and failed deliveries are retried for 72 hours
+  - id: shorten-incident-update
+    prompt: |
+      Nobody reads my incident updates past the first two lines. Can you shorten this one
+      before I post it in #status? Keep every fact, and list what you cut so I can
+      double-check.
+
+      "Hi all, just wanted to give everyone a quick update regarding the ongoing situation
+      with the checkout service. At approximately 14:05 UTC our monitoring systems detected
+      an elevated rate of errors, and after some investigation the team was able to determine
+      that the issue was caused by an expired TLS certificate on the payments gateway. We
+      have now gone ahead and renewed the certificate, and as of 14:52 UTC error rates have
+      returned to normal levels. Some customers may have seen failed payments during this
+      window, and we are currently in the process of identifying the affected orders so that
+      we can reach out to them. We will continue to monitor the situation closely and will
+      provide another update as soon as we have more information. Thanks for your patience!"
+  - id: check-issue-reply
+    prompt: |
+      Before I post this reply on a GitHub issue, could you check it? A user reported that
+      our Python SDK times out on uploads over 100 MB. Please tell me what to change. I will
+      edit it myself.
+
+      "Thanks so much for reaching out! We totally understand how frustrating this must be.
+      Rest assured that the team is looking into it. I think the issue might possibly be
+      related to the default timeout, which is perhaps set a bit low for larger files. You
+      could maybe try passing timeout=300 to upload() and see if that helps? We'll hopefully
+      have a more permanent fix in an upcoming release. Let us know!"
+near_miss:
+  - id: squash-keep-first-message
+    prompt: |
+      How do I squash my last four commits into one but keep the message of the oldest one
+      exactly as it is? They're already pushed to my feature branch, and nobody else works on
+      it.
+  - id: list-todo-comments
+    prompt: |
+      I need every TODO and FIXME comment in our monorepo as a CSV with file, line and the
+      comment text, so I can paste it into a planning spreadsheet. Python lives under
+      services/, Go under cmd/ and pkg/. Give me a ripgrep one-liner, and skip vendor/ and
+      anything under testdata/.
+  - id: error-messages-to-csv
+    prompt: |
+      Our support team wants the API's error messages in their spreadsheet. Turn this into
+      CSV with the columns code, http_status and message, sorted by code. Copy every message
+      word for word, typos included, because support searches for the exact text customers
+      paste into tickets.
+
+      ```go
+      var apiErrors = map[string]APIError{
+          "E1002": {Status: 404, Message: "Oops! We couldn't find what you were looking for."},
+          "E1001": {Status: 400, Message: "Something went wrong with your request. Please try again."},
+          "E2001": {Status: 401, Message: "Your session has expired, please log in again."},
+          "E3004": {Status: 429, Message: "Whoa, slow down! Too many requests."},
+          "E1003": {Status: 409, Message: "This resource already exsits."},
+      }
+      ```
+  - id: buzzword-offsite-skit
+    prompt: |
+      Write a two-minute skit for our engineering offsite. Two characters: a tired SRE, and a
+      "VP of Synergy" who answers every question about last night's outage with corporate
+      buzzwords (leverage, circle back, move the needle, paradigm shift, best-in-class). The
+      joke is that the VP never says anything concrete. Keep it light and name nobody real.
+  - id: semicolon-or-dash
+    prompt: |
+      English is my second language and I keep mixing these up. When is a semicolon correct,
+      when is an em dash correct, and when should it just be a comma? A few example
+      sentences for each would help.
+  - id: cspell-allowed-words
+    prompt: |
+      CI fails on our docs build because cspell flags words that are spelled correctly:
+      kubectl, Postgres, idempotency, Grafana, upsert. Add them to cspell.json and make it
+      skip everything under docs/vendor/. This is the current file:
+
+      ```json
+      {
+        "version": "0.2",
+        "language": "en",
+        "words": ["Helm", "Kustomize"]
+      }
+      ```
+  - id: translate-spanish-issue
+    prompt: |
+      A contributor opened this issue in Spanish. Translate it into English word for word.
+      Don't clean it up or shorten it, I need to know exactly what they reported so I can
+      triage it.
+
+      "Hola. Desde la versión 3.2 el comando `sync --all` se queda colgado cuando el
+      directorio tiene más de 10.000 archivos. Con la 3.1 funcionaba bien. Uso macOS 15 y
+      Python 3.12. Si pongo `--workers 1` termina, pero tarda una hora. ¿Es un bug o tengo
+      que cambiar algo en la configuración?"
+  - id: export-my-review-comments
+    prompt: |
+      I'm leaving the team and want to keep the review comments I wrote on our repo
+      northwind/billing. Give me a gh api command with jq that exports every pull request
+      review comment I authored since 2026-01-01 into a CSV with PR number, file path, line,
+      created_at and body.
+  - id: fill-prompt-placeholders
+    prompt: |
+      Our support agent's system prompt lives in prompts/support.md and has placeholders like
+      {product_name} and {escalation_email}. It also contains literal JSON examples with curly
+      braces, so str.format() blows up with a KeyError. Write a small Python function that
+      fills only the known placeholders and leaves every other brace alone. Don't touch the
+      prompt text itself.
+  - id: shorten-zshrc-function
+    prompt: |
+      can you make this shorter? same behaviour. it's in my .zshrc and it bugs me how long it
+      is
+
+      ```bash
+      mkcd() {
+        if [ -d "$1" ]; then
+          cd "$1"
+        else
+          mkdir -p "$1"
+          cd "$1"
+        fi
+      }
+      ```

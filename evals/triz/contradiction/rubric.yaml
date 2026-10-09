@@ -1,0 +1,22 @@
+questions:
+  states_conflict: >-
+    The answer restates the problem as a conflict, either as one property that
+    improves while another gets worse, or as one element that must have a
+    property and its opposite.
+  ideal_result: >-
+    The answer describes an ideal outcome in which an element of the user's
+    system itself provides the benefit without the harm.
+  asks_user: >-
+    The answer asks the user to confirm its reading of the problem, to choose
+    among options it offers, or to supply a missing fact.
+  names_principle: >-
+    Each solution direction names the principle it comes from.
+  concrete_change: >-
+    Each solution direction is stated as a concrete change to a named part of
+    the user's system.
+  ranked_by_directness: >-
+    The answer ranks its solution directions by how directly each removes the
+    conflict.
+  no_compromise: >-
+    The answer offers ways to remove the conflict, not a compromise that gives
+    up part of one side to gain the other.

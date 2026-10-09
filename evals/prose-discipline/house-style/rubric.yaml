@@ -1,0 +1,25 @@
+questions:
+  no_announcement_or_offer: >-
+    The answer contains no sentence that announces its own content or offers
+    more help.
+  plain_verbs: >-
+    Outside text it quotes, the answer uses no weak-verb phrase such as
+    "leverage", "utilize", "make use of" or "perform validation".
+  no_filler: >-
+    Outside text it quotes, the answer uses no filler phrase such as "it is
+    important to note", "it's worth noting" or "rest assured".
+  no_inflation: >-
+    Outside text it quotes, the answer uses no hype word such as "crucial",
+    "powerful", "comprehensive" or "game-changer".
+  no_hedging: >-
+    Outside text it quotes, the answer states its claims without hedges such
+    as "probably", "I think" or "should work".
+  direct_facts: >-
+    Outside text it quotes, the answer states each fact directly, with no
+    setup such as "it's not just X, it's Y" or "here's the thing".
+  one_thought: >-
+    Outside text it quotes, each sentence the answer writes carries one
+    thought, not a chain of clauses.
+  no_joined_thoughts: >-
+    Outside text it quotes, the answer never joins two thoughts with a
+    semicolon or a dash.

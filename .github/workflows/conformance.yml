@@ -3,8 +3,10 @@ name: conformance
 # Runs the repository's checks and the validators Claude Code, Agent Skills and
 # Hermes publish. The checks are Agent Plugins 1.0.0 conformance, that every
 # generated file equals what its source produces, and the size bound on the
-# prose-discipline rules. On a pull request, every commit touching plugins/
-# must also be conventional. Hosted Linux runners, no services, no model calls.
+# prose-discipline rules. It also runs the evals runner's selftest and checks
+# that every evals folder has a matching skill and loads. On a pull request,
+# every commit touching plugins/ must also be conventional. Hosted Linux
+# runners, no services, no model calls.
 #
 # `push` is restricted to `main`. Without that restriction a pull request from
 # a branch in this repository triggers the workflow twice — once for the push
@@ -50,6 +52,17 @@ jobs:
 
       - name: Check conformance
         run: python tools/check-conformance.py
+
+      # tools/evals.py calls models after a release. Its selftest calls none:
+      # it parses recorded event streams and checks the arithmetic.
+      - name: Check the evals runner
+        run: python tools/evals.py selftest
+
+      # The runner reads the cases and rubrics only after a release. A folder
+      # with no skill is never measured, and a file that does not load fails
+      # there.
+      - name: Check the evals folders
+        run: python tools/evals.py validate
 
       # tools/regenerate.sh installs doctoc from tools/package-lock.json and
       # runs it on the Node major pinned here.

@@ -1,0 +1,20 @@
+questions:
+  who_changes: >-
+    The answer states or asks who changes the design under review.
+  common_operation: >-
+    The answer states or asks what the most common operation on the design
+    under review is.
+  ranked_by_weight: >-
+    The answer orders its findings by how often each part is touched times what
+    touching it costs.
+  cites_chapter: >-
+    Each finding names the chapter of John Ousterhout's book A Philosophy of
+    Software Design that it rests on.
+  names_cause: >-
+    Each finding says whether its cause is a dependency or obscurity.
+  names_change: >-
+    Each finding names the change that would remove it.
+  change_cost: >-
+    Each finding says what that change would cost.
+  not_covered: >-
+    The answer says what the review did not cover.

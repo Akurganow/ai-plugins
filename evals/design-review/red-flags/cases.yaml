@@ -1,0 +1,435 @@
+positive:
+  - id: blob-store-abstraction
+    prompt: |
+      quick q: is this abstraction actually right, or am I just adding a layer for nothing?
+      It's src/infra/blob_store.py in our Flask app, and every upload and download goes through it.
+
+      ```python
+      class BlobStore:
+          def __init__(self, s3_client, bucket):
+              self._s3 = s3_client
+              self._bucket = bucket
+
+          def put(self, key, body, content_type, acl, storage_class, metadata):
+              return self._s3.put_object(Bucket=self._bucket, Key=key, Body=body,
+                                         ContentType=content_type, ACL=acl,
+                                         StorageClass=storage_class, Metadata=metadata)
+
+          def get(self, key):
+              return self._s3.get_object(Bucket=self._bucket, Key=key)["Body"].read()
+
+          def delete(self, key):
+              return self._s3.delete_object(Bucket=self._bucket, Key=key)
+      ```
+
+      Callers almost always pass acl="private", storage_class="STANDARD", metadata={}.
+  - id: sdk-client-interface
+    prompt: |
+      We are preparing to publish version 1.0 of our internal TypeScript SDK, which 14
+      services consume. My team of three maintains it. Before we freeze the public API,
+      please review the design of the HTTP client below. Something about the interface
+      feels wrong to me, but I cannot say what.
+
+      ```ts
+      export interface RequestOptions {
+        method: "GET" | "POST" | "PUT" | "DELETE";
+        url: string;
+        body?: unknown;
+        headers: Record<string, string>;
+        timeoutMs: number;
+        retries: number;
+        retryBackoff: "none" | "linear" | "exponential";
+        parseJson: boolean;
+        throwOnNon2xx: boolean;
+        traceparent: string;
+      }
+
+      export class HttpClient {
+        constructor(private readonly fetchImpl: typeof fetch) {}
+        request<T>(opts: RequestOptions): Promise<T | Response> { /* ... */ }
+      }
+      ```
+
+      A typical call site today:
+
+      ```ts
+      const user = (await client.request<User>({
+        method: "GET", url: `${BASE}/users/${id}`, headers: {}, timeoutMs: 5000,
+        retries: 3, retryBackoff: "exponential", parseJson: true,
+        throwOnNon2xx: true, traceparent: ctx.traceparent,
+      })) as User;
+      ```
+
+      Nearly every call site passes these same values. Two services set parseJson: false
+      to stream files.
+  - id: order-status-five-repos
+    prompt: |
+      Every time product wants a new order status it turns into a week of work and an
+      incident or two. Here's how it's set up today:
+
+      - order-service (Kotlin) owns the orders table. Status is a VARCHAR with values like
+        "PAID", "PACKED", "SHIPPED".
+      - billing-service (Go) consumes order.updated events from Kafka and switches on the
+        status string to decide when to invoice.
+      - notification-service (Node) also consumes order.updated and keeps its own map from
+        status string to email template.
+      - warehouse-adapter (Python) polls order-service's REST API and maps statuses to the
+        warehouse vendor's codes.
+      - The admin frontend (React) hardcodes a dropdown of statuses and their colours.
+
+      Last month we added "PARTIALLY_SHIPPED". It needed PRs in all five repos, billing
+      double-invoiced for a day because its switch fell through to the default branch, and
+      nobody knew the warehouse adapter needed a change until the vendor complained.
+
+      What's wrong here and what should we change first? Five teams own these services, we
+      add a status maybe once a quarter, and reading an order's current state is by far the
+      most common thing the consumers do.
+  - id: user-service-split-plan
+    prompt: |
+      I am about to file the epic for splitting our UserService
+      (src/main/java/com/acme/user/UserService.java, 1,900 lines). This is the plan the
+      team agreed on last week:
+
+      1. Move every read method into UserReader.
+      2. Move every write method into UserWriter.
+      3. Move input checks into UserValidator, called by UserWriter.
+      4. Move entity-to-DTO conversion into UserMapper.
+      5. Add UserFacade, which delegates every public method to one of the four classes
+         above, so controllers keep a single entry point.
+      6. Give each new class its own interface (IUserReader and so on) for mocking.
+
+      Today the class has 46 public methods, called from 11 controllers. The change we make
+      most often is adding a field to the user profile, which currently touches the entity,
+      the DTO, the validation and two queries.
+
+      Please assess whether this refactoring plan reduces complexity or adds to it. Then
+      draft the epic description for Jira (goal, scope, acceptance criteria) for the plan
+      you recommend.
+  - id: merge-invoice-packages
+    prompt: |
+      should i merge these two go packages or keep em seperate? internal/invoice builds
+      invoices, internal/invoicepdf renders them. they keep leaking into each other somehow
+
+      ```go
+      // internal/invoice/invoice.go
+      type Line struct {
+          SKU       string
+          Qty       int
+          UnitCents int64
+          TaxCode   string // "STD", "RED", "ZERO"
+      }
+
+      func Total(lines []Line) int64 { /* sums Qty*UnitCents plus tax by TaxCode */ }
+
+      // internal/invoicepdf/render.go
+      func Render(lines []invoice.Line, w io.Writer) error {
+          for _, l := range lines {
+              rate := 0.0
+              switch l.TaxCode {
+              case "STD":
+                  rate = 0.20
+              case "RED":
+                  rate = 0.05
+              }
+              // draws the row, prints the rate, recomputes the line total with tax
+          }
+          // draws the footer, recomputes the grand total itself
+          return nil
+      }
+      ```
+
+      nothing uses invoicepdf except the invoice email job, and the tax rates changed twice
+      this year
+  - id: name-for-batch-function
+    prompt: |
+      I've renamed this function three times now (process_records, then normalize_and_enrich,
+      then prepare_batch) and every name feels wrong. My reviewer says prepare_batch tells
+      him nothing. What should I call it?
+
+      ```python
+      def prepare_batch(rows, geo_client, fx_rates, seen_ids):
+          out = []
+          for r in rows:
+              if r["id"] in seen_ids:
+                  continue
+              seen_ids.add(r["id"])
+              r["country"] = geo_client.lookup(r["ip"])["country"]
+              r["amount_eur"] = round(r["amount"] * fx_rates[r["currency"]], 2)
+              if r["country"] in ("US", "CA") and r["amount_eur"] > 10_000:
+                  r["needs_review"] = True
+              out.append(r)
+          return out
+      ```
+
+      It's called from the nightly import (jobs/import_payments.py) and from the retry
+      endpoint.
+  - id: six-layer-customer-api
+    prompt: |
+      ok rant + question. adding ONE field (preferredLocale) to the customer API took me a
+      whole day bc I had to touch six classes. our layers look like this, and every one is
+      basically the same method:
+
+      ```java
+      @RestController
+      class CustomerController {
+        CustomerDto get(@PathVariable long id) { return facade.getCustomer(id); }
+      }
+      class CustomerFacade {
+        CustomerDto getCustomer(long id) { return service.getCustomer(id); }
+      }
+      class CustomerService {
+        CustomerDto getCustomer(long id) { return mapper.toDto(manager.findCustomer(id)); }
+      }
+      class CustomerManager {
+        CustomerEntity findCustomer(long id) { return dao.findById(id); }
+      }
+      class CustomerDao {
+        CustomerEntity findById(long id) { return repo.findById(id).orElseThrow(); }
+      }
+      interface CustomerRepository extends JpaRepository<CustomerEntity, Long> {}
+      ```
+
+      plus CustomerDto, CustomerEntity and CustomerMapper. the architect who set this up says
+      each layer is "there for when we need it". are there too many layers or am I just being
+      lazy? what would you cut?
+  - id: tangled-cart-totals
+    prompt: |
+      this cart code feels tangled and i cant tell why. it works tho. thoughts?
+
+      ```ts
+      let discountApplied = false;
+
+      function recalcTotals(cart: Cart) {
+        cart.subtotal = cart.items.reduce((s, i) => s + i.price * i.qty, 0);
+        if (!discountApplied) applyDiscount(cart);
+        cart.total = cart.subtotal - cart.discount + cart.shipping;
+      }
+
+      function applyDiscount(cart: Cart) {
+        discountApplied = true;
+        cart.discount = cart.coupon ? cart.subtotal * cart.coupon.pct : 0;
+        if (cart.discount > 0 && cart.subtotal - cart.discount < 50) cart.shipping = 4.99;
+        recalcTotals(cart);
+        discountApplied = false;
+      }
+      ```
+  - id: session-delete-try-except
+    prompt: |
+      Every caller of our session store wraps delete() in the same try/except and it's
+      driving me nuts. Is the problem the callers or the store?
+
+      ```python
+      # app/sessions/store.py
+      class SessionNotFound(Exception):
+          pass
+
+      class SessionStore:
+          def __init__(self, redis):
+              self._redis = redis
+
+          def delete(self, session_id: str) -> None:
+              if not self._redis.exists(f"sess:{session_id}"):
+                  raise SessionNotFound(session_id)
+              self._redis.delete(f"sess:{session_id}")
+      ```
+
+      ```python
+      # app/auth/views.py (logout), app/admin/users.py (force logout), app/jobs/expire.py
+      try:
+          store.delete(sid)
+      except SessionNotFound:
+          pass  # already gone, fine
+      ```
+
+      There are nine of these blocks in the codebase. Someone forgot one last week, and the
+      cleanup job crashed on a session that had already expired.
+  - id: cleanup-sprint-priorities
+    prompt: |
+      Next sprint we have about four engineer-days set aside for cleanup in our Django
+      monolith, and three candidates on the backlog. Please recommend which to take on and
+      in what order, then write a two-sentence sprint goal I can paste into the planning doc.
+
+      1. billing/proration.py: 600 lines, one function with nested ifs for the upgrade,
+         downgrade, mid-cycle and trial cases. Changed 3 times in the last year, always by
+         our one billing engineer. Each change took about a week and shipped one regression.
+      2. catalog/search_filters.py: each new product filter means editing the filter
+         registry, the serializer, the frontend query builder and a hand-written SQL
+         fragment, and all four repeat the filter's field name and type. Changed 27 times in
+         the last year by six different people. Each change takes about a day.
+      3. legacy/fax_export.py: 1,100 lines nobody understands, no tests. Used by one
+         customer, untouched for two years.
+
+      Two people on the team want to start with the fax exporter because it is "the worst
+      code we have".
+near_miss:
+  - id: fix-ttl-cache-expiry
+    prompt: |
+      Our cache layer (app/cache.py) keeps returning prices long after they expired. We
+      construct it with TTLCache(ttl_seconds=60) and users see prices up to an hour old.
+      Find the bug and fix it.
+
+      ```python
+      import time
+
+      class TTLCache:
+          def __init__(self, ttl_seconds: int):
+              self._ttl = ttl_seconds
+              self._data = {}
+
+          def set(self, key, value):
+              self._data[key] = (value, time.time())
+
+          def get(self, key):
+              if key not in self._data:
+                  return None
+              value, stored_at = self._data[key]
+              if time.time() - stored_at > self._ttl * 60:
+                  del self._data[key]
+                  return None
+              return value
+      ```
+  - id: pytest-session-store
+    prompt: |
+      Write pytest tests for this module. Use fakeredis, and cover deleting an existing
+      session and deleting a missing one. The interface stays as it is, I just need coverage
+      before Friday's release.
+
+      ```python
+      # app/sessions/store.py
+      class SessionNotFound(Exception):
+          pass
+
+      class SessionStore:
+          def __init__(self, redis):
+              self._redis = redis
+
+          def delete(self, session_id: str) -> None:
+              if not self._redis.exists(f"sess:{session_id}"):
+                  raise SessionNotFound(session_id)
+              self._redis.delete(f"sess:{session_id}")
+      ```
+  - id: explain-middleware-order
+    prompt: |
+      I just joined the team and I'm trying to understand how a request flows through our
+      API server before it reaches a route handler. Can you walk me through what each layer
+      here does, in order, and what a request looks like when it comes out the other end?
+
+      ```js
+      // server.js
+      app.use(helmet());
+      app.use(requestId());
+      app.use(pinoHttp({ genReqId: (req) => req.id }));
+      app.use(express.json({ limit: "1mb" }));
+      app.use(rateLimit({ windowMs: 60_000, max: 300 }));
+      app.use("/api", authenticate, tenantScope, router);
+      app.use(errorHandler);
+      ```
+  - id: upload-endpoint-security
+    prompt: |
+      Can you review this upload endpoint for security problems before we expose the API
+      publicly? It's FastAPI, api/routes/uploads.py.
+
+      ```python
+      @router.post("/uploads")
+      async def upload(file: UploadFile, folder: str = Form(...), user=Depends(current_user)):
+          dest = os.path.join("/srv/uploads", folder, file.filename)
+          with open(dest, "wb") as f:
+              f.write(await file.read())
+          return {"url": f"/static/{folder}/{file.filename}"}
+      ```
+  - id: speed-up-monthly-report
+    prompt: |
+      Our monthly report endpoint takes 40 seconds for big orgs, and the profiler says the
+      data layer below is where the time goes. How do I make it fast? Django 5, Postgres.
+
+      ```python
+      def monthly_report(org_id, month):
+          rows = []
+          for project in Project.objects.filter(org_id=org_id):
+              for task in project.tasks.filter(closed_at__month=month):
+                  hours = sum(e.hours for e in task.time_entries.all())
+                  rows.append({"project": project.name, "task": task.title, "hours": hours})
+          return rows
+      ```
+  - id: rename-handle-to-dispatch
+    prompt: |
+      We agreed in code review that handle is a bad name and the new name is dispatch_event.
+      Please do the rename across these two files and give me the updated code, everything
+      else unchanged.
+
+      ```python
+      # bus/core.py
+      class EventBus:
+          def __init__(self):
+              self._subs = {}
+
+          def subscribe(self, kind, fn):
+              self._subs.setdefault(kind, []).append(fn)
+
+          def handle(self, event):
+              for fn in self._subs.get(event.kind, []):
+                  fn(event)
+      ```
+
+      ```python
+      # bus/http.py
+      def webhook(request, bus):
+          bus.handle(Event.from_json(request.body))
+          return 204
+      ```
+  - id: resolve-discount-conflict
+    prompt: |
+      git merge main left a conflict in pricing/discounts.py. My branch adds a loyalty
+      discount, main changed the rounding. I want both changes. Resolve it please:
+
+      ```python
+      def apply_discounts(order):
+      <<<<<<< HEAD
+          total = order.subtotal
+          if order.customer.loyalty_years >= 3:
+              total *= 0.95
+          return round(total, 2)
+      =======
+          total = order.subtotal
+          return Decimal(total).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+      >>>>>>> main
+      ```
+  - id: eslint-complexity-rules
+    prompt: |
+      Our tech lead wants CI to fail when a function gets too complex. Add rules to this
+      .eslintrc.json so that cyclomatic complexity above 10, more than 60 lines in a
+      function, or nesting deeper than 4 levels is an error. It should apply to src/ only,
+      not to scripts/.
+
+      ```json
+      {
+        "root": true,
+        "extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended"],
+        "parser": "@typescript-eslint/parser",
+        "rules": {}
+      }
+      ```
+  - id: commit-message-order-split
+    prompt: |
+      Write a commit message for this refactor. We use Conventional Commits with refactor:
+      for these.
+
+      - src/orders/OrderService.ts deleted (640 lines)
+      - src/orders/OrderPlacement.ts added (310 lines: placeOrder, validateCart, reserveStock)
+      - src/orders/OrderFulfilment.ts added (290 lines: ship, cancel, refund)
+      - src/orders/index.ts re-exports both, and keeps OrderService as a deprecated alias
+      - 12 call sites now import from the new modules
+
+      Why we split it: placement and fulfilment are owned by different teams now, and every
+      PR to OrderService needed reviewers from both.
+  - id: mermaid-service-diagram
+    prompt: |
+      Can you turn our service architecture into a Mermaid flowchart for the README? Just
+      the diagram, no commentary.
+
+      - order-service (Kotlin) owns the orders table and publishes order.updated to Kafka.
+      - billing-service (Go) consumes order.updated.
+      - notification-service (Node) consumes order.updated and sends emails through SES.
+      - warehouse-adapter (Python) polls order-service's REST API and calls the warehouse
+        vendor's API.
+      - The admin frontend (React) calls order-service's REST API.

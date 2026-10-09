@@ -1,0 +1,228 @@
+positive:
+  - id: autocomplete-lookup-gave-generic-tips
+    prompt: |
+      We run a B2B catalogue with 3,000 customers. Each customer sees only its own subset of
+      our 1.4 million products, at its own negotiated price. Search autocomplete has to answer
+      within 50 ms and must never suggest a product the customer cannot buy.
+
+      - One shared index filtered at query time is correct, but p95 is 420 ms, because the
+        per-customer filter is a terms list of up to 200,000 product ids.
+      - One index per customer answers in 15 ms, but a catalogue change touches up to 3,000
+        indexes, and the rebuild queue runs 6 hours behind on busy days.
+
+      Last week I worked through a structured method from an old engineering book: you name
+      the property you want to improve and the one that gets worse, look the pair up in its
+      table, and it returns a few generic tactics. For "speed" against "adaptability" it gave
+      us "make it dynamic", "do it in advance" and "use a copy instead of the original". We
+      have tried a version of each, and none gets us both numbers.
+
+      I'd like to go through this more rigorously than a table lookup. Can you take me
+      through it?
+  - id: websocket-fanout-table-useless
+    prompt: |
+      did the "what improves vs what gets worse" table thing for our websocket fanout and got
+      nothing usable. setup: one gateway node pushes price ticks to 200k browser clients in
+      order, but it cant keep up past ~60k. more gateway nodes keep up fine, but then clients
+      on diffrent nodes see ticks in different orders and our traders notice. need a deeper
+      way to attack this than looking stuff up in a table
+  - id: ticket-index-disk-again
+    prompt: |
+      For the third time in a year, the Elasticsearch cluster behind our support desk (3 data
+      nodes with 2 TB each, 41 million tickets including the extracted text of attachments)
+      is above the 85% disk watermark and has stopped allocating shards. Each time we did one
+      of the ordinary things: deleted tickets older than two years, bought bigger disks, or
+      dropped the attachment text from old tickets. Each time it came back within four
+      months, because ticket volume grows about 30% a year.
+
+      Deleting old tickets is also what keeps getting us into trouble with the warranty team.
+      Our products carry a five-year warranty, and agents need to search a customer's full
+      history, attachments included, when a claim comes in.
+
+      I don't want a fourth round of the same fixes. Please take this apart properly, and
+      when you're done, give me a short note I can send to the warranty team lead.
+  - id: token-lifetime-pentest-pingpong
+    prompt: |
+      3rd time this year we're going back and forth on the same thing. our mobile app's access
+      token lived 30 days so field technicans could work offline in basements. pentest flagged
+      it, we cut it to 1 hour, technicians got logged out mid-job and couldnt sync their
+      reports, we bumped it to 7 days, next pentest flagged it again. now security wants 1
+      hour again. every fix just moves the problem back. help me break out of this loop
+  - id: live-stream-latency-cost-stalls
+    prompt: |
+      We run low-latency live streams for online auctions (HLS, about 25,000 concurrent
+      viewers per event, CloudFront in front of our packagers). Three tensions are tied
+      together, and every setting we change moves the other two:
+
+      - Glass-to-glass latency must stay under 3 seconds, or bidders on video lose to bidders
+        in the room. Shorter segments lower latency, but each halving roughly doubles CDN
+        requests.
+      - Rebuffering must stay under 0.5% of viewing time. A bigger player buffer cuts stalls,
+        but it adds latency one for one.
+      - CDN cost per event is capped at $400. More renditions in the bitrate ladder cut stalls
+        on bad connections, but each rung adds encoding cost and multiplies CDN requests
+        again.
+
+      We have spent two months tuning segment length, buffer size and ladder rungs against
+      each other. I'd like a structured way through this rather than another round of tuning.
+  - id: flag-service-three-tug-of-wars
+    prompt: |
+      our feature flag service is basically 3 tug-of-wars tied together:
+      - sdks evaluate flags locally so checks take microseconds, but then a flag change takes
+        up to 60s to reach everyone (polling interval)
+      - we tried pushing changes over SSE so they land in ~1s, but 40k open connections cost
+        more than the whole rest of the service
+      - and compliance now wants every evaluation logged with the user id, which kills local
+        eval (we'd ship ~2 billion log events a day from the sdks)
+      whatever we pick for one makes the other two worse. walk me through how to crack this,
+      then write a 5 line summary for my manager
+  - id: gateway-retry-double-charges
+    prompt: |
+      Three weeks ago we added automatic retries (2 attempts, 200 ms backoff) for upstream 502
+      and 503 responses to our API gateway (Envoy), because the mobile app showed too many
+      "something went wrong" screens during deploys. The error screens are gone. But the
+      payments service is not idempotent on every path, and we now see about a dozen double
+      charges a week: the first attempt succeeded and its response was lost. We excluded
+      `/payments/*` from retries, and the deploy-time errors came back on checkout, which is
+      the screen that matters most.
+
+      The fix for the app breaks payments, and the fix for payments brings the app errors
+      back. How do we get out of this?
+  - id: csp-fix-breaks-checkout-widget
+    prompt: |
+      When we tighten the Content-Security-Policy on our storefront to pass the quarterly
+      security scan, our payment provider's embedded checkout widget stops loading, because it
+      injects inline scripts and loads from hosts that change. When we loosen the policy for
+      the widget, the scan fails. We have done each of these twice now. What is the way out?
+  - id: sponsored-slots-vs-relevance
+    prompt: |
+      Our marketplace search has two requirements that every compromise so far has failed:
+
+      - Product requires results ranked by relevance. The ranking team is measured on
+        NDCG@10 and on the share of searches that end in a purchase.
+      - Sales has contracts with 140 sellers that guarantee their sponsored listings appear
+        among the top 3 results for their keywords.
+
+      What we tried:
+
+      1. A fixed sponsored slot at position 2. Purchases per search fell 6%, and users called
+         the results "spammy" in the survey.
+      2. A relevance boost for sponsored listings. Sales could not show sellers a guaranteed
+         placement, and two sellers invoked the contract clause.
+      3. A sponsored carousel above the results. Legal says the contracts mean "in the
+         results", and the carousel is not.
+
+      I suspect we have been stating the problem wrong. Help me state the conflict more
+      sharply, and find a way out that is not a fourth compromise.
+  - id: eu-residency-vs-global-analytics
+    prompt: |
+      legal says EU customer data has to stay in eu-central-1. our analytics team in the US
+      needs one global view of orders that's at most an hour old. we tried a nightly
+      anonymised export to the US warehouse (too stale, and legal still wasnt happy about the
+      free-text order notes), EU read replicas queried from the US (legal veto), and federated
+      queries from the US warehouse into the EU database (8 min per dashboard load, analysts
+      gave up). every middle ground failed one side or the other. feels like we're arguing
+      about the wrong thing. also give me 3 bullets for thursday's steering meeting
+near_miss:
+  - id: offset-commit-middle-setting
+    prompt: |
+      I'm designing the consumer for our new `invoices.v1` Kafka topic (Java, about 3,000
+      msg/s expected at launch). Committing the offset after every message means at most one
+      duplicate invoice email after a crash, but in our load test it caps the consumer at 900
+      msg/s. Committing every 1,000 messages gives 12,000 msg/s, but a crash can resend up to
+      1,000 invoice emails. The team's proposal is a compromise: commit every 100 messages.
+      Nothing is built yet. Is there something better than picking a number in between?
+  - id: debug-symbols-in-and-out
+    prompt: |
+      Our desktop app (C++ and Qt, Windows and macOS) needs full debug symbols, so that the
+      crash reports we get from customers resolve to function names and line numbers. The
+      same release build must not carry those symbols: they add 340 MB to a 90 MB installer,
+      and they make the licensing code much easier to reverse-engineer. The two needs
+      conflict, and we're setting up the release pipeline for the first time. How do we get
+      both?
+  - id: session-replay-vs-privacy
+    prompt: |
+      Support wants session replay on our web banking app, so agents can see exactly what a
+      customer saw when they report a bug. Our data protection officer says recordings must
+      not contain account numbers, balances or anything typed into a form. Both requests
+      landed this week and nothing is built yet. They look incompatible to me. How do we give
+      support what they need without recording what the DPO forbids?
+  - id: interview-problem-walkthrough
+    prompt: |
+      This is the hardest problem in our interview loop, and I want to explain the intended
+      solution to new interviewers. Walk me through the algorithm step by step, then give the
+      Python code and its time and space complexity.
+
+      Given a list of daily stock prices, return the maximum profit from at most two
+      non-overlapping buy-and-sell transactions. Example: [3, 3, 5, 0, 0, 3, 1, 4] gives 6
+      (buy at 0, sell at 3, buy at 1, sell at 4).
+  - id: sharpen-docs-problem-statement
+    prompt: |
+      Rewrite the "Problem" section of my design doc so it's sharper. Under 120 words, same
+      facts.
+
+      > ## Problem
+      > So basically our internal documentation is kind of all over the place right now.
+      > Some of it is in Confluence (about 1,900 pages), some is in the `eng-docs` Git repo
+      > and some is in random Google Drive folders, and none of the search tools cover all
+      > three. New hires end up asking the same things in #eng-help, and in the last onboarding
+      > survey 11 of 14 people said finding docs was their biggest problem in the first month.
+      > We think it would be good to have one place so that things are generally easier to
+      > find.
+  - id: regression-test-for-fix
+    prompt: |
+      I just fixed a bug where `parse_duration("1h30m")` returned 90 instead of 5,400 seconds.
+      The fixed code is below. Write pytest cases that pin the fix so nobody reintroduces the
+      bug, and cover the edge cases the old code would also have got wrong.
+
+      ```python
+      import re
+
+      # was: {"h": 60, "m": 1, "s": 1}, which counted minutes and returned them as seconds
+      _UNITS = {"h": 3600, "m": 60, "s": 1}
+
+      def parse_duration(text: str) -> int:
+          total = 0
+          for amount, unit in re.findall(r"(\d+)([hms])", text):
+              total += int(amount) * _UNITS[unit]
+          return total
+      ```
+  - id: faq-for-invoice-date-question
+    prompt: |
+      The same question keeps coming back to our support inbox, about 40 times a month: "Why
+      is the invoice date different from my order date?" The answer: we invoice on the day
+      the order ships, not the day it is placed, because we only charge the card at shipping.
+      Write a short FAQ entry for the help centre (under 100 words, friendly, no jargon) and a
+      one-line macro that agents can paste as a reply.
+  - id: compatibility-matrix-formula
+    prompt: |
+      I keep a compatibility matrix in Google Sheets. The `Matrix` tab lists our 24 adapter
+      SKUs down column A (A2:A25) and the same 24 SKUs across row 1 (B1:Y1), and each cell
+      says "yes", "no" or "with cable". On the `Orders` tab, column C holds the first SKU and
+      column D the second. Give me a formula for column E that looks up whether the pair is
+      compatible, and returns "check" when either SKU is missing from the matrix.
+  - id: npm-package-compromised
+    prompt: |
+      Our npm package `@acme/date-utils` (about 90,000 weekly downloads) was compromised an
+      hour ago. Someone used a leaked automation token to publish 4.2.1 with a postinstall
+      script that sends environment variables to an outside host. 4.2.0 is clean, and we have
+      already revoked the token. What do we do, and in what order, over the next 24 hours?
+  - id: find-service-call-cycle
+    prompt: |
+      Somewhere among our 40 services there's a call cycle: a request to one service ends up
+      calling back into it through others, and they keep feeding each other until something
+      times out. I exported the call edges from our tracing as `caller -> callee` lines.
+      Write a Python script that reads this format from stdin and prints every cycle, and
+      tell me which cycles are in this sample.
+
+      ```
+      gateway -> orders
+      orders -> inventory
+      orders -> pricing
+      pricing -> promotions
+      promotions -> customers
+      customers -> orders
+      inventory -> warehouse
+      warehouse -> notifications
+      notifications -> customers
+      billing -> customers
+      ```

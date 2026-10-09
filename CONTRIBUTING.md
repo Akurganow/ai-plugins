@@ -100,6 +100,28 @@ python3 tools/check-conformance.py
 
 It must exit 0.
 
+### Run the evals selftest and folder check
+
+The selftest of [`tools/evals.py`](tools/evals.py) needs only Python 3.12:
+
+```
+python3 tools/evals.py selftest
+```
+
+It calls no model. The evals themselves run in CI after a release, as
+[About this repository's design](docs/design.md) describes.
+
+The `validate` subcommand checks every `evals/<package>/<skill>/` folder. Each
+folder needs its skill's `SKILL.md`, and its files must load. It needs the
+Python package `pyyaml`, in the version that
+[`conformance.yml`](.github/workflows/conformance.yml) pins:
+
+```
+python3 tools/evals.py validate
+```
+
+It must exit 0. CI runs it in the `check` job.
+
 ### Validate with Claude Code
 
 With Claude Code installed, validate each plugin you changed:
@@ -124,8 +146,9 @@ Hermes validators. It installs every package into each client that
 7. Write `README.md` with the sections of the other package READMEs, in their order.
 8. Put each skill in `skills/<skill>/SKILL.md` with `license: MIT` in its front matter.
 9. Add the package to the `[monorepo.packages]` table in `cog.toml`.
-10. Run `bash tools/regenerate.sh`, then the checks above.
-11. After the merge, a maintainer pushes the seed tag `<name>--v<version>` at the merge commit.
+10. For each skill, write `evals/<name>/<skill>/cases.yaml` and `rubric.yaml` by [these rules](#write-a-skills-evals-cases).
+11. Run `bash tools/regenerate.sh`, then the checks above.
+12. After the merge, a maintainer pushes the seed tag `<name>--v<version>` at the merge commit.
 
 In a package README, link a file outside the package by its full GitHub URL,
 and a file inside it by a relative path. A package installs alone, and the
@@ -142,3 +165,61 @@ repeat the plugin name in it. Oh-My-Pi shows the bare skill name and drops a
 later skill with the same name. Source:
 [`docs/skills.md`](https://github.com/can1357/oh-my-pi/blob/a33cc26824e3c91edd9fa42d681f10dceb4ac2f0/docs/skills.md#L98),
 Oh-My-Pi documentation.
+
+### Write a skill's evals cases
+
+A skill's folder holds two files:
+
+- `cases.yaml` has a `positive` list and a `near_miss` list. Each list has ten
+  entries, and each entry has an `id` and a `prompt`.
+- `rubric.yaml` has a `questions` map from a question id to one statement.
+
+The Agent Skills guide sets the shape of a trigger test. Source:
+[Optimizing skill descriptions](https://agentskills.io/skill-creation/optimizing-descriptions),
+Agent Skills documentation, read 2026-10-09. These rules follow the guide, add
+this repository's own, and apply to every skill:
+
+- **Positive prompts** cover every "Use when" clause of the skill's
+  `description` at least once.
+- **Positive prompts** vary along four axes. Phrasing runs from formal to
+  casual, with an occasional typo. Explicitness runs from naming the domain to
+  describing only the need. Detail runs from terse to context-heavy.
+  Complexity runs from a single step to a task buried in a larger one.
+- **The most useful positive prompts** are those where the skill would help
+  but the query does not make the connection obvious.
+- **Near-miss prompts** share keywords or concepts with the skill but need
+  something different. A prompt with no overlap tests nothing and does not
+  belong.
+- **Realism.** The guide asks for file paths, personal context, specific
+  details and casual language.
+- **Self-contained.** Each session starts in an empty directory. A prompt
+  carries the code, text or situation it asks about in its own body.
+- **Neutral.** A prompt never names the skill, its package or the text the
+  skill rests on. A user who names them needs no trigger.
+- **Ids** are short kebab-case names of what the prompt asks. They stay unique
+  across both lists.
+
+Jev grades each positive answer against the rubric. Two of the rules below rest
+on the failure modes that TypeSafe documents for `jev-1.13`. Source:
+[Jev 1.13 jaggedness](https://docs.typesafe.ai/model-jaggedness/jev-1.13.md),
+TypeSafe documentation, read 2026-10-09.
+
+- **One question per rule** of the skill that a reader can check in the answer
+  text. Take the rules from `SKILL.md` and the references it names as required
+  output.
+- **A statement that holds** for an answer which follows the skill, such as
+  "Each finding names the chapter of the book it rests on."
+- **One step.** Each question is answerable from the answer text in one step.
+  Jev answers less reliably when a question needs extra levels of indirection
+  (section "Indirection").
+- **No counting.** `jev-1.13` does not count reliably (section "Counting"). A
+  sentence-length or item-count rule stays out.
+- **No condition, position or bundle.** A question is not conditional ("each
+  finding that rests on X ..."), positional ("before any finding ...", "ends
+  with ...") or a bundle of several facts. Each of those makes Jev find
+  something first and then judge it, which is two steps.
+- **Judged from the answer alone.** A question never compares the answer with
+  the request, and never needs knowledge the answer does not contain. When an
+  answer may quote the text it checks or cleans, a style question says
+  "outside text it quotes".
+- **Four to eight questions**, with short snake_case ids.

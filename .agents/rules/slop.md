@@ -1,30 +1,28 @@
 # Slop: what generator residue looks like
 
 What a text generator leaves behind and a person would not have written on
-purpose. This repository is prose almost entirely: READMEs, skills with
-their references, one check, one regeneration entry point, its CI. Its
-whole value is that its sentences hold (`.agents/rules/claims.md`). A
-sentence that holds nothing is
-the cheapest thing to add here and the hardest to see in review, because it
-reads exactly like the kind that holds. Read by any reviewer, a person or an
-unattended run. What the conformance check decides is owned by
-`.agents/rules/conformance.md`; this file is about the words the check
-cannot read.
+purpose. This repository is prose almost entirely: READMEs, skills with their
+references, one check, one regeneration entry point, one evals runner, its CI.
+Its whole value is that its sentences hold (`.agents/rules/claims.md`). A
+sentence that holds nothing is the cheapest thing to add here and the hardest
+to see in review, because it reads exactly like the kind that holds. Read by
+any reviewer, a person or an unattended run. What the conformance check
+decides is owned by `.agents/rules/conformance.md`; this file is about the
+words the check cannot read.
 
 ## The one test
 
 > Does this text carry a fact a reader cannot get from the text or the code
 > beside it, in the same file?
 
-Ask it of every comment and name in the check and in `tools/regenerate.sh`.
-Ask it of every step name in a workflow, every paragraph of the README or a
-skill, and every manifest `description`. No fact left over is noise; a false
-fact is a lie. Judge the sentence, not the block: a
-paragraph that states a reason and adds one empty sentence is a reason, not
-a finding, and so is a reason with a hedge or a reassurance word inside it.
-One excerpt can hold several findings; each has one kind, and when two kinds
-fit, the later in the list below wins — its measurement is the stronger
-evidence.
+Ask it of every comment and name in the check, in `tools/regenerate.sh` and
+in `tools/evals.py`. Ask it of every step name in a workflow, every paragraph
+of the README or a skill, and every manifest `description`. No fact left over
+is noise; a false fact is a lie. Judge the sentence, not the block: a
+paragraph that states a reason and adds one empty sentence is a reason, not a
+finding, and so is a reason with a hedge or a reassurance word inside it. One
+excerpt can hold several findings; each has one kind, and when two kinds fit,
+the later in the list below wins — its measurement is the stronger evidence.
 
 ## The kinds
 
@@ -71,9 +69,10 @@ evidence.
 Never a finding:
 
 - **Recorded reasons.** The check's docstring argues its own existence,
-  `conformance.md` argues the two checks that duplicate the schema, the
-  workflow's comments say why a commit sha and not a tag. Other reviews
-  read these as evidence.
+  and the evals runner's docstring argues why this repository runs its own
+  runner instead of `claude plugin eval`. `conformance.md` argues the two
+  checks that duplicate the schema. The workflow's comments say why a commit
+  sha and not a tag. Other reviews read these as evidence.
 - **What a release writes.** `version` in `plugins/howp/plugin.json`,
   `plugins/howp/binaries.json`,
   `plugins/howp/skills/forecast/references/commands.md` and the

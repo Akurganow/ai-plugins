@@ -2,7 +2,9 @@
 
 This page explains why the repository and its packages are built the way they are.
 The client facts behind each reason are in [How the four clients load a package](clients.md), with their sources.
-Every other fact here names its kind: documentation, read on 2026-09-25, source at a commit, or a dated read of this repository's settings or releases.
+The evals section cites its running facts in place, because `clients.md` admits a running fact only from a run with no client signed in.
+Every other fact here names its kind: source at a commit, or documentation read on 2026-09-25 unless its citation gives a date or a commit.
+A fact about this repository names a dated read of its settings or releases, or a run of this repository's CI.
 
 ## One source for every copy
 
@@ -255,19 +257,14 @@ Only that release job knows the version, the digests and the binary's help text.
 It writes the files [CONTRIBUTING.md](../CONTRIBUTING.md#write-commits) lists, such as `plugins/howp/skills/forecast/references/commands.md`.
 A second writer would move `version` with no binary behind it.
 
-## Nothing in CI calls a model
+## CI checks structure and installation
 
-Claude Code can run a plugin's eval suite with `claude plugin eval`.
-Every eval run and every judge grader is a model call billed to the account.
-(documentation: [Test plugins with evals](https://code.claude.com/docs/en/plugin-evals))
-Nothing in CI or in a package calls a model.
-CI therefore needs no model credentials, and a run costs no model calls.
-
-CI checks structure instead:
+CI runs these checks without a model:
 
 - the conformance check against the vendored schema, and the regeneration diff;
 - the 8,000-byte bound on the rules file, and the messages of pull request commits that touch `plugins/`;
 - the validators that Claude Code, the Agent Skills project and Hermes publish;
+- the evals runner's selftest, and `tools/evals.py validate` over every folder under `evals/`;
 - an install matrix, where each client installs every package from the checkout.
 
 In the matrix, Claude Code, Codex and Oh-My-Pi must list every skill after the install.
@@ -277,8 +274,116 @@ The matrix leaves out Hermes on Windows.
 There the installer clones a branch before it checks out the pinned commit, and it failed in run 36183358181 ([Hermes](clients.md#hermes)).
 Every client installs on the hosted runners with no account signed in ([How the four clients load a package](clients.md)).
 
-CI does not measure whether a skill changes an agent's behaviour.
-Behavioural evals are tracked in [issue #62](https://github.com/Akurganow/ai-plugins/issues/62).
+## Behavioural evals run after each release
+
+The conformance check, the validators and the install matrix prove structure and installation.
+None of them shows that a skill triggers on a matching request, or that it improves the answer.
+After each release, `.github/workflows/evals.yml` measures both for every released skill that has cases in `evals/`.
+It is the only workflow here that calls a model.
+
+`release.yml` calls it as a job of the release run.
+A workflow triggered by the tags or the releases would never start, because the release makes both with `GITHUB_TOKEN`.
+(documentation: [GitHub Docs, GITHUB_TOKEN](https://github.com/github/docs/blob/75ea7dd097a5564f27364a5b70eaa1979106eabd/data/reusables/actions/actions-do-not-trigger-workflows.md))
+It can also run by hand on existing tags.
+A re-run of the release job skips the evals, because its bump step then finds no releasable commit.
+So a run by hand is the recovery when a release run created its tags but stopped before the evals job.
+howp is not measured here, because another repository builds, checks and releases it.
+
+Each skill has ten positive and ten near-miss prompts in `evals/<package>/<skill>/cases.yaml`.
+The folder sits outside the packages, so no installed package carries the prompts.
+A positive prompt runs with the package and again without it, and a near-miss prompt runs with it.
+Each prompt runs three times in each of three clients: Claude Code with `sonnet`, Codex with `gpt-6-luna`, and Oh-My-Pi with `openrouter/z-ai/glm-5.3-flash`.
+The counts follow the Agent Skills guide on trigger tests.
+(documentation: [Optimizing descriptions](https://agentskills.io/skill-creation/optimizing-descriptions), read 2026-10-08)
+Oh-My-Pi runs `z-ai/glm-5.3-flash`, because in Oh-My-Pi 18.8.6 it loaded `red-flags` in 3 of 3 sessions.
+`deepseek-v4-flash` loaded it in 1 of 3, and `gemini-3.1-flash-lite` in 0 of 3.
+(running: [run 37847660604](https://github.com/Akurganow/ai-plugins/actions/runs/37847660604), 2026-10-08)
+TypeSafe's Jev grades each positive answer against the yes-or-no questions in `rubric.yaml`.
+It is pinned to `jev-1.13.0`, because `jev-latest` moves to each new stable release and its answers can change with it.
+(documentation: [Models](https://docs.typesafe.ai/models.md), read 2026-10-08)
+
+The without arm removes a different set in each client.
+Claude Code disables this package alone, with `claude plugin disable` and the package name.
+(documentation: [Plugins CLI reference, plugin disable](https://code.claude.com/docs/en/plugins/cli-reference#plugin-disable), read 2026-10-09)
+Codex turns off its `plugins` feature with `--disable plugins`.
+(documentation: [Command line options, `--disable`](https://learn.chatgpt.com/docs/cli/reference.md) and [Configuration reference, `features.plugins`](https://learn.chatgpt.com/docs/config-file/config-reference.md), read 2026-10-09;
+source: [`Feature::Plugins`](https://github.com/openai/codex/blob/979011409de0a60b52f179721948e65531d26144/codex-rs/features/src/lib.rs#L257-L258))
+With it, Codex 0.161.0 listed only its four built-in skills and none from this package.
+(running: [run 37789029106](https://github.com/Akurganow/ai-plugins/actions/runs/37789029106), 2026-10-08)
+Oh-My-Pi disables every skill with `--no-skills`.
+(documentation: [CLI reference, `--no-skills`](https://github.com/can1357/oh-my-pi/blob/40e9368ef0458fd9073329cdff4174895f91bc6b/docs/cli-reference.md#L159))
+So a comparison of `improvement` across clients compares different removals.
+
+Each skill and client gets four numbers per repeat:
+
+- `trigger_hit`, the share of completed positive sessions with the package in which the skill loaded;
+- `false_fire`, the share of completed near-miss sessions in which it loaded;
+- `compliance`, Jev's mean on answers where the skill loaded;
+- `improvement`, Jev's mean with the package minus its mean without.
+
+`compliance` uses only those answers, so it does not mix following the skill with triggering it.
+`improvement` keeps every graded answer with the package, because a user who installs the package gets both.
+A session that errored leaves every denominator, and an answer Jev did not grade leaves the two Jev means.
+The job summary lists both under `Excluded` with the reason.
+It shows each figure with the sessions or answers behind it, so a share of 7 sessions is never read as a share of 10.
+In `prose-discipline--v2.0.0`, a hook also prints the package's rules into every Claude Code session (see [the rules route](#one-rules-file-one-documented-route-per-client)).
+It does the same in a Codex session once the user trusts the hook ([Codex](clients.md#codex)).
+A with-package answer in such a session can follow the rules without the model loading `house-style`, and `trigger_hit` counts only that load.
+
+The run attaches its results to the release as `evals.json`.
+Workflow artifacts would not serve as the record, because a public repository keeps them 90 days at most.
+(documentation: GitHub Docs, [artifact and log retention L1](https://github.com/github/docs/blob/7b807926df3ccb7f3d1bcd4ad1c652fb42b0931d/data/reusables/actions/about-artifact-log-retention.md#L1) and [L15](https://github.com/github/docs/blob/7b807926df3ccb7f3d1bcd4ad1c652fb42b0931d/data/reusables/actions/about-artifact-log-retention.md#L15))
+A package can go longer than that between releases.
+A metric regressed when the three repeats of this release and of the package's previous release do not overlap, and the new ones are worse.
+The spread between repeats is the tolerance, so the rule has no threshold.
+Where a package's previous release has no `evals.json`, nothing is compared.
+`release.yml` runs one release at a time, its evals included, so a release's `evals.json` exists before the next release compares against it.
+A regression opens an issue in the machine population, where the Issue Court and the delivery pipeline take it up.
+Two releases are compared only when their `cases.yaml` and their `rubric.yaml` are byte-identical.
+Each run installs the client's latest release, so the issue shows both client versions.
+
+Four repository secrets reach the run, each only in the steps that need it: `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, `OPENROUTER_API_KEY` and `TYPESAFE_API_KEY`.
+Each client process sees its own key alone, and the runner removes every key value from the published results.
+Every session makes model calls billed to its key, and so does every Jev request.
+No session has a time or cost limit, because no measurement shows that a limit would prevent a failure.
+GitHub terminates a hosted job at six hours of execution, and that is the only bound.
+(documentation: [GitHub Docs, Actions limits L45](https://github.com/github/docs/blob/7b807926df3ccb7f3d1bcd4ad1c652fb42b0931d/content/actions/reference/limits.md#L45))
+A session or a grade that errors does not fail the job.
+The job fails when the client does not install, every session errors, or every grade does.
+`conformance.yml` runs `python tools/evals.py selftest`, which checks the event parsers and the arithmetic without a model.
+How each client shows a loaded skill is written beside its parser in `tools/evals.py`, with the source it was read from.
+
+Hermes is not measured.
+The runner reads skill loads from a client's JSON event stream.
+Hermes's stream, `--format stream-json`, implies one-shot mode.
+(documentation: [`reference/cli-commands.md`](https://github.com/NousResearch/hermes-agent/blob/f97608f178d1ffeca59860195ab7da295f7c8e5f/website/docs/reference/cli-commands.md#L123-L130))
+Hermes leaves plugin skills out of the system prompt's skill index, and its `skills_list` tool shows them ([Hermes](clients.md#hermes)).
+In one-shot mode the system prompt's skills section is loading guidance followed by that index, which lists each skill as its name and description.
+(source: [`agent/prompt_builder.py`](https://github.com/NousResearch/hermes-agent/blob/f97608f178d1ffeca59860195ab7da295f7c8e5f/agent/prompt_builder.py#L1372-L1382))
+So the one-shot prompt shows the description of no plugin skill.
+The guidance tells the model to load a skill only for knowledge it lacks, such as an API, a tool's commands or a project's conventions.
+It names testing, debugging and review methodology as general process skills not to load for work the model knows how to do.
+(source: [`agent/oneshot_footprint.py`](https://github.com/NousResearch/hermes-agent/blob/f97608f178d1ffeca59860195ab7da295f7c8e5f/agent/oneshot_footprint.py#L42-L47))
+`red-flags` reviews a design, and `root-cause` finds the core problem behind many symptoms.
+`extraneous` diagnoses what a reader must hold in mind to do a task.
+`ariz` and `contradiction` resolve a hard problem or a trade-off with TRIZ.
+`house-style` applies a prose standard to anything an agent writes.
+(source: the `description` front matter of the six skills at the tags `cognitive-load--v0.2.0`, `design-review--v0.2.0`, `prose-discipline--v2.0.0`, `toc-thinking--v0.2.0` and `triz--v0.2.0`, read 2026-10-09)
+The five descriptions other than `house-style`'s each name a method, and none describes knowledge of a particular API, a tool's commands or a project's conventions.
+So for those five skills a Hermes trigger rate would measure Hermes's prompt, not the description.
+For `house-style` that conclusion rests on the index fact alone, because the one-shot prompt shows no plugin skill's description.
+
+Five alternatives lost.
+In Claude Code 2.1.293, `claude plugin eval` wrote the final reply only as the evidence of an LLM grader.
+That grader runs a judge model of its own.
+(running: [run 37784785554](https://github.com/Akurganow/ai-plugins/actions/runs/37784785554), 2026-10-08)
+`claude plugin eval` has no custom-code graders, so Jev could not take the judge's place.
+(documentation: [Test plugins with evals](https://code.claude.com/docs/en/plugin-evals), read 2026-10-08)
+Concurrent sessions of one client sharing one configuration were not tested, so each job runs on a runner of its own.
+A separate workflow on `workflow_run` would have to recover the release's tags, and would also start on every push that releases nothing.
+A pinned client version would measure an older client than the one a user installs that day.
+Prompts inside a package would reach every user who installs it, because Claude Code copies the plugin directory into its cache.
+(documentation: [Plugin loading](https://code.claude.com/docs/en/plugins/loading), read 2026-10-08)
 
 ## The repository records no maintainer verification
 

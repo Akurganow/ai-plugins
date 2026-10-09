@@ -1,0 +1,19 @@
+questions:
+  names_task: >-
+    The answer states or asks which task the reader is doing, such as fixing a
+    bug, adding a feature or reviewing a change.
+  names_reader: >-
+    The answer states or asks which reader the diagnosis is for, such as a
+    newcomer or the code's author.
+  sorts_load: >-
+    The answer sorts what a reader must keep in mind into load the task itself
+    needs (intrinsic) and load the structure adds (extraneous).
+  removing_change: >-
+    The answer names a change that removes load the structure adds.
+  who_pays: >-
+    The answer says who pays the cost of the change it recommends.
+  reader_test: >-
+    The answer proposes to check the change by having a reader do the task
+    after the change is made.
+  not_covered: >-
+    The answer says what the diagnosis did not cover.

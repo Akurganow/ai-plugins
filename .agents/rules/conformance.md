@@ -146,11 +146,15 @@ by hand.
 
 No executables and no built artefacts are stored in the tree. Released
 binaries are published elsewhere and referenced from here. This repository
-runs two programs of its own. The first is its check,
+runs three programs of its own. The first is its check,
 `tools/check-conformance.py`. The second is its regeneration entry point,
 `tools/regenerate.sh`, which writes every generated copy from its one source.
 `.github/workflows/conformance.yml` runs both, and fails when a regenerated
-copy differs from the committed one.
+copy differs from the committed one. The third is the evals runner,
+`tools/evals.py`, which `.github/workflows/evals.yml` runs after a release.
+`conformance.yml` runs its selftest, which calls no model, and its `validate`
+subcommand, which checks that every folder under `evals/` has its skill and
+loads.
 
 If this file and the things it describes ever disagree — the specification,
 the scripts, the workflow — they are right and this file is stale.

@@ -301,6 +301,7 @@ Oh-My-Pi runs `z-ai/glm-5.3-flash`, because in Oh-My-Pi 18.8.6 it loaded `red-fl
 TypeSafe's Jev grades each positive answer against the yes-or-no questions in `rubric.yaml`.
 It is pinned to `jev-1.13.0`, because `jev-latest` moves to each new stable release and its answers can change with it.
 (documentation: [Models](https://docs.typesafe.ai/models.md), read 2026-10-08)
+A question that lists `cases` is asked only of the answers to those positive prompts.
 
 The without arm removes a different set in each client.
 Claude Code disables this package alone, with `claude plugin disable` and the package name.
@@ -314,6 +315,11 @@ Oh-My-Pi disables every skill with `--no-skills` and every rule with `--no-rules
 (documentation: [CLI reference, `--no-skills` and `--no-rules`](https://github.com/can1357/oh-my-pi/blob/40e9368ef0458fd9073329cdff4174895f91bc6b/docs/cli-reference.md#L159-L160))
 So a comparison of `improvement` across clients compares different removals.
 
+Each session records the tools the model called.
+They show which of the skill's files the model read.
+A Claude Code session also records the plugins and skills that its `init` event lists.
+(running: Claude Code 2.1.293, [run 37789029106](https://github.com/Akurganow/ai-plugins/actions/runs/37789029106), 2026-10-08)
+
 Each skill and client gets four numbers per repeat:
 
 - `trigger_hit`, the share of completed positive sessions with the package in which the skill loaded;
@@ -323,15 +329,22 @@ Each skill and client gets four numbers per repeat:
 
 `compliance` uses only those answers, so it does not mix following the skill with triggering it.
 `improvement` keeps every graded answer with the package, because a user who installs the package gets both.
+Each Jev mean averages an answer's questions first, and then the answers.
+So an answer weighs the same however many questions apply to its prompt.
 A session that errored leaves every denominator, and an answer Jev did not grade leaves the two Jev means.
 The job summary lists both under `Excluded` with the reason.
 It shows each figure with the sessions or answers behind it, so a share of 7 sessions is never read as a share of 10.
+Below the figures, one block per skill and client gives the mean of each question in three columns.
+The columns are answers where the skill loaded, every graded answer with the package, and every graded answer without it.
+The block also lists how often the skill loaded on each positive prompt, and on each near-miss prompt where it loaded at least once.
+For Claude Code it counts, in each arm, the sessions whose plugin list holds the package.
 In `prose-discipline--v2.0.0`, the package's rules reach two clients without the skill (see [the rules route](#one-rules-file-one-documented-route-per-client)).
 A hook prints them into every Claude Code session, and Oh-My-Pi puts the rules file into every system prompt.
 The hook does the same in a Codex session once the user trusts it ([Codex](clients.md#codex)), and no evals session trusts it.
 A with-package answer in Claude Code or Oh-My-Pi can follow the rules without the model loading `house-style`, and `trigger_hit` counts only that load.
 So `cases.yaml` lists such clients under `always_on`.
 For them the summary shows `trigger_hit` and `compliance` as `n/a`, and `compare` skips both.
+Their block leaves out the skill-loaded column and the loads per positive prompt.
 
 The run attaches its results to the release as `evals.json`.
 Workflow artifacts would not serve as the record, because a public repository keeps them 90 days at most.

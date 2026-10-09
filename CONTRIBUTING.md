@@ -177,8 +177,10 @@ A skill's folder holds two files:
   it names each client's route and its source. For those clients the summary
   shows `trigger_hit` and `compliance` as `n/a`.
 - `rubric.yaml` has a `questions` map from a question id to one statement,
-  or to an `instructions` statement with `criteria`. `criteria` holds a quoted
-  `"true"` and `"false"`, each saying what that answer means.
+  or to an `instructions` statement with optional `criteria` and `cases`.
+  `criteria` holds a quoted `"true"` and `"false"`, each saying what that
+  answer means. `cases` lists the ids of the positive prompts the question
+  applies to. A question without `cases` applies to every positive prompt.
 
 The Agent Skills guide sets the shape of a trigger test. Source:
 [Optimizing skill descriptions](https://agentskills.io/skill-creation/optimizing-descriptions),
@@ -210,14 +212,24 @@ this repository's own, and apply to every skill:
 - **Ids** are short kebab-case names of what the prompt asks. They stay unique
   across both lists.
 
-Jev grades each positive answer against the rubric. Two of the rules below rest
-on the failure modes that TypeSafe documents for `jev-1.13`. Source:
+Jev grades each positive answer on the questions that apply to its prompt. Two
+of the rules below rest on the failure modes that TypeSafe documents for
+`jev-1.13`. Source:
 [Jev 1.13 jaggedness](https://docs.typesafe.ai/model-jaggedness/jev-1.13.md),
 TypeSafe documentation, read 2026-10-09.
 
 - **One question per rule** of the skill that a reader can check in the answer
   text. Take the rules from `SKILL.md` and the references it names as required
   output.
+- **`cases` for a rule of one form.** A question about one artifact form, such
+  as a review comment or a PR description, names in `cases` the prompts that
+  write it.
+- **No question at the ceiling.** Drop a question that every answer passes in
+  both arms, because it measures nothing. In
+  [run 37882206779](https://github.com/Akurganow/ai-plugins/actions/runs/37882206779),
+  `no_filler`, `no_inflation` and `plain_verbs` were yes on all 20
+  `house-style` answers labelled for them, from both arms. Jev's mean for each
+  lay between 0.87 and 0.97, on 90 answers with the package and 90 without.
 - **A statement that holds** for an answer which follows the skill, such as
   "Each finding names the chapter of the book it rests on."
 - **One step.** Each question is answerable from the answer text in one step.
@@ -233,17 +245,21 @@ TypeSafe documentation, read 2026-10-09.
   for a subtle yes-or-no boundary. Source:
   [Noul](https://docs.typesafe.ai/primitives/noul.md), TypeSafe documentation,
   read 2026-10-09. Keep criteria only where they lower Jev's mean error against
-  labelled answers, on a second set of answers as well as the first. Six
+  labelled answers, on a second set of answers as well as the first. Fourteen
   questions of `red-flags` and `house-style` carry criteria. Claude labelled 40
+  `red-flags` answers and 144 `house-style` answers from
+  [run 37882206779](https://github.com/Akurganow/ai-plugins/actions/runs/37882206779).
+  Each criteria text lowered Jev's error on both halves of its sample.
+- **No checks of sentence structure.** `jev-1.13.0` graded 20 `house-style`
   answers from
   [run 37882206779](https://github.com/Akurganow/ai-plugins/actions/runs/37882206779)
-  for each skill, and the criteria lowered the error on both halves.
-- **No punctuation checks.** `jev-1.13.0` graded 20 `house-style` answers from
-  [run 37882206779](https://github.com/Akurganow/ai-plugins/actions/runs/37882206779)
   on "never joins two thoughts with a semicolon or a dash". It gave a mean of
-  0.26 to the 12 answers with neither and 0.24 to the 8 with one.
+  0.26 to the 12 answers with neither and 0.24 to the 8 with one. On "each
+  sentence the answer writes carries one thought", it gave 0.51 to the 3
+  answers labelled yes and 0.34 to the 17 labelled no.
 - **Judged from the answer alone.** A question never compares the answer with
   the request, and never needs knowledge the answer does not contain. When an
   answer may quote the text it checks or cleans, a style question says
   "outside text it quotes".
-- **Four to eight questions**, with short snake_case ids.
+- **Three to eight questions** apply to each positive prompt. Each id is a
+  short snake_case name.

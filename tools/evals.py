@@ -82,6 +82,8 @@ class Parsed:
     tokens: dict | None
     model: str | None
     error: str | None
+    loaded: dict | None
+    tools: list[str]
 
 
 class Claude:
@@ -105,18 +107,25 @@ class Claude:
                        env=client_env(self.name))
 
     # Claude Code 2.1.293 shows a loaded skill as a Skill tool call whose `skill`
-    # input holds "<package>:<skill>" (running, 2026-10-08:
+    # input holds "<package>:<skill>". Its init event lists `skills` and `plugins`,
+    # each plugin with a `source` of "<package>@<marketplace>" (running, 2026-10-08:
     # https://github.com/Akurganow/ai-plugins/actions/runs/37789029106).
     def parse(self, events: list[dict]) -> Parsed:
-        fired, answer, cost, model, error = False, None, None, None, None
+        fired, answer, cost, model, error, loaded, tools = False, None, None, None, None, None, []
         for e in events:
             kind = e.get("type")
             if kind == "system" and e.get("subtype") == "init":
                 model = e.get("model")
+                loaded = {"plugins": [p["source"] for p in e.get("plugins") or []],
+                          "skills": list(e.get("skills") or [])}
             elif kind == "assistant":
                 for block in (e.get("message") or {}).get("content") or []:
-                    if (block.get("type") == "tool_use" and block.get("name") == "Skill"
-                            and block.get("input", {}).get("skill") == f"{self.package}:{self.skill}"):
+                    if block.get("type") != "tool_use":
+                        continue
+                    name, args = block.get("name"), block.get("input") or {}
+                    detail = {"Skill": args.get("skill"), "Read": args.get("file_path")}.get(name)
+                    tools.append(f"{name} {detail}" if detail else name)
+                    if name == "Skill" and args.get("skill") == f"{self.package}:{self.skill}":
                         fired = True
             elif kind == "result":
                 answer, cost = e.get("result"), e.get("total_cost_usd")
@@ -124,7 +133,7 @@ class Claude:
                     error = f"result {e.get('subtype')}"
         if answer is None and error is None:
             error = "no result event"
-        return Parsed(fired, answer, cost, None, model, error)
+        return Parsed(fired, answer, cost, None, model, error, loaded, tools)
 
 
 class Codex:
@@ -159,13 +168,14 @@ class Codex:
     # agent_message can be a preamble such as the fixture's first one.
     def parse(self, events: list[dict]) -> Parsed:
         fired, answer, tokens, error, retried = False, None, None, None, None
-        completed = False
+        completed, tools = False, []
         skill_path = f"/skills/{self.skill}/SKILL.md"
         cache_path = f"/plugins/cache/{MARKETPLACE}/{self.package}/"
         for e in events:
             kind, item = e.get("type"), e.get("item") or {}
             if kind == "item.completed" and item.get("type") == "command_execution":
                 command = item.get("command", "")
+                tools.append(f"command {command[:200]}")
                 if cache_path in command and skill_path in command:
                     fired = True
             elif kind == "item.completed" and item.get("type") == "agent_message":
@@ -180,7 +190,7 @@ class Codex:
             error = f"no agent_message, last error: {retried}" if retried else "no agent_message"
         elif not completed and error is None:
             error = "no turn.completed"
-        return Parsed(fired, answer, None, tokens, MODELS["codex"], error)
+        return Parsed(fired, answer, None, tokens, MODELS["codex"], error, None, tools)
 
 
 class Omp:
@@ -215,13 +225,15 @@ class Omp:
     # the last one decides (source:
     # https://github.com/can1357/oh-my-pi/blob/40e9368ef0458fd9073329cdff4174895f91bc6b/packages/coding-agent/src/session/agent-session.ts#L4323-L4324).
     def parse(self, events: list[dict]) -> Parsed:
-        fired, answer, cost, model, last = False, None, 0.0, None, None
+        fired, answer, cost, model, last, tools = False, None, 0.0, None, None, []
         base = f"skill://{self.skill}"
         for e in events:
             kind = e.get("type")
-            if kind == "tool_execution_start" and e.get("toolName") == "read":
-                path = (e.get("args") or {}).get("path", "")
-                if path == base or path.startswith((base + "/", base + ":")):
+            if kind == "tool_execution_start":
+                name, args = e.get("toolName"), e.get("args") or {}
+                tools.append(f"{name} {args['path']}" if "path" in args else name)
+                path = args.get("path", "")
+                if name == "read" and (path == base or path.startswith((base + "/", base + ":"))):
                     fired = True
             elif kind == "message_end" and (e.get("message") or {}).get("role") == "assistant":
                 last = e["message"]
@@ -233,7 +245,7 @@ class Omp:
             error = last.get("errorMessage") or last.get("stopReason")
         if not answer and error is None:
             error = "no assistant text"
-        return Parsed(fired, answer or None, cost, None, model, error)
+        return Parsed(fired, answer or None, cost, None, model, error, None, tools)
 
 
 ADAPTERS = {"claude": Claude, "codex": Codex, "omp": Omp}
@@ -279,7 +291,14 @@ def load_cases(skill_dir: Path) -> tuple[dict, dict]:
     questions = rubric.get("questions") if isinstance(rubric, dict) else None
     if not isinstance(questions, dict) or not questions or not all(map(is_question, questions.values())):
         raise SystemExit(f"{skill_dir}/rubric.yaml: questions must map each id to one statement, or to "
-                         'instructions and criteria with a quoted "true" and "false".')
+                         'instructions with optional criteria (a quoted "true" and "false") and optional '
+                         "cases (a non-empty list of positive case ids).")
+    positive_ids = {c["id"] for c in cases["positive"]}
+    for qid, q in questions.items():
+        for case_id in q.get("cases", []) if isinstance(q, dict) else []:
+            if case_id not in positive_ids:
+                raise SystemExit(f"{skill_dir}/rubric.yaml: {qid} names a case that is not a positive case: "
+                                 f"{case_id}.")
     return cases, questions
 
 
@@ -289,10 +308,20 @@ def load_cases(skill_dir: Path) -> tuple[dict, dict]:
 def is_question(q) -> bool:
     if isinstance(q, str):
         return True
-    criteria = q.get("criteria") if isinstance(q, dict) else None
-    return (isinstance(q, dict) and set(q) == {"instructions", "criteria"} and isinstance(q["instructions"], str)
-            and isinstance(criteria, dict) and set(criteria) == {"true", "false"}
-            and all(isinstance(v, str) for v in criteria.values()))
+    if not isinstance(q, dict) or not set(q) <= {"instructions", "criteria", "cases"}:
+        return False
+    criteria, cases = q.get("criteria"), q.get("cases")
+    return (isinstance(q.get("instructions"), str)
+            and ("criteria" not in q or (isinstance(criteria, dict) and set(criteria) == {"true", "false"}
+                                         and all(isinstance(v, str) for v in criteria.values())))
+            and ("cases" not in q or (isinstance(cases, list) and bool(cases)
+                                      and all(isinstance(c, str) for c in cases))))
+
+
+# A question with `cases` applies to those positive prompts only.
+def applicable(questions: dict, case_id: str) -> dict:
+    return {qid: q for qid, q in questions.items()
+            if not isinstance(q, dict) or "cases" not in q or case_id in q["cases"]}
 
 
 def sha256(path: Path) -> str:
@@ -327,7 +356,8 @@ def run_session(adapter, case: dict, kind: str, arm: str) -> dict:
         error = f"exit {proc.returncode}: {proc.stderr[-500:]}"
     return {"case": case["id"], "kind": kind, "arm": arm, "fired": parsed.fired, "answer": parsed.answer,
             "cost_usd": parsed.cost_usd, "tokens": parsed.tokens, "model": parsed.model,
-            "duration_s": duration, "error": error, "nouls": None, "grade_error": None}
+            "loaded": parsed.loaded, "tools": parsed.tools, "duration_s": duration, "error": error,
+            "nouls": None, "grade_error": None}
 
 
 def jev_request(body: dict) -> dict:
@@ -358,6 +388,12 @@ def jev_request(body: dict) -> dict:
             raise JevError(f"jev reply is not JSON: {e}") from e
 
 
+# `cases` is this runner's key, so it stays out of the request.
+def jev_question(q) -> dict:
+    fields = {k: v for k, v in q.items() if k != "cases"} if isinstance(q, dict) else {"instructions": q}
+    return {"type": "noul", **fields}
+
+
 # The answer is never split, and Jev limits the state plus the longest question
 # to 32k tokens (documentation: https://docs.typesafe.ai/models.md, read
 # 2026-10-08). A request Jev rejects raises `JevError`, and `run_job` records
@@ -366,8 +402,7 @@ def grade(request_text: str, answer: str, questions: dict, send=jev_request) -> 
     body = {
         "model": JEV_MODEL,
         "state": {"request": request_text, "answer": answer},
-        "questions": {qid: {"type": "noul", **(q if isinstance(q, dict) else {"instructions": q})}
-                      for qid, q in questions.items()},
+        "questions": {qid: jev_question(q) for qid, q in questions.items()},
     }
     reply = send(body)
     try:
@@ -385,7 +420,7 @@ def run_job(adapter, cases: dict, questions: dict, session=run_session, grader=g
         if s["kind"] != "positive" or s["error"]:
             continue
         try:
-            s["nouls"] = grader(prompts[s["case"]], redact(s["answer"]), questions)
+            s["nouls"] = grader(prompts[s["case"]], redact(s["answer"]), applicable(questions, s["case"]))
         except JevError as e:
             s["grade_error"] = str(e)
     return sessions
@@ -415,9 +450,12 @@ def metrics(sessions: list[dict], always_on: bool = False) -> dict:
     def share(group):
         return (sum(s["fired"] for s in group) / len(group)) if group else None
 
+    # Each graded answer weighs the same whatever its question count. A question
+    # that applies to some prompts only would otherwise weigh more in the answers
+    # that carry more questions.
     def pooled(group):
-        values = [v for s in group if s["nouls"] for v in s["nouls"].values()]
-        return statistics.fmean(values) if values else None
+        means = [statistics.fmean(s["nouls"].values()) for s in group if s["nouls"]]
+        return statistics.fmean(means) if means else None
 
     with_mean, without_mean = pooled(pos_with), pooled(pos_without)
     fired_with = [s for s in pos_with if s["fired"]]
@@ -701,10 +739,60 @@ def cmd_report(args) -> int:
     return 0
 
 
+def loads_per_prompt(sessions: list[dict]) -> list[tuple[str, int, int]]:
+    counts: dict[str, tuple[int, int]] = {}
+    for s in sessions:
+        if not s["error"]:
+            fired, done = counts.get(s["case"], (0, 0))
+            counts[s["case"]] = (fired + s["fired"], done + 1)
+    ordered = sorted(counts.items(), key=lambda item: (item[1][0] / item[1][1], item[0]))
+    return [(case, fired, done) for case, (fired, done) in ordered]
+
+
+def question_detail(package, skill, client, group, always_on) -> list[str]:
+    # The run files come from rglob in arbitrary order, and the questions follow the sessions.
+    sessions = [s for r in sorted(group, key=lambda r: r["repeat"]) for s in r["sessions"]]
+    with_package = [s for s in sessions if s["arm"] == "with" and s["nouls"]]
+    columns = {"Skill loaded": [s for s in with_package if s["fired"]], "With package": with_package,
+               "Without package": [s for s in sessions if s["arm"] == "without" and s["nouls"]]}
+    if always_on:
+        del columns["Skill loaded"]
+
+    def cell(answers, qid):
+        values = [s["nouls"][qid] for s in answers if qid in s["nouls"]]
+        return f"{statistics.fmean(values):.2f} (n={len(values)})" if values else "–"
+
+    qids = dict.fromkeys(qid for s in sessions if s["nouls"] for qid in s["nouls"])
+    rows = [f"| {qid} | " + " | ".join(cell(answers, qid) for answers in columns.values()) + " |" for qid in qids]
+    lines = [f"### {skill} on {client}", "", "| Question | " + " | ".join(columns) + " |",
+             "| :-- |" + " :-- |" * len(columns), *rows, ""]
+    # A near-miss load counts for an always_on client too: false_fire stays.
+    with_arm = [s for s in sessions if s["arm"] == "with"]
+    near_miss = [t for t in loads_per_prompt([s for s in with_arm if s["kind"] == "near_miss"]) if t[1]]
+    loads = [("near-miss", near_miss)]
+    if not always_on:
+        loads.insert(0, ("positive", loads_per_prompt([s for s in with_arm if s["kind"] == "positive"])))
+    notes = [f"Loads per {label} prompt: " + (", ".join(f"{c} {f}/{d}" for c, f, d in found) or "none")
+             for label, found in loads]
+    carried = [s for s in sessions if s.get("loaded") is not None]
+    if carried:
+        key = f"{package}@{MARKETPLACE}"
+
+        def listed(arm):
+            of_arm = [s for s in carried if s["arm"] == arm]
+            return f"{sum(key in s['loaded']['plugins'] for s in of_arm)} of {len(of_arm)}"
+
+        notes.append(f"Package in the session's plugin list: {listed('with')} sessions with it, "
+                     f"{listed('without')} without.")
+    for note in notes:
+        lines += [note, ""]
+    return lines
+
+
 def report_tag(tag, package, runs, no_cases, previous, seen, run_url, repo, can_file, file=file_issue) -> list[str]:
     lines = [f"## `{tag}`", "", "| Skill | Client | " + " | ".join(f"`{m}`" for m in METRICS) + " | Cost | Compared |",
              "| :-- | :-- | " + "".join(":-- | " for _ in METRICS) + ":-- | :-- |"]
-    excluded, marked_na = [], False
+    excluded, details, marked_na = [], [], False
     for skill in sorted({r["skill"] for r in runs}):
         for client in CLIENTS:
             group = [r for r in runs if r["skill"] == skill and r["client"] == client]
@@ -744,9 +832,11 @@ def report_tag(tag, package, runs, no_cases, previous, seen, run_url, repo, can_
                                else f"{span(values[m])} (n={counted(group, m)}, {covers(values[m])})" for m in METRICS)
             marked_na = marked_na or always_on
             lines.append(f"| {skill} | {client} | {cells} | {spent} | {status} |")
+            details += question_detail(package, skill, client, group, always_on)
     lines.append("")
     if marked_na:
         lines += ["n/a: the client gets the skill's rules without loading the skill (`always_on` in cases.yaml).", ""]
+    lines += details
     if no_cases:
         lines += ["No cases: " + ", ".join(no_cases), ""]
     if excluded:
@@ -767,12 +857,24 @@ def _selftest_parsers() -> None:
     assert claude.model == "claude-sonnet-5-5" and claude.cost_usd == 0.1016514, claude
     assert claude.answer.startswith("**Short answer:** the abstraction is wrong."), claude.answer
     assert not Claude("design-review", "ariz").parse(events("claude")).fired
+    assert claude.loaded == {"plugins": ["design-review@ai-plugins"],
+                             "skills": ["design-review:red-flags"]}, claude.loaded
+    assert claude.tools[0] == "Skill design-review:red-flags" and len(claude.tools) == 6, claude.tools
+    assert all(t.startswith("Read ") for t in claude.tools[1:]), claude.tools
+    bash = {"type": "assistant",
+            "message": {"content": [{"type": "tool_use", "name": "Bash", "input": {"command": "ls"}}]}}
+    assert Claude("p", "s").parse([bash]).tools == ["Bash"]
 
     codex = Codex("design-review", "red-flags").parse(events("codex"))
     assert codex.fired and codex.error is None, codex
     assert codex.answer.startswith("## Review"), codex.answer
     assert codex.tokens["input_tokens"] == 141929, codex.tokens
     assert not Codex("triz", "red-flags").parse(events("codex")).fired
+    assert codex.loaded is None and len(codex.tools) == 3, codex
+    assert all(t.startswith("command ") for t in codex.tools), codex.tools
+    assert codex.tools[0].endswith("red-flags/SKILL.md'"), codex.tools[0]
+    long = {"type": "item.completed", "item": {"type": "command_execution", "command": "x" * 300}}
+    assert Codex("p", "s").parse([long]).tools == ["command " + "x" * 200]
     retry = {"type": "error", "message": "Reconnecting... 1/5"}
     assert Codex("design-review", "red-flags").parse([retry] + events("codex")).error is None
     failed = {"type": "turn.failed", "error": {"message": "quota exceeded"}}
@@ -787,6 +889,10 @@ def _selftest_parsers() -> None:
     assert omp.model == "z-ai/glm-5.3-flash" and omp.answer.startswith("Review per the red-flags skill"), omp
     assert abs(omp.cost_usd - 0.00813) < 0.00001, omp.cost_usd
     assert not Omp("design-review", "red").parse(events("omp")).fired
+    assert omp.loaded is None and len(omp.tools) == 7, omp.tools
+    assert "read skill://red-flags" in omp.tools and "glob ." in omp.tools, omp.tools
+    shell = {"type": "tool_execution_start", "toolName": "bash", "args": {"command": "ls"}}
+    assert Omp("p", "s").parse([shell]).tools == ["bash"]
     broken = {"type": "message_end", "message": {"role": "assistant", "content": None, "stopReason": "error",
                                                  "errorMessage": "429 rate limited"}}
     assert Omp("design-review", "red-flags").parse([broken] + events("omp")).error is None
@@ -829,6 +935,9 @@ def _selftest_core() -> None:
     assert got["trigger_hit"] == 0.5 and got["counts"]["positive_with"] == 2, got
     assert got["false_fire"] == 0.5 and got["compliance"] == 0.75, got
     assert got["improvement"] == 0.625 - 0.25, got
+    uneven = [_session("p", "positive", "with", True, {"a": 0.0}),
+              _session("o", "positive", "with", True, {"a": 1.0, "b": 0.0})]
+    assert metrics(uneven)["compliance"] == 0.25, metrics(uneven)
     rules = metrics(sample, always_on=True)
     assert rules["trigger_hit"] is None and rules["compliance"] is None, rules
     assert rules["false_fire"] == 0.5 and rules["improvement"] == got["improvement"], rules
@@ -934,6 +1043,13 @@ def _selftest_core() -> None:
     assert seen == ["leaked ***", "leaked ***"], seen
     assert not run_broke(graded)
 
+    two = {"positive": [{"id": "p", "prompt": "P"}, {"id": "o", "prompt": "O"}], "near_miss": []}
+    asked = {}
+    scoped_run = run_job(Fake(), two, {"q1": "Q1", "q2": {"instructions": "Q2", "cases": ["p"]}}, session=fake_session,
+                         grader=lambda r, a, q: asked.setdefault(r, []).append(list(q)) or dict.fromkeys(q, 1.0))
+    assert asked == {"P": [["q1", "q2"]] * 2, "O": [["q1"]] * 2}, asked
+    assert [s["nouls"] for s in scoped_run] == [{"q1": 1.0, "q2": 1.0}, {"q1": 1.0}] * 2, scoped_run
+
     def broken_session(adapter, case, kind, arm):
         return _session(case["id"], kind, arm, True, error="exit 1" if arm == "without" else None) | {"answer": "A"}
 
@@ -952,9 +1068,17 @@ def _selftest_core() -> None:
     bounded = {"instructions": "Q?", "criteria": {"true": "T", "false": "F"}}
     grade("R", "A", {"q": bounded}, send=lambda body: sent.update(body) or {"answers": {"q": {"noul": 0.9}}})
     assert sent["questions"] == {"q": {"type": "noul", **bounded}}, sent
-    assert is_question("Q?") and is_question(bounded)
+    scoped = {"instructions": "Q2?", "cases": ["p"]}
+    assert is_question("Q?") and is_question(bounded) and is_question(scoped) and is_question({"instructions": "Q?"})
     assert not is_question({"instructions": "Q?", "criteria": {True: "T", False: "F"}})
-    assert not is_question({"instructions": "Q?"}) and not is_question(["Q?"])
+    for bad in (["Q?"], {"instructions": "Q?", "cases": []}, {"cases": ["p"]}, {"instructions": "Q?", "nonsense": 1},
+                {"instructions": "Q?", "cases": "p"}, {"instructions": "Q?", "cases": [1]},
+                {"criteria": bounded["criteria"]}):
+        assert not is_question(bad), bad
+    pool = {"q1": "Q1?", "q2": scoped, "q3": bounded}
+    assert applicable(pool, "p") == pool and applicable(pool, "o") == {"q1": "Q1?", "q3": bounded}
+    grade("R", "A", {"q": scoped}, send=lambda body: sent.update(body) or {"answers": {"q": {"noul": 0.9}}})
+    assert sent["questions"] == {"q": {"type": "noul", "instructions": "Q2?"}}, sent
     try:
         grade("R", "A", {"q": "Q?"}, send=lambda body: {"answers": {"q": {"error": "state too long"}}})
     except JevError as e:
@@ -1018,6 +1142,41 @@ def _selftest_publish() -> None:
     row = next(line for line in lines if line.startswith("| s | claude |"))
     assert row.startswith("| s | claude | n/a | ") and "regressed" not in row and len(filed) == 1, row
     assert any(line.startswith("n/a: ") for line in lines), lines
+
+    mine = {"plugins": [f"p@{MARKETPLACE}"], "skills": []}
+    bare = {"plugins": [], "skills": []}
+
+    def answered(case, kind, arm, fired, nouls=None, loaded=None):
+        return _session(case, kind, arm, fired, nouls) | {"cost_usd": 0.1, "tokens": None, "loaded": loaded}
+
+    def graded_run(repeat, near_loaded=True):
+        sessions = [answered("p1", "positive", "with", True, {"a": 1.0, "b": 0.0}, mine),
+                    answered("p2", "positive", "with", False, {"a": 0.5}, mine),
+                    answered("n1", "near_miss", "with", near_loaded, loaded=mine),
+                    answered("n2", "near_miss", "with", False, loaded=bare),
+                    answered("p1", "positive", "without", False, {"a": 0.0}, bare),
+                    answered("p2", "positive", "without", False, {"a": 0.0}, bare)]
+        return {"tag": "t", "skill": "s", "client": "claude", "repeat": repeat, "client_version": "1", "model": "m",
+                "cases_sha256": "a", "rubric_sha256": "r", "sessions": sessions}
+
+    def detail(runs):
+        return report_tag("p--v1.1.0", "p", runs, ["other"], None, set(), "RUN", "o/r", False)
+
+    lines = detail([graded_run(1), graded_run(2)])
+    assert lines.index("### s on claude") < lines.index("No cases: other"), lines
+    assert "| Question | Skill loaded | With package | Without package |" in lines, lines
+    assert "| a | 1.00 (n=2) | 0.75 (n=4) | 0.00 (n=4) |" in lines, lines
+    assert "| b | 0.00 (n=2) | 0.00 (n=2) | – |" in lines, lines
+    assert "Loads per positive prompt: p2 0/2, p1 2/2" in lines, lines
+    assert "Loads per near-miss prompt: n1 2/2" in lines, lines
+    assert "Package in the session's plugin list: 6 of 8 sessions with it, 0 of 4 without." in lines, lines
+    assert "Loads per near-miss prompt: none" in detail([graded_run(1, False)]), lines
+    lines = detail([dict(r, always_on=True) for r in (graded_run(1), graded_run(2))])
+    assert "| Question | With package | Without package |" in lines, lines
+    assert not any(line.startswith("Loads per positive") for line in lines), lines
+    assert "Loads per near-miss prompt: n1 2/2" in lines, lines
+    quiet = [dict(r, sessions=[s | {"loaded": None} for s in r["sessions"]]) for r in (graded_run(1), graded_run(2))]
+    assert not any(line.startswith("Package in") for line in detail(quiet)), lines
 
 
 def _selftest_gh() -> None:

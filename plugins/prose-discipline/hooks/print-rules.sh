@@ -36,8 +36,11 @@ root=$(cd "$hooks_dir/.." && pwd -P) || fail "cannot resolve the plugin root fro
 
 # The command substitution holds the whole output until awk has succeeded,
 # so a failure midway leaves stdout empty.
-out=$(awk -v mode="$mode" -v root="$root" '
+# The root comes through the environment: awk -v would turn a backslash in
+# the path into an escape sequence.
+out=$(PLUGIN_ROOT="$root" awk -v mode="$mode" '
   BEGIN {
+    root = ENVIRON["PLUGIN_ROOT"]
     # Escapes are applied one character at a time. gsub replacement strings
     # treat backslashes differently in mawk, gawk and BWK awk.
     for (i = 1; i < 32; i++) esc[sprintf("%c", i)] = sprintf("\\u%04x", i)

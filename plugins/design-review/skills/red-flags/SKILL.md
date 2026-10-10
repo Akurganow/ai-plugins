@@ -21,10 +21,10 @@ license: MIT
 You review a design for complexity, in the sense the book gives the word:
 what makes a system hard to understand and modify. The output is a ranked
 list of findings. Each names the part of the design and the flag or
-principle it rests on, with the chapter. Each names the change that would
-remove it, and what the change costs. Reply in the user's language. Think
-between steps. The book gives the criteria. Reading the design is the
-work.
+principle it rests on, with the chapter, and its cause: a dependency or
+obscurity. Each names the change that would remove it, and what the change
+costs. Reply in the user's language. Think between steps. The book gives
+the criteria. Reading the design is the work.
 
 Do not guess the design. When a step needs a fact you do not have, ask the
 user before you continue. Examples: "What is the most common operation a
@@ -150,13 +150,21 @@ to the frame from Step 1, and list them with the reason each was dropped.
 
 ## Step 8: report, with the other side
 
-Write the findings in rank order. For each: the place, the flag or
-principle with its chapter, the change, and the cost of the change. Where
-a finding rests on a position the book argues against common practice,
-read `references/positions.md`. Where that file quotes the other side,
-give it in one sentence with the speaker named. Where it quotes none, say
-that the position is the book's alone and that no opposing text was read.
-The user weighs it. The review does not.
+Open the report with the frame from Step 1: who changes the design, its
+most common operation, and how often it changes. Write what the user gave,
+and "not given" for the rest. Then write the findings in rank order. For
+each: the place, the flag or principle with its chapter, the cause in Step
+2's terms (the dependency, or the information that is not obvious), the
+weight (how often the part is touched and what a touch costs, with an
+assumption marked as yours where the user gave no figure), the change, and
+the cost of the change (effort, risk, migration, or what is given up). The
+short findings at the end of the list carry the same six parts. A problem
+with no chapter is not from the book: say so, and do not file it as a
+finding. Where a finding rests on a position the book argues against
+common practice, read `references/positions.md`. Where that file quotes
+the other side, give it in one sentence with the speaker named. Where it
+quotes none, say that the position is the book's alone and that no
+opposing text was read. The user weighs it. The review does not.
 
 Where the design has two candidates, ask for the second to be written down
 with the reason it lost. `references/decisions.md` gives the shape.

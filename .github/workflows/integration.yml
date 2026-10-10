@@ -30,7 +30,7 @@ jobs:
     outputs:
       pairs: ${{ steps.list.outputs.pairs }}
     steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       # One "package:skill" pair per skill directory, from each plugin.json name.
       # nullglob keeps a package without skills/ from yielding the pair "name:*".
@@ -76,7 +76,7 @@ jobs:
       # (documentation: https://code.claude.com/docs/en/setup, "Disable auto-updates").
       DISABLE_AUTOUPDATER: "1"
     steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       # Claude Code's npm package needs Node.js 22 or later
       # (documentation: https://code.claude.com/docs/en/setup, "Install with npm").
@@ -274,7 +274,7 @@ jobs:
       SIGNER_IDENTITY: https://github.com/Akurganow/how-possible/.github/workflows/release.yml@refs/heads/main
       OIDC_ISSUER: https://token.actions.githubusercontent.com
     steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       # At this commit the action installs cosign v3.0.6 (source: `default:` in
       # https://github.com/sigstore/cosign-installer/blob/6f9f17788090df1f26f669e9d70d6ae9567deba6/action.yml)

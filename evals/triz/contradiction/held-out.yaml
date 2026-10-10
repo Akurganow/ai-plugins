@@ -1,0 +1,42 @@
+held_out:
+  positive:
+    - id: audit-log-erasure
+      prompt: |
+        New requirement from compliance on our payments service: the audit log has to be tamper-proof, so nobody including us can change or delete a row once written. Legal also says that when a customer files an erasure request under GDPR we must delete their personal data from everywhere, and the audit log has user emails and IPs in it. Same table, `audit_events`, ~900M rows on Postgres. Both requirements are signed off by their owners. How do we design this?
+    - id: ota-payload-limit
+      prompt: |
+        Working on LoRaWAN firmware updates for a soil sensor. Max payload is 51 bytes per downlink at SF12 and the delta image for a typical patch is about 38 KB, so we need heavy compression. The part I'm stuck on: the bootloader on the STM32L0 has 6 KB free for the decompressor, and anything good (zstd, even heatshrink with a big window) needs more RAM and flash than that. Smaller decompressor means worse ratio, better ratio means it doesn't fit. Ideas?
+    - id: warm-cache-cold-start
+      prompt: |
+        For our React Native app I want cold start under 1.2s, currently 3.1s. Preloading the product catalog from a local SQLite cache gets it to 0.9s but the cache file then sits at 410 MB on disk, and App Store review notes already flagged storage usage. Dropping the cache puts us back at 3s. We haven't built anything yet, just measured both options. How should we think about this?
+    - id: fresh-vs-compacted-lake
+      prompt: |
+        Slack question for the data channel: our Iceberg table on S3 gets ~2k small appends a minute from Kafka and analysts want dashboards that reflect events within 30 seconds. But query latency is good only when files are compacted into 512 MB chunks, which takes a rewrite every hour. Frequent commits = thousands of tiny files and slow scans; rare commits = stale data. Anyone seen a clean way out? Starting the design today.
+    - id: hermetic-fast-ci
+      prompt: |
+        I'm preparing a slide for the platform review. Our monorepo CI (Bazel-less, plain Docker builds, 70 services) needs to be hermetic: every build from a clean container, no shared state, so results are reproducible and auditable. It also needs to finish in under 8 minutes, and a clean build takes 31. Anything that reuses previous work seems to break reproducibility, anything hermetic is too slow. Can you frame what we are asking for and propose directions to evaluate?
+  near_miss:
+    - id: choose-queue-sqs
+      prompt: |
+        We've narrowed the order-events queue to SQS or RabbitMQ. We're on AWS, already use IAM everywhere, expect maybe 300 msgs/sec, nobody on the team has run RabbitMQ. Just tell me which one, I'll write it up as the decision.
+    - id: zod-schema-api
+      prompt: |
+        With zod, how do I make a field required only when another field equals "business"? I've got `accountType: z.enum(["personal","business"])` and `vatId: z.string().optional()`. Is `superRefine` the right place or is there a discriminated-union way?
+    - id: review-lru-cache
+      prompt: |
+        Code review please, I wrote this LRU cache for the thumbnails service. Is there anything wrong with it?
+        ```go
+        func (c *Cache) Get(k string) ([]byte, bool) {
+            c.mu.Lock(); defer c.mu.Unlock()
+            e, ok := c.items[k]
+            if !ok { return nil, false }
+            c.order.MoveToFront(e)
+            return e.Value.(*entry).val, true
+        }
+        ```
+    - id: test-rate-limiter
+      prompt: |
+        Write a pytest for my token-bucket rate limiter in `ratelimit.py`. Bucket size 10, refill 5/sec. I want tests for burst, refill over time (use a fake clock), and rejecting the 11th call.
+    - id: estimate-dark-mode
+      prompt: |
+        How long would it realistically take to add dark mode to our Next.js dashboard? About 40 pages, we use Tailwind with some hardcoded hex colours scattered around, two frontend devs. A ballpark is fine.

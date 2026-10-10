@@ -1,0 +1,93 @@
+held_out:
+  positive:
+    - id: invoice-meta-three-services
+      prompt: |
+        Last sprint we added a "tax_exempt" flag to invoice metadata and it took a PR in
+        billing-worker, one in export-service and one in the public API, plus a hotfix
+        because export-service parsed the JSONB column with a different key order
+        assumption. The column is invoices.meta and all three services read and write it
+        by hand with their own dict handling. We have two more fields planned in Q4.
+        Before I schedule them, tell me what is wrong with how this is split between
+        the services and what you would change first.
+    - id: android-four-forwarders
+      prompt: |
+        why does every call in our Android app hop through four classes that look the same?
+        ```kotlin
+        class GetUserUseCase(private val repo: UserRepository) {
+            suspend operator fun invoke(id: String) = repo.getUser(id)
+        }
+        class UserRepository(private val source: UserRemoteSource) {
+            suspend fun getUser(id: String) = source.getUser(id)
+        }
+        // UserRemoteSource.getUser(id) = api.getUser(id), same shape
+        ```
+
+        About 60 chains like this. Is it right or are we doing something wrong?
+    - id: etl-stages-share-csv-layout
+      prompt: |
+        Can you write up a design review of our nightly ETL for the data platform
+        wiki? Repo is warehouse-loaders, python 3.11, about 9k lines. The stages are
+        extract.py, parse.py, validate.py and load.py. All four index into the vendor
+        CSV by column position (row[7] is the SKU, row[12] is the currency), and when
+        the vendor inserted a column in August we edited all four files and missed
+        validate.py for a day. Cover what is structurally wrong and rank the fixes by
+        how often people have to open each file. A page or so is enough.
+    - id: usecart-hook-name
+      prompt: |
+        naming this hook is killing me. it fetches the cart, merges the guest cart after
+        login, applies the coupon from the url and writes the result to localStorage.
+        every name I try either lies or has "and" in it. useCartStuff? useCheckoutState?
+        this is the one in src/features/cart/ that 14 components import. what is it telling me
+    - id: stepper-driver-begin-end
+      prompt: |
+        Before I add a fourth sensor to our firmware (STM32, C99, FreeRTOS) can you look at
+        how the motor and ADC modules are shaped?
+
+        ```c
+        int adc_begin(adc_t *a, uint8_t ch);           /* must be followed by adc_end */
+        int adc_end(adc_t *a, uint16_t *out);          /* only valid if begin was called
+                                                          in the same tick, see g_adc_busy */
+        void motor_set(int mode, int a, int b, int flag); /* see the 40-line comment */
+        ```
+
+        Every caller does adc_begin, then some unrelated work, then adc_end, and twice
+        a missing adc_end froze the control loop. Does this API hang together?
+  near_miss:
+    - id: offset-pagination-bug
+      prompt: |
+        GET /orders?page=1&page_size=50 skips the first 50 rows and starts at row 51.
+        Find the off-by-one and fix it.
+
+        ```go
+        func Paginate(q *gorm.DB, page, size int) *gorm.DB {
+            return q.Offset(page * size).Limit(size)
+        }
+        ```
+        Pages are 1-based in our API docs.
+    - id: slow-orders-query
+      prompt: |
+        This Postgres 15 query takes 4.2 s on orders (31M rows) and the plan shows a seq scan.
+        What index should I add and in which column order?
+
+        ```sql
+        SELECT id, total_cents FROM orders
+        WHERE customer_id = $1 AND status = 'paid' AND created_at >= now() - interval '90 days'
+        ORDER BY created_at DESC LIMIT 20;
+        ```
+    - id: jest-cart-reducer-tests
+      prompt: |
+        Write jest tests for cartReducer in src/store/cartReducer.ts. Cover ADD_ITEM for a new
+        sku, ADD_ITEM for an existing sku (quantity increments), REMOVE_ITEM for a missing sku
+        and CLEAR. Typescript, no mocks needed, the reducer is pure. I don't want any changes to the reducer
+        itself, only a new cartReducer.test.ts next to it.
+    - id: rename-usr-cnt
+      prompt: |
+        Decision made in standup, no debate needed: rename `usr_cnt` to `activeUserCount` and
+        `get_usr_list` to `list_active_users` everywhere in services/accounts/. Keep the
+        behaviour identical. Update the call sites in tests too and run pytest -q at the end.
+    - id: add-refund-endpoint
+      prompt: |
+        Add POST /v1/payments/{id}/refunds to our FastAPI service following the spec in
+        docs/refunds.md. Body is {"amount_cents": int, "reason": str}, return 201 with the
+        refund id, 409 if the payment is already fully refunded. Use the existing
+        PaymentRepository and the same error handler as the capture endpoint.

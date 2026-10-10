@@ -295,6 +295,11 @@ A positive prompt runs with the package and again without it, and a near-miss pr
 Each prompt runs three times in each of three clients: Claude Code with `sonnet`, Codex with `gpt-6-luna`, and Oh-My-Pi with `openrouter/z-ai/glm-5.3-flash`.
 The counts follow the Agent Skills guide on trigger tests.
 (documentation: [Optimizing descriptions](https://agentskills.io/skill-creation/optimizing-descriptions), read 2026-10-08)
+A skill may add five positive and five near-miss prompts in `held-out.yaml`.
+They run with the package once per client, on the first repeat, and are not graded.
+Nobody reads them while editing a description, so their load count checks the trigger rate on prompts the description was not tuned on.
+The same guide warns against adding keywords from failed queries to a description, and a held-out set is what shows whether that happened.
+(documentation: [Optimizing descriptions](https://agentskills.io/skill-creation/optimizing-descriptions), read 2026-10-10)
 Oh-My-Pi runs `z-ai/glm-5.3-flash`, because in Oh-My-Pi 18.8.6 it loaded `red-flags` in 3 of 3 sessions.
 `deepseek-v4-flash` loaded it in 1 of 3, and `gemini-3.1-flash-lite` in 0 of 3.
 (running: [run 37847660604](https://github.com/Akurganow/ai-plugins/actions/runs/37847660604), 2026-10-08)
@@ -371,6 +376,7 @@ Where a package's previous release has no `evals.json`, nothing is compared.
 `release.yml` runs one release at a time, its evals included, so a release's `evals.json` exists before the next release compares against it.
 A regression opens an issue in the machine population, where the Issue Court and the delivery pipeline take it up.
 Two releases are compared only when their `cases.yaml` and their `rubric.yaml` are byte-identical.
+`held-out.yaml` is outside that comparison, so adding or changing it does not break the chain.
 Each run installs the client's latest release, so the issue shows both client versions.
 
 Four repository secrets reach the run, each only in the steps that need it: `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, `OPENROUTER_API_KEY` and `TYPESAFE_API_KEY`.

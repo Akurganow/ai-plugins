@@ -1,0 +1,78 @@
+held_out:
+  positive:
+    - id: debounce-commit-message
+      prompt: |
+        commit message pls, goes on main. firmware repo, C.
+
+        ```diff
+        --- a/src/button.c
+        +++ b/src/button.c
+        @@ -31,5 +31,5 @@ void button_poll(void) {
+        -    if (now - last_edge > 5) {
+        +    if (now - last_edge > DEBOUNCE_MS) {
+                 state = raw;
+        ```
+        DEBOUNCE_MS is 20 in config.h. 5 ms let contact bounce through on the rev C
+        boards, the menu skipped two entries per press. I tried 10 first, still double-fired.
+    - id: terraform-pr-description
+      prompt: |
+        Write the PR description for this. I changed the RDS module in infra/modules/rds:
+        backup_retention_period goes from 7 to 14 days, deletion_protection is now true
+        by default, and I added a lifecycle block so changing the password no longer
+        forces replacement. I ran terraform plan on staging and prod, no resources are
+        destroyed, 2 are changed in-place. It started as a ticket (OPS-512) about retention
+        only, I went down a different path with a custom snapshot lambda first and dropped it.
+    - id: config-error-messages
+      prompt: |
+        Our CLI prints useless errors when loading config. Can you rewrite these three?
+
+        ```go
+        return errors.New("something went wrong, please try again")  // file missing
+        return fmt.Errorf("invalid config: %w", err)                  // yaml parse error
+        return errors.New("oops! could not connect")                  // db dial timeout 5s
+        ```
+        The file is ~/.deployctl/config.yaml and the db address comes from `db.addr` in it.
+    - id: agents-md-migrations
+      prompt: |
+        Write the section for our AGENTS.md that tells coding agents how to run database
+        migrations in this Rails 7 repo. Facts: use `bin/rails db:migrate`, never edit an
+        existing migration, schema.rb gets regenerated and must be committed, production
+        migrations are run by the deploy pipeline only, and a migration that locks a table
+        over 1M rows needs `disable_ddl_transaction!` and a review from #db-guild.
+    - id: kotlin-comment-cleanup
+      prompt: |
+        while you're in PaymentSync.kt, also clean up the comments, half are noise:
+
+        ```kotlin
+        // Step 1: get the pending list
+        val pending = dao.pending()
+        for (p in pending) {
+            // this should work for most cases
+            api.push(p)
+        }
+        // ---------- HELPERS ----------
+        ```
+        keep any that explain a non-obvious reason.
+  near_miss:
+    - id: translate-privacy-clause
+      prompt: |
+        Translate this clause from our privacy policy from Polish into English. Keep it
+        literal, our lawyers will polish it: "Administratorem danych osobowych jest Nordwind
+        Sp. z o.o. z siedzibą w Gdańsku. Dane przechowujemy przez okres 24 miesięcy od
+        ostatniej aktywności użytkownika."
+    - id: regex-iso-duration
+      prompt: |
+        regex that matches ISO-8601 durations like P3Y6M4DT12H30M5S, PT36H, P2W and rejects a bare
+        "P" and "PT". PCRE is fine. give me the pattern and 3 strings it should reject.
+    - id: find-large-logs
+      prompt: |
+        shell one-liner to list files over 100MB under /var/log modified in the last 7 days,
+        sorted by size, biggest first, human-readable sizes. macOS and Linux if possible.
+    - id: revert-merge-commit
+      prompt: |
+        I merged feature/search into main by mistake and already pushed. The merge commit is
+        a3f9c21. How do I undo it without rewriting history? Others have pulled main.
+    - id: kubernetes-joke
+      prompt: |
+        tell me a joke about kubernetes for our team standup, something about pods restarting
+        or yaml indentation, keep it clean

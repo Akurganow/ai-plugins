@@ -1,0 +1,33 @@
+held_out:
+  positive:
+    - id: duplicate-messages-return
+      prompt: |
+        Our payment-events consumer keeps processing some messages twice, about 0.1% of volume. Over the last two months we added idempotency keys, then a 10-minute dedupe window in Redis, then raised the SQS visibility timeout to 5 minutes, then moved to FIFO. Each one cut the duplicates for a week or two and then they came back, sometimes as a different kind (now it's out-of-order instead). The Redis dedupe has also become a hot key. I'm out of fixes that don't just push the problem elsewhere. How do we get at this properly?
+    - id: battery-vs-gps-loop
+      prompt: |
+        Delivery driver app, Android. Drivers complain the battery dies by 2pm, but dispatch needs location every 5 seconds or ETAs are wrong. We tried batching location updates, then adaptive sampling by speed, then geofencing, then moving to fused provider with balanced accuracy. Battery got a bit better, then ETA accuracy dropped, we tightened it, battery dropped again. Also the OEM battery savers kill our foreground service on Xiaomi. Each fix we made created the next complaint. Where do we even look?
+    - id: cert-rotation-outages
+      prompt: |
+        postmortem draft, third time this quarter that cert rotation takes something down. history: after incident 1 we added expiry alerts (alert fatigue, ignored), after 2 we lengthened cert lifetime to 13 months (now rotation is so rare nobody remembers how, and the runbook rotted), now we're proposing automation with cert-manager, but security rejected anything that auto-pushes new keys into prod without a human. every fix we try trades one failure for another. need a way out other than "be more careful"
+    - id: matrix-gave-nothing
+      prompt: |
+        I tried to resolve this by looking up principles for improving "speed" without worsening "loss of information" and what came back was generic ("segmentation", "prior action", "copying") and none of it fits. The problem: our streaming join of clickstream and orders must emit within 2s, but late events arrive up to 6 hours after, and every window we choose either drops late data or delays everything. We tried allowed lateness, side outputs and a correction batch job. Each leaves a hole somewhere different. What other way is there to attack this?
+    - id: grid-50k-rows
+      prompt: |
+        frontend, internal admin grid, 50k rows x 40 cols, users need to sort, filter, select-all across the whole set, and edit inline. tried: windowed virtualization (breaks select-all and find-in-page), server-side pagination (users hate it, and bulk edit needs the full set), web worker for sort (copy cost of structured clone kills the gain), canvas rendering (accessibility team blocked it, plus editing is painful). every step solves one thing and breaks another two. product wants it to just feel instant. what do we do now?
+  near_miss:
+    - id: flaky-test-timeout
+      prompt: |
+        `test_checkout_flow` fails about 1 in 10 CI runs with `TimeoutError: waiting for selector #confirm-button (5000ms)`. It always fails right after the payment-iframe step. Locally never. Could it just be the iframe taking longer to load on the slow CI runners? Should I bump the timeout to 15s?
+    - id: first-sight-tension
+      prompt: |
+        Never looked at this before. Our image-upload API has to accept 20 MB photos from users on bad mobile networks but also reject anything slow because slow uploads hold workers hostage; the nginx limit_req settings that help one hurt the other. No fixes tried yet, just seen it in the load test today. What are the options?
+    - id: tailwind-config-question
+      prompt: |
+        In Tailwind 3.4, how do I add a custom breakpoint "3xl" at 1920px without losing the defaults? I tried putting it under `theme.screens` and all the others disappeared.
+    - id: write-commit-message
+      prompt: |
+        Write a commit message for this: I replaced the hand-rolled retry loop in `sync_orders.py` with tenacity, set max 4 attempts with jittered exponential wait, and removed the sleep() calls. No behaviour change intended otherwise.
+    - id: estimate-migration-days
+      prompt: |
+        Quick estimate: upgrade our Rails app from 6.1 to 7.1. About 60k lines, decent test coverage (82%), 3 gems that are unmaintained. One senior dev full-time. Weeks?

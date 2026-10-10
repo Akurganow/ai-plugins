@@ -80,7 +80,8 @@ Each client gets the same core rules by its own documented route:
 ### Claude Code
 
 The `SessionStart` hook prints the core rules as plain text, and Claude Code
-adds that text to the context. The hook also runs on a resume, a fork,
+adds that text to the context. The text ends with the plugin root, so the
+reference paths in the rules resolve. The hook also runs on a resume, a fork,
 `/clear` and every compaction, so the rules come back after `/clear` or a
 compaction removes them. The `SubagentStart` hook hands each subagent the
 same text as `additionalContext`. Claude Code does not load a plugin's

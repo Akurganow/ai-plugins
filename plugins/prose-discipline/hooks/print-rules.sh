@@ -1,5 +1,6 @@
 #!/bin/sh
-# Prints the body of rules/prose-discipline.md for a hook to inject.
+# Prints the body of rules/prose-discipline.md for a hook to inject, then
+# the plugin root, because the body names its references relative to it.
 #
 # Without an argument the output is plain text starting with the H1.
 # Claude Code adds plain SessionStart stdout to the context, but it would
@@ -29,13 +30,17 @@ case $0 in
   *) hooks_dir=. ;;
 esac
 rules=$hooks_dir/../rules/prose-discipline.md
+root=$(cd "$hooks_dir/.." && pwd -P) || fail "cannot resolve the plugin root from $hooks_dir. Reinstall the prose-discipline plugin."
 
 [ -f "$rules" ] && [ -r "$rules" ] || fail "cannot read $rules. Reinstall the prose-discipline plugin."
 
 # The command substitution holds the whole output until awk has succeeded,
 # so a failure midway leaves stdout empty.
-out=$(awk -v mode="$mode" '
+# The root comes through the environment: awk -v would turn a backslash in
+# the path into an escape sequence.
+out=$(PLUGIN_ROOT="$root" awk -v mode="$mode" '
   BEGIN {
+    root = ENVIRON["PLUGIN_ROOT"]
     # Escapes are applied one character at a time. gsub replacement strings
     # treat backslashes differently in mawk, gawk and BWK awk.
     for (i = 1; i < 32; i++) esc[sprintf("%c", i)] = sprintf("\\u%04x", i)
@@ -60,6 +65,8 @@ out=$(awk -v mode="$mode" '
     # The enclosing command substitution strips trailing blank lines from
     # the plain output. Dropping them here keeps both modes the same text.
     while (line[n] == "") n--
+    line[++n] = ""
+    line[++n] = "The plugin root is " root "."
     if (mode == "plain") {
       for (i = 1; i <= n; i++) print line[i]
       exit 0

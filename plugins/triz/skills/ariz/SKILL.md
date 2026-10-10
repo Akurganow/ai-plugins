@@ -54,8 +54,8 @@ before Part 1, because ARIZ has nothing to add.
 
 Open the first reply with one sentence that gives the number. Altshuller's
 text asks for at least 80 academic hours of study before ARIZ is applied
-to a new practical problem, and this walk is a guided substitute. Write
-80, not "substantial study".
+to a new practical problem, and this guided walk does not replace that
+study. Write 80, not "substantial study".
 
 ## Step 2: walk the nine parts
 

@@ -64,7 +64,7 @@ The `contradiction` skill restates the problem as a contradiction and says
 it assumes that restatement. It writes the ideal final result and maps both
 sides to two of Altshuller's 39 parameters, taking the first candidate on
 each side. It reads the matching cell of the
-contradiction matrix. It returns two to four directions, each named after
+contradiction matrix. It returns up to four directions, each named after
 its principle and stated as a change to your system. A problem the matrix
 route does not crack, or one that keeps coming back, goes on to the `ariz`
 skill. It walks ARIZ-85C part by part with you. When ARIZ restates the

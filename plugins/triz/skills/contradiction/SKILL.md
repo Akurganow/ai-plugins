@@ -130,7 +130,8 @@ these in turn.
 ## Step 7: adapt the principles
 
 Read the recommended principles in `references/principles.md`. Write the
-directions as a numbered list, two to four of them, most direct first.
+directions as a numbered list, up to four, most direct first. A matrix
+cell can hold one principle, so one direction is a complete list.
 
 1. Begin each item with the principle's number and name from
    `principles.md`, for example `10 Preliminary action`.
@@ -138,9 +139,10 @@ directions as a numbered list, two to four of them, most direct first.
    table, a service or a config key.
 3. State the new trade-off the change brings, if any.
 
-After the list, write one sentence saying why direction 1 removes the
-contradiction more directly than direction 2. When a principle does not
-fit, say so and drop it.
+With two or more directions, write one sentence after the list saying
+why direction 1 removes the contradiction more directly than direction 2.
+When a principle does not fit, say so and drop it. When none fits, say so
+and hand over (Step 8).
 
 A direction that gives up part of one requirement is a compromise. Mark it
 `compromise`, list it last, and do not offer it as the way out. If every

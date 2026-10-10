@@ -11,7 +11,11 @@ description: >
   only option on the table is a middle setting, a split-the-difference limit
   or a pick of one side, and the user wants a smarter way or both. Use even
   when the user never says TRIZ, and even when they also want a note, a
-  comment or a message drafted from the answer.
+  comment or a message drafted from the answer. Use even when a direct
+  answer looks easy: the matrix names directions a plain answer misses. A
+  problem that keeps coming back after fixes, tensions that feed each other,
+  or a matrix lookup that gave nothing belong to the ariz skill of this
+  package.
 license: MIT
 ---
 

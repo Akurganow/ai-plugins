@@ -11,7 +11,9 @@ description: >
   tied and what one choice improves makes another worse. Use when a
   contradiction-matrix lookup gave nothing usable. Use even when the
   question is short and never says TRIZ: a few failed attempts and "what is
-  the way out?" count.
+  the way out?" count. The contradiction skill of this package takes a
+  trade-off at first sight, before any fix was tried. This one takes it from
+  there.
 license: MIT
 ---
 

@@ -11,9 +11,8 @@ description: >
   same error, or when a team must choose which cleanup to take on first. Use
   when someone asks whether an abstraction is right, or says the code feels
   tangled. Use even when the question looks small and never says design: one
-  pasted function with a pointed question counts. Not for fixing a bug, a
-  security or performance review, writing tests, or a rename already
-  decided. Each finding cites its chapter.
+  pasted function with a pointed question counts. Each finding cites its
+  chapter.
 license: MIT
 ---
 

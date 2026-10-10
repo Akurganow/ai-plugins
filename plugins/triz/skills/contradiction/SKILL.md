@@ -1,15 +1,19 @@
 ---
 name: contradiction
 description: >
-  Resolve an engineering trade-off in software with TRIZ instead of a
-  compromise. Restate the problem as a contradiction, map it to
-  Altshuller's 39 parameters, read the classic contradiction matrix, and
-  adapt the principles it recommends. Send a physical contradiction to the
-  separation principles. Hand a problem the matrix route did not crack, or
-  one that keeps coming back, to the ariz skill of this package. Use when
-  improving one thing makes another worse, or when two requirements seem
-  incompatible. Use when a compromise is the only option on the table. Use
-  when one element must have two opposite properties.
+  Resolve a trade-off between two software requirements with TRIZ, so the
+  answer is a set of named inventive directions and not a list of tips.
+  State the contradiction, set the ideal final result, read Altshuller's
+  contradiction matrix or the separation principles, and adapt each
+  principle to the user's system. Use when improving one thing makes another
+  worse, when two requirements look incompatible, or when one thing must be
+  both long and short, open and closed, frozen and editable. Use when the
+  only option on the table is a middle setting, a split-the-difference limit
+  or a pick of one side, and the user wants a smarter way or both. Use even
+  when the user never says TRIZ, and even when they also want a note, a
+  comment or a message drafted from the answer. A problem that keeps coming
+  back after fixes, tensions that feed each other, or a matrix lookup that
+  gave nothing belong to the ariz skill of this package.
 license: MIT
 ---
 
@@ -21,10 +25,12 @@ each stated for the user's system. Reply in the user's language. Think
 between steps. The matrix and the principles give directions. The
 adaptation to the system is the work.
 
-Do not guess the problem. When a step needs a fact you do not have, ask the
-user before you continue. Examples: "What gets worse when you improve
-that?", "Is the cost in latency or in throughput?", "What must stay as it
-is?"
+Draft first and ask after. Do not stop at a step to wait for the user. Run
+every step in one reply, state each assumption you made, and end with one
+question (Step 8). Do not invent facts about the problem. When a step needs
+a fact you do not have, name the assumption and ask for the fact in that
+question. Examples: "What gets worse when you improve that?", "Is the cost
+in latency or in throughput?", "What must stay as it is?"
 
 Four reference files sit in `references/`. Read each at the point its row
 names, and not before. The `ariz` skill of this package reads
@@ -39,7 +45,8 @@ names, and not before. The `ariz` skill of this package reads
 
 ## Step 1: state the contradiction
 
-Restate the user's problem as one of two kinds and ask them to confirm it.
+Restate the user's problem as one of two kinds. Put the restatement in the
+reply, say that you assume it, and go on to Step 2 without waiting.
 
 - **Technical contradiction.** Improving one parameter worsens another.
   "A longer cache lifetime unloads the database and serves stale reads."
@@ -59,8 +66,10 @@ library limitation.
 
 Write what the outcome looks like if the contradiction did not exist. The
 element itself provides the useful function without the harmful effect and
-without complicating the system. "The entry itself is fresh whenever it is
-read." The sentence is a direction, not a solution. Keep it in view.
+without complicating the system. Write it in the reply as one line that
+starts `Ideal final result:` and has a named element of the user's system
+as its subject. For example: `Ideal final result: the cache entry itself
+is fresh whenever it is read.` The line is a direction, not a solution.
 
 ## Step 3: route
 
@@ -95,9 +104,11 @@ one. The two routes give different directions.
 Read `references/parameters.md`. The improving parameter is the one the
 user wants better. The worsening parameter is the one that degrades when
 they get it. Present two or three candidates for each, with a sentence on
-why, and ask the user to choose. The parameters describe physical systems.
-The software readings in the reference show which one carries the same
-role in the user's system.
+why. Do not wait for the user to choose. Take the first candidate on each
+side, run Steps 6 and 7 in the same reply, and say which pair you took so
+the user can correct it. The parameters describe physical systems. The
+software readings in the reference show which one carries the same role in
+the user's system.
 
 ## Step 6: read the matrix
 
@@ -118,21 +129,30 @@ these in turn.
 
 ## Step 7: adapt the principles
 
-Read the recommended principles in `references/principles.md`. For each:
+Read the recommended principles in `references/principles.md`. Write the
+directions as a numbered list, two to four of them, most direct first.
 
-1. State the principle in plain words.
-2. State the change it would mean in the user's system.
+1. Begin each item with the principle's number and name from
+   `principles.md`, for example `10 Preliminary action`.
+2. State the change to a named part of the user's system, such as a
+   table, a service or a config key.
 3. State the new trade-off the change brings, if any.
 
-Present two to four directions, ranked by how directly each removes the
-contradiction. Name the principle behind each. When a principle does not
+After the list, write one sentence saying why direction 1 removes the
+contradiction more directly than direction 2. When a principle does not
 fit, say so and drop it.
+
+A direction that gives up part of one requirement is a compromise. Mark it
+`compromise`, list it last, and do not offer it as the way out. If every
+direction gives something up, name the requirement that would have to
+relax, and make whether it is real the closing question.
 
 ## Step 8: iterate or hand over
 
-Ask the user which direction holds, whether the contradiction should be
-restated, and what constraint was missed. Repeat from Step 1 when the
-restatement changes.
+End every reply with one question. It confirms the restatement, chooses a
+direction, or asks for the one fact that would reorder the list. Do this
+when the user asked for a deliverable too, and put the deliverable above
+the question. Repeat from Step 1 when the answer changes the restatement.
 
 Hand over to the `ariz` skill of this package in four cases. The matrix
 gave nothing the user can use. The problem has several contradictions

@@ -42,6 +42,7 @@ and the word budgets below count English words.
 
 ## Artifact formats
 
+- An artifact goes out alone: no sentence before it and no commentary after it, unless the user asks. The reader pastes it as it is, so a note after a commit message lands in the commit.
 - Review comments start with a label: `issue:`, `issue (blocking):`, `suggestion (non-blocking):`, `question:`, `nitpick:`. The label tells the author whether the comment blocks the merge.
 - Change descriptions: what changed, why, verification performed. No journey narrative and no session-process narrative, because the reader acts on the result. Verification states commands and results, never the process that produced them.
 - Error message: what failed, the cause, the fix. The reader needs all three to act.

@@ -36,9 +36,9 @@ jobs:
       #
       # Linux checkout keeps symlinks as symlinks, so the check sees and
       # judges any symlink a package adds.
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
           python-version: "3.12"
 
@@ -109,7 +109,7 @@ jobs:
     timeout-minutes: 20
     steps:
       # fetch-depth: 0 brings the base commit and every commit of the range.
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
 
@@ -167,7 +167,7 @@ jobs:
     env:
       DISABLE_AUTOUPDATER: "1"
     steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       # The npm package needs Node.js 22 or later
       # (documentation: https://code.claude.com/docs/en/setup, "Install with npm").
@@ -197,9 +197,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
           python-version: "3.12"
 
@@ -225,7 +225,7 @@ jobs:
     env:
       HERMES_COMMIT: f97608f178d1ffeca59860195ab7da295f7c8e5f # Hermes v0.21.5, tag v2026.9.24
     steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       # The project's own installer, fetched and checked out at the pinned
       # commit. --skip-setup and --skip-browser skip the wizard and Playwright.

@@ -1,16 +1,19 @@
 ---
 name: red-flags
 description: >
-  Review a software design for complexity with the red flags and principles
+  Review code or a design for complexity with the red flags and principles
   of Ousterhout's A Philosophy of Software Design. Rank the findings by how
   often each part is touched and what touching it costs. Use when reviewing
-  a module, an API, an architecture or a refactoring plan. Use when an
-  interface feels wrong, when a module might need splitting or merging, or
-  when a name will not come. Use when there are too many layers, or when
-  one change touches too many places. Use when someone asks whether an
-  abstraction is right, or says the code feels tangled. Each finding cites
-  its chapter. Where the book is disputed in a text that was read, the
-  finding carries the other side.
+  a function, a module, an API, an architecture or a refactoring plan. Use
+  when an interface feels wrong, when a module might need splitting or
+  merging, or when a name will not come. Use when there are too many layers,
+  when one change touches too many places, when every caller handles the
+  same error, or when a team must choose which cleanup to take on first. Use
+  when someone asks whether an abstraction is right, or says the code feels
+  tangled. Use even when the question looks small and never says design: one
+  pasted function with a pointed question counts. Not for fixing a bug, a
+  security or performance review, writing tests, or a rename already
+  decided. Each finding cites its chapter.
 license: MIT
 ---
 

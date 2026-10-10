@@ -3,6 +3,13 @@ All notable changes to this project will be documented in this file. See [conven
 
 - - -
 
+## design-review--v0.2.1 - 2026-10-10
+#### Bug Fixes
+- (**design-review**) make the red-flags description cover small questions (26b43b1)
+
+- - -
+
+
 ## design-review--v0.2.0 - 2026-09-25
 #### Features
 - BREAKING: (**design-review**) rename the skill to red-flags (eb496c2)

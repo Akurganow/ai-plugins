@@ -3,6 +3,14 @@ All notable changes to this project will be documented in this file. See [conven
 
 - - -
 
+## prose-discipline--v2.0.1 - 2026-10-10
+#### Bug Fixes
+- (**prose-discipline**) pass the plugin root to awk through the environment (4b8e60c)
+- (**prose-discipline**) carry the artifact-alone rule in the rules block, print the plugin root (c28b74a)
+
+- - -
+
+
 ## prose-discipline--v2.0.0 - 2026-09-25
 #### Features
 - (**prose-discipline**) print the rules at session and subagent start without node (552370c)

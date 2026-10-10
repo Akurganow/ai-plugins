@@ -3,6 +3,13 @@ All notable changes to this project will be documented in this file. See [conven
 
 - - -
 
+## triz--v0.2.3 - 2026-10-10
+#### Bug Fixes
+- (**triz**) restore the boundary sentences of ariz and contradiction, and say contradiction applies even when a direct answer looks easy (a820b57)
+
+- - -
+
+
 ## triz--v0.2.2 - 2026-10-10
 #### Bug Fixes
 - (**triz**) drop the sibling hand-off from both descriptions and the listed compromise from Step 7 (2ba7e41)

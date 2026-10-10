@@ -3,6 +3,13 @@ All notable changes to this project will be documented in this file. See [conven
 
 - - -
 
+## triz--v0.2.2 - 2026-10-10
+#### Bug Fixes
+- (**triz**) drop the sibling hand-off from both descriptions and the listed compromise from Step 7 (2ba7e41)
+
+- - -
+
+
 ## triz--v0.2.1 - 2026-10-10
 #### Bug Fixes
 - (**triz**) say the walk does not replace the study, and allow a one-direction list (1c26ae6)

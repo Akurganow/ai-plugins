@@ -101,7 +101,9 @@ equally serious. Weigh the UDEs as well as counting them.
    gap" as a UDE.
 2. For each UDE, ask what condition in the system produces it.
 3. Write each link in the reply as a full sentence: *if* cause *then*
-   effect, with the measured values in it.
+   effect, with the measured values where the user gave them. Without a
+   measurement, state the observed condition, mark the link as an
+   assumption, and ask for the figure in the closing questions.
 4. Join causes that are needed together with *and*.
 5. Draw causes that suffice on their own as separate arrows.
 6. Scrutinise every link with `references/clr.md`, level by level.
@@ -136,11 +138,12 @@ practice in D'. Name what each practice satisfies as B and C, and what
 both serve as A.
 
 1. Fill the five boxes with the user.
-2. Write each necessity arrow in the reply as "In order to have B, we must
-   have D, because" followed by its assumption. Cover A-B, A-C, B-D and
-   C-D'. Write D-D' as "We cannot have both D and D', because" followed by
-   its assumption. Do not give the arrows as boxes, a table or a drawing
-   alone.
+2. Write each necessity arrow in the reply with its own endpoints: "In
+   order to have A, we must have B", "In order to have A, we must have C",
+   "In order to have B, we must have D", "In order to have C, we must have
+   D'", each followed by "because" and its assumption. Write D-D' as "We
+   cannot have both D and D', because" followed by its assumption. Do not
+   give the arrows as boxes, a table or a drawing alone.
 3. Ask the user to state an assumption for any arrow that has none.
 4. Question each assumption. Any of the five arrows may be attacked.
 5. State the injection: a condition or action that invalidates one or more

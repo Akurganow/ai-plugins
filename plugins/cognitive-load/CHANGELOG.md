@@ -3,6 +3,13 @@ All notable changes to this project will be documented in this file. See [conven
 
 - - -
 
+## cognitive-load--v0.2.1 - 2026-10-10
+#### Bug Fixes
+- (**cognitive-load**) name the situations that load extraneous and the lines its reply carries (478c456)
+
+- - -
+
+
 ## cognitive-load--v0.2.0 - 2026-09-25
 #### Features
 - BREAKING: (**cognitive-load**) rename the skill to extraneous (3519455)

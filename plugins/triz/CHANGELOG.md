@@ -3,6 +3,14 @@ All notable changes to this project will be documented in this file. See [conven
 
 - - -
 
+## triz--v0.2.1 - 2026-10-10
+#### Bug Fixes
+- (**triz**) say the walk does not replace the study, and allow a one-direction list (1c26ae6)
+- (**triz**) draft first and ask after in ariz and contradiction, and name the situations that load each (be8f92d)
+
+- - -
+
+
 ## triz--v0.2.0 - 2026-09-25
 #### Features
 - (**triz**) split ARIZ-85C into its own skill, ariz (2661dc8)

@@ -3,6 +3,14 @@ All notable changes to this project will be documented in this file. See [conven
 
 - - -
 
+## toc-thinking--v0.2.1 - 2026-10-10
+#### Bug Fixes
+- (**toc-thinking**) name each cloud arrow by its endpoints and allow a link without a measurement (ff2da36)
+- (**toc-thinking**) name the plan and check situations that load root-cause and the forms its reply carries (0871931)
+
+- - -
+
+
 ## toc-thinking--v0.2.0 - 2026-09-25
 #### Features
 - BREAKING: (**toc-thinking**) rename the skill to root-cause (e21bd81)

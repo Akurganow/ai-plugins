@@ -176,6 +176,12 @@ A skill's folder holds two files:
   skill's rules in every session without loading the skill. A comment beside
   it names each client's route and its source. For those clients the summary
   shows `trigger_hit` and `compliance` as `n/a`.
+- `held-out.yaml` is optional. It has a `held_out` map with a `positive` list
+  and a `near_miss` list of five entries each, in the same shape. They run
+  with the package on the first repeat only and are not graded. Write them
+  once, from the method's own sources, and do not read them while editing
+  a description: their load count checks the description on prompts it was
+  not tuned on.
 - `rubric.yaml` has a `questions` map from a question id to one statement,
   or to an `instructions` statement with optional `criteria` and `cases`.
   `criteria` holds a quoted `"true"` and `"false"`, each saying what that

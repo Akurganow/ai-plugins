@@ -14,6 +14,10 @@ eval` wrote the final reply only as the evidence of an LLM grader (running,
 That grader runs a judge model of its own. `claude plugin eval` has no
 custom-code grader, so Jev could not take the judge's place (documentation:
 https://code.claude.com/docs/en/plugin-evals).
+A skill may add `held-out.yaml`: five positive and five near-miss prompts that
+run with the package on repeat 1 only and are never graded. Nobody reads them
+while editing a description, so their load count checks the trigger rate on
+prompts the description was not tuned on.
 `validate` checks that every folder under evals/ has its skill and loads.
 `selftest` checks the parsers against the event streams in
 tools/evals-fixtures/, and the arithmetic, without calling a model. The comment
@@ -49,6 +53,9 @@ MODELS = {
     "omp": "openrouter/z-ai/glm-5.3-flash",
 }
 CASES_PER_KIND = 10
+HELD_OUT_PER_KIND = 5
+HELD_OUT_FILE = "held-out.yaml"
+HELD_OUT_KINDS = {"positive": "held_out_positive", "near_miss": "held_out_near_miss"}
 METRICS = ("trigger_hit", "false_fire", "compliance", "improvement")
 # A client listed under `always_on` in cases.yaml gets the skill's rules in every
 # session without loading the skill. Its load then says nothing about the package,
@@ -164,10 +171,12 @@ class Codex:
     # marks a failed turn (source:
     # https://github.com/openai/codex/blob/979011409de0a60b52f179721948e65531d26144/codex-rs/exec/src/event_processor_with_jsonl_output.rs#L447-L457,
     # https://github.com/openai/codex/blob/979011409de0a60b52f179721948e65531d26144/codex-rs/app-server/src/bespoke_event_handling.rs#L1054-L1066).
-    # A stream that stops before turn.completed is an interrupted turn, and its last
-    # agent_message can be a preamble such as the fixture's first one.
+    # One turn carries several agent_message items: the fixture has a preamble, a
+    # context note, a question and the review. The answer joins them all, because
+    # the last one alone can point at text above it. A stream that stops before
+    # turn.completed is an interrupted turn.
     def parse(self, events: list[dict]) -> Parsed:
-        fired, answer, tokens, error, retried = False, None, None, None, None
+        fired, answers, tokens, error, retried = False, [], None, None, None
         completed, tools = False, []
         skill_path = f"/skills/{self.skill}/SKILL.md"
         cache_path = f"/plugins/cache/{MARKETPLACE}/{self.package}/"
@@ -179,13 +188,14 @@ class Codex:
                 if cache_path in command and skill_path in command:
                     fired = True
             elif kind == "item.completed" and item.get("type") == "agent_message":
-                answer = item.get("text")
+                answers.append(item.get("text") or "")
             elif kind == "turn.completed":
                 completed, tokens = True, e.get("usage")
             elif kind == "turn.failed":
                 error = json.dumps(e)[:500]
             elif kind == "error":
                 retried = e.get("message")
+        answer = "\n\n".join(answers) if answers else None
         if answer is None and error is None:
             error = f"no agent_message, last error: {retried}" if retried else "no agent_message"
         elif not completed and error is None:
@@ -221,11 +231,12 @@ class Omp:
     # with a selector such as ":raw" (documentation:
     # https://github.com/can1357/oh-my-pi/blob/40e9368ef0458fd9073329cdff4174895f91bc6b/docs/skills.md#L182-L183,
     # https://github.com/can1357/oh-my-pi/blob/40e9368ef0458fd9073329cdff4174895f91bc6b/docs/tools/read.md#L33).
-    # A failed assistant message can come before a retry that succeeds, so only
-    # the last one decides (source:
+    # A failed assistant message can come before a retry that succeeds, so the
+    # last one decides the error, and the answer joins the text of the messages
+    # that did not fail (source:
     # https://github.com/can1357/oh-my-pi/blob/40e9368ef0458fd9073329cdff4174895f91bc6b/packages/coding-agent/src/session/agent-session.ts#L4323-L4324).
     def parse(self, events: list[dict]) -> Parsed:
-        fired, answer, cost, model, last, tools = False, None, 0.0, None, None, []
+        fired, texts, cost, model, last, tools = False, [], 0.0, None, None, []
         base = f"skill://{self.skill}"
         for e in events:
             kind = e.get("type")
@@ -239,7 +250,10 @@ class Omp:
                 last = e["message"]
                 model = last.get("model") or model
                 cost += ((last.get("usage") or {}).get("cost") or {}).get("total") or 0.0
-                answer = "".join(b.get("text", "") for b in last.get("content") or [] if b.get("type") == "text")
+                if last.get("stopReason") not in ("aborted", "error"):
+                    texts.append("".join(b.get("text", "") for b in last.get("content") or []
+                                         if b.get("type") == "text"))
+        answer = "\n\n".join(t for t in texts if t) or None
         error = None
         if last and last.get("stopReason") in ("aborted", "error"):
             error = last.get("errorMessage") or last.get("stopReason")
@@ -273,10 +287,12 @@ def load_cases(skill_dir: Path) -> tuple[dict, dict]:
 
     cases = yaml.safe_load((skill_dir / "cases.yaml").read_text())
     rubric = yaml.safe_load((skill_dir / "rubric.yaml").read_text())
-    return check_cases(skill_dir, cases, rubric)
+    held_out_file = skill_dir / HELD_OUT_FILE
+    held_out = yaml.safe_load(held_out_file.read_text()) if held_out_file.is_file() else None
+    return check_cases(skill_dir, cases, rubric, held_out)
 
 
-def check_cases(skill_dir: Path, cases, rubric) -> tuple[dict, dict]:
+def check_cases(skill_dir: Path, cases, rubric, held_out=None) -> tuple[dict, dict]:
     if not isinstance(cases, dict):
         raise SystemExit(f"{skill_dir}/cases.yaml: expected a map with positive and near_miss.")
     for kind in ("positive", "near_miss"):
@@ -292,6 +308,23 @@ def check_cases(skill_dir: Path, cases, rubric) -> tuple[dict, dict]:
     ids = [c["id"] for kind in ("positive", "near_miss") for c in cases[kind]]
     if len(ids) != len(set(ids)):
         raise SystemExit(f"{skill_dir}/cases.yaml: case ids repeat.")
+    # Held-out prompts sit in their own file: cases_sha256 covers cases.yaml alone,
+    # so adding or changing them keeps the release comparison intact.
+    if held_out is not None:
+        entries = held_out.get("held_out") if isinstance(held_out, dict) else None
+        if not isinstance(entries, dict) or set(entries) != {"positive", "near_miss"}:
+            raise SystemExit(f"{skill_dir}/{HELD_OUT_FILE}: expected a held_out map with positive and near_miss.")
+        for kind in ("positive", "near_miss"):
+            group = entries[kind]
+            if not isinstance(group, list) or len(group) != HELD_OUT_PER_KIND:
+                raise SystemExit(f"{skill_dir}/{HELD_OUT_FILE}: {kind} must list exactly {HELD_OUT_PER_KIND} entries.")
+            if not all(isinstance(c, dict) and isinstance(c.get("id"), str) and isinstance(c.get("prompt"), str)
+                       for c in group):
+                raise SystemExit(f"{skill_dir}/{HELD_OUT_FILE}: every {kind} entry needs a string id and prompt.")
+            ids += [c["id"] for c in group]
+        if len(ids) != len(set(ids)):
+            raise SystemExit(f"{skill_dir}/{HELD_OUT_FILE}: case ids repeat.")
+        cases = cases | {"held_out": entries}
     questions = rubric.get("questions") if isinstance(rubric, dict) else None
     if not isinstance(questions, dict) or not questions or not all(map(is_question, questions.values())):
         raise SystemExit(f"{skill_dir}/rubric.yaml: questions must map each id to one statement, or to "
@@ -419,8 +452,13 @@ def grade(request_text: str, answer: str, questions: dict, send=jev_request) -> 
         raise JevError(f"jev reply without a noul: {json.dumps(reply)[:300]}") from e
 
 
-def run_job(adapter, cases: dict, questions: dict, session=run_session, grader=grade) -> list[dict]:
+def run_job(adapter, cases: dict, questions: dict, session=run_session, grader=grade,
+            held_out: bool = False) -> list[dict]:
     sessions = [session(adapter, c, kind, "with") for kind in ("positive", "near_miss") for c in cases[kind]]
+    # Held-out prompts measure loading alone: with the package only, never graded.
+    if held_out and "held_out" in cases:
+        sessions += [session(adapter, c, HELD_OUT_KINDS[kind], "with")
+                     for kind in ("positive", "near_miss") for c in cases["held_out"][kind]]
     adapter.switch_to_without()
     sessions += [session(adapter, c, "positive", "without") for c in cases["positive"]]
     prompts = {c["id"]: c["prompt"] for c in cases["positive"]}
@@ -576,7 +614,7 @@ def cmd_run(args) -> int:
     cases, questions = load_cases(skill_dir)
     adapter = ADAPTERS[args.client](package, args.skill)
     version = client_version(args.client)
-    sessions = run_job(adapter, cases, questions)
+    sessions = run_job(adapter, cases, questions, held_out=args.repeat == 1)
     record = {
         "tag": args.tag, "package": package, "skill": args.skill, "client": args.client, "repeat": args.repeat,
         "client_version": version, "model": next((s["model"] for s in sessions if s["model"]), None),
@@ -785,6 +823,17 @@ def question_detail(package, skill, client, group, always_on) -> list[str]:
         loads.insert(0, ("positive", loads_per_prompt([s for s in with_arm if s["kind"] == "positive"])))
     notes = [f"Loads per {label} prompt: " + (", ".join(f"{c} {f}/{d}" for c, f, d in found) or "none")
              for label, found in loads]
+    held = [s for s in with_arm if s["kind"] in HELD_OUT_KINDS.values()]
+    if held:
+        parts = []
+        for kind, held_kind in HELD_OUT_KINDS.items():
+            if always_on and kind == "positive":
+                continue
+            found = loads_per_prompt([s for s in held if s["kind"] == held_kind])
+            fired, done = sum(f for _, f, _ in found), sum(d for _, _, d in found)
+            hits = ", ".join(c for c, f, _ in found if f)
+            parts.append(f"{kind.replace('_', '-')} {fired}/{done}" + (f" ({hits})" if hits else ""))
+        notes.append("Held-out prompts loaded, with the package: " + ", ".join(parts) + ".")
     carried = [s for s in sessions if s.get("loaded") is not None]
     if carried:
         key = f"{package}@{MARKETPLACE}"
@@ -878,7 +927,12 @@ def _selftest_parsers() -> None:
 
     codex = Codex("design-review", "red-flags").parse(events("codex"))
     assert codex.fired and codex.error is None, codex
-    assert codex.answer.startswith("## Review"), codex.answer
+    assert codex.answer.startswith("I\u2019ll use the design-review skill"), codex.answer
+    assert codex.answer.count("\n\n## Review") == 1 and len(codex.answer.split("\n\n")) >= 4, codex.answer
+    said = [{"type": "item.completed", "item": {"type": "agent_message", "text": "Draft"}},
+            {"type": "item.completed", "item": {"type": "agent_message", "text": "The draft is above."}},
+            {"type": "turn.completed", "usage": {}}]
+    assert Codex("p", "s").parse(said).answer == "Draft\n\nThe draft is above."
     assert codex.tokens["input_tokens"] == 141929, codex.tokens
     assert not Codex("triz", "red-flags").parse(events("codex")).fired
     assert codex.loaded is None and len(codex.tools) == 3, codex
@@ -906,6 +960,10 @@ def _selftest_parsers() -> None:
                                                  "errorMessage": "429 rate limited"}}
     assert Omp("design-review", "red-flags").parse([broken] + events("omp")).error is None
     assert Omp("design-review", "red-flags").parse(events("omp") + [broken]).error == "429 rate limited"
+    spoke = {"type": "message_end", "message": {"role": "assistant", "stopReason": "end_turn",
+                                                "content": [{"type": "text", "text": "Reading the skill first."}]}}
+    joined = Omp("design-review", "red-flags").parse([spoke, broken] + events("omp"))
+    assert joined.error is None and joined.answer.startswith("Reading the skill first.\n\nReview per"), joined.answer
 
     assert Codex("p", "s").command("q", "without")[-3:] == ["--disable", "plugins", "q"]
     assert Omp("p", "s").command("q", "without")[-3:] == ["--no-skills", "--no-rules", "q"]
@@ -1051,6 +1109,14 @@ def _selftest_core() -> None:
     assert [s["nouls"] for s in graded] == [{"q": 1.0}, None, {"q": 1.0}], graded
     assert seen == ["leaked ***", "leaked ***"], seen
     assert not run_broke(graded)
+    spare = cases | {"held_out": {"positive": [{"id": "hp", "prompt": "HP"}], "near_miss": [{"id": "hn", "prompt": "HN"}]}}
+    fake = Fake()
+    first = run_job(fake, spare, {"q": "Q"}, session=fake_session, grader=lambda r, a, q: {"q": 1.0}, held_out=True)
+    assert fake.order == ["p:with", "n:with", "hp:with", "hn:with", "switch", "p:without"], fake.order
+    assert [s["kind"] for s in first[2:4]] == ["held_out_positive", "held_out_near_miss"], first
+    assert all(s["nouls"] is None for s in first[2:4]), first
+    assert len(run_job(Fake(), spare, {"q": "Q"}, session=fake_session, grader=lambda r, a, q: {"q": 1.0})) == 3
+    assert metrics(first)["trigger_hit"] == 1.0 and metrics(first)["counts"]["positive_with"] == 1, metrics(first)
 
     two = {"positive": [{"id": "p", "prompt": "P"}, {"id": "o", "prompt": "O"}], "near_miss": []}
     asked = {}
@@ -1097,6 +1163,16 @@ def _selftest_core() -> None:
     _expect_error(lambda: check_cases(Path("d"), ten | {"always_on": ["hermes"]}, {"questions": {"q": "Q?"}}), "always_on")
     _expect_error(lambda: check_cases(Path("d"), ten | {"near_miss": ten["near_miss"][:3]}, {"questions": {"q": "Q?"}}),
                   "near_miss must list exactly")
+    rubric = {"questions": {"q": "Q?"}}
+    five = {kind: [{"id": f"h{kind[0]}{i}", "prompt": "H"} for i in range(HELD_OUT_PER_KIND)]
+            for kind in ("positive", "near_miss")}
+    assert check_cases(Path("d"), ten, rubric, {"held_out": five})[0] == ten | {"held_out": five}
+    assert "held_out" not in check_cases(Path("d"), ten, rubric)[0]
+    _expect_error(lambda: check_cases(Path("d"), ten, rubric, {"positive": []}), "held-out.yaml: expected")
+    _expect_error(lambda: check_cases(Path("d"), ten, rubric, {"held_out": five | {"positive": five["positive"][:2]}}),
+                  "held-out.yaml: positive must list exactly")
+    clash = {"held_out": five | {"near_miss": [{"id": "p0", "prompt": "H"}] + five["near_miss"][1:]}}
+    _expect_error(lambda: check_cases(Path("d"), ten, rubric, clash), "held-out.yaml: case ids repeat")
     grade("R", "A", {"q": scoped}, send=lambda body: sent.update(body) or {"answers": {"q": {"noul": 0.9}}})
     assert sent["questions"] == {"q": {"type": "noul", "instructions": "Q2?"}}, sent
     try:
@@ -1174,6 +1250,8 @@ def _selftest_publish() -> None:
                     answered("p2", "positive", "with", False, {"a": 0.5}, mine),
                     answered("n1", "near_miss", "with", near_loaded, loaded=mine),
                     answered("n2", "near_miss", "with", False, loaded=bare),
+                    answered("h1", "held_out_positive", "with", True, loaded=mine),
+                    answered("h2", "held_out_near_miss", "with", False, loaded=mine),
                     answered("p1", "positive", "without", False, {"a": 0.0}, bare),
                     answered("p2", "positive", "without", False, {"a": 0.0}, bare)]
         return {"tag": "t", "skill": "s", "client": "claude", "repeat": repeat, "client_version": "1", "model": "m",
@@ -1190,12 +1268,14 @@ def _selftest_publish() -> None:
     assert "| c | – | – | – |" in lines, "a question with no graded answer keeps its row"
     assert "Loads per positive prompt: p2 0/2, p1 2/2" in lines, lines
     assert "Loads per near-miss prompt: n1 2/2" in lines, lines
-    assert "Package in the session's plugin list: 6 of 8 sessions with it, 0 of 4 without." in lines, lines
+    assert "Held-out prompts loaded, with the package: positive 2/2 (h1), near-miss 0/2." in lines, lines
+    assert "Package in the session's plugin list: 10 of 12 sessions with it, 0 of 4 without." in lines, lines
     assert "Loads per near-miss prompt: none" in detail([graded_run(1, False)]), lines
     lines = detail([dict(r, always_on=True) for r in (graded_run(1), graded_run(2))])
     assert "| Question | With package | Without package |" in lines, lines
     assert not any(line.startswith("Loads per positive") for line in lines), lines
     assert "Loads per near-miss prompt: n1 2/2" in lines, lines
+    assert "Held-out prompts loaded, with the package: near-miss 0/2." in lines, lines
     quiet = [dict(r, sessions=[s | {"loaded": None} for s in r["sessions"]]) for r in (graded_run(1), graded_run(2))]
     assert not any(line.startswith("Package in") for line in detail(quiet)), lines
 

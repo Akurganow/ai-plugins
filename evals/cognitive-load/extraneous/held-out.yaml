@@ -1,0 +1,83 @@
+held_out:
+  positive:
+    - id: webhook-four-level-ifs
+      prompt: |
+        i can't keep this in my head. four levels of if and i lose track of which
+        conditions are still true by the innermost branch. what would you change?
+
+        ```python
+        def handle_event(ev, acct):
+            if ev.type == "invoice.paid":
+                if acct.active:
+                    if not acct.suspended:
+                        if ev.amount > 0:
+                            if acct.plan != "free" or ev.amount >= 500:
+                                credit(acct, ev.amount)
+        ```
+    - id: new-hires-order-service
+      prompt: |
+        Our two newest hires took three weeks to ship their first PR to the orders service
+        (Go, about 40k lines, five of us on the team). Both said the same thing in 1:1s:
+        for one CRUD change they had to open an http handler, a service, a port, an adapter,
+        a repository interface and its implementation, and by the time they reached the SQL
+        they had forgotten why they started. I need a short write-up for Monday's eng sync
+        on what exactly they had to hold in their heads and what we could remove.
+    - id: embedded-status-codes
+      prompt: |
+        I wrote this six months ago and every time I touch it I have to re-derive what the
+        numbers mean. firmware for a pump controller, C99.
+
+        ```c
+        if (s->st == 4 || (s->st == 2 && (f & 0x08) && !(f & 0x40)) || s->err == 17) {
+            pump_stop(s);
+        }
+        ```
+        st 2 is "priming", 4 is "dry run", flag 0x08 is the low-level float, 0x40 is the
+        manual override. err 17 is a pressure fault. Make it something I can read in one pass.
+    - id: react-eleven-flags
+      prompt: |
+        Every time I fix something in CheckoutForm.tsx I break another flag. It has 11 useState
+        hooks (isSubmitting, isValid, showCoupon, couponApplied, hasShippingError, ...) and 4
+        useEffects that set each other's state. I'm a frontend dev with 3 years in React and I
+        still re-read the whole file before each edit. What is it about this component that makes
+        it so costly to work in, and what would you do first?
+    - id: helm-replica-count
+      prompt: |
+        Ops asked me why nobody wants to touch our Helm chart. To change the replica count of
+        the api deployment you edit values-prod.yaml, but that is overridden by
+        values-region-eu.yaml, then _helpers.tpl calls include "api.replicas" which falls back to
+        .Values.global.defaults.replicas, and an HPA in another chart can override all of it.
+        Can you list what a person has to know to make that one change, and tell me which
+        of those things are needed and which the chart added?
+  near_miss:
+    - id: split-big-pr
+      prompt: |
+        My PR is 2,400 lines across 61 files (a rename of the Money type plus a new tax
+        rounding rule plus a dependency bump). Reviewers are grumbling. Tell me how to split
+        it into 3 or 4 PRs with git so each one builds and passes tests on its own.
+    - id: setup-onboarding-doc
+      prompt: |
+        Write an onboarding doc for new backend engineers: install Node 20 with nvm, clone the
+        monorepo, run `docker compose up db redis`, `pnpm install`, `pnpm migrate`, then
+        `pnpm dev`. Add the three env vars they need in .env (DATABASE_URL, REDIS_URL,
+        STRIPE_TEST_KEY) and where to ask for access. Markdown, one page.
+    - id: webpack-build-time
+      prompt: |
+        Our webpack 5 production build takes 4 min 10 s on CI and 2 min locally. Where do I
+        look first to cut it, and is it worth switching to esbuild for a 300-module React app?
+    - id: callbacks-to-async
+      prompt: |
+        Convert this file from callbacks to async/await. Behaviour must stay exactly the same,
+        including the error messages. Node 20, fs/promises is fine.
+
+        ```js
+        fs.readFile(p, "utf8", (err, txt) => {
+          if (err) return cb(new Error("read failed: " + p));
+          fs.writeFile(p + ".bak", txt, (err2) => cb(err2 ? new Error("backup failed") : null, txt));
+        });
+        ```
+    - id: add-retry-spec
+      prompt: |
+        Add retries to our HttpClient in src/http/client.ts: 3 attempts, exponential backoff
+        starting at 200 ms with full jitter, retry only on 502, 503, 504 and network errors,
+        never on POST unless the caller passes idempotencyKey. Add unit tests with fake timers.

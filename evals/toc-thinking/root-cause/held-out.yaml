@@ -1,0 +1,48 @@
+held_out:
+  positive:
+    - id: checkout-symptom-pile
+      prompt: |
+        Team lead here. Since the Postgres 15 upgrade last month, we've had all of this at once:
+        - checkout p99 went from 400ms to 2.8s on weekdays only
+        - the nightly invoice export misses ~3% of rows
+        - on-call gets paged about 6 times a week for connection pool exhaustion, always restarted by hand
+        - support tickets about double-charged orders are up 4x
+        - two engineers quit the rota because of the pages
+        Every squad has its own theory and its own patch. I need one picture of how these hang together and which one thing we change first, before I take it to the planning meeting Thursday.
+    - id: sso-vs-offline-lock
+      prompt: |
+        Need a short written note for the ticket (PLAT-3318). Mobile security wants the iOS app to require a fresh SSO login every 15 minutes. The field-service team works in basements and tunnels with no signal and needs the app to open and keep working for a full 8-hour shift without logging in. Both sides have a good reason and both say the other must give way. Please lay out what each side actually needs underneath the positions, so we can see what has to be true for both to be satisfied.
+    - id: warehouse-cutover-plan
+      prompt: |
+        We're moving the warehouse inventory service off the Oracle box to Postgres. 14 services read it, three of them via nightly batch jobs, and the old DBA left no docs. Cutover window is the first weekend of December and I have 4 engineers. I don't want a Gantt chart, I want to know what must be in place before what, and what is likely to stand in the way of each step, so nobody discovers a blocker on Saturday night.
+    - id: retry-backoff-whatif
+      prompt: |
+        thinking of adding exponential retry (max 5, base 200ms) to the ingest client that posts to the billing API. billing already sheds load at 80% CPU. before I build it: walk through what happens downstream if this ships, especially at the 09:00 UTC burst when 3k devices reconnect. what new bad stuff could it cause and how do we cut that off beforehand
+    - id: sensor-gateway-slide
+      prompt: |
+        I have to present to the CTO on Friday. Our field gateway fleet (ESP32 + LTE modem, ~2,200 units) shows: random reboots about every 9 days, OTA updates failing on 12% of units, telemetry gaps of 5-20 minutes, SIM data overage bills 30% over plan, and a growing pile of RMA returns that come back with "no fault found". Firmware, cloud and ops each blame the others. Can you draft one slide that shows how these symptoms are linked and what single underlying thing, if fixed, would make most of them disappear?
+  near_miss:
+    - id: single-npe-trace
+      prompt: |
+        Getting this on every login since this morning's deploy:
+        ```
+        java.lang.NullPointerException: Cannot invoke "User.getTenantId()" because "user" is null
+            at com.acme.auth.TokenService.issue(TokenService.java:88)
+        ```
+        Line 88 is `user.getTenantId()` right after `userRepo.findByEmail(email)`, and that method returns null when the email isn't found. How do I fix it?
+    - id: pick-redis-or-memcached
+      prompt: |
+        We need a session cache for a Django app with about 20k concurrent users, nothing fancy, no persistence needed. Redis or Memcached? Just pick one so I can get the PR going today.
+    - id: sqlalchemy-bulk-insert
+      prompt: |
+        In SQLAlchemy 2.0, what's the difference between `session.add_all()` and `session.execute(insert(Model), rows)` for inserting 50k rows? Which is faster and does the second one still fire ORM events?
+    - id: review-pagination-pr
+      prompt: |
+        Can you review this diff? It adds cursor pagination to `GET /orders`. I mostly care about off-by-one errors in the cursor encoding and whether the `limit` param is validated.
+        ```
+        +    cursor = base64.urlsafe_b64decode(request.args["cursor"]).decode()
+        +    q = q.filter(Order.id > int(cursor)).limit(int(request.args.get("limit", 50)))
+        ```
+    - id: estimate-s3-export
+      prompt: |
+        Rough estimate please: add a CSV export button to the reports page. Backend already has the query, we'd stream the result to S3 and email a signed link. One dev, React + FastAPI, no design work needed. Days, not weeks?

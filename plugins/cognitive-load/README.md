@@ -60,12 +60,14 @@ New hires take weeks to fix their first bug in our billing service.
 Find what makes the code hard to follow.
 ```
 
-The `extraneous` skill first fixes the reader and the task. It asks where
-the last newcomer got stuck, and for how long. For each place, it counts
-what the reader must hold at once and sorts each element as intrinsic or
-extraneous. It names the section of Zakirullin's catalogue that explains
-each extraneous element. It closes with the change that removes it, what
-the change costs, and a check with a newcomer.
+The `extraneous` skill first fixes the reader and the task, and opens its
+reply with one sentence that states them. It asks where the last newcomer
+got stuck, and for how long. For each place, it counts what the reader
+must hold at once and sorts each element as intrinsic or extraneous. It
+names the section of Zakirullin's catalogue that explains each extraneous
+element. It gives the change that removes it, and the cost of the change
+with the role that pays it. It asks for a check with a newcomer and ends
+with a "Not covered:" line.
 
 ## What's inside
 

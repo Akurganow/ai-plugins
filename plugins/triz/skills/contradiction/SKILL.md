@@ -11,9 +11,7 @@ description: >
   only option on the table is a middle setting, a split-the-difference limit
   or a pick of one side, and the user wants a smarter way or both. Use even
   when the user never says TRIZ, and even when they also want a note, a
-  comment or a message drafted from the answer. A problem that keeps coming
-  back after fixes, tensions that feed each other, or a matrix lookup that
-  gave nothing belong to the ariz skill of this package.
+  comment or a message drafted from the answer.
 license: MIT
 ---
 
@@ -144,10 +142,9 @@ why direction 1 removes the contradiction more directly than direction 2.
 When a principle does not fit, say so and drop it. When none fits, say so
 and hand over (Step 8).
 
-A direction that gives up part of one requirement is a compromise. Mark it
-`compromise`, list it last, and do not offer it as the way out. If every
-direction gives something up, name the requirement that would have to
-relax, and make whether it is real the closing question.
+A direction that gives up part of one requirement is a compromise: drop
+it and say why. When every direction gives something up, say so and hand
+over (Step 8).
 
 ## Step 8: iterate or hand over
 

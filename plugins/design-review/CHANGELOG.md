@@ -3,6 +3,13 @@ All notable changes to this project will be documented in this file. See [conven
 
 - - -
 
+## design-review--v0.2.3 - 2026-10-10
+#### Bug Fixes
+- (**design-review**) make the red-flags report carry the frame, cause and weight (5910042)
+
+- - -
+
+
 ## design-review--v0.2.2 - 2026-10-10
 #### Bug Fixes
 - (**design-review**) drop the exclusion sentence from the red-flags description (c4ccf18)

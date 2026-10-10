@@ -3,6 +3,13 @@ All notable changes to this project will be documented in this file. See [conven
 
 - - -
 
+## prose-discipline--v2.0.3 - 2026-10-10
+#### Bug Fixes
+- (**prose-discipline**) put the rules the evals found missing into the core rules (41fd01e)
+
+- - -
+
+
 ## prose-discipline--v2.0.2 - 2026-10-10
 #### Bug Fixes
 - (**prose-discipline**) put the finding severity rule in the core rules (9942ba0)

@@ -2,14 +2,18 @@
 name: root-cause
 description: >
   Find the core problem behind many symptoms in a software system with
-  Goldratt's Theory of Constraints Thinking Processes. Then resolve the
-  conflict that keeps it in place, and plan the change with its obstacles
-  named. Use when symptoms are many and the cause is unclear, or when the
-  same failure keeps coming back. Use when two requirements block each
-  other. Use when a migration needs a plan, or when a proposed change needs
-  checking before it is built. Scrutinise each sufficiency tree with the
-  published Categories of Legitimate Reservation, and each necessity arrow
-  by its assumption.
+  Goldratt's Thinking Processes, resolve the conflict that keeps it in
+  place, and plan the change with its obstacles named. Use when symptoms are
+  many and the cause is unclear, when the same failure keeps coming back, or
+  when nobody can tell whether several problems share one cause. Use when
+  two teams or two requirements want opposite things and every round ends
+  with one side giving way. Use when a migration, a decommissioning or a
+  rollout needs a sequenced plan, even when only the plan is asked for. Use
+  when a proposed change needs checking for what it could make worse before
+  it is built. Use even when the question is short and never says root
+  cause: a pasted proposal with "anything it could break?" counts. Every
+  tree link is scrutinised with the published Categories of Legitimate
+  Reservation.
 license: MIT
 ---
 
@@ -18,11 +22,13 @@ license: MIT
 You guide the user through Goldratt's Thinking Processes on a software
 system. The procedure turns "the system is broken" into a core problem, a
 resolved conflict and a sequenced plan. Reply in the user's language. Think
-between steps. Do not relay a template. Reason about the system.
+between steps. Do not relay an empty template. Reason about the system.
 
-Do not guess the system's structure. When a step needs a fact you do not
-have, ask the user before you continue. Examples: "What do you observe, and
-where?", "What changed before it started?", "Which component fails first?"
+Do not present a guess about the system's structure as a fact. When a step
+needs a fact you do not have, draft from what the user said, mark the
+assumption, and ask for the fact in the closing questions. Examples: "What
+do you observe, and where?", "What changed before it started?", "Which
+component fails first?"
 
 Three files sit beside this file. Read each at the point its row names, and
 not before.
@@ -66,8 +72,13 @@ Read the user's description and pick the entry point.
 - A known change that needs a plan: start with the PRT.
 - A proposed change that needs checking: start with the FRT.
 
-When unsure, start with the CRT. State the choice and the reason to the
-user in one sentence.
+When unsure, start with the CRT.
+
+Open the reply with one sentence that names the diagram in full and the
+reason. For example: "I start with a Current Reality Tree, because the
+symptoms are many and the cause is unclear." Use the full name from the
+table above, not a paraphrase such as "a check of the change". Do this even
+when the user asked for a plan, a summary or a message.
 
 ## Step 2: Current Reality Tree
 
@@ -83,9 +94,16 @@ that one to three core problems account for over 70% of the UDEs. Dettmer
 reports the 70% figure as Goldratt's and rejects it, because UDEs are not
 equally serious. Weigh the UDEs as well as counting them.
 
-1. Collect the UDEs from the user.
+1. Collect the UDEs from the user. List them in the reply, one
+   present-tense sentence each. Name what is measured or seen, and where,
+   for example "Android login takes 8 seconds." Put the diagnosis after the
+   list, never in place of it. Do not write a label such as "reliability
+   gap" as a UDE.
 2. For each UDE, ask what condition in the system produces it.
-3. Write each link as *if* cause *then* effect.
+3. Write each link in the reply as a full sentence: *if* cause *then*
+   effect, with the measured values where the user gave them. Without a
+   measurement, state the observed condition, mark the link as an
+   assumption, and ask for the figure in the closing questions.
 4. Join causes that are needed together with *and*.
 5. Draw causes that suffice on their own as separate arrows.
 6. Scrutinise every link with `references/clr.md`, level by level.
@@ -120,7 +138,12 @@ practice in D'. Name what each practice satisfies as B and C, and what
 both serve as A.
 
 1. Fill the five boxes with the user.
-2. Write the assumption under each arrow: A-B, A-C, B-D, C-D' and D-D'.
+2. Write each necessity arrow in the reply with its own endpoints: "In
+   order to have A, we must have B", "In order to have A, we must have C",
+   "In order to have B, we must have D", "In order to have C, we must have
+   D'", each followed by "because" and its assumption. Write D-D' as "We
+   cannot have both D and D', because" followed by its assumption. Do not
+   give the arrows as boxes, a table or a drawing alone.
 3. Ask the user to state an assumption for any arrow that has none.
 4. Question each assumption. Any of the five arrows may be attacked.
 5. State the injection: a condition or action that invalidates one or more
@@ -148,7 +171,9 @@ effect, not whether something else also could.
 2. List every obstacle that blocks it today, as a condition in the system.
 3. For each obstacle, state the intermediate objective that overcomes it.
 4. Order the intermediate objectives: which must be reached before which.
-5. Read the result as necessity: "to reach X, we must first reach Y".
+5. Write each arrow in the reply as "In order to reach X, we must first
+   reach Y, because" followed by the obstacle it overcomes. Do not give the
+   arrows as boxes, a table or a drawing alone.
 6. Question the assumption under each arrow, as in Step 3.
 
 An obstacle reads like "fifteen call sites import the module directly" or
@@ -176,12 +201,18 @@ effect is observed: a command, a test or a metric. Say so when you add it.
 
 ## Boundaries
 
-- The procedure works on facts. State each UDE as a condition someone has
-  observed, with the evidence named: what the user saw, a log, a metric, a
-  test. Reword an interpretation into the condition behind it.
+- End every reply with one to three numbered questions about facts only
+  the user has, even when the user asked for a plan, a summary or a
+  message. Write the deliverable as a draft that the answers can change.
+- The procedure works on facts. Name the evidence behind each UDE: what the
+  user saw, a log, a metric, a test. Reword an interpretation into the
+  condition behind it.
 - Iterate on the cloud with the user rather than moving on with a vague
   one.
-- A tree whose links have not been scrutinised is not finished.
+- A tree whose links have not been scrutinised is not finished. Write at
+  least one reservation against one of your own links in the reply, with
+  its category from `references/clr.md`. Do this for a plan or a check of a
+  change too, not only for a tree.
 - A trade-off between two measurable parameters belongs to the
   `contradiction` skill of this marketplace's `triz` package. That skill
   resolves the trade-off with the contradiction matrix and hands a hard

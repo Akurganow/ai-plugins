@@ -2,15 +2,18 @@
 name: extraneous
 description: >
   Diagnose what a reader must hold in mind at once to do a task in a code
-  base, a system or a process. Sort each element into the load the task
-  needs and the load the structure adds, and name the change that removes
-  the second. Use when something is too complex and nobody can say why.
-  Use when a review or a change means reading too many files, or when
-  someone says they cannot hold it all in their head. Use when newcomers
-  stay confused, when onboarding is slow, or when a bug takes too long to
-  find in familiar code. The terms come from cognitive load theory, applied
-  to code by analogy, and from a practitioner's catalogue of extraneous
-  load in code.
+  base, a system or a process, sort it into the load the task needs and the
+  load the structure adds, and name the change that removes the second. Use
+  when something is too complex and nobody can say why, or when someone must
+  keep many things in their head to change it. Use when understanding one
+  piece of code means opening many files, such as a slow review or a deep
+  class hierarchy. Use when a component keeps breeding bugs that take days
+  to find, when newcomers stay confused, when a hire takes months to ship,
+  or when first-timers keep breaking a runbook. Use when asked to write up
+  why code is hard for newcomers. Use even when the question never says
+  complexity: a pasted function with "why is this so hard to follow?"
+  counts. The terms come from cognitive load theory and a practitioner's
+  catalogue of extraneous load in code.
 license: MIT
 ---
 
@@ -52,7 +55,10 @@ user:
 3. What that reader already holds as one unit: the language, the
    framework, the domain, the team's conventions.
 
-Write the three down. Every later count is relative to them.
+Open the reply with one sentence that states the task, the reader and what
+the reader already holds. For example: "Counted for a newcomer who knows
+Python but not this checkout code, whose task is adding a promo type." Say
+it even when the user named the task. Every later count is relative to it.
 
 ## Step 2: collect the observations
 
@@ -153,7 +159,9 @@ For each remaining place, in that order:
 1. The extraneous elements, and the change that removes each. The
    catalogue entry names the move: a named intermediate, an early
    return, composition, a deeper module, a self-describing string, a
-   copied line, a framework kept at the edge, a layer removed.
+   copied line, a framework kept at the edge, a layer removed. In the
+   reply, write two headed lists, "Intrinsic" and "Extraneous", and put
+   every counted element under one of them. Use those two words.
 2. Where an element the task needs is extraneous only in how it is
    presented, move the presentation. Put the fact where it is used. Put a
    solved example beside the interface. Let an expert skip guidance a
@@ -163,23 +171,30 @@ For each remaining place, in that order:
 3. The intrinsic elements, and how the structure can let the reader meet
    them in parts. Parts that can be understood alone come first, then how
    they combine.
-4. What the change costs, and who pays it.
+4. One sentence that names the cost of the change and the role that pays
+   it. For example: "the two maintainers who migrate the three handlers
+   pay once, and every later reviewer saves the time". Write it for every
+   recommended change, even a cheap one.
 
 Never recommend removing an element the task needs. A redesign that
 changes the task is a different conversation, outside this skill.
 
 ## Step 7: verify, and hand over
 
-The check is the reader from Step 1, not the author. Ask the user to have
-a reader of that kind do the task after the change: a newcomer when Step
-1 chose one, otherwise a reader who holds what Step 1 said the reader
-holds. Ask them to record, the same way as in Step 2, the time to complete
-it, whether the result was correct, and the minutes of continuous
-confusion. Say that this is the only test the skill has. Say also that one
-reader is an anecdote, and that the same person doing the task twice has
-learned from the first time.
+The check is the reader from Step 1, not the author. Before the "Not
+covered:" line, ask the user to have a reader of that kind do the task
+after the change. Use a newcomer when Step 1 chose one, otherwise a reader
+who holds what Step 1 said the reader holds. Ask them to record, the same
+way as in Step 2, the time to complete it, whether the result was correct,
+and the minutes of continuous confusion. Write this even when the user
+asked a narrow question. Say that this is the only test the skill has.
+Say also that one reader is an anecdote, and that the same person doing
+the task twice has learned from the first time.
 
-Close with what the diagnosis did not cover:
+Finish the reply with a line that starts "Not covered:". List what you did
+not see, such as files, measurements or the rest of the code base. Then
+list each area below that applies, even when the skill named in it is not
+installed:
 
 - A module whose interface is as wide as what it hides is a depth
   finding. One change that must touch many places is change

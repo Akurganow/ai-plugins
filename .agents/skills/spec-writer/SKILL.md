@@ -234,8 +234,9 @@ named. Or the plain statement that nothing recorded requires this.
 
 Most findings here sit on one rule. `claims.md` covers anything a reader
 acts on. `conformance.md` covers package shape and what a hand-written check
-may be. `slop.md` covers text that carries no fact. Quote the clause. Do not
-paraphrase it.
+may be. `slop.md` covers text that carries no fact. A police finding that
+carries a `Judged by:` line names its own rule document. Quote the clause. Do
+not paraphrase it.
 
 A specification resting on no rule is still legitimate. It may rest instead
 on a demonstrated inconsistency between two places in the repository. Then

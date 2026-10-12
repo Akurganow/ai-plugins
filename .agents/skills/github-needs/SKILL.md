@@ -1,14 +1,13 @@
 ---
 name: github-needs
-description: "What an unattended analysis run of this repository needs from GitHub, stated as needs and never as routes. It defines the machine population, and lists the probe, the listings, the reads of one issue, the full-set label write and the close. Read it before acting as the Issue Court, the Tracker Clerk, the Repo Police, the Slop Police or the Agent Police."
+description: "What an unattended analysis run of this repository needs from GitHub, stated as needs and never as routes. It defines the machine population, and lists the probe, the listings, the reads of one issue, the full-set label write and the close. It also holds the audit every fire owes and where a run finds its environment's facts. Read it before acting as the Issue Court, the Tracker Clerk or any of the nine police."
 ---
 
 # What a run needs from GitHub
 
-Five roles read this file. The four analysis roles are the Issue Court,
-the Tracker Clerk, the Repo Police and the Slop Police. The fifth is the
-Agent Police, which patrols the other eight roles. The four pipeline roles
-read its first section, which `pipeline-law` cites.
+Eleven roles read this file: the Issue Court, the Tracker Clerk and the nine
+police, which `police-law` names. The four pipeline roles read its first
+section, which `pipeline-law` cites.
 
 It names **what** a run needs and never **how** it is reached.
 `.agents/rules/unattended.md` owns that rule: a run reaches GitHub through
@@ -46,7 +45,7 @@ An older prefix names its filer: `repo-audit-routine:` names `repo-police`,
 
 **No issue belongs to a role.** `<role>` records who filed, and grants
 nothing. Every role that reads the tracker lists the population, never a
-subset by filer. The three police, the Issue Court and both Clerks do.
+subset by filer. The nine police, the Issue Court and both Clerks do.
 
 **Dedupe.** A filer files nothing whose finding an open issue in the
 population already carries. That holds whatever role filed it and whatever
@@ -76,6 +75,64 @@ reads it, comments on it, labels it or closes it.
 Every filer applies `police-report` when it files. A filer that cannot
 confirm the label on the repository's label list files nothing, and says so
 in its report.
+
+## The audit every fire owes
+
+A record that says work was done is evidence that a fire reached the subject.
+It is never evidence that the work landed. **So no fire ends because a marker
+or a label says its work is already done.** It checks what the record names,
+completes what is missing, and says what it checked.
+
+That rule replaces every "already done, so skip" shortcut in a role that
+reads this file. Where it meets an older decision, it wins. The owner settled
+that a decision's age ranks it, the recent one wins, and every role repairs.
+
+**An audit is owed** whenever a fire finds a marker of its own on a subject
+it came to work, before doing the work. The marker may be the comment it
+would have posted, the close it would have made, or the issue it would have
+filed.
+
+**An audit may:**
+
+- apply a label that should already stand;
+- post a comment only where no comment of its own exists for that subject;
+- finish a write its own previous fire left half done.
+
+**An audit may never:**
+
+- post a second comment on the same subject;
+- create a label;
+- file a new issue or re-file a fingerprint;
+- reopen anything;
+- spend a cap or a count a marker already records as spent;
+- take an irreversible act on the audit's authority alone.
+
+**Where a read does not settle whether the work landed, the audit reports and
+writes nothing.** A repair that corrupts is worse than a stall somebody can
+see. This binds a close in particular. A state you cannot explain from the
+record is a report line.
+
+**It is bounded.** It reads what the fire already holds: the listing, the
+bodies, the comments, the labels. It re-derives evidence only where a cheap
+read came back wrong, never as a standing pass. It never re-runs a trial, a
+triage or an analysis that a marker already records.
+
+**Then the fire either works or exits.**
+
+- Audit clean and the work genuinely done: exit, saying what was audited.
+- Audit clean and the work not done: do the work.
+- Audit found a gap: close the gap, then exit saying what was closed.
+
+An exit that reports nothing audited is a fire that wasted itself.
+
+## Your environment
+
+**The measured facts of an environment** are not in this repository and never
+will be. They are what the network refuses and allows, and what an
+interpreter or a package index did there. They belong to whatever fired you,
+which carries them, and you read them there. A caller that carries none is a
+report line. Treat every environment-dependent check as not run rather than
+guessing at one.
 
 ## The needs
 

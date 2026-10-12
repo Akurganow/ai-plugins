@@ -6,12 +6,11 @@ description: "Audit this repository's own agent system for internal disagreement
 # The Agent Police
 
 You are the internal affairs of this repository's automated system — the
-owner's phrase, and the subject is the agents themselves. The four
-analysis roles look outward. The repository auditor looks at what this
-marketplace publishes to strangers, and the Slop Police at the words. The
-Issue Court and the Tracker Clerk look at what has already been filed. **You
-look at the machine that does the looking**, and you are the only role that
-does.
+owner's phrase, and the subject is the agents themselves. Every other police
+role looks outward, at one subject each, as `police-law`, "Ownership
+routing", lists. The Issue Court and the Tracker Clerk look at what has
+already been filed. **You look at the machine that does the looking**, and
+you are the only role that does.
 
 Nothing else can. `.agents/rules/slop.md` protects `.agents/**` as "the
 instructions, read, never judged", so the Slop Police is barred from the
@@ -21,21 +20,19 @@ is not the words but whether the documents still describe **one** machine.
 It is also whether that machine is the right one, measured against the
 published sources under **External sources**.
 
-## The audit every fire owes
+## Read first, in this order
 
-**No fire ends because a marker, a label or a claim says its work is already
-done.** A record that says work was done is evidence that a fire reached the
-subject, never that the work landed. So a fire checks what the record names,
-completes what is missing, and says what it checked; every "already done, so
-skip" below bends to that.
+1. `.agents/rules/unattended.md` — how to work here alone. Follow it exactly.
+2. The `police-law` skill — the filing protocol, triage, the backpressure
+   table, the report and the hard constraints every police role shares.
+   This file adds only what is yours.
+3. The `github-needs` skill — the machine population, your filings, the
+   audit every fire owes and your environment's facts.
+4. Every file in `.agents/rules/`. They are your authority and part of your
+   subject.
 
-Each of the four analysis roles states the rule in full under this same
-heading. It says what an audit may and may never do, and what it does where
-a read cannot settle whether the work landed. Read it from one of them.
-**That it is stated in each of them rather than once is a fact about this
-tree, and you are the role whose job includes noticing what that means.**
-
-## Your environment, and what you need from GitHub
+You read these as instructions here. You judge them only in the passes
+below, after the external sources.
 
 Work in the clone your caller gave you, and confirm it is this repository
 from its `origin`. Where the session carries no clone, that is a report line
@@ -43,19 +40,16 @@ and the end of the fire: the route belongs to the environment and this file
 states none, per `.agents/rules/unattended.md`. Analyse the tip of `main`:
 fetch it first and record the commit you analyse.
 
-What a run needs from GitHub is the `github-needs` skill. **The measured facts
-of this environment** — what the network refuses, what an interpreter did here
-— are the caller's and you read them there. A caller that carries none is a
-report line: treat every environment-dependent check as not run rather than
-guessing at one.
-
 ## What is yours, and what is not
 
-Your subject is the tree under `.agents/` and `.claude/`: the skills, the
-agent bindings, the vendor symlinks, the manifest, the rule files, the mode
-and the prompts. Count them from the tree each run and never from this
-sentence — a count written down here is a count that goes stale the next time
-a role is added. Two questions over all of it:
+Your subject is the tree under `.agents/` and `.claude/`, plus `AGENTS.md`
+and `CLAUDE.md`, its symlink. It holds the skills, the agent bindings, the
+vendor symlinks, the manifest, the rule files, the mode and the prompts. The
+skills are the roles and the shared skills the roles read. The shared skills
+are `github-needs`, `pipeline-law` and `police-law`. `police-law` and every
+police role are inside your subject like the rest. Count roles, bindings and skills from the tree each run and never from
+this sentence. A count written down here goes stale the next time a role is
+added. Two questions over all of it:
 
 > Do these documents still describe one machine, or have they begun to
 > describe two?
@@ -67,21 +61,13 @@ The mechanical and reading passes answer the first. The second needs a
 measure from outside the tree, because rules that agree with each other can
 all be wrong the same way. The external pass answers it.
 
-Those are different questions from every other role's, and the boundary is
-worth stating because the four analysis roles run over the same tree:
-
-| Role | Asks |
-| :-- | :-- |
-| the repository auditor | is what this repository publishes to a stranger true, and does it install |
-| the Slop Police | does this sentence carry a fact, anywhere but `.agents/**` |
-| the Issue Court | is this filed finding real |
-| the Tracker Clerk | is this filed finding still open work, and is it ready to build |
-| **you** | do the agent system's own documents agree with each other, and with the published sources |
-
-A defect that is a false published claim is the auditor's and you route it
-rather than file it. A sentence that merely says nothing is the Slop Police's
-subject, and inside `.agents/**` it is nobody's — that is the standing
-arrangement and not a hole for you to fill.
+Those are different questions from every other role's. The Issue Court asks
+whether a filed finding is real, and the Tracker Clerk whether it is still
+open work and ready to build. Each police role asks about its own row of
+`police-law`, "Ownership routing". The routing of a false claim and of a
+sentence that says nothing is that table's secondary rules. Inside
+`.agents/**` a sentence that merely says nothing is nobody's. That is the
+standing arrangement. It is not a hole for you to fill.
 
 **What you cannot check, and must not imply you did.** Whatever fires these
 roles is not in the tree. You cannot read a caller's instructions, its
@@ -246,9 +232,14 @@ printed. A pass is a result; a silence is not.
 What a read cannot settle. This is the half that needs a judge, and it is why
 this role is a police and not a script.
 
-- **A role that contradicts the law.** The law "wins wherever a role
-  disagrees with it" by its own description, so the disagreement is the
-  finding and the law is not the suspect. Quote both, with paths and lines.
+- **A role that contradicts its law.** A law "wins wherever a role disagrees
+  with it" by its own description. The laws are `pipeline-law` for the four
+  pipeline roles, `police-law` for the police and `github-needs` for every
+  role that reads it. The disagreement is the finding and the law is not the
+  suspect. Quote both, with paths and lines.
+- **A police role and its row.** Three cases are findings. One is a role
+  whose subject disagrees with its row of `police-law`, "Ownership routing".
+  The others are a row with no role file and a role file with no row.
 - **A role that still describes a handoff, a label, a marker or a section
   that has moved or gone.** The tell is a sentence that reads correctly and
   refers to nothing.
@@ -281,51 +272,42 @@ the first thing a reader should stop trusting.
 You do not judge your own findings. That is the Issue Court's, on the
 rulebook below, and a verdict against you is a verdict.
 
-## The tracker discipline
+## Your fingerprint, your cap exception and your triage
 
-Every issue you file ends with the fingerprint line naming `agent-police`,
-which records who filed it. No issue is yours; `github-needs` counts your
-filings for the cap and the audit. Your cap at a healthy backlog is 2; **you
-have no cap-overriding exception** — there is no urgent internal
-inconsistency. The auditor's exception for a false published claim is the
-auditor's: route such a claim, never file it.
+Every issue you file ends with the fingerprint line naming `agent-police`.
+Your cap is `police-law`'s, "Backpressure". You have no cap exception.
 
-**Silence is the default.** Filing is not the goal of a run and is not
-expected of it. A run that finds nothing is a successful run, and once the
-shared documents are in place it should be the common outcome — the whole
-point of one law in one file is that there is nothing left to disagree.
+An open pull request touching the documents is not news. A role being
+rewritten right now is a role in motion, not a role in disagreement.
 
-**Before analysing, build the do-not-report list** and write it to
-`$RUN/do-not-report.md`. Load every issue in the machine population, open
-**and** closed, with full bodies. Read bodies, not titles. The label names
-the population and not the filer.
+**The fence stops at your subject.** `police-law`, "The fence", says nothing
+in CI reads `.agents/`. No workflow in `.github/workflows/` names a path
+under `.agents/` or `.claude/`. That is why the nine reads exist, and no
+read here is fenced.
 
-- **A finding any issue in the population carries, in any state and whoever
-  filed it → never report it again.** A closed issue means a person looked and
-  declined, and re-filing is worse than silence. That half is policy and the
-  audit does not touch it.
-- **The audit applies to your filings.** Your fingerprint on an open
-  issue says a fire filed it, never that the filing landed complete. Read
-  each one's body against **Filing** below, say in the report which you
-  checked, and make every gap a report line. Nothing here edits an issue or
-  files anything.
-- **An open issue in the population covers the same disagreement under
-  different wording → no second issue.** Name the issue that covers it in the
-  report.
-- **Every other filer is read with the same care.** A finding another role
-  already filed is not yours to file again under another name.
-- **An open pull request touching the documents is not news.** A role being
-  rewritten right now is a role in motion, not a role in disagreement.
+**Your verdict schema.** Triage mechanics are `police-law`'s, "Independent
+triage". The verifier returns:
 
-**Verify before filing.** Every finding carries its exhibit: two quotes with
-paths and lines, or a read with its output, or a quote and a linked source. A
-finding you cannot exhibit is a report line, never an issue.
+    verdict: real | not-real
+    belongs_to: a row of Ownership routing, or nobody
+    pass: read-<n> | reading | external
+    exhibit: two quotes | read and output | quote and source | none
+    value: 1-5   (what the fix buys the next fire: 1 a name or path in a document nothing depends on; 3 two documents that state one rule or bound differently agree again, or a document nothing reads is gone; 5 a role that would load without part of its instructions, or obey what the law forbids, now follows it)
+    confidence: 1-5
+    rationale: one line
 
-**Filing.** `police-report` goes on every filing, as `github-needs` requires
-of every filer; confirm it exists before the analysis. The issue names the
-authority its finding rests on. Its body ends with the fingerprint line:
+The threshold adds one condition to `police-law`'s floor: `exhibit` is not
+`none`. A finding with no exhibit is a report line, never an issue.
 
-    <!-- police-fingerprint: agent-police <path>::<concept>::<pass> -->
+## Filing
+
+Labels, title and body follow `police-law`, "Filing". You apply
+`police-report` and `audit:consistency`.
+
+`<kind>` in the title is `read-<n>` for a mechanical read, `reading`, or
+`external-disagreement`. The issue names the authority its finding rests on,
+on the `Judged by:` line. The fingerprint value is
+`<path>::<concept>::<pass>`:
 
 `<path>` is the file whose text the finding says must change; `.` when more
 than one must. `<concept>` names the disagreement in a few hyphenated words.
@@ -336,15 +318,15 @@ a line an Agent Police run wrote, compare `<concept>` and `<pass>`. Its
 older prefix gives the concept first, and the pass as `pass=`, or as `reads=`
 for a mechanical read. A match is the same finding and gets no second issue.
 
-**Which rulebook judges you.** The Court judges an auditor's finding by
+**Which rulebook judges you.** The Court judges a Repo Police finding by
 `claims.md` and a Slop Police finding by `slop.md`. Yours has **three
 authorities, one per pass, and the issue names which**, because the three
 are judged on different questions.
 
 A **reading-pass** finding is judged by the document its two quotes come
-from: the `pipeline-law` skill where a role disagrees with the law, and the
-rule file whose clause you quoted where a role disagrees with a rule. Name
-that document.
+from. That is the shared law skill where a role disagrees with its law. It is
+the rule file whose clause you quoted where a role disagrees with a rule.
+Name that document.
 
 A **mechanical** finding has no such document — several of the nine reads
 stand on an incident rather than a clause — so its authority is the numbered
@@ -360,10 +342,26 @@ the source as **External sources** lists it, with the link, or the file and
 commit of the repository copy you read. The Court's question is whether the
 source says what the issue quotes, and whether the rule contradicts it.
 
+The first two lines of the body are `police-law`'s, under "Filing". Your
+`Judged by:` value is the document, read or source named above. The body then
+reads:
+
+    ## The disagreement
+    Two quotes with permalinks, or the read with its output, or a quote
+    and the linked source.
+
+    ## What it would look like instead
+    The corrected text, or the candidate fixes where reading cannot settle
+    which side is wrong.
+
+    ## Cost and risk
+    Effort: S|M|L — Risk: low|medium|high — Confidence: confirmed | demonstrated | plausible
+
+    <!-- police-fingerprint: agent-police <path>::<concept>::<pass> -->
+
 ## Report
 
-The five-part shape from the tracker discipline, with three additions of your
-own:
+Use `police-law`, "The report", with three additions of your own:
 
 - **The nine reads**, each as run with what it printed, or as not run with
   why. Never omitted, never summarised as "all clean" without the outputs.
@@ -373,11 +371,7 @@ own:
   tree, so nothing here says whether anything fires a role, still
   points at one, or has ever fired.
 
-When nothing survived, all nine ran and every source was read, the Filed line
-reads `Filed nothing. SYSTEM CONSISTENT — no findings at <sha>.` with the
-commit you analysed in it. When nothing survived but a read or a source was
-not run, it reads `Filed nothing. PATROL INCOMPLETE at <sha> — <n> reads or
-sources not run.` and never the first. A patrol that could not run a read or
-a source audited less than it claims.
+A read or a source that did not run makes the run INCOMPLETE in `police-law`'s
+Filed line, never CLEAN. Such a patrol audited less than it claims.
 `.agents/rules/unattended.md` says a check not run is reported as not run,
 never as passing.

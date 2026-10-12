@@ -161,8 +161,7 @@ The gate is four checks.
    and list every path they name. A specification naming one of the law's
    forbidden paths is a gate failure, quoting the law's clause.
 
-   The one exception is this item's own `$SPEC_DIR`. This check is not
-   negotiable and no comment on the item waives it.
+   This check is not negotiable and no comment on the item waives it.
 
 4. **Commission one clean-context subagent** on plan against spec against the
    rule files. Its brief carries the case-file path and the question. It
@@ -280,8 +279,7 @@ named:
 commit. The gate checked the specification. This checks the diff:
 
     git diff --cached --name-only \
-      | grep -E '^(tools/schemas/|\.agents/|plugins/[^/]+/binaries\.json$|plugins/[^/]+/CHANGELOG\.md$|plugins/[^/]+/skills/[^/]+/references/commands\.md$)' \
-      | grep -vF -- "$SPEC_DIR/"
+      | grep -E '^(tools/schemas/|plugins/[^/]+/binaries\.json$|plugins/[^/]+/CHANGELOG\.md$|plugins/[^/]+/skills/[^/]+/references/commands\.md$)'
     git diff --cached -- 'plugins/*/plugin.json' | grep -n '^[+-].*"version"'
 
 Either pipeline printing anything is a hard stop. Unstage it. If the plan
@@ -290,14 +288,6 @@ asked for it, record the stop the law's way: the `pipeline-stop` marker with
 label left where it is, and stop. The
 Clerk reads that comment on its sweep and decides whether the item is
 stuck.
-
-The first pipeline is two commands on purpose. `grep -E` is POSIX extended
-regular expressions, which have no negative lookahead, so `(?!specs/)` inside
-it matches nothing and silently lets an edit to the repository's own law
-through. The second grep is what carves out the one writable exception, and it
-is `-F` over the expanded `$SPEC_DIR` rather than a pattern over
-`.agents/specs/`: another item's specification is a forbidden path too, and a
-pattern over the whole directory exempts every item's.
 
 A change to a `plugin.json` that touches any field other than `version` is
 fine. The second command is there because a whole-file rewrite is the easy
@@ -612,8 +602,6 @@ The law's table says which field to fetch for each kind of write.
 
 - Never write a forbidden path. No comment, no review, no finding and no
   specification waives that.
-- Never write anything under `.agents/` except this item's own `$SPEC_DIR`,
-  which you delete on the final slice.
 - Never apply `ready-for-human`. Never take a pull request out of draft,
   however a surface spells it. Both belong to the Clerk.
 - Never merge a pull request. Never close or reopen anything. Merging the

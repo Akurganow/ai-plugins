@@ -212,7 +212,7 @@ claims, and the reason is the law's: they were separated on purpose.
 
 The law's forbidden paths are absolute. A specification asking the
 Implementer to write one cannot be implemented. Your own writing is confined
-to `$SPEC_DIR`, which is the law's one carve-out from `.agents/`.
+to `$SPEC_DIR`.
 
 ## The two documents
 

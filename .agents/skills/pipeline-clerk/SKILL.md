@@ -570,8 +570,7 @@ later stage reads it back off the head ref.
     git checkout -B "pipeline/<N>-<slug>" origin/main
 
 Create exactly one directory, `.agents/specs/<N>-<slug>/`, holding `spec.md`
-and `plan.md`. That directory is the law's one carve-out from `.agents/`, and
-nothing else in the tree is yours to touch.
+and `plan.md`. Nothing else in the tree is yours to touch.
 
 Each file opens with its title line and then carries the law's headings,
 verbatim and in order. Under every heading write exactly one line:

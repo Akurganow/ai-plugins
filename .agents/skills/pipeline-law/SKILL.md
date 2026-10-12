@@ -789,7 +789,6 @@ for one is refused over it.
 | `plugins/*/skills/*/references/commands.md` | the same |
 | `plugins/*/CHANGELOG.md` | written by `.github/workflows/release.yml`, never by hand |
 | `tools/schemas/**` | a verbatim copy of a published schema |
-| `.agents/**` | the rules the machine is governed by |
 
 `.agents/rules/conformance.md` carries the rule on the first four. A finding
 that one of those files is wrong is a defect of the release job that
@@ -799,16 +798,16 @@ On `tools/schemas/**`, `conformance.md` says it "is never edited to make a
 check agree with a package — that inverts the whole arrangement: the package
 is what bends."
 
-**One exception, and only one.** The item's own
-`.agents/specs/<N>-<slug>/` directory is where the Writer writes and the
-Implementer deletes. Nothing else under `.agents/` is ever touched. A role
-that edits its own law is a role nobody can audit.
-
 `tools/check-conformance.py` is **not** forbidden. A finding that the check
 misses something is closable work, held to `conformance.md`'s standard: a
 hand-written check either enforces what a JSON Schema cannot express, or
 turns a schema rejection into a message somebody can act on, and says beside
 itself which.
+
+`.agents/**` is **not** forbidden either. A change to a role or to this law
+reaches `main` the way every change does: through the owner's review and
+merge. The Agent Police files findings whose whole fix lies there, and a stage
+is what builds a finding unattended.
 
 ### The shape of a specification
 

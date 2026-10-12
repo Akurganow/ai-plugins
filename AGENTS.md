@@ -32,10 +32,13 @@ looks right" is not a result the check produced.
 
 ## This repository's own machinery
 
-Nine roles, as skills under `.agents/skills/`, each with one thin Claude
+Fifteen roles, as skills under `.agents/skills/`, each with one thin Claude
 binding under `.claude/agents/` that names its skills and carries no role text.
-Four pipeline roles share `pipeline-law`. Five roles read `github-needs`: the
-four analysis roles, and the ninth, which patrols the other eight.
+Four pipeline roles share `pipeline-law`. Nine police roles share `police-law`.
+Eleven roles read `github-needs`: the nine police, the Issue Court and the
+Tracker Clerk. The pipeline roles read its first section. The Agent Police is
+one of the nine. It patrols the agent system: the roles and the shared skills,
+their bindings, the rule files and the manifest.
 `.agents/manifest.yaml` declares the set and records why each arrangement is
 what it is.
 

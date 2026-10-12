@@ -24,11 +24,18 @@ enabled:
   skills:
     - pipeline-law
     - github-needs
+    - police-law
     - issue-court
     - tracker-clerk
     - repo-police
     - slop-police
     - agent-police
+    - logic-police
+    - abstraction-police
+    - proportion-police
+    - security-police
+    - dependency-police
+    - test-police
     - pipeline-clerk
     - spec-writer
     - spec-reviewer
@@ -89,10 +96,16 @@ x:
           Read by pipeline-clerk, spec-writer, spec-reviewer and implementer.
           One file where there were four byte-identical copies.
         github-needs: >-
-          Read by issue-court, tracker-clerk, repo-police, slop-police and
-          agent-police. The same, for what a run needs from GitHub. It
-          holds the one definition of the machine population, which
-          pipeline-law cites for the four pipeline roles.
+          Read by issue-court, tracker-clerk and the nine police. The same,
+          for what a run needs from GitHub. It holds the one definition of
+          the machine population, which pipeline-law cites for the four
+          pipeline roles, and the one copy of the audit every fire owes and
+          of where a run finds its environment's facts, which five roles
+          each carried before.
+        police-law: >-
+          Read by the nine police. One law where three roles each carried
+          their own filing protocol and backpressure table, with three
+          different caps.
       notCarriedHere: >-
         The measured facts of a routine's environment, and the clone sequence
         that environment needs. Those belong to whoever runs the agent, never
@@ -100,8 +113,8 @@ x:
         own, and `.agents/rules/unattended.md` is where that rule is written.
 
     # Claude Code's vendor entry point. One thin agent per role: its `skills`
-    # field names the role's skill and the document that role shares, and
-    # Claude Code preloads both, so these carry no role text of their own.
+    # field names the role's skill and the documents that role shares, and
+    # Claude Code preloads them, so these carry no role text of their own.
     # Real files rather than symlinks: Claude Code documents symlink support
     # for `.claude/skills/` entries and for `.claude/rules/`, and documents
     # none for `.claude/agents/`.

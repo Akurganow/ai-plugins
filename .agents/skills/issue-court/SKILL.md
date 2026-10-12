@@ -14,10 +14,11 @@ itself, never post the transcript, and never change any file.
 
 Most issues here are claims about **documentation, README content,
 manifest metadata, marketplace entries, install instructions, cross-agent
-compatibility, and conformance to the Agent Plugins specification** — not
-claims about program behaviour. Try them the same way: a claim about a
-document is as checkable as a claim about code, and the exhibit is the
-document.
+compatibility, and conformance to the Agent Plugins specification**. Some are
+claims about the code in `tools/` and the workflows, from the logic, security
+and test police. Try both the same way. A claim about a document is as
+checkable as a claim about code. The exhibit is the document or the
+command's output.
 
 Before anything else, read from the fresh clone:
 
@@ -33,18 +34,23 @@ Before anything else, read from the fresh clone:
 4. `.agents/rules/slop.md` — the one test for generator residue, its five
    kinds with the measurement each demands, and its "What is protected"
    list.
+5. `.agents/skills/police-law/SKILL.md` — the protocol the nine police file
+   under, and its "Ownership routing" table of which role owns which kind of
+   finding.
 
 Which of those tries a case is settled by who filed it. The fingerprint
 line's `<role>` names the filer. An older prefix names one as `github-needs`
 maps it under **The machine population**.
 A case the Slop Police filed is judged by `slop.md`. The finding must be one
 of its five kinds, measured the way that kind prescribes, outside "What is
-protected". A case the repository auditor filed is judged by
-`claims.md` and `conformance.md`. A case the Agent Police filed is about this
+protected". A case the Repo Police filed is judged by `claims.md`, or by
+`conformance.md` where it concerns the vendored schema, as the `repo-police`
+skill states. A case the Agent Police filed is about this
 repository's own agent system, and it carries one of three authorities,
 which the issue names. Where the case rests on two quotes, the authority is
-the document they come from. That is the `pipeline-law` skill where a role
-disagrees with the law, or the rule file whose clause it quoted. Where it
+the document they come from. That is the law skill the role reads, where a
+role disagrees with its law: `pipeline-law`, `police-law` or `github-needs`.
+Otherwise it is the rule file whose clause it quoted. Where it
 rests on a read with its output, the authority is the numbered read in the
 `agent-police` skill. Your question is the narrow one that read allows. Was
 it run as that file states it, and does the output say what the issue
@@ -71,6 +77,11 @@ which reads a side without runs as a changed measure. Do not dismiss on a
 blocked source. Runs that `compare` reports as not comparable reproduce
 nothing. A part the Pipeline Clerk cut from a larger issue is judged as its
 parent is. The parent is the issue its fingerprint line's `parent=` names. A
+case one of the other six police filed is judged by the document its
+`Judged by:` line names. Those six are Logic, Abstraction, Proportion,
+Security, Dependency and Test. Check the line against that role's skill under
+`.agents/skills/`. The case also carries the measurement that skill
+prescribes for the kind its title names. A
 case whose prefix names no filer, per `github-needs`, is judged by the rule
 file its claim rests on.
 
@@ -81,73 +92,31 @@ say so in your report.
 
 ## What an automated finding carries
 
-The police roles file under one protocol, and three parts of it decide
+The nine police file under one protocol, and `police-law` owns it. Read its
+"Filing" and "Name the rulebook" before you try a case. Four parts of it decide
 how you read their issues:
 
 - Every automated finding carries a fingerprint line, as `github-needs`
-  defines it. The fingerprint is the issue's identity: same problem, same
-  file, same fingerprint, across runs. Read the body, never the title
-  alone, to know which role filed a case.
+  defines it. Read the body, never the title alone, to know which role filed a
+  case. The title starts with the role's name in brackets, per `police-law`,
+  "Filing", but a title can be edited and the fingerprint line is the record.
+- A finding may carry a `Judged by:` line on the line after its analysed
+  commit. It names the document to try the case by, per `police-law`, "Name the
+  rulebook". Check it against the filer's role file under `.agents/skills/`.
+  Where they disagree, the role file wins. Where the line says `none` or is
+  absent, the role file and the case file are the whole of your inputs.
 - The filing label `police-report` is shared by every filer, so it names the
   population and not the filer. No issue belongs to a role, and you try any
   issue in the population. An `audit:*` label beside it says what kind of
   finding it is, and nothing keys on it.
-- Each police role counts its filings, as `github-needs` defines them, and
-  caps what it files on that count. Your verdict moves that count only through
-  the Tracker Clerk, which runs after you and closes on your marker.
+- Each police role caps what it files on its own count, per `police-law`,
+  "Backpressure". Your verdict moves that count only through the Tracker Clerk,
+  which runs after you and closes on your marker.
 
-## The audit every fire owes
+## The audit and your environment
 
-A record that says work was done is evidence that a fire reached the subject.
-It is never evidence that the work landed. **So no fire ends because a marker
-or a label says its work is already done.** It checks what the record names,
-completes what is missing, and says what it checked.
-
-That rule replaces every "already done, so skip" shortcut in this role.
-Where it meets an older decision, it wins. The owner settled that a
-decision's age ranks it, the recent one wins, and every role repairs.
-
-**An audit is owed** whenever a fire finds, before doing its work, a marker of
-its own on a subject it came to work: the comment it would have posted, the
-close it would have made, the issue it would have filed.
-
-**An audit may** apply a label that should already stand; post a comment only
-where no comment of its own exists for that subject; and finish a write its
-own previous fire left half done.
-
-**An audit may never** post a second comment on the same subject; create a
-label; file a new issue or re-file a fingerprint; reopen anything; spend a cap
-or a count a marker already records as spent; or take an irreversible act on
-the audit's authority alone.
-
-**Where a read does not settle whether the work landed, the audit reports and
-writes nothing.** A repair that corrupts is worse than a stall somebody can
-see. This binds the closes above in particular: a state you cannot explain
-from the record is a report line.
-
-**It is bounded.** It reads what the fire already holds: the listing, the
-bodies, the comments, the labels. It re-derives evidence only where a cheap
-read came back wrong, never as a standing pass, and it never re-runs a trial,
-a triage or an analysis that a marker already records.
-
-**Then the fire either works or exits.** Audit clean and the work genuinely
-done: exit, saying what was audited. Audit clean and the work not done: do the
-work. Audit found a gap: close the gap, then exit saying what was closed. An
-exit that reports nothing audited is a fire that wasted itself.
-
-## Your environment, and what you need from GitHub
-
-**What a run needs from GitHub** is the `github-needs` skill, which five roles
-share. Read it. It names needs and never routes, because
-`.agents/rules/unattended.md` puts the route with the environment and not with
-the instruction.
-
-**The measured facts of this environment** — what the network refuses and what
-it allows, what an interpreter or a package index did here — are not in this
-repository and never will be. They belong to whatever fired you, which
-carries them, and you read them there. A caller that carries none is a report
-line: treat every environment-dependent check as not run rather than guessing
-at one.
+`github-needs` holds "The audit every fire owes" and "Your environment". Read
+both. **The comment** says where the audit applies to you.
 
 ## Scope — one issue per run, the oldest untried one
 

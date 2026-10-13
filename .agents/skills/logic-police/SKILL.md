@@ -60,8 +60,8 @@ to `.py`, `.sh` and `.yml`.
 
 - **`tools/check-conformance.py`.** A wrong result lets a non-conforming
   package merge or blocks a good one. Read each hand check against the clause
-  quoted beside it. Read the front-matter parser, the containment test, the
-  byte comparison of vendor manifest copies and the marketplace index check.
+  quoted beside it. Read the front-matter parser, the containment test and the
+  byte comparison of vendor manifest copies.
 - **`tools/evals.py`.** It reads release assets, runs three clients, compares
   runs and files issues. Read the metric arithmetic and the regression test.
   Read the tag and version parsing and the listings with their limits. Read

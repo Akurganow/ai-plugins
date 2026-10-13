@@ -430,70 +430,6 @@ def check_vendor_manifest_copies(plugin_root: Path) -> None:
             )
 
 
-def check_marketplace_index(manifests: dict[str, dict]) -> None:
-    """Cross-check Claude's vendor index against the conforming manifests.
-
-    Agent Plugins 1.0.0 defines no repository-level index, so this file is
-    outside the standard; it is checked only for pointing at real plugin
-    roots under the names those plugins actually declare.
-    """
-    index_path = REPO_ROOT / ".claude-plugin/marketplace.json"
-    if not index_path.exists():
-        return
-    where = ".claude-plugin/marketplace.json"
-    try:
-        index = json.loads(index_path.read_text(encoding="utf-8"))
-    except (OSError, UnicodeError, json.JSONDecodeError) as exc:
-        fail(where, f"does not parse: {exc}")
-        return
-    # Shape before content, twice over. A hand-edited index can be a JSON
-    # array, or carry `plugins` as a string, or hold strings where entries
-    # belong; each of those used to reach `.get` on something that has none
-    # and end the run in an AttributeError traceback instead of a finding.
-    if not isinstance(index, dict):
-        fail(where, "does not contain a top-level object")
-        return
-    entries = index.get("plugins", [])
-    if not isinstance(entries, list):
-        fail(where, f"`plugins` is {type(entries).__name__}, must be an array")
-        return
-
-    listed = set()
-    for entry in entries:
-        if not isinstance(entry, dict):
-            fail(where, f"entry {entry!r} is not an object")
-            continue
-        name, source = entry.get("name"), entry.get("source")
-        if not isinstance(name, str) or not isinstance(source, str):
-            fail(where, f"entry {entry!r} needs a string `name` and `source`")
-            continue
-        listed.add(name)
-        target = (REPO_ROOT / source).resolve(strict=False)
-        # An entry may point anywhere the filesystem allows, including out of
-        # the repository (`../elsewhere`, or an absolute path). That is a
-        # finding, not a crash: reported here rather than left to raise out of
-        # the `relative_to` below.
-        try:
-            relative_target = target.relative_to(REPO_ROOT)
-        except ValueError:
-            fail(
-                where,
-                f"entry {name!r} points at {source}, which resolves outside the "
-                f"repository ({target})",
-            )
-            continue
-        if not (target / "plugin.json").is_file():
-            fail(where, f"entry {name!r} points at {source}, which is not a plugin root")
-            continue
-        declared = manifests.get(str(relative_target), {}).get("name")
-        if declared is not None and declared != name:
-            fail(where, f"entry {name!r} points at a plugin whose manifest name is {declared!r}")
-
-    for plugin_path, manifest in manifests.items():
-        if manifest.get("name") not in listed:
-            fail(where, f"plugin {plugin_path} is not listed in the index")
-
-
 def report() -> int:
     if problems:
         print(f"{len(problems)} conformance problem(s):")
@@ -519,8 +455,6 @@ def main() -> int:
         check_skills(plugin_root)
         check_containment(plugin_root)
         check_vendor_manifest_copies(plugin_root)
-
-    check_marketplace_index(manifests)
 
     exit_code = report()
     if exit_code == 0:

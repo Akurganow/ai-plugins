@@ -268,8 +268,9 @@ Immediately before each create:
 
 - **Labels**, stated here and nowhere else, like the title. Every filing
   carries `police-report`. A finding in a page a reader opens carries
-  `documentation` beside it. Who filed, and what: the title's
-  `[<Role Name>]` and the fingerprint, so a label has nothing else to say.
+  `documentation` beside it. Who filed, and what, is the fingerprint's
+  record, and the title's `[<Role Name>]` repeats it for a reader, so a
+  label has nothing else to say.
   Check both names against the repository's label list before the analysis.
   Nothing here creates a label. A filer that cannot confirm `police-report`
   files nothing and says so (`github-needs`, "The machine population"). A

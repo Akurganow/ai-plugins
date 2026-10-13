@@ -95,7 +95,9 @@ opening every body:
 
 Only `police-report` is mandatory, and every filer applies it. Because the
 filing label is shared, it never says which run filed an issue. The
-fingerprint does, and so does the title's `[<Role Name>]`.
+fingerprint does. The title's `[<Role Name>]` says the same to a reader
+of the tracker page, but a title can be edited and the fingerprint line is
+the record.
 
 The chain does not end with you. A second machine — the pipeline, whose
 own Clerk fires daily, after you — builds a tried finding

@@ -539,7 +539,7 @@ The title names the part. The body:
 **A part carries `police-report` and no other label.** The label and the
 fingerprint line put the part in the machine population, so the court and
 the tracker Clerk can reach it. Every other label belongs to whoever
-applies it. `audit:*` is the police's, `court/*` and `triage/*` are the
+applies it. `court/*` and `triage/*` are the
 court's, `pipeline/intake` is the tracker Clerk's and the owner's,
 `no-trial` is the owner's. You own none of them.
 `no-trial` says "Set by a person" in its own description, so the court tries

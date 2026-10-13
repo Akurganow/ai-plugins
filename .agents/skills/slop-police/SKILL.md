@@ -227,15 +227,7 @@ refusing what it refuses today.
 
 ## Filing
 
-Labels, title and body follow `police-law`, "Filing". Two names go beside
-`police-report`:
-
-- `audit:slop`. Its description reads "Repo audit: generated-filler
-  prose", which is your whole subject.
-- `documentation`, when the finding is in a page a reader opens.
-
-Never apply any other `audit:*` name. The labels are for a person browsing
-the tracker, and two roles may share one (`police-law`, "Filing").
+Labels, title and body follow `police-law`, "Filing".
 
 `<kind>` in the title is one of the five kinds above. Your `Judged by:` value
 is `.agents/rules/slop.md`.

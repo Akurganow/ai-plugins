@@ -228,9 +228,6 @@ so a public issue discloses nothing. Nothing else overrides the cap.
 
 ## Filing
 
-Labels: `police-report` and `audit:dependency`. A missing `audit:dependency`
-is a report line (`police-law`, "Filing").
-
 Title: `[Dependency Police] <kind>: <dependency> <current> → <candidate> — <what it lets us do>`.
 For `advisory`, the title names the advisory id instead of the candidate.
 

@@ -91,24 +91,11 @@ opening every body:
 | Label | What it means |
 | :-- | :-- |
 | `police-report` | filed by a police run or the evals runner, or a part the pipeline Clerk cut |
-| `audit:hygiene` | community-health files |
-| `audit:seo` | discoverability and metadata |
-| `audit:spec` | Agent Plugins conformance |
-| `audit:readme` | per-plugin README quality |
-| `audit:consistency` | the docs against the tree |
-| `audit:slop` | generated-filler prose |
-| `audit:logic` | code that computes the wrong thing |
-| `audit:abstraction` | a dead, superfluous or duplicated abstraction |
-| `audit:proportion` | a mechanism out of proportion to what it does |
-| `audit:security` | a path an outside party could exploit |
-| `audit:dependency` | a pinned third-party version |
-| `audit:test` | a test that fails for the wrong reason or costs more than it protects |
 | `documentation` | the finding is in a page a reader opens |
 
-Only `police-report` is mandatory, and every filer applies it. The
-`audit:*` names specify a finding and are optional, so the absence of one
-tells you nothing. Because the filing label is shared, it never says which
-run filed an issue. The fingerprint does.
+Only `police-report` is mandatory, and every filer applies it. Because the
+filing label is shared, it never says which run filed an issue. The
+fingerprint does, and so does the title's `[<Role Name>]`.
 
 The chain does not end with you. A second machine — the pipeline, whose
 own Clerk fires daily, after you — builds a tried finding

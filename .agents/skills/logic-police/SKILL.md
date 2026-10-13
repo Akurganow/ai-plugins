@@ -264,8 +264,6 @@ the script, read the specification first and cite it (`.agents/rules/claims.md`)
 
 ## Filing
 
-Labels: `police-report` and `audit:logic`.
-
 Title: `[Logic Police] <severity>: <where> — <wrong behaviour>`. `<where>` is
 the fingerprint's `<path>`.
 

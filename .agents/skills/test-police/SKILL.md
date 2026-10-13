@@ -225,8 +225,6 @@ Your `Judged by:` value is `.agents/skills/test-police/references/tests.md`.
 
 ## Filing
 
-Labels: `police-report` and `audit:test`.
-
 Title: `[Test Police] <kind>: <test file or cluster> — <cost paid or protection missing>`.
 
 The first two lines of the body are `police-law`'s, under "Filing". The body

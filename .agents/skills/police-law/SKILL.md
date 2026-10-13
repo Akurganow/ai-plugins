@@ -266,14 +266,15 @@ Immediately before each create:
 
 ## Filing
 
-- **Labels.** Check every name you intend to apply against the repository's
-  label list before the analysis. Nothing here creates a label. Every filing
-  carries `police-report` and the one `audit:*` name its role file gives. Two
-  roles may give the same `audit:*` name: it is for a person browsing the
-  tracker, and nothing keys on it. A
-  filer that cannot confirm `police-report` files nothing and says so
-  (`github-needs`, "The machine population"). Any other missing name is a
-  report line, and the issue is filed without it.
+- **Labels**, stated here and nowhere else, like the title. Every filing
+  carries `police-report`. A finding in a page a reader opens carries
+  `documentation` beside it. Who filed, and what: the title's
+  `[<Role Name>]` and the fingerprint, so a label has nothing else to say.
+  Check both names against the repository's label list before the analysis.
+  Nothing here creates a label. A filer that cannot confirm `police-report`
+  files nothing and says so (`github-needs`, "The machine population"). A
+  missing `documentation` is a report line, and the issue is filed without
+  it.
 - **One issue per finding.** Never bundled. Never more than the cap.
 - **Title**, stated here and nowhere else:
 

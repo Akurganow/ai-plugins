@@ -301,8 +301,7 @@ The threshold adds one condition to `police-law`'s floor: `exhibit` is not
 
 ## Filing
 
-Labels, title and body follow `police-law`, "Filing". You apply
-`police-report` and `audit:consistency`.
+Labels, title and body follow `police-law`, "Filing".
 
 `<kind>` in the title is `read-<n>` for a mechanical read, `reading`, or
 `external-disagreement`. The issue names the authority its finding rests on,

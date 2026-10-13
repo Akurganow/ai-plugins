@@ -292,20 +292,24 @@ def load_cases(skill_dir: Path) -> tuple[dict, dict]:
     return check_cases(skill_dir, cases, rubric, held_out)
 
 
+def check_entries(where: str, kind: str, entries, count: int) -> list[str]:
+    if not isinstance(entries, list) or len(entries) != count:
+        raise SystemExit(f"{where}: {kind} must list exactly {count} entries.")
+    if not all(isinstance(c, dict) and isinstance(c.get("id"), str) and isinstance(c.get("prompt"), str)
+               for c in entries):
+        raise SystemExit(f"{where}: every {kind} entry needs a string id and prompt.")
+    return [c["id"] for c in entries]
+
+
 def check_cases(skill_dir: Path, cases, rubric, held_out=None) -> tuple[dict, dict]:
     if not isinstance(cases, dict):
         raise SystemExit(f"{skill_dir}/cases.yaml: expected a map with positive and near_miss.")
+    ids = []
     for kind in ("positive", "near_miss"):
-        entries = cases.get(kind)
-        if not isinstance(entries, list) or len(entries) != CASES_PER_KIND:
-            raise SystemExit(f"{skill_dir}/cases.yaml: {kind} must list exactly {CASES_PER_KIND} entries.")
-        if not all(isinstance(c, dict) and isinstance(c.get("id"), str) and isinstance(c.get("prompt"), str)
-                   for c in entries):
-            raise SystemExit(f"{skill_dir}/cases.yaml: every {kind} entry needs a string id and prompt.")
+        ids += check_entries(f"{skill_dir}/cases.yaml", kind, cases.get(kind), CASES_PER_KIND)
     always_on = cases.get("always_on", [])
     if not isinstance(always_on, list) or not set(always_on) <= set(CLIENTS):
         raise SystemExit(f"{skill_dir}/cases.yaml: always_on must list client names from {', '.join(CLIENTS)}.")
-    ids = [c["id"] for kind in ("positive", "near_miss") for c in cases[kind]]
     if len(ids) != len(set(ids)):
         raise SystemExit(f"{skill_dir}/cases.yaml: case ids repeat.")
     # Held-out prompts sit in their own file: cases_sha256 covers cases.yaml alone,
@@ -315,13 +319,7 @@ def check_cases(skill_dir: Path, cases, rubric, held_out=None) -> tuple[dict, di
         if not isinstance(entries, dict) or set(entries) != {"positive", "near_miss"}:
             raise SystemExit(f"{skill_dir}/{HELD_OUT_FILE}: expected a held_out map with positive and near_miss.")
         for kind in ("positive", "near_miss"):
-            group = entries[kind]
-            if not isinstance(group, list) or len(group) != HELD_OUT_PER_KIND:
-                raise SystemExit(f"{skill_dir}/{HELD_OUT_FILE}: {kind} must list exactly {HELD_OUT_PER_KIND} entries.")
-            if not all(isinstance(c, dict) and isinstance(c.get("id"), str) and isinstance(c.get("prompt"), str)
-                       for c in group):
-                raise SystemExit(f"{skill_dir}/{HELD_OUT_FILE}: every {kind} entry needs a string id and prompt.")
-            ids += [c["id"] for c in group]
+            ids += check_entries(f"{skill_dir}/{HELD_OUT_FILE}", kind, entries[kind], HELD_OUT_PER_KIND)
         if len(ids) != len(set(ids)):
             raise SystemExit(f"{skill_dir}/{HELD_OUT_FILE}: case ids repeat.")
         cases = cases | {"held_out": entries}

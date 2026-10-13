@@ -207,8 +207,6 @@ merely absurd can wait a week. The ranker's ceiling is the run's cap.
 
 ## Filing
 
-Labels: `police-report` and `audit:proportion`.
-
 Title: `[Proportion Police] <kind>: <where> — <what is out of proportion>`.
 `<where>` is the fingerprint's `<path>`.
 

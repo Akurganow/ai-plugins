@@ -145,7 +145,7 @@ remove followed by an apply.
 The owner may add or remove anything at any time. Read that as an override.
 
 Labels the pipeline reads but does not own are conventions, never guards:
-`court/tried`, `triage/*`, `audit:*`, `no-trial`. Every skip test is
+`court/tried`, `triage/*`, `no-trial`. Every skip test is
 positive and built from the pipeline's own markers.
 
 The pipeline sees only the machine population, defined once in

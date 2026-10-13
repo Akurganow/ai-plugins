@@ -212,8 +212,6 @@ never a user. The ranker's ceiling is the run's cap.
 
 ## Filing
 
-Labels: `police-report` and `audit:abstraction`.
-
 Title: `[Abstraction Police] <kind>: <symbol> — <problem>`. `<symbol>` is the
 fingerprint's `<symbol>`.
 

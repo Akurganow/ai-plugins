@@ -204,25 +204,11 @@ condition to `police-law`'s floor.
 
 ## Filing
 
-Labels, title and body follow `police-law`, "Filing". Two names go beside
-`police-report`:
+Labels, title and body follow `police-law`, "Filing".
 
-- the one `audit:*` name for the checklist the finding came from;
-- `documentation`, when the finding is in a page a reader opens.
-
-The checklist mapping:
-
-| Checklist | Label |
-| :-- | :-- |
-| A, community health | `audit:hygiene` |
-| B, discoverability | `audit:seo` |
-| C, conformance | `audit:spec` |
-| D, plugin READMEs | `audit:readme` |
-| E, consistency | `audit:consistency` |
-
-`<kind>` in the title is the label's suffix: `hygiene`, `seo`, `spec`,
-`readme` or `consistency`. `<where>` is the path. `<what>` is the specific
-problem. For example:
+`<kind>` in the title names the checklist the finding came from: `hygiene`
+for A, `seo` for B, `spec` for C, `readme` for D or `consistency` for E.
+`<where>` is the path. `<what>` is the specific problem. For example:
 `[Repo Police] spec: plugins/arxiv-search/plugin.json — $schema targets 0.9.0`
 
 Your `Judged by:` value is `.agents/rules/claims.md`. For a finding about

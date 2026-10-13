@@ -107,8 +107,7 @@ how you read their issues:
   absent, the role file and the case file are the whole of your inputs.
 - The filing label `police-report` is shared by every filer, so it names the
   population and not the filer. No issue belongs to a role, and you try any
-  issue in the population. An `audit:*` label beside it says what kind of
-  finding it is, and nothing keys on it.
+  issue in the population.
 - Each police role caps what it files on its own count, per `police-law`,
   "Backpressure". Your verdict moves that count only through the Tracker Clerk,
   which runs after you and closes on your marker.

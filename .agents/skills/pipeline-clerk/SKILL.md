@@ -357,20 +357,31 @@ post the request now and rewrite to `outcome=asked`. Either way `cr_rounds`
 stays as it is — that round is this head's, and it was counted once.
 
 **The same head, `outcome=returned` or `outcome=clean`.** This head has had
-its round and you routed it. The item is back under `pipeline/code-review`
-without the head moving, which means the Implementer answered the findings
-without a commit. There is nothing to ask for and nothing new to read.
+its round. The item is under `pipeline/code-review` without the head
+moving: either the Implementer answered the findings without a commit, or
+your return never landed. There is nothing to ask for and nothing new to
+read.
+
+**The Implementer's hand-off since the return** is its summary comment,
+handoff step 5, posted after the item's `unlabeled` event that removed
+`pipeline/code-review` for this return. It is the record that the
+Implementer finished a fire on these findings.
 
 - `outcome=returned`, and each of the line's `findings=` actionable
   findings has the Implementer's answer by id: write `outcome=clean` and go
   on as the clean branch below does.
-- `outcome=returned`, and a finding has no answer by id: the round was sent
-  back and the tree did not move, which is the law's no-progress stop. Post
-  one comment naming each unanswered finding, with what it asserts and the
+- `outcome=returned`, a hand-off since the return, and a finding with no
+  answer by id: the Implementer claimed its work done and the finding stands
+  on an unchanged tree, which is the law's no-progress stop. Post one
+  comment naming each such finding by id, with what it asserts and the
   unchanged head, ending with the law's `pipeline-stop` line at
   `kind=no-progress`, `key_kind=tree-id` and `key=` the tree id. Write the
   same line into the state block. Then take the item through the last-gate
   case and the label order **The bound** below gives.
+- `outcome=returned`, no hand-off since the return, and a finding with no
+  answer by id: the return never landed. Remove `pipeline/code-review`,
+  apply `spec/approved`, and comment naming the unanswered findings. The
+  Implementer works them.
 - `outcome=clean`: the round already passed. Remove `pipeline/code-review`,
   apply `ready-for-human`, and stop, exactly as the clean branch below does.
 

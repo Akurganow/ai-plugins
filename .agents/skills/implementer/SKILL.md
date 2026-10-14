@@ -149,8 +149,8 @@ and the outcome says what it ruled:
 | Marker | Then |
 | :-- | :-- |
 | `role=gate` at this spec hash, `outcome=accepted` | skip the gate |
-| `role=gate` at this spec hash, `outcome=rejected`, and no `spec-writer` marker at this hash newer than it with a Writer's summary comment keyed to this hash that names the `G-n` it applied | hand back to the Writer, do not re-gate |
-| `role=gate` at this spec hash, `outcome=rejected`, a `spec-writer` marker at this hash newer than it, and the Writer's summary comment keyed to this hash names the `G-n` it applied | the Writer claimed its work on those `G-n` and returned this content unchanged, which is no progress: record the stop below, under **A returned finding** |
+| `role=gate` at this spec hash, `outcome=rejected`, and no `spec-writer` marker at this hash newer than it with the Writer's **this revision's summary** naming the `G-n` it applied | hand back to the Writer, do not re-gate |
+| `role=gate` at this spec hash, `outcome=rejected`, a `spec-writer` marker at this hash newer than it, and the Writer's **this revision's summary** names the `G-n` it applied | the Writer claimed its work on those `G-n` and returned this content unchanged, which is no progress: record the stop below, under **A returned finding** |
 | `role=implementer` at this tree id, `outcome=rejected` | the trio already rejected this tree: work the worklist below, do not dispatch |
 | `role=implementer` at this tree id, `outcome=accepted` | the trio already accepted this tree. Take **The last read**, then go on from handoff step 3 and dispatch nothing |
 

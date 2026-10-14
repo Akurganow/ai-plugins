@@ -367,6 +367,14 @@ Post one summary comment. What this waking wrote or changed, each objection
 by id with the change that applies it, which review comments it answered and
 how, the self-check output, the push.
 
+**The summary is per revision, not per hash.** Key it to the spec hash, and
+post it only where no summary of yours keyed to this hash is newer than the
+newest `labeled` event applying `spec/needs-work`. A revision that returns
+to an earlier hash therefore posts a summary of its own. The Reviewer and
+the gate count a summary as **this revision's summary** only when it is
+keyed to this hash and newer than that `labeled` event and than their own
+`outcome=rejected` marker at this hash, where one stands.
+
 Then hand on the baton. Remove your input label first, apply the successor's
 second, and read the label set back.
 

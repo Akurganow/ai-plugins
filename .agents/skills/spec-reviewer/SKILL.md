@@ -143,8 +143,8 @@ What follows depends on the outcome recorded:
 | :-- | :-- |
 | `outcome=accepted` | remove `spec/awaiting-review`, apply `spec/approved`, one line, no increment |
 | `outcome=rejected`, the marker carries no `round=` | record the round: increment `review_rounds` by one, rewrite the marker with `round=<the new value>`, then remove `spec/awaiting-review` and apply `spec/needs-work` |
-| `outcome=rejected`, the marker carries `round=`, and no `spec-writer` marker at this hash newer than it with a Writer's summary comment keyed to this hash that names the `R-n` it applied | the hand-back never landed. Remove `spec/awaiting-review`, apply `spec/needs-work`, and increment nothing: this content has spent its round |
-| `outcome=rejected`, the marker carries `round=`, a `spec-writer` marker at this hash is newer than it, and the Writer's summary comment keyed to this hash names the `R-n` it applied | the Writer claimed its work on those `R-n` and returned this content unchanged, which is no progress. Record the stop the law's way — the `pipeline-stop` marker at `kind=no-progress`, `key_kind=spec-hash`, `key=` this spec hash — and one comment naming each `R-n` that stands with the text it quotes, ending with that stop line, leave `spec/awaiting-review` where it is, and stop |
+| `outcome=rejected`, the marker carries `round=`, and no `spec-writer` marker at this hash newer than it with the Writer's **this revision's summary** naming the `R-n` it applied | the hand-back never landed. Remove `spec/awaiting-review`, apply `spec/needs-work`, and increment nothing: this content has spent its round |
+| `outcome=rejected`, the marker carries `round=`, a `spec-writer` marker at this hash is newer than it, and the Writer's **this revision's summary** names the `R-n` it applied | the Writer claimed its work on those `R-n` and returned this content unchanged, which is no progress. Record the stop the law's way — the `pipeline-stop` marker at `kind=no-progress`, `key_kind=spec-hash`, `key=` this spec hash — and one comment naming each `R-n` that stands with the text it quotes, ending with that stop line, leave `spec/awaiting-review` where it is, and stop |
 
 **`round=` is what bounds this shortcut.** The round is recorded on the
 content rather than counted per fire, so two fires reading the same hash
@@ -172,8 +172,9 @@ exactly these:
   resolve it: resolved where that text is gone from the spec or the
   resolution is present, and restated with the new text where the text
   moved and the defect remains. Where the text stands unchanged and the
-  resolution is absent, it has returned if a revision of the Writer's named
-  the id, and it is handed back as it stands if none did;
+  resolution is absent, it has returned if the Writer's
+  **this revision's summary** named the id, and it is handed back as it
+  stands if it did not;
 - check 4's note on any clarification marker;
 - check 9, the narrowing.
 

@@ -102,8 +102,8 @@ Then apply the first row that matches, and only the first:
 | `pipeline/code-review` | duty two, below, which takes it out of draft first |
 | `ready-for-human` | take it out of draft where it is still one, then one report line. The item is the owner's |
 | an `unlabeled` event removing `pipeline/stuck` or `pipeline/hold`, newer than the item's newest machine marker | the owner has settled it: re-enter the stage label the item still carries, and say which removal you acted on, by label and time |
-| a `pipeline-stop` marker whose `key=` equals the key its `key_kind=` names, computed now | the last-gate case, below: try your own repairs, and `pipeline/stuck` only where none of them moves it |
-| `spec/approved`, a claim released, and a `pipeline-progress` line with `slices` at 3 or above and `slices_day` before today | re-enter `spec/approved` |
+| a `pipeline-stop` marker live under the law's **Stops**, whose `key=` equals the key its `key_kind=` names, computed now | the last-gate case, below: try your own repairs, and `pipeline/stuck` only where none of them moves it |
+| `spec/approved`, a claim released, and a `pipeline-progress` line with `slices` at the day's cap and `slices_day` before today | re-enter `spec/approved` |
 | exactly one stage label, and a claim `state=released` whose `at=` is older than twelve hours | re-enter that stage |
 | exactly one stage label, and a claim released or absent, younger than that | nothing, the stage owns it |
 | exactly one stage label, and a claim `state=held` that the law's claim-freshness bound calls stale | re-enter that stage |
@@ -165,7 +165,9 @@ order:
    and `spec/approved` once the final slice has deleted it. Remove
    `pipeline/stuck`, `pipeline/code-review`, `ready-for-human` and every
    stage label but the target. Then re-enter the target by the law's
-   primitive, and read the label set back.
+   primitive, and read the label set back. The `Narrowing:` comment releases
+   a live stop on the item, under the law's **Stops**, so the stage the
+   route wakes works the narrowing.
 4. Add to `narrowed=` each closed source whose narrowing comment no longer
    waits on the target stage, and read the body back. A source whose comment
    still waits stays out, so the row can match again on the next sweep.
@@ -205,14 +207,16 @@ one content, and the content moves.
 
 1. Straighten the item, above, so it is routable.
 2. Re-run the last-gate repairs below, as if the stop had just been recorded.
-3. Where a repair moves the item, the stop is spent. Re-enter the stage.
+3. Where a repair moves the item, it releases the stop. Re-enter the stage.
 4. Where none moves it, read the stop's comment for a worklist.
 
-A worklist lists changes the stage carrying the item could make. The judge's
-`must_change` is one. A reviewer's findings are another. Some stops name none:
+A worklist lists changes the stage carrying the item could make, named in the
+stop's comment. Some stops name none:
 
 - a source that is not a file,
-- a decision only the owner can take,
+- a decision only the owner can take, which every `kind=no-progress` stop
+  names: its findings are the ones a stage already worked without moving
+  them,
 - a credential the environment lacks.
 
 Un-stick none of those, and say in the report which case you found.
@@ -229,18 +233,18 @@ your repair.
 
 **The last-gate case, and the only one that ends in `pipeline/stuck`.** A
 stage that can carry an item no further does not label its own dead end. It
-records a stop, leaves its stage label where it is, and ends. The law names
-the two kinds and what each writes **beside the marker**: a **bound reached**
-moves a counter and writes a completion marker where the stopping role has
-one, and a **condition it cannot work around** writes neither, because no
-counter counts one. Both write the marker. Either way the item reads as a
-stage label, a released claim, and a `pipeline-stop`.
+records a stop, leaves its stage label where it is, and ends. The law's
+**Stops** names the three kinds and what each writes **beside the marker**:
+**no progress** names the findings that returned, a **bound reached** moves
+a counter, and a **condition it cannot work around** names the condition.
+All three write the marker. Either way the item reads as a stage label, a
+released claim, and a `pipeline-stop`.
 
-Both kinds arrive here. A stop with no counter behind it is not a lesser
+Every kind arrives here. A stop with no counter behind it is not a lesser
 stop: the Spec Writer meeting a source that is not a file, the Reviewer
 meeting a state block that will not parse, the Implementer meeting a
-forbidden path in its plan, and any role whose marker will not stay written
-all reach this row, and none of them has a bound to show.
+forbidden path in its plan, any role whose marker will not stay written, and
+a seat whose finding returned all reach this row.
 
 **Read the stop from its marker and never from the prose of a comment.** The
 newest `pipeline-stop` on the item carries `key_kind=` and `key=`. Compute
@@ -250,18 +254,21 @@ head sha are all twelve hex characters, so a marker carrying the value alone
 would be compared against whichever key you happened to compute.
 
 Try your own repairs first and name each in the comment. A key that moved
-since the marker spends the stop, so re-enter the stage instead. A conflict
+since the marker releases the stop, so re-enter the stage instead. A conflict
 you resolved above moves the tree id and the head sha and leaves the spec
-hash where it was, so it spends a stop keyed on either of those and none
+hash where it was, so it releases a stop keyed on either of those and none
 keyed on the spec hash. A counter the record contradicts is corrected from
 the record.
 
 Only where none of that moves the item do you apply `pipeline/stuck`, beside
-the stage label the item already carries, with one comment naming the bound,
-the content it was reached at, every repair you tried and what each returned,
-and the decision you need from the owner. You are the last gate before a
-person: every stick a repair of yours could have avoided is his attention
-spent on the machine's own mess.
+the stage label the item already carries, with one comment naming the stop's
+kind and the content it was met at, every repair you tried and what each
+returned, and the decision you need from the owner. For a
+`kind=no-progress` stop the comment also names each finding that stands,
+with its check and the unchanged result, as the stop's comment gives them,
+so the owner reads at a glance what the machine could not move. You are the
+last gate before a person: every stick a repair of yours could have avoided
+is his attention spent on the machine's own mess.
 
 The slice-cap row below is the day's cap, not a dead fire. The Implementer
 stops there and does not re-enter itself, and the sweep is what brings it
@@ -350,15 +357,31 @@ post the request now and rewrite to `outcome=asked`. Either way `cr_rounds`
 stays as it is — that round is this head's, and it was counted once.
 
 **The same head, `outcome=returned` or `outcome=clean`.** This head has had
-its round and you routed it. The item is back under `pipeline/code-review`
-without the head moving, which means the Implementer answered the findings
-without a commit — it may, since a finding that widens the item is refused
-rather than worked. There is nothing to ask for and nothing new to read.
+its round. The item is under `pipeline/code-review` without the head
+moving: either the Implementer answered the findings without a commit, or
+your return never landed. There is nothing to ask for and nothing new to
+read.
 
-- `outcome=returned`: the findings stand unanswered in code. Remove
-  `pipeline/code-review`, apply `spec/approved`, and comment naming the
-  findings the Implementer declined and that the head did not move. It
-  answers them on the record or the round comes back here.
+**The Implementer's hand-off since the return** is its summary comment,
+handoff step 5, posted after the item's `unlabeled` event that removed
+`pipeline/code-review` for this return. It is the record that the
+Implementer finished a fire on these findings.
+
+- `outcome=returned`, and each of the line's `findings=` actionable
+  findings has the Implementer's answer by id: write `outcome=clean` and go
+  on as the clean branch below does.
+- `outcome=returned`, a hand-off since the return, and a finding with no
+  answer by id: the Implementer claimed its work done and the finding stands
+  on an unchanged tree, which is the law's no-progress stop. Post one
+  comment naming each such finding by id, with what it asserts and the
+  unchanged head, ending with the law's `pipeline-stop` line at
+  `kind=no-progress`, `key_kind=tree-id` and `key=` the tree id. Write the
+  same line into the state block. Then take the item through the last-gate
+  case and the label order **The bound** below gives.
+- `outcome=returned`, no hand-off since the return, and a finding with no
+  answer by id: the return never landed. Remove `pipeline/code-review`,
+  apply `spec/approved`, and comment naming the unanswered findings. The
+  Implementer works them.
 - `outcome=clean`: the round already passed. Remove `pipeline/code-review`,
   apply `ready-for-human`, and stop, exactly as the clean branch below does.
 
@@ -372,8 +395,8 @@ posted after that `at=`:
 - No review yet, and less than an hour has passed. Leave it. A round takes
   as long as it takes and an hour is not yet late.
 - No review yet, and more than a day has passed. **Test the bound below
-  first.** At `cr_rounds` of 3 or above this head has had its rounds and the
-  bound is reached; below it, ask once more — the same three writes as above,
+  first.** At the bound this head has had its rounds; below it, ask once
+  more — the same three writes as above,
   except that you **increment** `cr_rounds` rather than setting it, because
   this head has had rounds already and the counter counts them.
 - A review with at least one actionable finding. Write `outcome=returned
@@ -394,11 +417,13 @@ item's comments once more before you end. The answer often arrives inside one
 fire. Route it if it has. Leave it for tomorrow if it has not.
 
 **The bound.** `cr_rounds` at 3 or above on an unchanged head is a bound
-reached. A changed head grants a fresh round, per the law's bound rule.
+reached. A new head starts the count again at 1, under the first case
+above.
 
 Record it in the counter, in the law's `pipeline-stop` marker with
-`kind=bound`, `key_kind=head-sha` and `key=` the head sha it was reached at, and in one comment
-saying how many rounds ran and what the last one said. **You write no
+`kind=bound`, `key_kind=head-sha` and `key=` the head sha it was reached
+at, and in one comment saying how many rounds ran and what the last one
+said, ending with that stop line. **You write no
 completion marker.** The law's role tokens are exactly four and the Clerk is
 not one of them, so a marker of yours would make your own implied-stage table
 return nothing for the item.
@@ -608,7 +633,7 @@ Its body is the brief the Writer works from:
     A skeleton. The Spec Writer fills it next.
 
     <!-- pipeline-work-fingerprint: <slug> sources=#a,#b -->
-    <!-- pipeline-state: item=<pr number> review_rounds=0 gate_bounces=0 judge_rejects=0 slices=0 cr_rounds=0 narrowed=none -->
+    <!-- pipeline-state: item=<pr number> review_rounds=0 slices=0 cr_rounds=0 narrowed=none -->
     <!-- pipeline-claim: role=none state=released at=<UTC> -->
     <!-- pipeline-progress: slice=0 slices_day=none predelete=none -->
 
@@ -705,9 +730,8 @@ brief.
 - Never post a pull-request review, and never post a review comment on the
   diff. That door is the owner's and the code review's.
 - Never remove `pipeline/hold`, and never re-enter a stage on an item
-  carrying it. Remove `pipeline/stuck` only through the un-stick, only below
-  its bound, or through a narrowing, and never on an item also carrying
-  `pipeline/hold`.
+  carrying it. Remove `pipeline/stuck` only through the un-stick or a
+  narrowing, and never on an item also carrying `pipeline/hold`.
 - Never remove `ready-for-human` outside a narrowing, and never apply it to
   an issue.
 - Never open a second pipeline pull request while a live one is open. An

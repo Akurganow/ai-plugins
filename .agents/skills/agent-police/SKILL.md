@@ -199,14 +199,15 @@ printed. A pass is a result; a silence is not.
    document states for every counter, each with its file and line, and decide
    from the collection where that counter's number is *stated* and where it is
    merely quoted. Two documents stating it, or a quote that disagrees with the
-   statement, is the finding either way. *Reason: the owner raised one bound
-   from 3 to 5, and it had to be applied by hand in more than one file.
-   Nothing but this read catches the file that was missed.*
+   statement, is the finding either way. *Reason: a number stated in two
+   files is changed by hand in both, and nothing but this read catches the
+   file that was missed.*
 
-7. **The counters the machine keeps and the bounds the law describes are the
-   same set.** Take the state block's counters from the law, take the counters
-   any role increments or tests, and take the ones the law's bound section
-   accounts for; all three lists must agree, in both directions. A counter a
+7. **The counters the machine keeps and the counters the law's bound
+   section accounts for are the same set.** Take the state block's counters
+   from the law, take the counters any role increments or tests, and take
+   the ones the law's bound section accounts for; all three lists must
+   agree, in both directions. A counter a
    role enforces and the law does not describe is a bound the law denies
    exists, which is the graver direction. *Reason: the counters were added one
    at a time, each by the role that needed it.*

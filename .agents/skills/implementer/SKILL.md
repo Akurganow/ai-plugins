@@ -56,7 +56,8 @@ it to you. A missing name is a hard stop.
 
 **The day's cap, read before the work and not after it.** `slices_day` is
 the UTC day `slices` was last stamped for. When it is not today, treat
-`slices` as 0. When it is today and `slices` is 3 or above, stop here:
+`slices` as 0. When it is today and `slices` has reached the day's cap,
+which the law's **How every bound behaves** states, stop here:
 release the claim, comment that the day's cap stands and where the next fire
 resumes, and exit without touching the tree.
 
@@ -115,6 +116,24 @@ and do not re-run the gate.
 
 The owner's comments outrank everything else in the worklist.
 
+## First, the stop
+
+Read the newest `pipeline-stop` at the key you would judge, the spec hash
+while the gate runs and the tree id after it, per the law's **Stops**. A
+live one ends the fire: name it in the report.
+
+A released one grants this fire the one run the law allows:
+
+- **At a spec hash your `role=gate` marker already names**, the gate does
+  not judge again. It hands the standing findings to the Writer, the law's
+  one path for the owner's ruling. Post one comment naming each standing
+  `G-n` by id, keyed to this hash, only where no comment of yours at this
+  key is newer than the release. Remove `spec/approved`, apply
+  `spec/needs-work`, read the label set back, and stop.
+- **At a tree id**, work **The worklist before the trio** with the owner's
+  settled ids left out. A marker of yours older than the release does not
+  shortcut this run.
+
 ## The deterministic gate
 
 Run it before writing a line, unless your `role=gate` marker already records
@@ -130,15 +149,19 @@ and the outcome says what it ruled:
 | Marker | Then |
 | :-- | :-- |
 | `role=gate` at this spec hash, `outcome=accepted` | skip the gate |
-| `role=gate` at this spec hash, `outcome=rejected` | hand back to the Writer, do not re-gate, do not touch `gate_bounces` |
-| `role=implementer` at this tree id, `outcome=rejected` | the trio already rejected this tree, work `must_change`, do not dispatch |
+| `role=gate` at this spec hash, `outcome=rejected`, and no `spec-writer` marker at this hash newer than it with the Writer's **this revision's summary** naming the `G-n` it applied | hand back to the Writer, do not re-gate |
+| `role=gate` at this spec hash, `outcome=rejected`, a `spec-writer` marker at this hash newer than it, and the Writer's **this revision's summary** names the `G-n` it applied | the Writer claimed its work on those `G-n` and returned this content unchanged, which is no progress: record the stop below, under **A returned finding** |
+| `role=implementer` at this tree id, `outcome=rejected` | the trio already rejected this tree: work the worklist below, do not dispatch |
 | `role=implementer` at this tree id, `outcome=accepted` | the trio already accepted this tree. Take **The last read**, then go on from handoff step 3 and dispatch nothing |
 
 The second row is a fire that died between two label writes. One comment says
-the `G-*` objections stand. The exception is `gate_bounces` already at 2,
-below.
+the `G-*` objections stand.
 
-The third row re-opens the moment you commit, because the tree id moves.
+The fourth row holds while the worklist is open. A commit moves the tree id,
+and the trio runs only once **The worklist before the trio** is empty. A
+worklist the owner's settlements alone emptied, with no commit, leaves the
+tree at the one the trio rejected: a release newer than that marker grants
+the run, so dispatch the trio on this tree.
 
 After the final slice deletes the specification, the spec hash cannot be
 computed and the gate is over for this item. Its two `role=implementer` rows
@@ -166,8 +189,13 @@ The gate is four checks.
 4. **Commission one clean-context subagent** on plan against spec against the
    rule files. Its brief carries the case-file path and the question. It
    also lists the narrowed sources, as the worklist below defines them. A
-   step that removes their work then does not read as scope creep. The brief
-   carries none of your reasoning and no preferred answer.
+   step that removes their work then does not read as scope creep. It also
+   carries every earlier `G-n` and `R-n` on the item, each with its check and
+   the result it gave when raised, leaving out each id the spec's
+   `## Out of scope` records as settled by the owner, and asks what each
+   check gives at this hash. An earlier `R-n` that fails again after a
+   gate-only revision comes back as a new `G-n`, under the law's **Stops**.
+   The brief carries none of your reasoning and no preferred answer.
 
    It applies the Reviewer's threshold: a contradiction with a recorded
    decision, or something that would break a correct implementation. It
@@ -178,38 +206,41 @@ Write the `role=gate` marker at the end either way and read it back.
 
 **A passed gate** goes to the slice loop.
 
-**A first gate failure** is one plain issue comment, then the handoff:
+**A gate failure** hands the item back, however many times the gate has
+failed before. One plain issue comment, then the handoff:
 
-1. Post the objections, each labelled `G-1 issue (blocking):` and so on,
-   saying where it is, why it blocks, and what would resolve it.
-2. Set `gate_bounces=1` in the state block.
-3. Remove `spec/approved`.
-4. Apply `spec/needs-work`.
+1. Post the objections, each labelled `G-<n> issue (blocking):`, numbered on
+   from the highest `G-n` already on the item. Each says where it is, why it
+   blocks, its check and the result at this hash, and what would make the
+   check pass. An earlier `G-n` whose result moved keeps its id and is
+   restated with the new result.
+2. Remove `spec/approved`.
+3. Apply `spec/needs-work`.
 
 The Writer's revision returns straight to `spec/approved`, because you
 objected and you re-check.
 
-**A second gate failure** is the bound. You record it and you hand it no
-further.
+**A returned finding** stops the item instead. A `G-n` the Writer applied,
+naming it in a summary comment, whose check gives, at this hash, the result
+it gave when raised has returned, under the law's **Stops**. So has the
+content of the table's third row. Record it and hand it no further:
 
-1. Set `gate_bounces=2` in the state block.
-2. Write the law's `pipeline-stop` marker with `kind=bound`,
+1. Post one comment naming each returned finding with its id, its check and
+   the unchanged result, ending with the stop line in place of the comment
+   key.
+2. In one body write, write your `role=gate` marker at `outcome=rejected` and
+   the law's `pipeline-stop` marker with `kind=no-progress`,
    `key_kind=spec-hash` and `key=` the spec hash. The gate judges the
    specification, so its stop is keyed on the spec hash and not on the tree.
-3. Post both positions in one comment, naming the bound and that spec hash.
-4. Stop.
+3. Stop.
 
 **Leave `spec/approved` where it is.** Applying `spec/needs-work` would wake
 the Writer on an item you have just stopped, and the law's **Exiting to a
 person is not a stage's own act** puts that decision one gate later. The
-label beside the bound names who acts once the Clerk clears it.
+label beside the stop names who acts once it is released.
 
-You do not apply `pipeline/stuck`, here or anywhere. A bound is recorded, and
+You do not apply `pipeline/stuck`, here or anywhere. A stop is recorded, and
 the Clerk decides whether the machine has anything left to try.
-
-**`gate_bounces` already at 2** is only seen after an un-stick, and follows
-the law's bound rule. A changed spec hash grants one more gate. An unchanged
-one is the same bound recorded again, and the Clerk's to stick.
 
 ## The slice loop
 
@@ -232,6 +263,14 @@ the body beside it:
     ## Progress
     - [x] 1. <plan step>, <commit sha>
     - [ ] 2. <plan step>
+    - [x] M-1 — <commit sha>
+    - [ ] M-2
+    - [ ] narrowing #<source> — <the removal>
+
+Each `M-n` on **The worklist before the trio** has one `M-<n>` line, and
+the removal a narrowing asks for has one `narrowing #<source>` line, with no
+`M-n` id. Tick a line in the slice that finishes its item, never earlier: an
+item a slice only partly worked stays unticked.
 
 A narrowing can revise the plan after slices have landed. When it does,
 rebuild the checklist from the revised plan, and tick each step the head
@@ -240,8 +279,9 @@ revision dropped.
 
 This fire's worklist, in priority order:
 
-1. Read the item's reviews and review comments, on every waking.
-2. Work the judge's `must_change` list from a rejected verdict.
+1. Read the item's reviews and review comments, on every waking, and post
+   the settled comment below before anything else.
+2. Work **The worklist before the trio**, below.
 3. A narrowed source is a closed source that a narrowing marker lists and
    the fingerprint's `sources=` names. With no `$SPEC_DIR` at the head and a
    narrowing waiting on you, remove the work that serves only a narrowed
@@ -254,12 +294,43 @@ This fire's worklist, in priority order:
    marker this fire writes answers the narrowing.
 4. Work the remaining plan steps.
 
+**The worklist before the trio** is every earlier `M-n` whose check fails at
+the head, each with its check and the result the verdict quoted, plus the
+removal a narrowing waiting on you asks for. The earlier `M-n` are the law's:
+the `must_change` items of every `REJECTED` verdict since the newest
+`ACCEPTED`, numbered on in comment order, leaving out each `M-n` a comment
+of yours records as settled by the owner, and those about a narrowed
+source's work. Run each check and quote
+what it printed. The trio is dispatched only when this worklist is empty. A
+worklist that does not fit one slice ends as a non-final slice does.
+
+An `M-n` on the worklist, ticked in the checklist, whose check still gives
+the result the verdict quoted has returned, under the law's **Stops**. Post
+one comment naming each such `M-n` with its check and the unchanged result,
+ending with the stop line in place of the comment key. Write the law's
+`pipeline-stop` marker with `kind=no-progress`, `key_kind=tree-id` and
+`key=` the tree id. Leave `spec/approved` where it is, and end without
+re-entering.
+
 **On the review comments.** Read them with each author's login, and
 separate them. The owner's are decisions and outrank the
 plan. The automated code review's are findings, actionable on the law's test.
 
-Say in the summary comment which you addressed and how. Name the one you
-judge out of scope rather than dropping it.
+Say in the summary comment which you addressed and how. Answer each
+actionable finding of the automated code review by its id, the link to its
+review comment, in one of three ways: worked, with its commit; settled by
+the owner's review comment, with that comment's link; or out of scope, with
+the `issue (non-blocking):` line below. The Clerk reads those answers when
+the head did not move.
+
+**The settled comment.** A review comment of the owner's that rules an
+`M-n` out by its id is answered before you build the worklist, in every
+fire that reads one no comment of yours answers yet. Post one plain comment
+naming each such `M-n` with a link to the owner's comment:
+
+    - M-n: settled by the owner's review comment <link>.
+
+That comment settles the id for every seat, under the law's **Stops**.
 
 A finding never widens the item. A real defect outside `## Proposed change`
 is a line in your summary comment for the owner, labelled
@@ -324,13 +395,14 @@ way to move a version without meaning to.
 
 1. Increment `slices` and set `slices_day` to today, in the state block.
 2. Release your claim.
-3. Below 3, re-enter yourself: remove `spec/approved`, then apply it back.
-4. At 3 or above, stop without re-entering.
+3. Below the day's cap, re-enter yourself: remove `spec/approved`, then
+   apply it back.
+4. At the day's cap, stop without re-entering.
 
 Step 3 is the one place you apply `spec/approved` to yourself.
 
 At the cap, leave `spec/approved` in place and comment where the next fire
-resumes. The Clerk's sweep re-fires the item tomorrow. Three slices a day is
+resumes. The Clerk's sweep re-fires the item tomorrow. The day's cap is
 the owner's deliberate pace, not a limitation to work around.
 
 ## The final slice
@@ -363,8 +435,9 @@ review will be shown.
    filenames. Either check failing means the item is not finished: fix it in
    this fire and go back to step 4.
 
-7. Dispatch the trio over the pushed diff, unless a `role=implementer`
-   marker already names this tree id. Then that marker's row in the gate's
+7. Dispatch the trio over the pushed diff once **The worklist before the
+   trio** is empty, unless a `role=implementer` marker already names this
+   tree id. Then that marker's row in the gate's
    table decides. A verdict comment of yours for this tree with no marker is
    a fire that died between the two. A judgement a comment records is never
    run again. For `verdict: ACCEPTED`, take **The last read**, then do
@@ -382,12 +455,14 @@ Dispatch three fresh subagents, mutually blind, each with a clean context,
 over the pushed diff. Hand them paths under `$RUN`, never text.
 
 Each brief is neutral. It carries the diff, the spec, the plan, the narrowed
-sources as the worklist above defines them, and the commands you ran with their
-output. The trio does not judge the work of a narrowed source. That
-source's outcome is already decided, under the law's
-**When a source closes**. The brief carries none of your reasoning, none of
-your confidence, how many slices this took, or a hint of the answer you
-want.
+sources as the worklist above defines them, the earlier `M-n` as **The
+worklist before the trio** defines them, each with its `Check:` and the
+result the verdict quoted, and the commands you ran with their output. That
+list is the record, never your reasoning about it. The trio does not judge
+the work of a narrowed source. That source's outcome is already decided,
+under the law's **When a source closes**. The brief carries none of your
+reasoning, none of your confidence, how many slices this took, or a hint of
+the answer you want.
 
 **Build the case file in this fire if it is not already there.** A multi-slice
 item skipped the gate on its final fire, and `$RUN` does not survive a fire.
@@ -412,6 +487,9 @@ The deletion commit's parent is where the files were still present.
   verified. A compatibility claim nothing in the repository backs. A
   "verified" that was not.
 
+  It runs the check of every earlier `M-n` and quotes what each printed, as
+  part of what it attempted.
+
   The round is complete when it has read the whole diff against `claims.md`,
   `conformance.md` and `slop.md` and can say so. Finding nothing is a normal
   result and is stated in one line.
@@ -421,8 +499,8 @@ The deletion commit's parent is where the files were still present.
   does that the prosecution passed over. It concedes what the evidence does
   not support.
 
-- **Judge.** Read the diff, the spec, the list of narrowed sources and both
-  reports, and nothing else.
+- **Judge.** Read the diff, the spec, the list of narrowed sources, the
+  earlier `M-n` and both reports, and nothing else.
   Strike assertions with no exhibit and list them. Re-run the single most
   decisive exhibit. Return exactly this block:
 
@@ -430,13 +508,31 @@ The deletion commit's parent is where the files were still present.
       confidence: 1-5
       established: the facts the record proves, each with its exhibit
       struck: assertions rejected for lack of evidence
-      must_change: the worklist, if REJECTED, specific and each item checkable
+      must_change: the worklist, if REJECTED, each item checkable
+      returned: the earlier M-n that returned, on a REJECTED only
       not_verified: what nothing in the record establishes
 
+  Each `must_change` item is specific. It carries a `Check:` a stranger can
+  run, the result it gives on this tree, and what would make it pass. Each
+  `returned:` item is an earlier `M-n` whose check the prosecutor quoted with
+  the result the earlier verdict quoted, citing that exhibit.
+
   The first line must read exactly `VERDICT: ACCEPTED` or exactly
-  `VERDICT: REJECTED`, and all five field names must appear. Any other shape
-  is not a verdict: ask once for the block in the required form. If it still
-  does not come, treat the round as rejected and say so.
+  `VERDICT: REJECTED`, and the five field names other than `returned:` must
+  appear. A `REJECTED` carries `returned:` too, empty where nothing returned,
+  and an `ACCEPTED` carries none. Any other shape is not a verdict: ask once
+  for the block in the required form. A second answer not in that form is a
+  condition the stage cannot work around (the law's second stop kind):
+  write the `role=implementer` marker with `outcome=rejected` at the tree
+  id, post one comment quoting both answers' first lines and ending with
+  the law's `pipeline-stop` marker at `kind=condition`, `key_kind=tree-id`
+  and `key=` the tree id, keep `spec/approved`, and end without re-entering.
+  It carries no `returned:` and no `must_change`, so neither rejected path
+  below applies, and the Clerk decides whether the item is stuck.
+
+  An earlier `M-n` the prosecutor quoted no output for is struck from
+  `returned:`. One whose result moved is work: the judge restates it in
+  `must_change` with the new result.
 
 **The last read.** Read the narrowing comments again, under the law's
 **When a source closes**. Do it before you act on a verdict, write a
@@ -453,33 +549,33 @@ comment first, in handoff step 2.
 
 **A rejected verdict** ends the fire through the slice loop:
 
-1. Post the `must_change` list as the round's worklist. Its last line is
+1. Post the verdict comment. Its last line is
    `<!-- verdict: REJECTED tree=<TREE_ID> -->`. Post it only where no
-   comment of yours carries that line.
-2. In one body write, increment `judge_rejects` and write the marker with
-   `outcome=rejected`. At the bound, below, that write also carries the
-   stop. One write keeps the count and the marker together.
-3. End the slice. At the bound, below, stop without re-entering instead.
+   comment of yours carries that line. Where `returned:` is empty, the
+   comment is the round's worklist: the `must_change` list. Where
+   `returned:` names an item, the comment is the stop comment: it names each
+   returned `M-n` with its check and the unchanged result, and carries the
+   `must_change` list as the verdict's record. After a release,
+   **The worklist before the trio** rebuilds the worklist from the `M-n`
+   whose checks fail.
+2. In one body write, write the marker with `outcome=rejected`. Where
+   `returned:` names an item, that write also carries the law's
+   `pipeline-stop` marker with `kind=no-progress`, `key_kind=tree-id` and
+   `key=` the tree id, so the marker and the stop land together.
+3. End the slice. With a stop, stop without re-entering instead, and leave
+   `spec/approved` where it is.
 
 The verdict line stands in for the shared comment key. Your other comments
 for this tree carry that key: a conflict resolution, the day's cap. A check
-on that key would find one of them and post no worklist.
-
-**The bound.** A second consecutive rejection, one that brings
-`judge_rejects` to 2 or above, reaches the law's bound. Its `must_change`
-comment also names the bound and the tree id and summarises both positions.
-Its body write also carries the law's `pipeline-stop` marker with
-`kind=bound`, `key_kind=tree-id` and `key=` the tree id. The count, the
-marker and the stop then land together. `spec/approved` stays where it is.
-`judge_rejects` at 2 or above follows the law's bound rule. A changed tree
-id grants one more trio. An unchanged one is recorded again and left to the
-Clerk. Any accepted verdict resets `judge_rejects` to 0.
+on that key would find one of them and post no verdict comment.
 
 Nothing is retitled and nothing is rewritten. The pull request keeps the
 Clerk's title and body until a verdict accepts the work.
 
 You may not overrule the judge, soften a rejection, or hand off on anything
-but an accepted verdict you have quoted in your report.
+but an accepted verdict you have quoted in your report. That binds your own
+judgement. The owner's ruling on a finding is his, and settles it under the
+law's **Stops**.
 
 ### On an accepted verdict: the handoff
 
@@ -507,9 +603,9 @@ accepted is the tree the code review and the owner will read.
 
    The confidence and the struck list go in your report instead. They are the
    session's machinery, and this comment outlives the session. Read the
-   comment back. Then, in one body write, write the `role=implementer`
-   marker with `outcome=accepted` and this tree id, and set
-   `judge_rejects=0`. Read it back.
+   comment back. Then write the `role=implementer` marker with
+   `outcome=accepted` and this tree id, and read it back. The accepted
+   verdict closes every `M-n` before it.
 
 3. **Rewrite the pull-request body for the owner**, replacing the Clerk's
    process-era body:
@@ -553,7 +649,8 @@ accepted is the tree the code review and the owner will read.
    change does, not what stage produced it. Read the `title` field back, not
    the body.
 
-5. **Post the summary comment**: what changed, which review comments you
+5. **Post the summary comment**: what changed, each worked `M-n` with its
+   commit, which review comments you
    addressed and how, the verification, and the two final-slice checks.
 
 6. **Hand on the baton, last.** Re-read the labels. Remove `spec/approved`
@@ -615,7 +712,7 @@ The law's table says which field to fetch for each kind of write.
   conflict that stops the item.
 - Never hand off without a quoted accepted verdict, and never overrule or
   soften a rejection.
-- Never run more than three slices on one item in one UTC day, and never
+- Never run past the day's cap on one item, and never
   batch two slices into one fire.
 - Apply only `spec/needs-work`, `pipeline/code-review`, and `spec/approved`
   through the re-entry primitive on yourself. Never `pipeline/stuck`, which

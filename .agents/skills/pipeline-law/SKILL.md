@@ -133,7 +133,7 @@ that accumulates.
 | `pipeline/queued` | Clerk, at skeleton birth | Clerk, at promotion |
 | `spec/needs-work` | Clerk at promotion; Reviewer; the gate; the sweep | Writer, at the end of a revision; the sweep |
 | `spec/awaiting-review` | Writer; the sweep | Reviewer; the sweep |
-| `spec/approved` | Reviewer; Writer after a gate bounce; Implementer re-entering itself; Clerk returning findings; the sweep | Implementer; the gate; the sweep |
+| `spec/approved` | Reviewer; Writer after a gate hand-back; Implementer re-entering itself; Clerk returning findings; the sweep | Implementer; the gate; the sweep |
 | `pipeline/code-review` | Implementer, last, on an accepted verdict | Clerk, when the code-review round ends, whichever way it ends; Clerk, on a narrowing |
 | `ready-for-human` | Clerk, and only the Clerk | the owner; the Clerk, on a narrowing |
 | `pipeline/stuck` | the Clerk, and only the Clerk, after a repair it could not make | the owner, or the Clerk on an un-stick or a narrowing |
@@ -264,8 +264,8 @@ a narrowing comment proves the stage read the comment.
 
 **A narrowing changes content only where it moves a key.** The Writer's
 revision moves the spec hash. Where the Implementer removes work, its commit
-moves the tree id. Where it removes nothing, the tree id stays, and each
-bound reads the item as unchanged.
+moves the tree id. Where it removes nothing, the tree id stays, and a
+stop keyed on it reads the item as unchanged.
 
 **A narrowing routes until the stage answers it.** Until `narrowed=` names
 the source, the row can match on any sweep. While the narrowing waits on the
@@ -327,11 +327,11 @@ means the work itself has to change, it is the Implementer's ordinary work on
 its next waking, never a stop.
 
 **A resolution moves the tree id and the head sha, and leaves the spec hash
-where it was.** So it spends `judge_rejects`, keyed on the tree id, and
-`cr_rounds`, keyed on the head sha, and no bound keyed on the spec hash.
-Compare every bound against its own key, named in the bound rules below. The
-two are not interchangeable: a commit can carry a tree its parent already
-had, so a head that moved is not always a tree that moved.
+where it was.** So it moves the key of a stop keyed on the tree id or on the
+head sha, and of no stop keyed on the spec hash. Compare every stop against
+its own key, under **Stops** below. The two are not interchangeable: a commit
+can carry a tree its parent already had, so a head that moved is not always a
+tree that moved.
 
 Nothing about a conflict stops an item, and neither does what it causes: an
 unmergeable pull request has no merge ref, so its checks never run, and a
@@ -369,19 +369,22 @@ events — the `unlabeled` events naming that label, by their `created_at`.
 A fire that cannot read those events reports the row as not evaluated rather
 than guessing.
 
+### Stops
+
+**Only a real breakage stops an item.** No count of rounds stops one. A
+judging seat — the Reviewer, the gate, the acceptance round — hands the item
+back with its findings however many rounds that takes. A pointless stop costs
+the owner more than another round does.
+
 **Every stop writes the same marker**, whatever its kind, because the Clerk
 finds a stop by that marker and by nothing else. A Clerk that had to
 recognise a stop from the prose of a comment would take an ordinary
 rejection for a stop and miss a real one:
 
-    <!-- pipeline-stop: item=<id> kind=<bound|condition> key_kind=<spec-hash|tree-id|head-sha> key=<12 hex> at=<UTC> spent_at=<UTC|none> -->
+    <!-- pipeline-stop: item=<id> kind=<no-progress|bound|condition> key_kind=<spec-hash|tree-id|head-sha> key=<12 hex> at=<UTC> -->
 
 `key=` is the content the stop was met at and `key_kind=` says which key that
-is. `spent_at=` is absent until a stage grants the one fresh round the bound
-rules allow, and is written then — **that is what makes the round one rather
-than unlimited**. Without it a stage compares each new revision against a key
-frozen at the first stop, finds it different every time, and grants a round
-every time, so the owner pays for the first escape and none after it. **Both fields are needed**: a spec hash, a tree id and a head sha are all
+is. **Both fields are needed**: a spec hash, a tree id and a head sha are all
 twelve hex characters and nothing in the value tells them apart, so a Clerk
 holding the value alone would compare a spec hash against a tree it computed
 and never match. It carries no `role=`, because the Clerk writes one of these
@@ -390,16 +393,87 @@ and the law's four role tokens do not include it.
 What each kind records **beside** the marker differs, and no rule here claims
 otherwise.
 
-- **A bound reached** also moves its counter, and writes its completion
-  marker where the stopping role has one — the gate and the Implementer do,
-  and the Clerk does not, because the law's four role tokens do not include
-  it. It posts one comment naming which bound and at what content.
+- **No progress** is the one stop a finding causes: a finding has returned,
+  below. The role that found it posts one comment naming each returned
+  finding with its id, its check and the unchanged result. A seat that judged
+  the content also writes its completion marker with `outcome=rejected`. No
+  bound's counter moves; the Reviewer's `review_rounds` still numbers the
+  round.
+- **A bound reached** is `cr_rounds` at its bound, and it is the Clerk's. It
+  moves the counter and posts one comment naming the bound and the head. It
+  writes no completion marker, because the law's four role tokens do not
+  include the Clerk.
 - **A condition the stage cannot work around** posts one comment naming the
   condition and the content. No counter moves, because none counts them.
   **Which conditions those are is each role's to name**, beside the check
   that meets one: a closed list here would go stale the moment a role gained
   a check or lost one, and a Clerk reading a condition no role implements
   would be reading a machine that does not exist.
+
+**Every finding carries its check.** A finding names three things: its
+check, the result observed, and what would make the check pass. That is the
+whole context a stage needs to apply it, and every stage hands on all three.
+
+**A finding has returned** when its own check gives, at this content, the
+result it gave when the finding was raised, after a stage claimed to work
+it. A check whose result moved is a partial fix, and a partial fix is work:
+the seat restates the finding against the new content, with the new result,
+and hands it back. A returned finding is no progress. So is content handed
+back unchanged: a spec hash or a tree id that the stage claiming the work
+did not move.
+
+**Each seat numbers its findings** on across the item's rounds, in comment
+order. A seat derives the ids when it builds its case and stores them
+nowhere else. A finding is its id and its check.
+
+| Seat | Findings | Check and result | Returned |
+| :-- | :-- | :-- | :-- |
+| Reviewer | `R-n` | the objection quotes the spec text and names what would resolve it | the quoted text stands unchanged at a new spec hash, and what would resolve it is absent, after a Writer's revision named the id |
+| Gate | `G-n` | checks 1 to 3 re-run as written; check 4's brief carries every earlier `G-n` and `R-n` | a `G-n` the Writer applied whose check gives, at a new spec hash, the result it gave when raised |
+| Acceptance round | `M-n`: the `must_change` items of every `REJECTED` verdict since the newest `ACCEPTED` | each item's `Check:` and the result the verdict quoted | an `M-n` whose check gives the result the earlier verdict quoted, run by the prosecutor, or by the Implementer once its progress checklist ticks the `M-n` as worked |
+
+An earlier `R-n` whose check fails at the gate after a gate-only revision is
+a regression the Writer never claimed to work. The gate hands it back as a
+new `G-n` with full context, and it stops the item only once the Writer has
+applied that `G-n` and nothing moved.
+
+An `ACCEPTED` verdict closes every `M-n` before it.
+
+**A finding is applied.** The Writer applies every `R-n` and `G-n`, and the
+Implementer every `M-n`. The owner's ruling is the one way a finding closes
+unapplied, and it is recorded where the next seat reads it:
+
+- The Writer, reading a review comment of the owner's that rules an `R-n` or
+  a `G-n` out by its id, adds
+  `- R-n: settled by the owner's review comment <link>.` under
+  `## Out of scope` in `spec.md`, and answers that id with the same link. The
+  spec hash moves.
+- The Implementer, reading one that rules an `M-n` out, posts one plain
+  comment naming that `M-n` with the link, before it builds its worklist.
+
+Those lines settle the id for every seat. The stage that builds a list of
+earlier findings reads the settled ids from them and leaves them out, so no
+seat reads review comments to judge.
+
+**A stop is live until a release newer than its `at=`.** A release is one of
+these:
+
+- an `unlabeled` event removing `pipeline/stuck` or `pipeline/hold`;
+- the Clerk's `Narrowing:` comment;
+- the Clerk's re-entry of the stage after a repair that moved the stop's key.
+
+A stage that finds a live stop at the key it would judge ends its fire and
+names the stop. A release that moved no key grants the stage one run on that
+content. In that run the Implementer works its worklist with the owner's
+settled ids left out, and a finding that returns writes a newer stop.
+
+**A seat's released run on a spec hash it already ruled on hands the
+standing findings to the Writer.** The Reviewer or the gate does not judge
+that content again. It posts one comment naming each standing finding by id,
+removes its input label and applies `spec/needs-work`. The Writer's answer
+by id then settles the finding the owner ruled out. That is the one path by
+which the owner's ruling on a Reviewer's or a gate's finding reaches the
+content.
 
 A stage that labelled its own dead end would spend the owner's attention on
 what the gate after it could have fixed. The stage label beside the stop
@@ -527,10 +601,10 @@ rewritten whole on every change. Comments are append-only records.
 **The state block**, last thing in the body, in this order:
 
     <!-- pipeline-work-fingerprint: <slug> sources=#a,#b -->
-    <!-- pipeline-state: item=<id> review_rounds=<n> gate_bounces=<m> judge_rejects=<k> slices=<s> cr_rounds=<c> narrowed=<#b,#c|none> -->
+    <!-- pipeline-state: item=<id> review_rounds=<n> slices=<s> cr_rounds=<c> narrowed=<#b,#c|none> -->
     <!-- pipeline-claim: role=<role> state=held|released at=<UTC ISO-8601> -->
     <!-- pipeline-progress: slice=<n> slices_day=<YYYY-MM-DD> predelete=<sha|none> -->
-    <!-- pipeline-stop: item=<id> kind=<bound|condition> key_kind=<spec-hash|tree-id|head-sha> key=<12 hex> at=<UTC> spent_at=<UTC|none> -->
+    <!-- pipeline-stop: item=<id> kind=<no-progress|bound|condition> key_kind=<spec-hash|tree-id|head-sha> key=<12 hex> at=<UTC> -->
     <!-- pipeline-done: role=spec-writer   hash=<12 hex> outcome=<accepted|rejected> at=<UTC> -->
     <!-- pipeline-done: role=spec-reviewer hash=<12 hex> outcome=<accepted|rejected> round=<n> at=<UTC> -->
     <!-- pipeline-done: role=gate          hash=<12 hex> outcome=<accepted|rejected> at=<UTC> -->
@@ -549,6 +623,11 @@ one act in this machine that a repeat duplicates rather than repairs: a fire
 that posts and then dies before its marker leaves a record no marker
 accounts for, and the next fire, reading fresh content, posts the same
 comment again.
+
+A stop comment ends with its `pipeline-stop` line in place of the comment
+key, as the verdict comment ends with its verdict line. The read-back for a
+stop comment looks for that line, at this kind and key, newer than the
+newest release of an earlier stop there.
 
 So the order at every stage exit is: read the comments back for one of yours
 carrying this role and this key; post only where none is there; then write
@@ -627,7 +706,7 @@ replaces the whole body, as a label write may replace the whole set. Read
 the current body, edit the block inside it, send the whole thing back.
 
 **`review_rounds` is the Reviewer's alone.** No other role increments it.
-Two writers on one counter make the bound fire early.
+Two writers on one counter make the round number lie.
 
 ### The comments that stay comments
 
@@ -639,8 +718,9 @@ this as its last line:
 That line stands in for the stage comment key. The Implementer posts other
 comments for the same tree, and the line tells a verdict from them.
 
-The **findings** each stage posts: objections, the gate's bounce, the summary.
-Those are a record. Nothing reads them back as state.
+The **findings** each stage posts: the Reviewer's and the gate's objections,
+the summary. Those are a record. A seat reads its earlier findings from
+them, under **Stops**, and nothing reads them back as state.
 
 The Clerk's two markers, each the last line of its comment:
 
@@ -701,7 +781,7 @@ closed body stops the Clerk proposing the item again.
 One label off and nothing else. The next daily sweep re-enters the stage
 label the item still carries, so the wake comes the next morning rather than
 at once. Every stuck path leaves exactly one stage label, which is what makes
-that recoverable.
+that recoverable. The removal also releases a live stop, under **Stops**.
 
 He is not the only hand on `pipeline/stuck`. The Clerk clears one whenever a
 repair or a worklist moves the item. `pipeline/hold` stays his alone.
@@ -731,7 +811,10 @@ at one moment against one content, and the tree moves underneath it.
 Three cases un-stick the item. A repair moved it. The stop names a worklist
 a stage can still work, and the Clerk sends that worklist back. Or a source
 closed, and the Clerk narrows the item under **When a source closes**. A
-stop that fits none keeps the label, and the item waits for the owner.
+`kind=no-progress` stop names no worklist: its findings are the ones a stage
+already worked without moving them, so what remains is a decision only the
+owner can take. A stop that fits none of the three keeps the label, and the
+item waits for the owner.
 
 Everything between the two is the machine's own to carry: a conflict, a dead
 fire, a lost label, a marker that would not stay written. An item in one of
@@ -742,37 +825,29 @@ repairs fail.
 
 ### How every bound behaves
 
-There are four: `review_rounds`, `gate_bounces`, `judge_rejects` and
-`cr_rounds`. All four obey the same three rules.
+One counter is a bound: `cr_rounds`, the Clerk's, whose number the Clerk's
+role states. A bound is a cap on a resource the machine spends, never a
+count of judgements, under **Stops**.
 
-`slices` is the fifth counter and is **not** a bound. It is a day's pace: at
-three the Implementer stops without re-entering itself, and the Clerk's sweep
-re-fires the item the next day. Nothing about it reaches a person, so it has
-no content key and records no stop.
+Two counters are **not** bounds. `review_rounds` is the Reviewer's round
+number, and nothing stops on it. `slices` is a day's pace. **The day's cap
+is three slices on one item in one UTC day**, stated here and nowhere else:
+at the cap the Implementer stops without re-entering itself, and the Clerk's
+sweep re-fires the item the next day. Nothing about either reaches a
+person, so neither has a content key or records a stop.
 
 1. **The test is `>=`, never `==`.** A counter can arrive above its bound
-   after an un-stick or a repair, and `==` would step straight past it.
-2. **A bound is keyed on content, not on attempts.** Unchanged content at or
-   past the bound is recorded and handed no further. It becomes
-   `pipeline/stuck` when the Clerk's repairs do not move it. Changed content
-   grants one fresh round, and **one** is the whole of it: the round is
-   granted only where the owner or the Clerk has un-stuck the item since the
-   stop was recorded or last spent. The stage
-   writes `spent_at` on the stop when it grants one. The content is the spec hash for `review_rounds` and
-   `gate_bounces`, the tree id for `judge_rejects`, and the head sha for
-   `cr_rounds` — the round is asked per head and its `pipeline-cr` marker
-   stores that same head, so the bound and the marker read one identifier.
-3. **State what resets it.** `judge_rejects` resets to 0 on any accepted
-   verdict. `cr_rounds` counts rounds on one head, so the Clerk **sets it to
-   1** rather than incrementing it when it asks a round at a head no
-   `pipeline-cr` marker names; a new head therefore starts from nothing
-   without anybody remembering to reset it. `slices`
-   resets when `slices_day` is not today. `review_rounds` and `gate_bounces`
-   never reset. The owner clears them by hand, or lets the item close.
-
-Every round after an un-stick therefore costs the owner an action, and an
-unchanged hash is the same bound reached again. The stage records it again,
-and the Clerk sticks the item again when its repairs do not move it.
+   after a repair, and `==` would step straight past it.
+2. **A bound is keyed on content, not on attempts.** `cr_rounds` keys on the
+   head sha: the round is asked per head and its `pipeline-cr` marker stores
+   that same head, so the bound and the marker read one identifier.
+   Unchanged content at or past the bound is recorded and handed no further.
+   It becomes `pipeline/stuck` when the Clerk's repairs do not move it.
+3. **State what resets it.** `cr_rounds` counts rounds on one head, so the
+   Clerk **sets it to 1** rather than incrementing it when it asks a round at
+   a head no `pipeline-cr` marker names; a new head therefore starts from
+   nothing without anybody remembering to reset it. `slices` resets when
+   `slices_day` is not today.
 
 ### What no role writes
 

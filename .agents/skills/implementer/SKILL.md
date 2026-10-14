@@ -549,11 +549,15 @@ comment first, in handoff step 2.
 
 **A rejected verdict** ends the fire through the slice loop:
 
-1. Post the `must_change` list as the round's worklist. Where `returned:`
-   names an item, the comment names each returned `M-n` with its check and
-   the unchanged result. Its last line is
+1. Post the verdict comment. Its last line is
    `<!-- verdict: REJECTED tree=<TREE_ID> -->`. Post it only where no
-   comment of yours carries that line.
+   comment of yours carries that line. Where `returned:` is empty, the
+   comment is the round's worklist: the `must_change` list. Where
+   `returned:` names an item, the comment is the stop comment: it names each
+   returned `M-n` with its check and the unchanged result, and carries the
+   `must_change` list as the verdict's record. After a release,
+   **The worklist before the trio** rebuilds the worklist from the `M-n`
+   whose checks fail.
 2. In one body write, write the marker with `outcome=rejected`. Where
    `returned:` names an item, that write also carries the law's
    `pipeline-stop` marker with `kind=no-progress`, `key_kind=tree-id` and
@@ -563,7 +567,7 @@ comment first, in handoff step 2.
 
 The verdict line stands in for the shared comment key. Your other comments
 for this tree carry that key: a conflict resolution, the day's cap. A check
-on that key would find one of them and post no worklist.
+on that key would find one of them and post no verdict comment.
 
 Nothing is retitled and nothing is rewritten. The pull request keeps the
 Clerk's title and body until a verdict accepts the work.

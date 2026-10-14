@@ -120,9 +120,11 @@ Compute the spec hash at the head, per the law. If the marker's hash equals
 it, and no rejection at this hash is newer than yours, you already wrote
 this content and pushed it. A rejection is a `spec-reviewer` or `gate`
 marker with `outcome=rejected`, or a comment of the Reviewer's or the gate's
-keyed to this hash. A fire died between the push and the handoff, and the sweep
-brought the item back. A rejection at this hash newer than your marker is a
-revision you owe: go on to **Why you were woken**.
+keyed to this hash that names `R-n` or `G-n` findings by id, as a hand-back
+after a released stop does. An approval names none. A fire died between the
+push and the handoff, and the sweep brought the item back. A rejection at
+this hash newer than your marker is a revision you owe: go on to
+**Why you were woken**.
 
 **First check the push landed.** The marker says a fire computed this hash;
 it does not say the two files reached the branch. Read both back from the

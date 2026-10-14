@@ -158,7 +158,10 @@ The second row is a fire that died between two label writes. One comment says
 the `G-*` objections stand.
 
 The fourth row holds while the worklist is open. A commit moves the tree id,
-and the trio runs only once **The worklist before the trio** is empty.
+and the trio runs only once **The worklist before the trio** is empty. A
+worklist the owner's settlements alone emptied, with no commit, leaves the
+tree at the one the trio rejected: a release newer than that marker grants
+the run, so dispatch the trio on this tree.
 
 After the final slice deletes the specification, the spec hash cannot be
 computed and the gate is over for this item. Its two `role=implementer` rows

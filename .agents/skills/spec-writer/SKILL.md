@@ -93,8 +93,10 @@ qualifying source:
   step to `## Steps` that removes the work.
 
 A qualifying narrowing that arrives with `R-*` or `G-*` objections is one
-revision that answers both. The revision routes to `spec/awaiting-review`,
-because the Reviewer has not read the narrowed content.
+revision that answers both. Any revision after a narrowing answers every
+open `R-n` and `G-n` by id against the current content. The revision routes
+to `spec/awaiting-review`, because the Reviewer has not read the narrowed
+content.
 
 Where no listed source qualifies, the narrowing asks nothing of you. Go on
 with whatever other waking holds. Where a source qualifies, and the
@@ -115,8 +117,12 @@ above handles it. Otherwise read your own
 `pipeline-done role=spec-writer` line next.
 
 Compute the spec hash at the head, per the law. If the marker's hash equals
-it, you already wrote this content and pushed it. A fire died between the
-push and the handoff, and the sweep brought the item back.
+it, and no rejection at this hash is newer than yours, you already wrote
+this content and pushed it. A rejection is a `spec-reviewer` or `gate`
+marker with `outcome=rejected`, or a comment of the Reviewer's or the gate's
+keyed to this hash. A fire died between the push and the handoff, and the sweep
+brought the item back. A rejection at this hash newer than your marker is a
+revision you owe: go on to **Why you were woken**.
 
 **First check the push landed.** The marker says a fire computed this hash;
 it does not say the two files reached the branch. Read both back from the
@@ -138,20 +144,32 @@ Five wakings. Tell them apart from what the item holds.
 | :-- | :-- |
 | A fresh skeleton | every heading holds one `[NEEDS CLARIFICATION: unfilled skeleton …]` line, and no `spec-reviewer` or `gate` marker exists |
 | A revision after review | a `spec-reviewer` marker with `outcome=rejected`, and a comment carrying numbered `R-*` objections |
-| A revision after a gate bounce | a `gate` marker with `outcome=rejected`, and a comment carrying numbered `G-*` objections |
+| A revision after a gate hand-back | a `gate` marker with `outcome=rejected`, and a comment carrying numbered `G-*` objections |
 | A narrowing | a `pipeline-narrowing` comment created after your newest `pipeline-done` marker, or any such comment where you have no marker yet. It combines with any other waking |
-| A re-fire of your own run | outside a qualifying narrowing, your own marker's hash matches the head, handled above |
+| A re-fire of your own run | outside a qualifying narrowing, your own marker's hash matches the head and no rejection at that hash is newer, handled above |
 
-A gate bounce without a qualifying narrowing routes back to `spec/approved`,
+A gate hand-back without a qualifying narrowing routes back to `spec/approved`,
 not to the Reviewer. The Implementer's gate objected, so it re-checks its own
 objections.
+
+**Apply every objection.** Each `R-n` and `G-n` names its check, the result
+it observed and what would make the check pass. Make the check pass, and
+name each id in your summary comment with the change that applies it. An
+objection the owner ruled out is recorded as settled instead, below.
 
 ## Review comments, read every waking
 
 Read the item's reviews and review comments, with each author's login.
 
 The **owner's** are decisions about scope and content. They outrank the
-objections above.
+objections above. For one that rules an objection out by its id, add this
+line under `## Out of scope` in `spec.md`, and answer that id in your
+summary comment with the same link:
+
+    - R-n: settled by the owner's review comment <link>.
+
+The id is the objection's own, `R-n` or `G-n`. The line moves the spec hash
+and settles the id for every seat, under the law's **Stops**.
 
 The **automated code review's** rarely concern a specification. An actionable
 one is answered in the specification. A nit, or one about a file the diff
@@ -266,7 +284,8 @@ For this repository that usually means one of these:
 
 **`## Out of scope`**: what a reader will be tempted to fix here and must
 not. Include every forbidden path the sources touched. Where the brief names
-a family, add one line per sibling saying what that part covers.
+a family, add one line per sibling saying what that part covers. Each
+objection the owner settled has its settled line here.
 
 **`## Risks`**: what could go wrong, and what would tell us. The
 characteristic risk here is a claim that reads as verified when it was not.
@@ -310,8 +329,7 @@ measured.
 
 Any other `[NEEDS CLARIFICATION: …]` line is legitimate. The law permits it
 as the honest answer to something you cannot decide. Quote each one in full
-in your summary comment and in your report, and say the gate will bounce on
-it.
+in your summary comment and in your report, and say the gate refuses it.
 
 Put every command and its output in the report.
 
@@ -341,10 +359,11 @@ Read the body back and confirm every line of the block survived.
 ## Routing
 
 **You do not touch `review_rounds`.** The Reviewer owns it. Two writers on
-one counter make the bound fire early.
+one counter make the round number lie.
 
-Post one summary comment. What this waking wrote or changed, which objections
-and review comments it answered and how, the self-check output, the push.
+Post one summary comment. What this waking wrote or changed, each objection
+by id with the change that applies it, which review comments it answered and
+how, the self-check output, the push.
 
 Then hand on the baton. Remove your input label first, apply the successor's
 second, and read the label set back.
@@ -353,7 +372,7 @@ second, and read the label set back.
 | :-- | :-- | :-- |
 | a fresh fill | `spec/needs-work` | `spec/awaiting-review` |
 | a revision after review | `spec/needs-work` | `spec/awaiting-review` |
-| a revision after a gate bounce, without a qualifying narrowing | `spec/needs-work` | `spec/approved` |
+| a revision after a gate hand-back, without a qualifying narrowing | `spec/needs-work` | `spec/approved` |
 | a qualifying narrowing, with or without objections | `spec/needs-work` | `spec/awaiting-review` |
 
 A narrowing comment created after the `at=` of the newest
@@ -361,24 +380,6 @@ A narrowing comment created after the `at=` of the newest
 a re-fire too. Its marker must list a qualifying source. Your completion marker
 does not record which waking wrote it, and the Reviewer has not read the
 narrowed content.
-
-**The bound.** Read `review_rounds` from the state block. At 5 or above,
-compare the current spec hash with the `key=` of the newest `pipeline-stop`
-on the item. **A fresh round needs two things**: a hash that differs from that
-key, and an `unlabeled` event removing `pipeline/stuck` newer than the stop's
-`spent_at`, or newer than its `at=` where `spent_at` is `none`. Grant the
-round, write `spent_at` on that stop, and hand on. The hash alone would grant
-a round on every revision for ever, and the owner would pay for the first
-escape and none after it. An equal hash, or no stop marker yet, is the bound: do
-not hand on. Record it the law's way, with the `pipeline-stop` marker at
-`kind=bound`, `key_kind=spec-hash` and `key=` that spec hash, and one comment setting out both
-positions — what the Reviewer keeps asking for, why you have not written it,
-and that spec hash. You write no completion marker and touch no counter; both
-are the Reviewer's. Then stop. You never apply `pipeline/stuck`. The Clerk is
-the last gate and decides that.
-
-`spec/needs-work` stays, because it names you as the role that acts once
-the owner has settled it.
 
 ## Report
 
@@ -390,8 +391,8 @@ the owner has settled it.
 3. **Sources**: each one, whether its quoted evidence still held at the
    head, and what changed in the specification because it did not. Each
    source a narrowing took out, with its state reason.
-4. **Unanswered**: review comments and objections judged out of scope, each
-   with the reason.
+4. **Unanswered**: review comments judged out of scope, each with the
+   reason.
 5. **Blockers**: GitHub errors, a failed unshallow, a missing label, a
    read-back that would not confirm, a held or stuck item, a blocked source,
    a narrowing that voided this fire, with its comment.

@@ -50,15 +50,15 @@ would break a correct implementation. Taste is dropped and never reported.
 10. Set `ITEM` and `SPEC_DIR` as the law defines them, and `RUN` as
     `.agents/rules/unattended.md` defines it.
 
-**On the counter.** The bound turns on `review_rounds`, so you read it before
-anything else can spend it. A state block that is absent, or a
+**On the counter.** `review_rounds` is the round number your marker records,
+so you read it before anything else. A state block that is absent, or a
 `review_rounds` that will not parse is a stop, recorded the law's way: the
 `pipeline-stop` marker with `kind=condition`, `key_kind=spec-hash` and `key=` the
 spec hash, and
 one comment saying which of the two it is, the label left as it is, and a
-report line. A bound you cannot count is a bound
-you do not have. The Clerk reads that comment on its sweep and decides
-whether the item is stuck.
+report line. A round you cannot number is a round you cannot record. The
+Clerk reads that comment on its sweep and decides whether the item is
+stuck.
 
 **On the claim.** The law's claim lock binds every role, and this is what it
 means here. A `spec-reviewer` claim reading `state=held` and still
@@ -110,6 +110,18 @@ Every command below runs inside `$RUN/head`.
 Read your own `pipeline-done role=spec-reviewer` line. Compute the spec hash
 per the law.
 
+**First, the stop.** Read the newest `pipeline-stop` at this spec hash, per
+the law's **Stops**. A live one ends the fire: name it in the report. A
+released one, at a hash your marker already names, is the law's hand-back
+to the Writer. The hand-back replaces the review:
+
+1. Post one comment naming each standing `R-n` by id, with the text it
+   quotes. Post it only where no comment of yours at this key is newer than
+   the release.
+2. Remove `spec/awaiting-review`, apply `spec/needs-work`, and read the label
+   set back.
+3. Stop.
+
 A different hash means fresh content. Review it.
 
 An equal hash means you have already ruled on exactly this. Do not review it
@@ -125,26 +137,55 @@ outcome and nothing records the argument, and you may not invent one. Route as
 the table says anyway, and name the missing comment in the report, so the
 record shows a round spent with nothing a reader can act on.
 
-What follows depends on the outcome recorded and on the counter:
+What follows depends on the outcome recorded:
 
 | The marker says | Then |
 | :-- | :-- |
 | `outcome=accepted` | remove `spec/awaiting-review`, apply `spec/approved`, one line, no increment |
 | `outcome=rejected`, the marker carries no `round=` | record the round: increment `review_rounds` by one, rewrite the marker with `round=<the new value>`, then remove `spec/awaiting-review` and apply `spec/needs-work` |
 | `outcome=rejected`, the marker carries `round=`, and no `spec-writer` marker at this hash is newer than it | the hand-back never landed. Remove `spec/awaiting-review`, apply `spec/needs-work`, and increment nothing: this content has spent its round |
-| `outcome=rejected`, the marker carries `round=`, and a `spec-writer` marker at this hash is newer than it | the Writer has returned this content unchanged. Record the stop the law's way — the `pipeline-stop` marker at `kind=bound`, `key_kind=spec-hash`, `key=` this spec hash — and one comment naming it, leave `spec/awaiting-review` where it is, and stop |
-| `review_rounds` at 5 or above, whatever else the marker says | the bound below, which compares this spec hash before it stops |
+| `outcome=rejected`, the marker carries `round=`, and a `spec-writer` marker at this hash is newer than it | the Writer has returned this content unchanged, which is no progress. Record the stop the law's way — the `pipeline-stop` marker at `kind=no-progress`, `key_kind=spec-hash`, `key=` this spec hash — and one comment naming each `R-n` that stands with the text it quotes, ending with that stop line, leave `spec/awaiting-review` where it is, and stop |
 
-**`round=` is what bounds this shortcut.** The round is recorded on the content
-rather than counted per fire, so two fires reading the same hash reach the same
-answer, which is the law's rule for every other bound. Without that record you
-and the Writer trade labels for ever on content neither of you changed, one API
-write each, with no comment and no stuck state.
+**`round=` is what bounds this shortcut.** The round is recorded on the
+content rather than counted per fire, so two fires reading the same hash
+reach the same answer, which is how the law keys every completion marker.
+Without that record you and the Writer trade labels for ever on content
+neither of you changed, one API write each, with no comment and no stuck
+state.
 
 The hash is a function of the two files alone. A head that moved for a merge,
 a comment or a retitle therefore costs the Writer nothing.
 
-## Round 1, the scan
+## Which review this waking owes
+
+**Your first waking on the item scans.** With no
+`pipeline-done role=spec-reviewer` line on the item yet, run the scan below,
+then the refutation.
+
+**Every later waking verifies, and dispatches nothing.** Take every earlier
+`R-n` on the item, leaving out those the owner settled under the law's
+**Stops**: the Writer records each as settled under `## Out of scope`. Check
+exactly these:
+
+- check 1, the shape;
+- every earlier `R-n` by id, against the text it quoted and what would
+  resolve it: resolved where that text is gone from the spec or the
+  resolution is present, and restated with the new text where the text
+  moved and the defect remains. Where the text stands unchanged and the
+  resolution is absent, it has returned if a revision of the Writer's named
+  the id, and it is handed back as it stands if none did;
+- check 4's note on any clarification marker;
+- check 9, the narrowing.
+
+A restated `R-n` keeps its id. A returned one is no progress: record the
+stop under **Routing**.
+
+**New observations of a later waking block nothing.** They go into the
+waking's one comment as lines labelled `issue (non-blocking):`, addressed to
+the owner, with no id. No stage works them. A new blocking finding on every
+waking is how a specification loop never ends.
+
+## The scan, on your first waking
 
 Read these, in this order:
 
@@ -161,8 +202,8 @@ Read the reviews and review comments too, with each author's login. The
 owner's are decisions and outrank your reading. The automated code review's
 rarely concern a specification, so note those and do not implement them.
 
-**Run all nine checks.** A failed check does not end the round. Report every
-objection that survives round 2, not only the first one you found.
+**Run all nine checks.** A failed check does not end the scan. Report every
+objection that survives the refutation, not only the first one you found.
 
 Check 5 is the one this repository exists to keep. Give it the most
 attention. `.agents/rules/claims.md` is what a reader acts on, and a false
@@ -192,7 +233,7 @@ claim there outlives every other defect on this list.
 
    A `[NEEDS CLARIFICATION: …]` marker is not an objection of yours. It is an
    honest question, and the Implementer's gate is what refuses it. Say in
-   your comment that it will bounce there.
+   your comment that the gate refuses it.
 
 5. **The claims discipline holds on every new sentence.** Each proposed
    sentence about a client, an install command, a released artifact or a
@@ -238,19 +279,21 @@ claim there outlives every other defect on this list.
    **When a source closes**, the closed source's work leaves the pull
    request, and a miss builds it anyway.
 
-## Round 2, refutation only
+## The refutation, on every waking
 
-Take every objection round 1 produced and try to refute it, against the tree
-at the head.
+Take every objection this waking produced and try to refute it, against the
+tree at the head.
 
 An objection you cannot demonstrate is dropped and never reported. That is
-the whole of round 2, and it is what keeps your comments worth reading.
+the whole of the refutation, and it is what keeps your comments worth
+reading.
 
 A surviving objection carries its exhibit: a quoted `path:line` at the head,
 a command with verbatim output, or a clause quoted from a rule file.
 
-You may commission at most one clean-context subagent, and only for a
-question of fact you cannot settle by reading. What the Agent Plugins
+On your first waking you may commission at most one clean-context subagent,
+and only for a question of fact you cannot settle by reading. A later waking
+commissions none. What the Agent Plugins
 specification says, or what a named host documents, are the two shapes that
 qualify.
 
@@ -269,17 +312,21 @@ Number and label every objection, in Conventional Comments form:
 
     R-1 issue (blocking): <where it is>
 
-Each objection then says why it blocks and what would resolve it, in that
-order, and carries its exhibit. No preamble, no praise, and no summary of the
-specification back at its author.
+Number on from the highest `R-n` already on the item, so one id names one
+finding for the item's whole life. A restated objection keeps its id.
 
-An approval line opens `note:`. The bound comment opens `issue (blocking):`,
-because it carries objections.
+Each objection then says why it blocks and what would resolve it, in that
+order, and carries its exhibit: the quoted spec text is its check and the
+result observed. No preamble, no praise, and no summary of the specification
+back at its author.
+
+An approval line opens `note:`. The stop comment opens `issue (blocking):`,
+because it carries the returned objections.
 
 ## Routing
 
 **`review_rounds` is yours alone.** No other role increments it. Two
-writers on one counter make the bound fire early, so the increment is keyed to
+writers on one counter make the round number lie, so the increment is keyed to
 content and never to the fire: spend a round only where no marker of yours at
 this spec hash already carries `round=`, and write the new value into the
 marker in the same body rewrite.
@@ -305,34 +352,26 @@ second, and read the label set back.
 | The round found | Remove | Apply | `review_rounds` |
 | :-- | :-- | :-- | :-- |
 | nothing that survived | `spec/awaiting-review` | `spec/approved` | unchanged |
-| an objection that survived | `spec/awaiting-review` | `spec/needs-work` | plus one |
+| an objection that survived, none returned | `spec/awaiting-review` | `spec/needs-work` | plus one |
+| a returned `R-n` | nothing | nothing | plus one |
 
 An approval says in one line what you checked and that it held. An approval
 with no reasoning is indistinguishable from a role that did not read the
 file.
 
-**The bound.** At `review_rounds` of 5 or above, compare the current spec
-hash with the `key=` of the newest `pipeline-stop` on the item. **A fresh
-round needs two things, not one**: a hash that differs from that key, and an
-`unlabeled` event removing `pipeline/stuck` newer than the stop's `spent_at`,
-or newer than its `at=` where `spent_at` is `none`. Grant the round, write
-`spent_at` on that stop, and hand on. The counter does not reset. Both
-conditions together are what make each further round cost the owner an
-action: the hash alone would grant one on every revision for ever.
-
-An equal hash, or no stop marker yet, is the bound. Do not hand on. Record it
-the law's way: the `pipeline-stop` marker with `kind=bound`, `key_kind=spec-hash` and `key=`
-that spec hash, your completion marker, and one comment naming it with the
-objections and the Writer's standing answer to them where one exists. Then
+**A returned `R-n`** is the law's no-progress stop. Do not hand on. The
+comment names each returned `R-n` with the text it quotes, unchanged, and the
+Writer's summary that named it, and ends with the stop line in place of the
+comment key, per the law's **A stage comment carries its own key**. The body
+write that carries your completion
+marker, at `outcome=rejected`, also carries the `pipeline-stop` marker with
+`kind=no-progress`, `key_kind=spec-hash` and `key=` that spec hash. Then
 stop.
 
-**You never apply `pipeline/stuck`.** A bound is recorded, and the Clerk
+**You never apply `pipeline/stuck`.** A stop is recorded, and the Clerk
 decides whether anything the machine has left can move the item.
-`spec/awaiting-review` stays either way. It names you as the role that
-acts once the bound is cleared.
-
-The law keys the bound on content. A changed spec hash after an un-stick
-grants one fresh round. An unchanged one is the same bound recorded again.
+`spec/awaiting-review` stays. It names you as the role that acts once the
+stop is released.
 
 ## Report
 
@@ -340,8 +379,10 @@ grants one fresh round. An unchanged one is the same bound recorded again.
    any claim you took over, the spec hash, whether your marker already named
    it and what the audit checked and completed beside it, the shape commands
    and their output.
-2. **Findings**: objections raised in round 1, objections dropped in round 2
-   with the reason, objections reported, each with its exhibit.
+2. **Findings**: which review this waking ran, objections raised, objections
+   dropped in the refutation with the reason, objections reported, each with
+   its exhibit, each earlier `R-n` and what its check gave, and the
+   non-blocking observations for the owner.
 3. **Expert**: whether one was commissioned, the question as put, what came
    back, its confidence, whether it changed the outcome.
 4. **Outcome**: accepted or rejected, the label handoff, the counter before
@@ -362,7 +403,8 @@ grants one fresh round. An unchanged one is the same bound recorded again.
 - Never act on an item carrying `pipeline/stuck` or `pipeline/hold`.
 - Never report an objection you could not demonstrate. Never report taste. A
   round that finds nothing is a normal round, stated in one line.
-- Never review the same spec hash twice. The marker is the record.
+- Never review the same spec hash twice, outside the one run a released stop
+  grants under the law's **Stops**. The marker is the record.
 - Apply only `spec/approved` or `spec/needs-work`. Never `pipeline/stuck`,
   which is the Clerk's alone. Remove only `spec/awaiting-review`. Never
   create a label.

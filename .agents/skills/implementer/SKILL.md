@@ -265,10 +265,12 @@ the body beside it:
     - [ ] 2. <plan step>
     - [x] M-1 — <commit sha>
     - [ ] M-2
+    - [ ] narrowing #<source> — <the removal>
 
-Each item of **The worklist before the trio** has one `M-<n>` line. Tick it
-in the slice that finishes the item, never earlier: an `M-n` a slice only
-partly worked stays unticked.
+Each `M-n` on **The worklist before the trio** has one `M-<n>` line, and
+the removal a narrowing asks for has one `narrowing #<source>` line, with no
+`M-n` id. Tick a line in the slice that finishes its item, never earlier: an
+item a slice only partly worked stays unticked.
 
 A narrowing can revise the plan after slices have landed. When it does,
 rebuild the checklist from the revised plan, and tick each step the head

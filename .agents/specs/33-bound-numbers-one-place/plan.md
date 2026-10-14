@@ -2,8 +2,8 @@
 
 ## Steps
 
-1. **Bring `main` in.** This branch's head, `704957d`, is 48 commits behind
-   `main` (`281b817` when this plan was written), and every line `spec.md`
+1. **Bring `main` in.** This branch's head, `2213313`, is 54 commits behind
+   `main` (`29a99ad` when this plan was written), and every line `spec.md`
    cites is `main`'s. Merge `main` into the branch, as the law's
    **The branch never stops being mergeable** says: merge, never rebase.
    No conflict is expected, because the branch changes only
@@ -16,7 +16,7 @@
 3. **The Spec Writer and the Spec Reviewer.** Make the three replacements in
    `.agents/skills/spec-writer/SKILL.md` and
    `.agents/skills/spec-reviewer/SKILL.md` that § 2 and § 3 give.
-4. **The Implementer.** Make the twelve replacements in
+4. **The Implementer.** Make the thirteen replacements in
    `.agents/skills/implementer/SKILL.md` that § 4 gives.
 5. **The Clerk.** Make the three replacements in
    `.agents/skills/pipeline-clerk/SKILL.md` that § 5 gives.
@@ -39,7 +39,7 @@ not that this change is right. The checks below are what prove the change.
 After the last of steps 2 to 5, per acceptance criterion:
 
 1. The `git grep -nE` pattern of criterion 1, run over `.agents/skills/`,
-   prints nothing. Before the change it prints 20 lines at `281b817`. Quote
+   prints nothing. Before the change it prints 20 lines at `29a99ad`. Quote
    both outputs.
 2. Read `### How every bound behaves` in
    `.agents/skills/pipeline-law/SKILL.md`. Quote the bold line and the table.

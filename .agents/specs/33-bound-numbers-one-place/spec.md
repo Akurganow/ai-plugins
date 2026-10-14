@@ -8,9 +8,14 @@ counter instead of restating the number.
 
 ## Problem
 
-All line numbers below are read at `origin/main` `281b817`. This branch's head,
-`704957d`, is 48 commits behind `main`, and `## Steps` merges `main` in first.
-Every quote was re-read there.
+All line numbers below are read at `origin/main` `29a99ad`. This branch's head,
+`2213313`, is 54 commits behind `main`, and `## Steps` merges `main` in first.
+Every quote was re-read there. The previous revision of this specification
+read them at `281b817`. Every line it cites reads the same at `29a99ad`. In
+the five files `## Proposed change` names, the six commits between them change
+one line of `pipeline-clerk/SKILL.md` (`:542`) and one of
+`pipeline-law/SKILL.md` (`:148`), and neither is a line this item cites. Read
+6 of `agent-police/SKILL.md` is unchanged.
 
 The law's bound section names the four bounds and the `slices` pace, but it
 states no number for any of them.
@@ -24,7 +29,7 @@ states no number for any of them.
 
 Only `slices` gets a number there ("at three"). Each role states the others,
 and two numbers are stated in more than one role document. This is the census
-of every place a document states a counter's number, at `281b817`. It comes
+of every place a document states a counter's number, at `29a99ad`. It comes
 from the criterion 1 pattern of `## Acceptance criteria`, run over
 `.agents/skills/`, plus a read of the law's section. The law's "at three"
 spans a line break, so the pattern cannot see it:
@@ -32,7 +37,7 @@ spans a line break, so the pattern cannot see it:
 | Counter | Value | Stated at | Documents |
 | :-- | :-- | :-- | :-- |
 | `review_rounds` | 5 | `spec-reviewer/SKILL.md:136`, `:314`; `spec-writer/SKILL.md:365` | 2 |
-| `slices` | 3 | `pipeline-law/SKILL.md:748-749`; `implementer/SKILL.md:59`, `:327`, `:328`, `:618`; `pipeline-clerk/SKILL.md:106` | 3 |
+| `slices` | 3 | `pipeline-law/SKILL.md:748-749`; `implementer/SKILL.md:59`, `:327`, `:328`, `:333` ("Three slices a day"), `:618`; `pipeline-clerk/SKILL.md:106` | 3 |
 | `gate_bounces` | 2 | `implementer/SKILL.md:138`, `:181` ("A first"), `:185`, `:192` ("A second"), `:195`, `:210` | 1 |
 | `judge_rejects` | 2 | `implementer/SKILL.md:468-469`, `:474` | 1 |
 | `cr_rounds` | 3 | `pipeline-clerk/SKILL.md:375`, `:396` | 1 |
@@ -42,6 +47,7 @@ The quotes for the two counters stated in more than one place:
 - `.agents/skills/spec-reviewer/SKILL.md:314`: "**The bound.** At `review_rounds` of 5 or above, compare the current spec"
 - `.agents/skills/spec-writer/SKILL.md:365`: "**The bound.** Read `review_rounds` from the state block. At 5 or above,"
 - `.agents/skills/implementer/SKILL.md:59`: "`slices` as 0. When it is today and `slices` is 3 or above, stop here:"
+- `.agents/skills/implementer/SKILL.md:333-334`: "Three slices a day is the owner's deliberate pace, not a limitation to work around."
 - `.agents/skills/pipeline-clerk/SKILL.md:106`: "| `spec/approved`, a claim released, and a `pipeline-progress` line with `slices` at 3 or above and `slices_day` before today | re-enter `spec/approved` |"
 
 None of them attributes its number to another document. Raising
@@ -51,7 +57,7 @@ takes one in three.
 **Stale evidence in the source.** #33 has two parts. Part 1 says the bound
 section leaves out `cr_rounds`, quoting `pipeline-law/SKILL.md:449` as
 "There are four: `review_rounds`, `gate_bounces`, `judge_rejects`, `slices`."
-That no longer holds. At `281b817`, `:745-746` reads "There are four:
+That no longer holds. At `29a99ad`, `:745-746` reads "There are four:
 `review_rounds`, `gate_bounces`, `judge_rejects` and `cr_rounds`." The court's
 comment on #33 found this half stale at `6186006`. It named `2f95600` as the
 commit that fixed it. Part 2's line numbers have drifted too:
@@ -83,7 +89,7 @@ This change applies the same pattern to the counters.
 
 Five files change, all under `.agents/skills/`. No other path changes.
 
-None of these paths is in the law's forbidden-paths table at `281b817`. The
+None of these paths is in the law's forbidden-paths table at `29a99ad`. The
 law says, under **What no role writes**, "`.agents/**` is **not** forbidden
 either." The commit that made it so is `2efd620`, "chore(agents): let the
 pipeline write .agents/", dated 2026-10-12. This item's earlier stop, of
@@ -177,6 +183,11 @@ paragraph stays.
 - `:474`: replace "`judge_rejects` at 2 or above follows the law's bound
   rule." with "`judge_rejects` at its bound or above follows the law's bound
   rule."
+- `:333-334`: replace "Three slices a day is the owner's deliberate pace,
+  not a limitation to work around." with "The day's cap is the owner's
+  deliberate pace, not a limitation to work around." The sentence before it,
+  "At the cap, leave `spec/approved` in place […]", already names the cap and
+  stays.
 - `:618`: replace "Never run more than three slices on one item in one UTC
   day," with "Never run more slices on one item in one UTC day than the day's
   cap,".
@@ -217,7 +228,7 @@ changes no word.
 
 ## Acceptance criteria
 
-1. `git grep -nE '[0-9] or above|\bat three\b|\bat (2|3|5)\b|Below 3|more than three slices|gate_bounces=[12]|A (first|second) gate failure|second consecutive rejection' -- .agents/skills/`
+1. `git grep -nE '[0-9] or above|\bat three\b|\bat (2|3|5)\b|Below 3|more than three slices|[Tt]hree slices|gate_bounces=[12]|A (first|second) gate failure|second consecutive rejection' -- .agents/skills/`
    prints nothing.
 2. `.agents/skills/pipeline-law/SKILL.md` contains the line
    `**Each counter's number is stated here and nowhere else.**` and a table
@@ -226,9 +237,10 @@ changes no word.
    `` `judge_rejects` | 2 ``, `` `cr_rounds` | 3 ``,
    `` `slices` | 3, the day's cap ``.
 3. `.agents/skills/pipeline-law/SKILL.md` no longer contains
-   `three the Implementer stops`. Each of the 20 lines criterion 1's pattern
-   matches at `281b817` reads, after the change, as `## Proposed change`
-   writes it.
+   `three the Implementer stops`. Criterion 1's pattern, run as
+   `git grep -nE '<pattern>' 29a99ad -- .agents/skills/`, prints 20 lines: the
+   twenty role lines of the census in `## Problem`. Each of them reads, after
+   the change, as `## Proposed change` writes it.
 4. Each of the four role files `spec-writer`, `spec-reviewer`, `implementer`
    and `pipeline-clerk` contains `How every bound behaves` at least once.
 5. `.agents/skills/agent-police/SKILL.md` is unchanged. Its line "from 3 to 5"

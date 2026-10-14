@@ -519,8 +519,14 @@ The deletion commit's parent is where the files were still present.
   `VERDICT: REJECTED`, and the five field names other than `returned:` must
   appear. A `REJECTED` carries `returned:` too, empty where nothing returned,
   and an `ACCEPTED` carries none. Any other shape is not a verdict: ask once
-  for the block in the required form. If it still does not come, treat the
-  round as rejected and say so.
+  for the block in the required form. A second answer not in that form is a
+  condition the stage cannot work around (the law's second stop kind):
+  write the `role=implementer` marker with `outcome=rejected` at the tree
+  id, post one comment quoting both answers' first lines and ending with
+  the law's `pipeline-stop` marker at `kind=condition`, `key_kind=tree-id`
+  and `key=` the tree id, keep `spec/approved`, and end without re-entering.
+  It carries no `returned:` and no `must_change`, so neither rejected path
+  below applies, and the Clerk decides whether the item is stuck.
 
   An earlier `M-n` the prosecutor quoted no output for is struck from
   `returned:`. One whose result moved is work: the judge restates it in

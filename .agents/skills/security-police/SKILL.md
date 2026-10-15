@@ -75,7 +75,7 @@ thumb: no outsider in the scenario, no finding here.
 `police-law`, "The fence". It stops short of your subject in four places.
 Nothing in CI audits a workflow's triggers, permissions or pins. Nothing scans
 history for secrets. Nothing reads what a role does with a stranger's text.
-Nothing in CI checks a release after it is created.
+After a release is created, CI runs the evals over its tag and nothing else: no job verifies the integrity of what was published.
 
 ## What you need from the code host beyond github-needs
 

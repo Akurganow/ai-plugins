@@ -61,8 +61,7 @@ stated here** — this list says only that they exist and under which heading,
 so read them there before going near any of the three:
 
 - **Versions**, on the files a release writes, which nobody edits by hand.
-  The release job in another repository writes howp's;
-  `.github/workflows/release.yml` writes every other package's.
+  `.github/workflows/release.yml` writes them.
 - **The vendored schema is a copy, not a source**, on `tools/schemas/` and on
   what may replace it.
 - **Text only**, on what may be committed to this repository at all.

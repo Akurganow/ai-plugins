@@ -50,14 +50,6 @@ Never edit `version` in a `plugin.json`, and never edit a package's
 `CHANGELOG.md`. [`release.yml`](.github/workflows/release.yml) writes both when
 it releases a package.
 
-The repository that builds the `hp` binary releases `howp`. That release
-writes four files here, and nobody edits them by hand:
-
-- `version` in `plugins/howp/plugin.json`
-- `plugins/howp/binaries.json`
-- `plugins/howp/skills/forecast/references/commands.md`
-- `plugins/howp/.claude-plugin/plugin.json`, a byte copy of `plugins/howp/plugin.json`
-
 ## Run the checks
 
 CI runs these checks on every pull request. Run them before you push.

@@ -100,7 +100,6 @@ Each name links to the plugin's README.
 | :-- | :-- |
 | [cognitive-load](plugins/cognitive-load/README.md) | Separates the cognitive load a task needs from the load a code base's structure adds, and names the change that removes the second. |
 | [design-review](plugins/design-review/README.md) | Reviews a software design for complexity with the red flags and principles of Ousterhout's A Philosophy of Software Design, each finding cited by chapter. |
-| [howp](plugins/howp/README.md) | Turn what you follow into measurable questions, bind them to Polymarket and Manifold markets, and write a forecast from their probabilities and the agent's judgement. |
 | [prose-discipline](plugins/prose-discipline/README.md) | An engineering prose standard for agent-written text: short active sentences, plain words, comments that explain why, and labelled review comments. |
 | [toc-thinking](plugins/toc-thinking/README.md) | Applies Goldratt's Thinking Processes to software: finds the core problem behind many symptoms, resolves the conflict that sustains it, and plans the change. |
 | [triz](plugins/triz/README.md) | Resolves software trade-offs with TRIZ: the contradiction matrix and 40 inventive principles, the separation principles, and ARIZ-85C walked part by part with the user. |
@@ -115,11 +114,10 @@ arbitrary code on your machine with your user privileges". Source:
 [Plugin security and trust](https://code.claude.com/docs/en/plugins/security),
 Claude Code documentation, read 2026-09-25.
 
-Read a plugin's README and files before you install it. `howp` downloads a
-released binary, checks its sha256 and runs it. `prose-discipline` runs a
-shell script from its hooks when a session or a subagent starts, in clients
-that run plugin hooks. The other plugins carry instructions and reference text
-only.
+Read a plugin's README and files before you install it. `prose-discipline`
+runs a shell script from its hooks when a session or a subagent starts, in
+clients that run plugin hooks. The other plugins carry instructions and
+reference text only.
 
 ## Layout
 
@@ -132,8 +130,6 @@ plugins/<name>/
   LICENSE                         generated copy of the root LICENSE
   skills/<skill>/SKILL.md         a skill, Agent Skills format
   skills/<skill>/references/      files the skill reads when a step needs them
-  binaries.json                   howp only: released binaries and their sha256,
-                                  written by the howp release
 tools/check-conformance.py        the conformance check
 tools/evals.py                    the post-release evals runner, with selftest and validate
 tools/evals-fixtures/             event streams recorded from the clients, for the selftest
@@ -146,7 +142,6 @@ docs/clients.md                   how each client loads a package, with sources
 docs/design.md                    why the repository is built this way
 evals/<name>/<skill>/             prompts and Jev questions for one skill's evals
 cog.toml                          release configuration, one entry per package
-                                  but howp
 .github/                          CI workflows and issue forms
 ```
 

@@ -21,13 +21,6 @@
       "category": "Developer Tools"
     },
     {
-      "name": "howp",
-      "source": "./plugins/howp",
-      "description": "Turn what you follow into measurable questions, bind them to Polymarket and Manifold markets, and write a forecast from their probabilities and the agent's judgement.",
-      "homepage": "https://github.com/Akurganow/ai-plugins/tree/main/plugins/howp",
-      "category": "Data & Analytics"
-    },
-    {
       "name": "prose-discipline",
       "source": "./plugins/prose-discipline",
       "description": "An engineering prose standard for agent-written text: short active sentences, plain words, comments that explain why, and labelled review comments.",

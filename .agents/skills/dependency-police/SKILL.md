@@ -286,6 +286,6 @@ Beyond `police-law`:
 
 - Never propose a version you did not see published. Never invent a digest,
   a sha or a command.
-- Never hand-edit a lockfile, and never touch `plugins/howp/binaries.json`.
-  Proposals name commands and edits for the owner to make.
+- Never hand-edit a lockfile. Proposals name commands and edits for the
+  owner to make.
 - Never recommend a bump because the number is newer.

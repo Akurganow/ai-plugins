@@ -1,7 +1,6 @@
 # cocogitto configuration (https://docs.cocogitto.io/reference/config).
 # Each package under plugins/ is released on its own, from the conventional
-# commits that touched its directory. howp is not listed: the job that
-# publishes its binaries writes its version.
+# commits that touched its directory.
 
 # Tags read <name>--v<version>, the form Claude Code documents for plugin
 # dependencies (https://code.claude.com/docs/en/plugins/dependencies).

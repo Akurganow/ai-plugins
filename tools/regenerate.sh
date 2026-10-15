@@ -215,12 +215,10 @@ render_template tools/templates/install.md '<name>' >"$WORK/install.md" ||
 replace_region README.md install "$WORK/install.md"
 
 # 5. A table of contents at the top of every reference longer than 100 lines,
-#    and of every reference that already has one. howp's commands.md is
-#    excluded: its release job writes it. Then the root README's table of
-#    contents, two levels deep, once the README carries doctoc's markers.
+#    and of every reference that already has one. Then the root README's table
+#    of contents, two levels deep, once the README carries doctoc's markers.
 tocs=()
 while IFS= read -r -d '' file; do
-  case "$file" in plugins/howp/skills/*/references/commands.md) continue ;; esac
   if [ "$(wc -l <"$file")" -gt 100 ] || grep -q '^<!-- START doctoc ' "$file"; then
     tocs+=("$file")
   fi

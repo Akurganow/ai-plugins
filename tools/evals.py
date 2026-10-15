@@ -1190,7 +1190,7 @@ def _selftest_publish() -> None:
               f"```\n```python\n{mark['i']}\n```\n{mark['h']}\n")
     assert fingerprint_lines(nested) == [mark["h"]], fingerprint_lines(nested)
     assert package_of("triz--v0.2.0") == "triz"
-    for bad in ("howp-v0.3.12", "nosuch--v1.0.0"):
+    for bad in ("triz-v0.3.12", "nosuch--v1.0.0"):
         try:
             package_of(bad)
         except SystemExit:

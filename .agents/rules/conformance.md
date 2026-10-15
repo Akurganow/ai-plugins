@@ -123,20 +123,12 @@ The rules that decide whether a client loads a package at all:
 
 ## Versions
 
-The release job that builds and publishes the binaries writes four files.
-It writes `version` in `plugins/howp/plugin.json`, the whole of
-`plugins/howp/binaries.json` and
-`plugins/howp/skills/forecast/references/commands.md`, and nothing else writes
-them. It also writes `plugins/howp/.claude-plugin/plugin.json` as a byte copy
-of `plugin.json`; `tools/regenerate.sh` writes the same bytes. **Nobody
-edits any of the four by hand, ever.** Each is a claim about a released
-artifact: a hand edit asserts a version, a digest or a target that no
-release produced, and the next release overwrites it without noticing.
-Every package but howp is released by `.github/workflows/release.yml`,
-which runs cocogitto. It writes `version` in each `plugins/<name>/plugin.json`
-and in its `.claude-plugin/plugin.json` copy, and each
-`plugins/<name>/CHANGELOG.md`. Nobody edits those by hand either, for the same
-reason.
+Every package is released by `.github/workflows/release.yml`, which runs
+cocogitto. It writes `version` in each `plugins/<name>/plugin.json` and in
+its `.claude-plugin/plugin.json` copy, and each `plugins/<name>/CHANGELOG.md`.
+**Nobody edits those by hand, ever.** Each is a claim about a released
+artifact: a hand edit asserts a version no release produced, and the next
+release overwrites it without noticing.
 **The catalogue index carries no version at all**: `.claude-plugin/marketplace.json`
 has no top-level `version`, none under `metadata`, and no `version` in a
 plugin entry, because a version no machine writes is a version somebody moves

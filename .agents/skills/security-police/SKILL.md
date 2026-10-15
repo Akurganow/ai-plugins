@@ -13,8 +13,6 @@ Mission: find what an outside party could exploit.
 - A credential in the tree or in any commit.
 - A workflow an attacker can steer, or one that hands a secret to code the
   attacker influences.
-- A released `howp` binary, or the checksums that vouch for it, that someone
-  other than the owner could replace or alter.
 - A script a package installs and runs on a user's machine.
 - A role that reads text a stranger wrote and acts on it as an instruction.
 
@@ -34,9 +32,8 @@ Argue every finding against it.
   every push to `main` with `contents: write`.
 - `release.yml` calls `evals.yml`, which receives API keys and runs model
   clients against released package text.
-- `howp` makes a user's machine download a binary and run it. `prose-discipline`
-  makes it run a shell script at the start of a session. `README.md`, "Trust",
-  says so.
+- `prose-discipline` makes a user's machine run a shell script at the start
+  of a session. `README.md`, "Trust", says so.
 - The agent roles act with write access to this repository and read issues,
   comments and pull requests that strangers write.
 
@@ -54,11 +51,9 @@ Measure it against the workflow files and the protection settings as read.
    every fire owes.
 4. `SECURITY.md`: the private reporting route, the supported versions, and
    which reports belong in the advisory form.
-5. `README.md`, "Trust", and `plugins/howp/skills/forecast/references/install.md`:
-   what a user's machine downloads and runs.
-6. `.agents/rules/conformance.md`, "Versions": which job writes
-   `plugins/howp/binaries.json`, so you know what is released and what is
-   hand-edited.
+5. `README.md`, "Trust": what a user's machine runs.
+6. `.agents/rules/conformance.md`, "Versions": which files the release
+   writes, so you know what is released and what is hand-edited.
 7. `.agents/skills/pipeline-law/SKILL.md`, "What a fired stage trusts": the
    recorded discipline for text strangers write.
 
@@ -80,8 +75,7 @@ thumb: no outsider in the scenario, no finding here.
 `police-law`, "The fence". It stops short of your subject in four places.
 Nothing in CI audits a workflow's triggers, permissions or pins. Nothing scans
 history for secrets. Nothing reads what a role does with a stranger's text.
-`integration.yml` checks the signature on the `howp` checksum table and the
-archive's digest against it. It checks nothing else about a release.
+After a release is created, CI runs the evals over its tag and nothing else: no job verifies the integrity of what was published.
 
 ## What you need from the code host beyond github-needs
 
@@ -140,22 +134,13 @@ another surface.
       A stranger's pull request supplies a commit header. Trace how it becomes
       a `CHANGELOG.md` entry and release notes, and whether any step treats it
       as more than text.
-   3. **The released binaries.** Read `plugins/howp/binaries.json`, the
-      `howp-archive` job of `integration.yml` and the install steps of
-      `plugins/howp/skills/forecast/references/install.md`. Ask who other than
-      the owner could make a user's machine run a binary the owner did not
-      release. Measure what each check ties to what. A digest ties the archive
-      to `binaries.json`. A signature ties the checksum table to its signer.
-      Find what ties `binaries.json` to either. Compare digests only. Never
-      unpack an archive and never run `hp`, because a swapped archive would run
-      on the analyst's machine.
-   4. **Scripts a package runs on a user's machine.**
+   3. **Scripts a package runs on a user's machine.**
       `plugins/prose-discipline/hooks/hooks.json` and `print-rules.sh`, and any
       other hook, script or install command under `plugins/`. For each: what it
       reads, who writes that, and whether it reaches a shell, an `eval` or a
       path outside the plugin root. Find the others with a census of `hooks`,
       `*.sh` and `curl` over `plugins/`, planted positive first.
-   5. **The agentic surface.** The roles under `.agents/skills/` and
+   4. **The agentic surface.** The roles under `.agents/skills/` and
       `.claude/agents/` act as the owner and read strangers' text. The recorded
       defence is the two-part test of `github-needs`, "The machine population",
       and `pipeline-law`, "What a fired stage trusts". A finding is a place
@@ -163,7 +148,7 @@ another surface.
       under `.github/ISSUE_TEMPLATE/` for the labels it applies. A form that
       applies `police-report` lets a stranger's issue into the machine
       population.
-   6. **Open code-scanning alerts.** Each is a candidate, never a finding.
+   5. **Open code-scanning alerts.** Each is a candidate, never a finding.
 
 ## The kinds you file
 
@@ -340,7 +325,7 @@ Effort: S|M|L — Risk: low|medium|high — Confidence: confirmed | demonstrated
 
 The fingerprint value:
 
-- `<surface>` is the sweep that found it: `secrets`, `workflows`, `binaries`,
+- `<surface>` is the sweep that found it: `secrets`, `workflows`,
   `scripts`, `agentic` or `code-scanning`.
 - `<path>` is the file of the unguarded place.
 - `<kind>` is one of the kinds above.

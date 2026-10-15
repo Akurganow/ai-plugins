@@ -73,17 +73,11 @@ Never a finding:
   runner instead of `claude plugin eval`. `conformance.md` argues the two
   checks that duplicate the schema. The workflow's comments say why a commit
   sha and not a tag. Other reviews read these as evidence.
-- **What a release writes.** `version` in `plugins/howp/plugin.json`,
-  `plugins/howp/binaries.json`,
-  `plugins/howp/skills/forecast/references/commands.md` and the
-  `plugins/howp/.claude-plugin/plugin.json` byte copy are machine-written,
-  and `conformance.md` says by whom. A wrong sentence in one is a defect of
-  the release job, in the repository that runs it — never judged here.
-  For every package but howp, `version` in `plugins/<name>/plugin.json` and
+- **What a release writes.** `version` in `plugins/<name>/plugin.json` and
   its `.claude-plugin/plugin.json` copy, and `plugins/<name>/CHANGELOG.md`,
-  are machine-written too. `.github/workflows/release.yml` writes them, and
-  they are never judged here either. Each copy is judged through its source,
-  the root `plugin.json`.
+  are machine-written. `.github/workflows/release.yml` writes them, and
+  they are never judged here. Each copy is judged through its source, the
+  root `plugin.json`.
 - **A cited source and its date.** The per-fact source and its kind, a date
   and a tag beside a measurement. To an outside eye these read as hedging;
   each is a fact.

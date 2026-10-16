@@ -1,8 +1,8 @@
 # Tests: what a test must earn
 
 What a test here must earn beyond being able to fail. Its readers are whoever
-writes or changes a test, every reviewer of one, and the test police. A test
-that cannot fail is slop's `ceremony` (`.agents/rules/slop.md`, "The kinds").
+writes or changes a test, every reviewer of one, and the `tests` department. A
+test that cannot fail is text-residue's `ceremony` (`.agents/rules/slop.md`, "The kinds").
 This file owns the tests that can fail and still cost more than they protect.
 
 ## What counts as a test here
@@ -81,7 +81,7 @@ measurement, no finding. The token is what the fingerprint carries.
 | `redundant` | Every mutation it catches, another test catches. In an eval, two questions of one rubric judge the same rule of the skill | The protection ledger: each mutation it catches, with the other test that goes red on it. For two questions, the rule of the skill each judges, and the recorded answers one marks down that the other also marks down |
 | `over-specified` | The assertion demands more than the requirement, such as exact equality on a float, a cost or a count taken from a trimmed fixture. For a question, the statement is stricter than the skill's rule | The requirement quoted, and an output that meets it and fails the assertion. For a question, a recorded answer that follows the skill's rule and scores no |
 | `disproportionate` | Its machinery outweighs its contract, and a cheaper point already makes the decision. An example is a job that installs clients on three systems to learn what a validator already decides | Four items. The contract in one sentence. The line that makes the decision. The smallest check that guards it, written out and caught by the same mutation. The ways the current test fails with no change to the product, with the CI run minutes or the `cost_usd` of its sessions |
-| `bloat` | A file or cluster grew without a matching contract: more assertions, helpers, cases or sessions than the contracts they pin. A helper with one call site in the selftest belongs here, because the abstraction police stop at test code | Two measured columns. The cost: assertions, lines, helpers, edits in commits that changed no behaviour, and for cases the sessions and their summed `cost_usd`. The protection only these tests provide |
+| `bloat` | A file or cluster grew without a matching contract: more assertions, helpers, cases or sessions than the contracts they pin. A helper with one call site in the selftest belongs here, because the `abstractions` department stops at test code | Two measured columns. The cost: assertions, lines, helpers, edits in commits that changed no behaviour, and for cases the sessions and their summed `cost_usd`. The protection only these tests provide |
 | `misaligned` | A case or question measures something other than the skill's behaviour. Its expectation contradicts the skill's text, a near-miss prompt matches a "Use when" clause of the description, or it breaks a rule `CONTRIBUTING.md` writes for cases | The two texts side by side, each with its permalink at the analysed commit: the case or question, and the clause of the skill or of the rule. A recorded session where the effect shows is a lead |
 | `ceiling` | A rubric question every graded answer passes in both arms. `CONTRIBUTING.md` says to drop it, "because it measures nothing" | Every recorded answer to the question in the comparable releases, labelled yes or no with its evidence quoted, by arm. Beside it the question's mean per arm and repeat from `evals.json`. Ceiling when one label stands in both arms |
 
@@ -181,17 +181,51 @@ rubric edit leaves it describing the old text. The alternative says so.
 
 ## Neighbours
 
-Which role owns a finding is `police-law`, "Ownership routing", with its
-secondary rules. Those rules cover:
+Which department owns a finding is decided by the departments' own scopes.
+These cases belong to the others:
 
-- a test that cannot fail;
-- a case repeated under a second id;
-- a skill text a case contradicts;
-- a defect a test reveals;
-- a pinned version in an assertion step.
+- a test that cannot fail is `text-residue`'s `ceremony`;
+- a case repeated under a second id is `text-residue`'s `residue`;
+- a skill text a case contradicts is `claims`' or `text-residue`'s;
+- a defect a test reveals is `logic`'s;
+- a pinned version in an assertion step is `dependencies`'.
 
 The runner's own functions, `compare` and `metrics` among them, are not
 tests. Only the test code is judged here.
 
-A missing test is not a finding. The police find tests that cost more than
-they protect, and an absent test costs nothing.
+A missing test is not a finding. Tests that cost more than they protect are
+findings, and an absent test costs nothing.
+
+## Where tests live
+
+- **The selftest.** The `_selftest_*` functions and their helpers in
+  `tools/evals.py`, and the fixtures in `tools/evals-fixtures/`. The comment
+  above `_selftest_parsers` gives the fixtures' origin. Two censuses show the
+  usual tells:
+  - process-global writes and patches:
+    ```
+    awk '/^def _selftest_parsers/,/^def main/' tools/evals.py | grep -nE 'os\.environ|^\s*global |subprocess\.run =|urlopen|time\.sleep'
+    ```
+  - exact equality on floats, costs and lengths:
+    ```
+    awk '/^def _selftest_parsers/,/^def main/' tools/evals.py | grep -nE '== [0-9]+\.[0-9]+|cost_usd ==|len\([^)]*\) == [0-9]+'
+    ```
+- **The assertion steps.**
+  ```
+  grep -nE 'grep -q|diff --exit-code|verify-blob|sha256sum -c|exit "\$(status|bad)"' .github/workflows/conformance.yml .github/workflows/integration.yml
+  ```
+  Some assertions appear in both workflows.
+- **The eval folders.** `git ls-files evals`. Each `cases.yaml` and
+  `rubric.yaml` is read against the `SKILL.md` and references of its skill,
+  and against the rules in `CONTRIBUTING.md`.
+- **The records.** The `evals.json` of each release of a package that has
+  cases, selected as "Reading the records" says.
+- **Failure records.** The issues whose title begins `evals:` and whose
+  fingerprint names the role `evals`. Each was filed when the runner saw a
+  metric range that did not overlap. They are leads, never exhibits.
+- **What CI does not prove.** `conformance.yml` proves that `selftest`
+  passes and that every evals folder loads, not that either would fail when
+  it should. Nothing in CI runs a case against a model on a pull request.
+  `integration.yml` calls no model: it asserts that a pinned client lists a
+  skill or shows a package enabled, and says nothing about whether a skill
+  triggers.

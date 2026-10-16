@@ -1,13 +1,12 @@
 ---
 name: github-needs
-description: "What an unattended analysis run of this repository needs from GitHub, stated as needs and never as routes. It defines the machine population, and lists the probe, the listings, the reads of one issue, the full-set label write and the close. It also holds the audit every fire owes and where a run finds its environment's facts. Read it before acting as the Issue Court, the Tracker Clerk or any of the nine police."
+description: "What an unattended analysis run of this repository needs from GitHub, stated as needs and never as routes. It defines the machine population, and lists the probe, the listings, the reads of one issue, the full-set label write and the close. It also holds the audit every fire owes and where a run finds its environment's facts. Read it before acting as the Issue Court or the Tracker Clerk."
 ---
 
 # What a run needs from GitHub
 
-Eleven roles read this file: the Issue Court, the Tracker Clerk and the nine
-police, which `police-law` names. The four pipeline roles read its first
-section, which `pipeline-law` cites.
+Two roles read this file: the Issue Court and the Tracker Clerk. The four
+pipeline roles read its first section, which `pipeline-law` cites.
 
 It names **what** a run needs and never **how** it is reached.
 `.agents/rules/unattended.md` owns that rule: a run reaches GitHub through
@@ -45,7 +44,7 @@ An older prefix names its filer: `repo-audit-routine:` names `repo-police`,
 
 **No issue belongs to a role.** `<role>` records who filed, and grants
 nothing. Every role that reads the tracker lists the population, never a
-subset by filer. The nine police, the Issue Court and both Clerks do.
+subset by filer. The Issue Court and both Clerks do.
 
 **Dedupe.** A filer files nothing whose finding an open issue in the
 population already carries. That holds whatever role filed it and whatever

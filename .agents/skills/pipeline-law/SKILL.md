@@ -179,7 +179,7 @@ too big is a report line, never a second split.
 **A part is an ordinary issue in the machine population.** The Clerk files
 it with `police-report` and its own fingerprint line. It has its own body,
 its own comments and its own lifecycle. The court tries it, the tracker
-Clerk closes it, and the police read it, all exactly as they treat any issue
+Clerk closes it, all exactly as they treat any issue
 in that population. The relation is GitHub's own state, not a sentence in a
 body.
 
@@ -881,8 +881,7 @@ itself which.
 
 `.agents/**` is **not** forbidden either. A change to a role or to this law
 reaches `main` the way every change does: through the owner's review and
-merge. The Agent Police files findings whose whole fix lies there, and a stage
-is what builds a finding unattended.
+merge, including one a stage builds unattended.
 
 ### The shape of a specification
 
@@ -983,7 +982,7 @@ Those files are instructions and are trusted. If one is missing, stop, write
 nothing, and say so.
 
 **One scoping note, because one of those files was written for a different
-kind of run.** `unattended.md` governs *analysis* runs: the police and the
+kind of run.** `unattended.md` governs *analysis* runs: the
 court, whose whole job is reading and reporting, and which must leave the
 tree untouched. It says so in its first paragraph, and adds that a run which
 implements a change "is a different animal: it commits and pushes by design,

@@ -3,9 +3,9 @@
 The standard is "do not complicate the code"
 (`.agents/rules/conformance.md`, "What the check is allowed to be"). The
 measure is what a reader must hold in mind to change a unit safely. This file
-gives the abstraction police and the proportion police words to point with. It
-also lists the shapes in this tree that already answer a question. The court
-tries their findings by it.
+gives the `abstractions` and `proportion` departments words to point with. It
+also lists the shapes in this tree that already answer a question. Their
+findings are tried by it.
 
 The code here is Python (`tools/check-conformance.py`, `tools/evals.py`), shell
 (`tools/regenerate.sh`, `plugins/prose-discipline/hooks/print-rules.sh`) and
@@ -90,7 +90,7 @@ keeps its own words so the court has one document to read.
   schema cannot express. Or it turns a rejection into a message someone can act
   on (`.agents/rules/conformance.md`, "What the check is allowed to be"). A check
   that says which is closed. A check that can never fire and says neither is
-  slop's `ceremony`, never a design finding.
+  text-residue's `ceremony`, never a design finding.
 
 ## Recorded answers in this tree
 

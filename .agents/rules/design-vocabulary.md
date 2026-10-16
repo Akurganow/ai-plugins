@@ -37,8 +37,7 @@ do" and "nothing reaches it". An objection with no symptom is withdrawn.
   trivial line is not this symptom.
 
 The `design-review` package states the first four with chapter references, in
-`plugins/design-review/skills/red-flags/references/red-flags.md`. This file
-keeps its own words so the court has one document to read.
+`plugins/design-review/skills/red-flags/references/red-flags.md`.
 
 ## Rules of judgement
 
@@ -151,7 +150,7 @@ commit.
 - **A step that reports "not run".** The step `Report the prose-discipline hook
   check as not run (Codex)` in `integration.yml` cannot fail. `docs/design.md`,
   "Codex gets its documented hook route", records why it is a notice and not an
-  assertion. The court treats it as recorded.
+  assertion. It is recorded.
 - **A called workflow with a second entry.** `evals.yml` has one caller,
   `release.yml`, and also runs by hand through `workflow_dispatch`. The records
   are the comment above the `evals` job in `release.yml` and `docs/design.md`,

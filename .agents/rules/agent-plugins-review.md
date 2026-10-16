@@ -1,41 +1,5 @@
 # Reviewing a package against Agent Plugins 1.0.0
 
-What `tools/check-conformance.py` does not decide, and the sources of record
-for the claims this marketplace makes. `conformance.md` owns what the check
-decides and what it needs importable.
-
-## What stays by hand
-
-Never re-implement by hand what the check already decides. Four things
-remain:
-
-1. Each `SKILL.md` `name` and `description` is written to actually
-   trigger. It says what the skill does and when to use it, not only
-   what it is.
-2. `keywords` are accurate and not generic. They are search surface too.
-3. `description`, `author`, `homepage` and `repository` are accurate,
-   not merely present.
-4. The vendored schema still equals its published source. The check proves
-   the copy matches the digest it records, and cannot know whether the
-   published file has changed since. Compare
-   `schemas/1.0.0/plugin.schema.json` from the Agent Plugins spec repository
-   byte for byte with `tools/schemas/agent-plugins/1.0.0/plugin.schema.json`.
-   `conformance.md`, "The vendored schema is a copy, not a source", says the
-   copy is replaced only from its source.
-
-Where this summary contradicts the live specification
-(https://agent-plugins.org/specification), the live specification wins.
-
-A plugin README states one sentence on what the plugin does and for whom,
-matches its own `plugin.json` on `name` and `description` and on nothing
-else, lists the shipped components, gets a reader to a sourced install path
-for every surface the root README's Install section lists, shows an example
-where the plugin has runnable behaviour, states prerequisites and
-limitations, and links the marketplace root. It never states a `version`:
-only a release writes it (`conformance.md`, "Versions").
-
-## Sources of record
-
 The sites are the sources of record. Where a repository publishes the same
 text, that copy stands in when the site is blocked. Read a single file from
 `https://raw.githubusercontent.com/<owner>/<repo>/<ref>/<path>`, and clone a
@@ -72,6 +36,32 @@ file and commit.
   it.
 - Diátaxis: https://diataxis.fr/; repository
   https://github.com/evildmp/diataxis-documentation-framework.
+- Codex plugin documentation: https://learn.chatgpt.com/docs/plugins,
+  https://learn.chatgpt.com/docs/build-skills,
+  https://learn.chatgpt.com/docs/hooks.md and
+  https://developers.openai.com/plugins/build/plugins.md. The repository
+  https://github.com/openai/codex held no copy: its `docs/` held fifteen
+  files at `dda2278`, and none mentioned plugins (from source:
+  https://github.com/openai/codex/tree/dda227891d27b6e0f3f244eda149a98d098969ad/docs).
+- Hermes plugin documentation:
+  https://hermes-agent.nousresearch.com/docs/developer-guide/plugins;
+  repository https://github.com/NousResearch/hermes-agent, files
+  `website/docs/developer-guide/plugins/index.md`,
+  `website/docs/user-guide/features/plugins.md`,
+  `website/docs/user-guide/features/skills.md` and
+  `website/docs/user-guide/cli.md`.
+- Oh-My-Pi plugin documentation: https://omp.sh/docs/marketplace; repository
+  https://github.com/can1357/oh-my-pi, files `docs/marketplace.md` and
+  `docs/skills.md`.
+- standard-readme: repository https://github.com/RichardLitt/standard-readme,
+  file `spec.md`.
+- The ecosystems' listing rules. The Claude Code community marketplace:
+  https://code.claude.com/docs/en/plugins.md, section "Submit your plugin to
+  the community marketplace". The Hermes catalogue: `plugin-catalog/README.md`
+  in https://github.com/NousResearch/hermes-agent. The awesome lists: the
+  `CONTRIBUTING.md` of https://github.com/hesreallyhim/awesome-claude-code,
+  https://github.com/travisvn/awesome-claude-skills and
+  https://github.com/ComposioHQ/awesome-claude-skills.
 
 A source the network refuses, site and repository both, is reported as
 blocked, and the checks that depend on it are reported as not run.

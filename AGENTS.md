@@ -18,16 +18,12 @@ rule bears on every change.
 
 | File | Owns |
 | :-- | :-- |
-| `agent-plugins-review.md` | what the check does not decide about a package, and the sources of record for the marketplace's claims |
-| `agent-sources.md` | the published sources the agent configuration rests on |
+| `agent-plugins-review.md` | the sources of record for the marketplace's claims and the agent configuration |
 | `claims.md` | what a sentence about a client may rest on, and that it cites where it was read |
 | `conformance.md` | the check, what the check is allowed to be, package shape, versions |
-| `dependencies.md` | where third-party versions are pinned, and what an update must not break |
 | `design-vocabulary.md` | the words for a design objection, and the shapes in this tree that already answer one |
 | `slop.md` | what generator residue looks like here, and what is protected from that judgement |
-| `tests.md` | what a test must earn here, and where the tests live |
-| `threat-model.md` | what an outside party could exploit, and the surfaces that hold it |
-| `tools.md` | the programs this repository runs and what to read in each |
+| `tests.md` | what counts as a test here, how to read the evals records, and which protections are not findings |
 | `unattended.md` | how a run works when nobody is present to answer |
 
 ## The check
@@ -41,10 +37,8 @@ looks right" is not a result the check produced.
 
 Six roles, as skills under `.agents/skills/`, each with one thin Claude
 binding under `.claude/agents/` that names its skills and carries no role
-text. Four
-pipeline roles share `pipeline-law`. Two roles, the Issue Court and the
-Tracker Clerk, read `github-needs`, and the pipeline roles read its first
-section.
+text. Four share `pipeline-law`. The Issue Court and the Tracker Clerk also
+read `github-needs`, and the pipeline roles read its first section.
 `.agents/manifest.yaml` declares the set and records why each arrangement is
 what it is.
 

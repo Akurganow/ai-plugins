@@ -41,19 +41,14 @@ A case about text that carries no fact is judged by `slop.md`. The finding
 must be one of its five kinds, measured the way that kind prescribes, outside
 "What is protected". A case about a claim on the marketplace is judged by
 `claims.md`, or by `conformance.md` where it concerns the vendored schema. A
-case about this repository's own agent system carries one of three
+case about this repository's own agent system carries one of two
 authorities, which the issue names. Where the case rests on two quotes, the
 authority is the document they come from. That is the law skill the role
 reads, where a role disagrees with its law: `pipeline-law` or `github-needs`.
 Otherwise it is the rule file whose clause it quoted. Where it rests on a
 read with its output, your question is the narrow one that read allows. Was
 it run as the issue states it, and does the output say what the issue
-claims? Where it is an `external-disagreement`, the authority is the
-published source it quotes. Re-read that source as
-`.agents/rules/agent-sources.md` lists it, documentation first per
-`claims.md`. Your question is whether the source says what the issue quotes,
-and whether the rule contradicts it. A case naming none of the three
-authorities fails on that alone.
+claims? A case naming none of these authorities fails on that alone.
 
 A case the evals runner filed has `evals` as its `<role>`, and
 it rests on a measurement, not on a document. Its authority is `regressed`

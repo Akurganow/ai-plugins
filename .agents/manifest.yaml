@@ -90,8 +90,7 @@ x:
           for what a run needs from GitHub. It holds the one definition of
           the machine population, which pipeline-law cites for the four
           pipeline roles, and the one copy of the audit every fire owes and
-          of where a run finds its environment's facts, which five roles
-          each carried before.
+          of where a run finds its environment's facts.
       notCarriedHere: >-
         The measured facts of a routine's environment, and the clone sequence
         that environment needs. Those belong to whoever runs the agent, never

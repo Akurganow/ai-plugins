@@ -14,7 +14,11 @@ contract_version: 1
 
 ## Departments
 
-- abstractions: judged by .agents/skills/police-law/references/design-vocabulary.md
+- abstractions: judged by .agents/rules/design-vocabulary.md
+- proportion: judged by .agents/rules/design-vocabulary.md
+- text-residue: judged by .agents/rules/slop.md
+- claims: judged by .agents/rules/claims.md
+- tests: judged by .agents/rules/tests.md
 
 ## Fence
 
@@ -62,7 +66,6 @@ contract_version: 1
 - tools/evals-fixtures
 - tools/package-lock.json
 - evals
-- .agents
 
 ## Execution
 

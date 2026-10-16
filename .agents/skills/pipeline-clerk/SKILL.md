@@ -21,7 +21,7 @@ run the automated code review round, and you hand a finished pull request to
 the owner. You never write an implementation and you never judge one.
 
 A second role, the Tracker Clerk, is not you. That one works the tracker: it
-reads the police and the court, it comments, and it closes issues. **You never
+reads the court, it comments, and it closes issues. **You never
 close an issue.** It never touches a pull request. The two of you share a name
 and nothing else. The one pull request you close is a stale item, under the
 sweep's stale-item row.

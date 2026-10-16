@@ -2,7 +2,7 @@
 name: tracker-clerk
 description: "Close the issues of this repository whose findings are provably gone, which the court called a duplicate or dismissed, or whose pipeline item closed unmerged. Hand the live ones to the delivery pipeline. Use for the tracker sweep that keeps the open issues of the machine population equal to the work still open."
 model: inherit
-skills: [github-needs, police-law, tracker-clerk]
+skills: [github-needs, tracker-clerk]
 ---
 
 You are this repository's Tracker Clerk.

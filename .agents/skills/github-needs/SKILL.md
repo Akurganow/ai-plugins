@@ -1,13 +1,12 @@
 ---
 name: github-needs
-description: "What an unattended analysis run of this repository needs from GitHub, stated as needs and never as routes. It defines the machine population, and lists the probe, the listings, the reads of one issue, the full-set label write and the close. It also holds the audit every fire owes and where a run finds its environment's facts. Read it before acting as the Issue Court, the Tracker Clerk or any of the nine police."
+description: "What an unattended analysis run of this repository needs from GitHub, stated as needs and never as routes. It defines the machine population, and lists the probe, the listings, the reads of one issue, the full-set label write and the close. It also holds the audit every fire owes and where a run finds its environment's facts. Read it before acting as the Issue Court or the Tracker Clerk."
 ---
 
 # What a run needs from GitHub
 
-Eleven roles read this file: the Issue Court, the Tracker Clerk and the nine
-police, which `police-law` names. The four pipeline roles read its first
-section, which `pipeline-law` cites.
+Two roles read this file: the Issue Court and the Tracker Clerk. The four
+pipeline roles read its first section, which `pipeline-law` cites.
 
 It names **what** a run needs and never **how** it is reached.
 `.agents/rules/unattended.md` owns that rule: a run reaches GitHub through
@@ -25,8 +24,7 @@ An issue is in the machine population when both hold:
 - it carries the label `police-report`;
 - its body carries a fingerprint line. That is an HTML comment on a line of
   its own that begins `<!-- `, outside any code block. Its text begins with
-  `police-fingerprint:`, `repo-audit-routine:`, `slop-police-fingerprint:`,
-  `agent-police-fingerprint:` or `special-police-fingerprint:`.
+  a word ending `-fingerprint:` or with `repo-audit-routine:`.
 
 A marker quoted in a sentence or in a code block counts for nothing.
 
@@ -35,17 +33,12 @@ the skill name of the role that filed it. `<value>` is the finding's identity,
 in the form the filer's skill gives. One filer is not a role: the evals
 runner, `tools/evals.py`, writes `evals` as `<role>` and
 `<package>/<skill>@<client>` as `<value>`. It files nothing whose fingerprint
-line is already on an open issue. The four other prefixes stand on issues
+line is already on an open issue. The older prefixes stand on issues
 already filed, and no filer writes them.
-
-An older prefix names its filer: `repo-audit-routine:` names `repo-police`,
-`slop-police-fingerprint:` names `slop-police`, and
-`agent-police-fingerprint:` names `agent-police`.
-`special-police-fingerprint:` names none.
 
 **No issue belongs to a role.** `<role>` records who filed, and grants
 nothing. Every role that reads the tracker lists the population, never a
-subset by filer. The nine police, the Issue Court and both Clerks do.
+subset by filer. The Issue Court and both Clerks do.
 
 **Dedupe.** A filer files nothing whose finding an open issue in the
 population already carries. That holds whatever role filed it and whatever
@@ -53,21 +46,6 @@ its line's prefix. A finding is the same when its fingerprint value names the
 same file and concept. It is also the same when the issue states the same
 defect in other words. A part the pipeline Clerk cuts from its parent is
 not a second filing of the parent's finding.
-
-**A role's filings** are the open issues in the population whose `<role>`,
-or older prefix, names it. They serve three things its skill gives: its
-backpressure cap, its filing audit, and its note on a stale issue.
-
-**The cap counts fewer.** A role's backpressure cap leaves out a filing
-that a live pipeline item names in the `sources=` of its fingerprint. A live
-item is an open pipeline pull request that carries neither `pipeline/stuck`
-nor `pipeline/hold`. The pipeline is building that finding now, so it is
-not the backlog the cap exists to brake. A parked item carries
-`pipeline/stuck` or `pipeline/hold`, and nothing promises it will merge. Its
-sources still count. A pull request is a pipeline item when its head branch
-matches `pipeline/*`, its head repository is this repository, and its body
-carries `<!-- pipeline-work-fingerprint:`. The filing audit and the stale
-note still count every filing.
 
 An issue outside the population exists for no role. No role lists it,
 reads it, comments on it, labels it or closes it.

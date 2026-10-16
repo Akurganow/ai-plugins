@@ -3,9 +3,9 @@
 The standard is "do not complicate the code"
 (`.agents/rules/conformance.md`, "What the check is allowed to be"). The
 measure is what a reader must hold in mind to change a unit safely. This file
-gives the abstraction police and the proportion police words to point with. It
-also lists the shapes in this tree that already answer a question. The court
-tries their findings by it.
+gives the `abstractions` and `proportion` departments words to point with. It
+also lists the shapes in this tree that already answer a question. Their
+findings are tried by it.
 
 The code here is Python (`tools/check-conformance.py`, `tools/evals.py`), shell
 (`tools/regenerate.sh`, `plugins/prose-discipline/hooks/print-rules.sh`) and
@@ -37,8 +37,7 @@ do" and "nothing reaches it". An objection with no symptom is withdrawn.
   trivial line is not this symptom.
 
 The `design-review` package states the first four with chapter references, in
-`plugins/design-review/skills/red-flags/references/red-flags.md`. This file
-keeps its own words so the court has one document to read.
+`plugins/design-review/skills/red-flags/references/red-flags.md`.
 
 ## Rules of judgement
 
@@ -90,7 +89,7 @@ keeps its own words so the court has one document to read.
   schema cannot express. Or it turns a rejection into a message someone can act
   on (`.agents/rules/conformance.md`, "What the check is allowed to be"). A check
   that says which is closed. A check that can never fire and says neither is
-  slop's `ceremony`, never a design finding.
+  text-residue's `ceremony`, never a design finding.
 
 ## Recorded answers in this tree
 
@@ -151,7 +150,7 @@ commit.
 - **A step that reports "not run".** The step `Report the prose-discipline hook
   check as not run (Codex)` in `integration.yml` cannot fail. `docs/design.md`,
   "Codex gets its documented hook route", records why it is a notice and not an
-  assertion. The court treats it as recorded.
+  assertion. It is recorded.
 - **A called workflow with a second entry.** `evals.yml` has one caller,
   `release.yml`, and also runs by hand through `workflow_dispatch`. The records
   are the comment above the `evals` job in `release.yml` and `docs/design.md`,

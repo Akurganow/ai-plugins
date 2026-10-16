@@ -12,15 +12,18 @@ publishes and which clients it claims, `plugins/` holds the packages, and
 
 ## Read these before changing anything
 
-Four rule files under `.agents/rules/`. None carries `paths` front matter and
+Rule files under `.agents/rules/`. None carries `paths` front matter and
 each loads unconditionally, because this repository is small enough that every
 rule bears on every change.
 
 | File | Owns |
 | :-- | :-- |
+| `agent-plugins-review.md` | the sources of record for the marketplace's claims and the agent configuration |
 | `claims.md` | what a sentence about a client may rest on, and that it cites where it was read |
 | `conformance.md` | the check, what the check is allowed to be, package shape, versions |
+| `design-vocabulary.md` | the words for a design objection, and the shapes in this tree that already answer one |
 | `slop.md` | what generator residue looks like here, and what is protected from that judgement |
+| `tests.md` | what counts as a test here, how to read the evals records, and which protections are not findings |
 | `unattended.md` | how a run works when nobody is present to answer |
 
 ## The check
@@ -32,13 +35,10 @@ looks right" is not a result the check produced.
 
 ## This repository's own machinery
 
-Fifteen roles, as skills under `.agents/skills/`, each with one thin Claude
-binding under `.claude/agents/` that names its skills and carries no role text.
-Four pipeline roles share `pipeline-law`. Nine police roles share `police-law`.
-Eleven roles read `github-needs`: the nine police, the Issue Court and the
-Tracker Clerk. The pipeline roles read its first section. The Agent Police is
-one of the nine. It patrols the agent system: the roles and the shared skills,
-their bindings, the rule files and the manifest.
+Six roles, as skills under `.agents/skills/`, each with one thin Claude
+binding under `.claude/agents/` that names its skills and carries no role
+text. Four share `pipeline-law`. The Issue Court and the Tracker Clerk also
+read `github-needs`, and the pipeline roles read its first section.
 `.agents/manifest.yaml` declares the set and records why each arrangement is
 what it is.
 

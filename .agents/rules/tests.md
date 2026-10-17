@@ -90,8 +90,8 @@ rubric edit leaves it describing the old text. The alternative says so.
    publishes. Their breadth across systems is the contract, and the header of
    `integration.yml` says what each job proves.
 4. Exactness that is the requirement: a recorded client event stream, the
-   fingerprint line `github-needs` defines, the byte-identical comparison of
-   `cases.yaml` and `rubric.yaml`, a digest check.
+   fingerprint line `tools/evals.py` writes and reads back, the byte-identical
+   comparison of `cases.yaml` and `rubric.yaml`, a digest check.
 5. Duplication kept for clarity: one fixture and one set of assertions per
    client, setup repeated so each test reads alone.
 6. A distinct input. A case or fixture that feeds what no other feeds is not

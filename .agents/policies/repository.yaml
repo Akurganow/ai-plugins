@@ -2,7 +2,7 @@
 id: repository
 description: >-
   Ordinary maintenance: the plugin packages, the conformance check and
-  regeneration script, the entry point and agent bindings, the root
+  regeneration script, the entry point and rule links, the root
   documents, the workflows and release configuration. Narrow, because the
   repository is small and public and its whole value is that its claims
   hold.
@@ -21,9 +21,7 @@ capabilities:
 paths:
   allow:
     - ".agents/**"
-    - ".claude/agents/**"
     - ".claude/rules"
-    - ".claude/skills/**"
     - ".claude-plugin/**"
     - ".github/**"
     - "plugins/**"

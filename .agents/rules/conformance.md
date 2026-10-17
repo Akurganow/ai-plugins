@@ -12,8 +12,9 @@ It imports `jsonschema`, which validates the manifest against the schema
 vendored in `tools/schemas/`, and `yaml`, which reads `SKILL.md` front
 matter. Both have to be importable by whatever runs the script. **How they
 get there is not recorded here, and neither is the invocation**: those are
-facts about an environment, and `.agents/rules/unattended.md` keeps them with
-whoever runs in one. An environment that writes its own down is
+facts about an environment, and they belong to whoever runs the check there,
+not to a public repository other people clone into environments of their own.
+An environment that writes its own down is
 `.github/workflows/conformance.yml`, which is also where CI runs this same
 check, so a change that breaks it does not merge.
 

@@ -24,7 +24,6 @@ rule bears on every change.
 | `design-vocabulary.md` | the words for a design objection, and the shapes in this tree that already answer one |
 | `slop.md` | what generator residue looks like here, and what is protected from that judgement |
 | `tests.md` | what counts as a test here, how to read the evals records, and which protections are not findings |
-| `unattended.md` | how a run works when nobody is present to answer |
 
 ## The check
 
@@ -35,17 +34,7 @@ looks right" is not a result the check produced.
 
 ## This repository's own machinery
 
-Six roles, as skills under `.agents/skills/`, each with one thin Claude
-binding under `.claude/agents/` that names its skills and carries no role
-text. Four share `pipeline-law`. The Issue Court and the Tracker Clerk also
-read `github-needs`, and the pipeline roles read its first section.
-`.agents/manifest.yaml` declares the set and records why each arrangement is
-what it is.
-
-**Whatever fires them is not in this repository and never will be.** The
-caller carries the measured facts of its own environment and the clone
-sequence that environment needs, because another person cloning this repository
-works in an environment of their own. `unattended.md` owns that rule.
+`LAWMAN.md` is the constitution the Lawman roles read here.
 
 ## Content states the action, not the instrument
 
@@ -70,5 +59,5 @@ so read them there before going near any of the three:
 
 A symlink to this file. Claude Code reads `CLAUDE.md` and every other harness
 reads `AGENTS.md`; a symlink is how there comes to be one text rather than two
-that drift apart. It is the same arrangement `.claude/rules` and
-`.claude/skills/` already use for the canonical directories under `.agents/`.
+that drift apart. It is the same arrangement `.claude/rules` already uses for
+the canonical directory `.agents/rules/`.

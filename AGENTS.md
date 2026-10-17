@@ -34,9 +34,7 @@ looks right" is not a result the check produced.
 
 ## This repository's own machinery
 
-`.agents/manifest.yaml` declares the agent configuration and records why each
-arrangement is what it is. `LAWMAN.md` is the constitution the Lawman roles
-read here.
+`LAWMAN.md` is the constitution the Lawman roles read here.
 
 ## Content states the action, not the instrument
 

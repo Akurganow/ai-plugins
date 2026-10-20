@@ -34,26 +34,28 @@ Other kinds: the shared tests page.
 | Kind | Definition | Measurement |
 | :-- | :-- | :-- |
 | `misaligned` | A case or question measures something other than the skill's behaviour. Its expectation contradicts the skill's text, a near-miss prompt matches a "Use when" clause of the description, or it breaks a rule `CONTRIBUTING.md` writes for cases | The two texts side by side, each with its permalink at the analysed commit: the case or question, and the clause of the skill or of the rule. A recorded session where the effect shows is a lead |
-| `ceiling` | A rubric question every graded answer passes in both arms. `CONTRIBUTING.md` says to drop it, "because it measures nothing" | Every recorded answer to the question in the comparable releases, labelled yes or no with its evidence quoted, by arm. Beside it the question's mean per arm and repeat from `evals.json`. Ceiling when one label stands in both arms |
+| `ceiling` | A rubric question every graded answer passes in both arms. `CONTRIBUTING.md` says to drop it, "because it measures nothing" | Every recorded answer to the question in the comparable releases, labelled yes or no with its evidence quoted, by arm. Beside it the question's mean per arm and repeat from the evals records in `ghcr.io/akurganow/ai-plugins-evals`. Ceiling when one label stands in both arms |
 
 ## Reading the records
 
-A release's `evals.json` is the only record of how a case behaved against
-real clients. `tools/evals.py` writes it (`cmd_run`, `run_session`,
-`cmd_report`).
+The OCI artifacts in `ghcr.io/akurganow/ai-plugins-evals` are the record of
+how a case behaved against real clients. `tools/evals.py` writes them
+(`cmd_run`, `run_session`, `cmd_report`, `push_record`).
 
-- **Fields.** `runs` holds one run per skill, client and repeat. A run records
-  `client_version`, `model`, `jev_model`, `cases_sha256`, `rubric_sha256`,
-  `always_on` and `sessions`. A session records `case`, `kind`, `arm`, `fired`,
-  `answer`, `cost_usd`, `error` and `nouls`, Jev's score per question id.
+- **Fields.** Each artifact holds one run record per skill, client and repeat.
+  A run records `tag`, `package`, `skill`, `client`, `repeat`, `run`,
+  `run_id`, `client_version`, `model`, `jev_model`, `cases_sha256`,
+  `rubric_sha256`, `always_on`, `questions` and `sessions`. A session records
+  `case`, `kind`, `arm`, `fired`, `answer`, `cost_usd`, `error` and `nouls`,
+  Jev's score per question id.
 - **Comparable.** Two runs are comparable when both hashes are equal.
   `compare` applies the same rule. A record measures the folder at the
   analysed commit when its hashes equal the `sha256` of `cases.yaml` and
   `rubric.yaml` there.
-- **The unit is the metric range over the three repeats** of one skill on one
-  client. `docs/design.md`, "Behavioural evals run after each release", says
-  the spread between repeats is the tolerance. A swing inside the spread is
-  no exhibit.
+- **The unit is the metric range over the three repeats** of one complete run
+  of one skill on one client. `docs/design.md`, "Behavioural evals run after
+  each release", says the spread between repeats is the tolerance. A swing
+  inside the spread is no exhibit.
 - **A per-prompt load count is a lead.** A prompt has three sessions per
   client, so its count can move from 0 of 3 to 3 of 3 with nothing changed.
 - **A claim that a test is unstable** needs three things. They are two

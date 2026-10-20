@@ -25,6 +25,7 @@ above `_selftest_parsers` gives the fixtures' origin.
 """
 
 import argparse
+import base64
 import contextlib
 import hashlib
 import http.client
@@ -71,6 +72,12 @@ SECRET_VARS = ("ANTHROPIC_API_KEY", "CODEX_API_KEY", "OPENAI_API_KEY", "OPENROUT
 # `gh ... list` stops at --limit without saying so, so a listing that fills its
 # limit is an error.
 RELEASE_LIMIT, ISSUE_LIMIT = 200, 500
+
+GHCR_URL = "https://ghcr.io"
+GHCR_PACKAGE = "ai-plugins-evals"
+OCI_MANIFEST_TYPE = "application/vnd.oci.image.manifest.v1+json"
+OCI_CONFIG_TYPE = "application/vnd.oci.empty.v1+json"
+OCI_LAYER_TYPE = "application/vnd.ai-plugins.evals.run.v1+json"
 
 FINGERPRINT_PREFIX = "<!-- police-fingerprint: "
 
@@ -577,14 +584,18 @@ def package_of(tag: str) -> str:
     return package
 
 
-def matrix(tags: list[str]) -> dict:
+def matrix(tags: list[str], clients: list[str] | tuple = ()) -> dict:
+    picked = list(dict.fromkeys(clients or CLIENTS))
+    unknown = [c for c in picked if c not in CLIENTS]
+    if unknown:
+        raise SystemExit(f"unknown client: {', '.join(unknown)}. Choose from {', '.join(CLIENTS)}.")
     include = []
     for tag in dict.fromkeys(tags):
         package = package_of(tag)
         for skill in skills_of(package):
             if not has_cases(package, skill):
                 continue
-            for client in CLIENTS:
+            for client in picked:
                 for repeat in range(1, REPEATS + 1):
                     include.append({"tag": tag, "package": package, "skill": skill, "client": client, "repeat": repeat})
     return {"include": include}
@@ -656,6 +667,91 @@ def within_limit(items: list, limit: int, listing: str) -> list:
 def version_key(tag: str) -> tuple:
     parts = tag.rpartition("--v")[2].split(".")
     return tuple(int(p) for p in parts) if all(p.isdigit() for p in parts) else ()
+
+
+def ghcr_owner(repo: str) -> str:
+    return (repo.split("/")[0] if "/" in repo else "akurganow").lower()
+
+
+def ghcr_request(path: str, method: str = "GET", data: bytes | None = None, headers: dict | None = None,
+                 allow_404: bool = False) -> tuple[bytes | None, dict]:
+    url = path if path.startswith("https://") else f"{GHCR_URL}{path}"
+    for attempt in range(JEV_ATTEMPTS):
+        request = urllib.request.Request(url, data=data, headers=headers or {}, method=method)
+        try:
+            with urllib.request.urlopen(request, timeout=60) as response:
+                return response.read(), dict(response.headers.items())
+        except urllib.error.HTTPError as e:
+            if e.code in JEV_RETRY_STATUSES and attempt < JEV_ATTEMPTS - 1:
+                time.sleep(2 ** attempt)
+                continue
+            if e.code == 404 and allow_404:
+                return None, {}
+            try:
+                detail = e.read()[:300].decode(errors="replace")
+            except (OSError, http.client.HTTPException) as cut:
+                detail = f"error body unreadable: {cut!r}"
+            raise SystemExit(f"ghcr {method} {url} -> {e.code}: {detail}") from e
+        except (OSError, http.client.HTTPException) as e:
+            if attempt < JEV_ATTEMPTS - 1:
+                time.sleep(2 ** attempt)
+                continue
+            raise SystemExit(f"ghcr {method} {url} unreachable: {e!r}") from e
+    raise AssertionError("unreachable")
+
+
+def ghcr_token(owner: str, scope: str = "pull", token: str = "") -> str:
+    headers = {}
+    if token:
+        encoded = base64.b64encode(f"token:{token}".encode()).decode()
+        headers["Authorization"] = f"Basic {encoded}"
+    body, _ = ghcr_request(f"/token?service=ghcr.io&scope=repository:{owner}/{GHCR_PACKAGE}:{scope}", headers=headers)
+    assert body is not None
+    return json.loads(body)["token"]
+
+
+def push_blob(owner: str, bearer: str, data: bytes) -> str:
+    digest = f"sha256:{hashlib.sha256(data).hexdigest()}"
+    _, headers = ghcr_request(f"/v2/{owner}/{GHCR_PACKAGE}/blobs/uploads/", method="POST", data=b"",
+                              headers={"Authorization": f"Bearer {bearer}"})
+    location = headers.get("Location") or headers.get("location")
+    if not location:
+        raise SystemExit("ghcr blob upload returned no Location header.")
+    sep = "&" if "?" in location else "?"
+    ghcr_request(f"{location}{sep}digest={digest}", method="PUT", data=data,
+                 headers={"Authorization": f"Bearer {bearer}", "Content-Type": "application/octet-stream"})
+    return digest
+
+
+def oci_tag(record: dict) -> str:
+    return f"{record['tag']}_{record['skill']}_{record['client']}_{record['run']}_r{record['repeat']}"
+
+
+def push_record(owner: str, bearer: str, record: dict, created: str) -> None:
+    config = b"{}"
+    layer = redact(json.dumps(record, indent=1)).encode()
+    config_digest = push_blob(owner, bearer, config)
+    layer_digest = push_blob(owner, bearer, layer)
+    manifest = {
+        "schemaVersion": 2,
+        "mediaType": OCI_MANIFEST_TYPE,
+        "config": {"mediaType": OCI_CONFIG_TYPE, "digest": config_digest, "size": len(config)},
+        "layers": [{"mediaType": OCI_LAYER_TYPE, "digest": layer_digest, "size": len(layer)}],
+        "annotations": {
+            "org.opencontainers.image.created": created,
+            "org.opencontainers.image.version": record["tag"],
+        },
+    }
+    ghcr_request(f"/v2/{owner}/{GHCR_PACKAGE}/manifests/{oci_tag(record)}", method="PUT",
+                 data=json.dumps(manifest, indent=1).encode(),
+                 headers={"Authorization": f"Bearer {bearer}", "Content-Type": OCI_MANIFEST_TYPE})
+
+
+def run_stamp() -> tuple[str, str]:
+    created = os.environ.get("RUN_STAMP") or time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+    stamp = created.translate(str.maketrans("", "", "-:"))
+    attempt = os.environ.get("RUN_ATTEMPT") or "1"
+    return created, f"{stamp}a{attempt}"
 
 
 def previous_results(package: str, tag: str, workdir: Path) -> dict | None:
@@ -762,8 +858,12 @@ def file_issue(title: str, body: str) -> None:
 
 
 def cmd_report(args) -> int:
-    records = [json.loads(p.read_text()) for p in Path(args.runs).rglob("*.json")]
+    records = [json.loads(p.read_text()) for p in sorted(Path(args.runs).rglob("*.json"))]
     repo = os.environ.get("GITHUB_REPOSITORY", "")
+    owner = ghcr_owner(repo)
+    created, label = run_stamp()
+    run_id = os.environ.get("GITHUB_RUN_ID") or None
+    bearer = None
     run_url = f"{os.environ.get('GITHUB_SERVER_URL', 'https://github.com')}/{repo}/actions/runs/{os.environ.get('GITHUB_RUN_ID', '')}"
     summary = ["# Behavioural evals", "",
                "Each cell is the range over the repeats that gave a figure, so a repeat without one drops out. "
@@ -778,17 +878,17 @@ def cmd_report(args) -> int:
             runs = [r for r in records if r["tag"] == tag]
             no_cases = [s for s in skills_of(package) if not has_cases(package, s)]
             if not runs:
-                # A failed manual run must not replace a release's complete evals.json.
                 summary += [f"## `{tag}`", "", "No run reported, so nothing was uploaded.", ""]
                 if no_cases:
                     summary += ["No cases: " + ", ".join(no_cases), ""]
                 continue
-            # gh names the asset after the file. A "#" suffix sets only a display
-            # label (documentation: https://cli.github.com/manual/gh_release_upload).
-            results = workdir / tag / "evals.json"
-            results.parent.mkdir()
-            results.write_text(json.dumps({"tag": tag, "package": package, "no_cases": no_cases, "runs": runs}, indent=1))
-            gh("release", "upload", tag, str(results), "--clobber")
+            if bearer is None:
+                bearer = ghcr_token(owner, "pull,push",
+                                    os.environ.get("GH_TOKEN") or os.environ.get("GITHUB_TOKEN") or "")
+            for r in runs:
+                r["run"] = label
+                r["run_id"] = run_id
+                push_record(owner, bearer, r, created)
             previous = previous_results(package, tag, workdir)
             summary += report_tag(tag, package, runs, no_cases, previous, seen, run_url, repo, can_file)
     Path(os.environ.get("GITHUB_STEP_SUMMARY", "/dev/stdout")).write_text("\n".join(summary) + "\n")
@@ -1341,19 +1441,65 @@ def _selftest_gh() -> None:
             runs_dir.mkdir()
             record = {"tag": "alpha--v0.3.0", "skill": "s", "client": "claude", "repeat": 1, "client_version": "1",
                       "model": "m", "cases_sha256": "a", "rubric_sha256": "r",
-                      "sessions": [_session("p", "positive", "with", True) | {"cost_usd": 0.1, "tokens": None}]}
+                      "sessions": [_session("p", "positive", "with", True)
+                                   | {"answer": "secret selftest-secret-value", "cost_usd": 0.1, "tokens": None}]}
             (runs_dir / "run.json").write_text(json.dumps(record))
-            os.environ["GITHUB_STEP_SUMMARY"] = str(workdir / "summary.md")
-            assert cmd_report(argparse.Namespace(tags="alpha--v0.2.0 alpha--v0.3.0", runs=str(runs_dir))) == 0
-            uploads = [c[2] for c in calls if c[:2] == ("release", "upload")]
-            assert uploads == ["alpha--v0.3.0"], "a tag with no runs must not replace its evals.json"
-            summary = (workdir / "summary.md").read_text()
-            assert "## `alpha--v0.2.0`\n\nNo run reported, so nothing was uploaded." in summary, summary
+            os.environ.update({"GITHUB_STEP_SUMMARY": str(workdir / "summary.md"),
+                               "GITHUB_REPOSITORY": "Akurganow/ai-plugins", "GH_TOKEN": "gh-tok",
+                               "RUN_STAMP": "2026-10-20T21:53:00Z", "RUN_ATTEMPT": "2", "GITHUB_RUN_ID": "99"})
+            pushed = []
 
-            (PLUGINS_DIR / "nocases" / "skills" / "s").mkdir(parents=True)
-            cmd_report(argparse.Namespace(tags="nocases--v1.0.0", runs=str(runs_dir)))
-            summary = (workdir / "summary.md").read_text()
-            assert "No run reported, so nothing was uploaded.\n\nNo cases: s" in summary, summary
+            class RegistryReply:
+                def __init__(self, body=b"", headers=None):
+                    self.body, self.headers = body, headers or {}
+
+                def __enter__(self):
+                    return self
+
+                def __exit__(self, *exc):
+                    return False
+
+                def read(self):
+                    return self.body
+
+            def fake_registry(req, timeout):
+                pushed.append((req.get_method(), req.full_url, dict(req.header_items()), req.data))
+                if "/token?" in req.full_url:
+                    return RegistryReply(b'{"token": "reg-tok"}')
+                if req.full_url.endswith("/blobs/uploads/"):
+                    return RegistryReply(headers={"Location": "/v2/akurganow/ai-plugins-evals/blobs/uploads/u1"})
+                return RegistryReply()
+
+            real_open = urllib.request.urlopen
+            urllib.request.urlopen = fake_registry
+            try:
+                assert cmd_report(argparse.Namespace(tags="alpha--v0.2.0 alpha--v0.3.0", runs=str(runs_dir))) == 0
+                assert not [c for c in calls if c[:2] == ("release", "upload")], calls
+                manifests = [p for p in pushed if "/manifests/" in p[1]]
+                assert len(manifests) == 1, pushed
+                assert manifests[0][1].endswith(
+                    "/v2/akurganow/ai-plugins-evals/manifests/alpha--v0.3.0_s_claude_20261020T215300Za2_r1"), manifests[0][1]
+                manifest = json.loads(manifests[0][3])
+                assert manifest["mediaType"] == OCI_MANIFEST_TYPE and manifest["config"]["mediaType"] == OCI_CONFIG_TYPE
+                assert manifest["annotations"] == {
+                    "org.opencontainers.image.created": "2026-10-20T21:53:00Z",
+                    "org.opencontainers.image.version": "alpha--v0.3.0",
+                }, manifest["annotations"]
+                blobs = {p[1].split("digest=")[1]: p[3] for p in pushed if "digest=" in p[1]}
+                layer_bytes = blobs[manifest["layers"][0]["digest"]]
+                assert manifest["layers"][0]["mediaType"] == OCI_LAYER_TYPE
+                stored = json.loads(layer_bytes)
+                assert stored["run"] == "20261020T215300Za2" and stored["run_id"] == "99", stored
+                assert stored["sessions"][0]["answer"] == "secret ***", stored["sessions"][0]
+                summary = (workdir / "summary.md").read_text()
+                assert "## `alpha--v0.2.0`\n\nNo run reported, so nothing was uploaded." in summary, summary
+
+                (PLUGINS_DIR / "nocases" / "skills" / "s").mkdir(parents=True)
+                cmd_report(argparse.Namespace(tags="nocases--v1.0.0", runs=str(runs_dir)))
+                summary = (workdir / "summary.md").read_text()
+                assert "No run reported, so nothing was uploaded.\n\nNo cases: s" in summary, summary
+            finally:
+                urllib.request.urlopen = real_open
 
             replies["release view"] = '{"assets": []}'
             replies["release list"] = json.dumps([{"tagName": f"p--v0.0.{i}"} for i in range(RELEASE_LIMIT - 1)])
@@ -1372,6 +1518,10 @@ def _selftest_folders() -> None:
     with _fixture_tree({"bare": [], "alpha": ["s"]}):
         assert package_of("bare--v1.0.0") == "bare" and skills_of("bare") == []
         assert matrix(["bare--v1.0.0"]) == {"include": []}
+        assert [j["client"] for j in matrix(["alpha--v1.0.0"])["include"]] == ["claude"] * 3 + ["codex"] * 3 + ["omp"] * 3
+        assert [j["client"] for j in matrix(["alpha--v1.0.0"], ["claude", "omp", "claude"])["include"]] == (
+            ["claude"] * 3 + ["omp"] * 3)
+        _expect_error(lambda: matrix(["alpha--v1.0.0"], ["claude", "hermes"]), "hermes")
         _expect_error(lambda: package_of("nosuch--v1.0.0"), "nosuch")
         loaded = []
         assert check_folder(Path("evals/alpha/s"), load=loaded.append) is None and loaded == [Path("evals/alpha/s")]
@@ -1405,6 +1555,7 @@ def main() -> int:
     sub = parser.add_subparsers(dest="command", required=True)
     m = sub.add_parser("matrix", help="print the job matrix for some release tags")
     m.add_argument("--tags", required=True)
+    m.add_argument("--clients", default="")
     r = sub.add_parser("run", help="run one skill on one client, one repeat")
     for name in ("--tag", "--skill", "--out"):
         r.add_argument(name, required=True)
@@ -1417,7 +1568,7 @@ def main() -> int:
     sub.add_parser("selftest", help="check the parsers and the arithmetic without a model")
     args = parser.parse_args()
     if args.command == "matrix":
-        result = matrix(args.tags.split())
+        result = matrix(args.tags.split(), args.clients.split())
         print(json.dumps(result))
         return 0
     if args.command == "run":

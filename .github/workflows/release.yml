@@ -121,8 +121,9 @@ jobs:
     needs: release
     if: needs.release.outputs.released == 'true'
     permissions:
-      contents: write
+      contents: read
       issues: write
+      packages: write
     uses: ./.github/workflows/evals.yml
     with:
       tags: ${{ needs.release.outputs.tags }}

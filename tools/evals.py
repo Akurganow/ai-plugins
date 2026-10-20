@@ -45,13 +45,7 @@ EVALS_DIR = REPO_ROOT / "evals"
 FIXTURES_DIR = REPO_ROOT / "tools" / "evals-fixtures"
 MARKETPLACE = json.loads((REPO_ROOT / ".claude-plugin" / "marketplace.json").read_text())["name"]
 
-CLIENTS = ("claude", "codex", "omp")
 REPEATS = 3
-MODELS = {
-    "claude": "sonnet",
-    "codex": "gpt-6-luna",
-    "omp": "openrouter/z-ai/glm-5.3-flash",
-}
 CASES_PER_KIND = 10
 HELD_OUT_PER_KIND = 5
 HELD_OUT_FILE = "held-out.yaml"
@@ -72,7 +66,6 @@ JEV_ATTEMPTS = 6
 # Each client process sees only its own key. The answers are published in
 # evals.json, and an agent with a shell can print its environment.
 SECRET_VARS = ("ANTHROPIC_API_KEY", "CODEX_API_KEY", "OPENAI_API_KEY", "OPENROUTER_API_KEY", "TYPESAFE_API_KEY")
-CLIENT_KEY = {"claude": "ANTHROPIC_API_KEY", "codex": "CODEX_API_KEY", "omp": "OPENROUTER_API_KEY"}
 
 # `gh ... list` stops at --limit without saying so, so a listing that fills its
 # limit is an error.
@@ -95,6 +88,7 @@ class Parsed:
 
 class Claude:
     name = "claude"
+    model = "sonnet"
 
     def __init__(self, package: str, skill: str):
         self.package, self.skill = package, skill
@@ -103,7 +97,7 @@ class Claude:
     # Claude Code 2.1.293 denied the skill's Read call (running, 2026-10-08:
     # https://github.com/Akurganow/ai-plugins/actions/runs/37784785554).
     def command(self, prompt: str, arm: str) -> list[str]:
-        return ["claude", "-p", prompt, "--model", MODELS["claude"], "--output-format", "stream-json",
+        return ["claude", "-p", prompt, "--model", self.model, "--output-format", "stream-json",
                 "--verbose", "--allowedTools", "Skill", "Read"]
 
     # `claude plugin disable` changes the plugin's state for later sessions, so it
@@ -145,6 +139,7 @@ class Claude:
 
 class Codex:
     name = "codex"
+    model = "gpt-6-luna"
 
     def __init__(self, package: str, skill: str):
         self.package, self.skill = package, skill
@@ -155,7 +150,7 @@ class Codex:
     # https://github.com/Akurganow/ai-plugins/actions/runs/37786134780).
     def command(self, prompt: str, arm: str) -> list[str]:
         cmd = ["codex", "exec", "--json", "--skip-git-repo-check", "--sandbox", "danger-full-access",
-               "-m", MODELS["codex"]]
+               "-m", self.model]
         if arm == "without":
             cmd += ["--disable", "plugins"]
         return cmd + [prompt]
@@ -200,11 +195,12 @@ class Codex:
             error = f"no agent_message, last error: {retried}" if retried else "no agent_message"
         elif not completed and error is None:
             error = "no turn.completed"
-        return Parsed(fired, answer, None, tokens, MODELS["codex"], error, None, tools)
+        return Parsed(fired, answer, None, tokens, self.model, error, None, tools)
 
 
 class Omp:
     name = "omp"
+    model = "openrouter/z-ai/glm-5.3-flash"
 
     def __init__(self, package: str, skill: str):
         self.package, self.skill = package, skill
@@ -219,7 +215,7 @@ class Omp:
     # https://github.com/Akurganow/ai-plugins/actions/runs/37860528358).
     def command(self, prompt: str, arm: str) -> list[str]:
         cmd = ["omp", "-p", "--mode", "json", "--no-session", "--no-title", "--auto-approve",
-               "--model", MODELS["omp"], "--thinking", "low"]
+               "--model", self.model, "--thinking", "low"]
         if arm == "without":
             cmd += ["--no-skills", "--no-rules"]
         return cmd + [prompt]
@@ -262,7 +258,8 @@ class Omp:
         return Parsed(fired, answer or None, cost, None, model, error, None, tools)
 
 
-ADAPTERS = {"claude": Claude, "codex": Codex, "omp": Omp}
+# Adding a client touches this table, an adapter class above, and the runtime, install and key blocks in .github/workflows/evals.yml.
+CLIENTS = {"claude": (Claude, "ANTHROPIC_API_KEY"), "codex": (Codex, "CODEX_API_KEY"), "omp": (Omp, "OPENROUTER_API_KEY")}
 
 
 def load_events(text: str) -> list[dict]:
@@ -369,7 +366,7 @@ def sha256(path: Path) -> str:
 
 def client_env(client: str) -> dict:
     env = {k: v for k, v in os.environ.items() if k not in SECRET_VARS}
-    key = CLIENT_KEY[client]
+    key = CLIENTS[client][1]
     if os.environ.get(key):
         env[key] = os.environ[key]
     return env
@@ -610,7 +607,7 @@ def cmd_run(args) -> int:
     package = package_of(args.tag)
     skill_dir = EVALS_DIR / package / args.skill
     cases, questions = load_cases(skill_dir)
-    adapter = ADAPTERS[args.client](package, args.skill)
+    adapter = CLIENTS[args.client][0](package, args.skill)
     version = client_version(args.client)
     sessions = run_job(adapter, cases, questions, held_out=args.repeat == 1)
     record = {
@@ -965,6 +962,11 @@ def _selftest_parsers() -> None:
 
     assert Codex("p", "s").command("q", "without")[-3:] == ["--disable", "plugins", "q"]
     assert Omp("p", "s").command("q", "without")[-3:] == ["--no-skills", "--no-rules", "q"]
+    assert {k: (cls.name, cls.model, key) for k, (cls, key) in CLIENTS.items()} == {
+        "claude": ("claude", "sonnet", "ANTHROPIC_API_KEY"),
+        "codex": ("codex", "gpt-6-luna", "CODEX_API_KEY"),
+        "omp": ("omp", "openrouter/z-ai/glm-5.3-flash", "OPENROUTER_API_KEY"),
+    }
 
 
 def _session(case, kind, arm, fired, nouls=None, error=None) -> dict:

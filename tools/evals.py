@@ -4,9 +4,9 @@
 CI runs this after a package release (`.github/workflows/evals.yml`). One
 `run` covers one skill, one client and one repeat: positive prompts with the
 package, near-miss prompts with it, then positive prompts without it. Jev
-grades every positive answer against the skill's rubric. `report` merges the
-runs of a release and attaches them to its GitHub Release as `evals.json`. It
-files an issue for a metric that regressed against the previous release.
+grades every positive answer against the skill's rubric. `report` publishes
+each repeat to GitHub Container Registry (`ghcr.io/<owner>/ai-plugins-evals`)
+and files an issue when a metric regresses against the latest complete run.
 
 The runner is this repository's own. In Claude Code 2.1.293, `claude plugin
 eval` wrote the final reply only as the evidence of an LLM grader (running,
@@ -25,6 +25,8 @@ above `_selftest_parsers` gives the fixtures' origin.
 """
 
 import argparse
+import base64
+import contextlib
 import hashlib
 import http.client
 import json
@@ -45,13 +47,7 @@ EVALS_DIR = REPO_ROOT / "evals"
 FIXTURES_DIR = REPO_ROOT / "tools" / "evals-fixtures"
 MARKETPLACE = json.loads((REPO_ROOT / ".claude-plugin" / "marketplace.json").read_text())["name"]
 
-CLIENTS = ("claude", "codex", "omp")
 REPEATS = 3
-MODELS = {
-    "claude": "sonnet",
-    "codex": "gpt-6-luna",
-    "omp": "openrouter/z-ai/glm-5.3-flash",
-}
 CASES_PER_KIND = 10
 HELD_OUT_PER_KIND = 5
 HELD_OUT_FILE = "held-out.yaml"
@@ -69,14 +65,19 @@ JEV_MODEL = "jev-1.13.0"
 JEV_RETRY_STATUSES = (429, 529)
 JEV_ATTEMPTS = 6
 
-# Each client process sees only its own key. The answers are published in
-# evals.json, and an agent with a shell can print its environment.
+# Each client process sees only its own key. The answers are published to
+# the container registry, and an agent with a shell can print its environment.
 SECRET_VARS = ("ANTHROPIC_API_KEY", "CODEX_API_KEY", "OPENAI_API_KEY", "OPENROUTER_API_KEY", "TYPESAFE_API_KEY")
-CLIENT_KEY = {"claude": "ANTHROPIC_API_KEY", "codex": "CODEX_API_KEY", "omp": "OPENROUTER_API_KEY"}
 
 # `gh ... list` stops at --limit without saying so, so a listing that fills its
 # limit is an error.
-RELEASE_LIMIT, ISSUE_LIMIT = 200, 500
+ISSUE_LIMIT = 500
+
+GHCR_URL = "https://ghcr.io"
+GHCR_PACKAGE = "ai-plugins-evals"
+OCI_MANIFEST_TYPE = "application/vnd.oci.image.manifest.v1+json"
+OCI_CONFIG_TYPE = "application/vnd.oci.empty.v1+json"
+OCI_LAYER_TYPE = "application/vnd.ai-plugins.evals.run.v1+json"
 
 FINGERPRINT_PREFIX = "<!-- police-fingerprint: "
 
@@ -95,6 +96,7 @@ class Parsed:
 
 class Claude:
     name = "claude"
+    model = "sonnet"
 
     def __init__(self, package: str, skill: str):
         self.package, self.skill = package, skill
@@ -103,14 +105,19 @@ class Claude:
     # Claude Code 2.1.293 denied the skill's Read call (running, 2026-10-08:
     # https://github.com/Akurganow/ai-plugins/actions/runs/37784785554).
     def command(self, prompt: str, arm: str) -> list[str]:
-        return ["claude", "-p", prompt, "--model", MODELS["claude"], "--output-format", "stream-json",
+        return ["claude", "-p", prompt, "--model", self.model, "--output-format", "stream-json",
                 "--verbose", "--allowedTools", "Skill", "Read"]
 
-    # `claude plugin disable` changes the plugin's state for later sessions, so it
-    # runs once between the arms (documentation:
-    # https://code.claude.com/docs/en/plugins/cli-reference#plugin-disable).
+    # `claude plugin disable` and `enable` change the plugin's state across sessions,
+    # so `run_job` disables it once and restores it in `finally` (documentation:
+    # https://code.claude.com/docs/en/plugins/cli-reference#plugin-disable,
+    # https://code.claude.com/docs/en/plugins/cli-reference#plugin-enable).
     def switch_to_without(self) -> None:
         subprocess.run(["claude", "plugin", "disable", f"{self.package}@{MARKETPLACE}"], check=True,
+                       env=client_env(self.name))
+
+    def switch_back(self) -> None:
+        subprocess.run(["claude", "plugin", "enable", f"{self.package}@{MARKETPLACE}"], check=True,
                        env=client_env(self.name))
 
     # Claude Code 2.1.293 shows a loaded skill as a Skill tool call whose `skill`
@@ -145,6 +152,7 @@ class Claude:
 
 class Codex:
     name = "codex"
+    model = "gpt-6-luna"
 
     def __init__(self, package: str, skill: str):
         self.package, self.skill = package, skill
@@ -155,12 +163,15 @@ class Codex:
     # https://github.com/Akurganow/ai-plugins/actions/runs/37786134780).
     def command(self, prompt: str, arm: str) -> list[str]:
         cmd = ["codex", "exec", "--json", "--skip-git-repo-check", "--sandbox", "danger-full-access",
-               "-m", MODELS["codex"]]
+               "-m", self.model]
         if arm == "without":
             cmd += ["--disable", "plugins"]
         return cmd + [prompt]
 
     def switch_to_without(self) -> None:
+        pass
+
+    def switch_back(self) -> None:
         pass
 
     # Codex has no skill item kind (source: ThreadItemDetails in
@@ -200,11 +211,12 @@ class Codex:
             error = f"no agent_message, last error: {retried}" if retried else "no agent_message"
         elif not completed and error is None:
             error = "no turn.completed"
-        return Parsed(fired, answer, None, tokens, MODELS["codex"], error, None, tools)
+        return Parsed(fired, answer, None, tokens, self.model, error, None, tools)
 
 
 class Omp:
     name = "omp"
+    model = "openrouter/z-ai/glm-5.3-flash"
 
     def __init__(self, package: str, skill: str):
         self.package, self.skill = package, skill
@@ -219,12 +231,15 @@ class Omp:
     # https://github.com/Akurganow/ai-plugins/actions/runs/37860528358).
     def command(self, prompt: str, arm: str) -> list[str]:
         cmd = ["omp", "-p", "--mode", "json", "--no-session", "--no-title", "--auto-approve",
-               "--model", MODELS["omp"], "--thinking", "low"]
+               "--model", self.model, "--thinking", "low"]
         if arm == "without":
             cmd += ["--no-skills", "--no-rules"]
         return cmd + [prompt]
 
     def switch_to_without(self) -> None:
+        pass
+
+    def switch_back(self) -> None:
         pass
 
     # Oh-My-Pi loads a skill by reading skill://<name>, a file under it, or either
@@ -262,7 +277,8 @@ class Omp:
         return Parsed(fired, answer or None, cost, None, model, error, None, tools)
 
 
-ADAPTERS = {"claude": Claude, "codex": Codex, "omp": Omp}
+# Adding a client touches this table, an adapter class above, and the runtime, install and key blocks in .github/workflows/evals.yml.
+CLIENTS = {"claude": (Claude, "ANTHROPIC_API_KEY"), "codex": (Codex, "CODEX_API_KEY"), "omp": (Omp, "OPENROUTER_API_KEY")}
 
 
 def load_events(text: str) -> list[dict]:
@@ -369,7 +385,7 @@ def sha256(path: Path) -> str:
 
 def client_env(client: str) -> dict:
     env = {k: v for k, v in os.environ.items() if k not in SECRET_VARS}
-    key = CLIENT_KEY[client]
+    key = CLIENTS[client][1]
     if os.environ.get(key):
         env[key] = os.environ[key]
     return env
@@ -458,7 +474,10 @@ def run_job(adapter, cases: dict, questions: dict, session=run_session, grader=g
         sessions += [session(adapter, c, HELD_OUT_KINDS[kind], "with")
                      for kind in ("positive", "near_miss") for c in cases["held_out"][kind]]
     adapter.switch_to_without()
-    sessions += [session(adapter, c, "positive", "without") for c in cases["positive"]]
+    try:
+        sessions += [session(adapter, c, "positive", "without") for c in cases["positive"]]
+    finally:
+        adapter.switch_back()
     prompts = {c["id"]: c["prompt"] for c in cases["positive"]}
     for s in sessions:
         if s["kind"] != "positive" or s["error"]:
@@ -565,14 +584,18 @@ def package_of(tag: str) -> str:
     return package
 
 
-def matrix(tags: list[str]) -> dict:
+def matrix(tags: list[str], clients: list[str] | tuple = ()) -> dict:
+    picked = list(dict.fromkeys(clients or CLIENTS))
+    unknown = [c for c in picked if c not in CLIENTS]
+    if unknown:
+        raise SystemExit(f"unknown client: {', '.join(unknown)}. Choose from {', '.join(CLIENTS)}.")
     include = []
     for tag in dict.fromkeys(tags):
         package = package_of(tag)
         for skill in skills_of(package):
             if not has_cases(package, skill):
                 continue
-            for client in CLIENTS:
+            for client in picked:
                 for repeat in range(1, REPEATS + 1):
                     include.append({"tag": tag, "package": package, "skill": skill, "client": client, "repeat": repeat})
     return {"include": include}
@@ -610,7 +633,7 @@ def cmd_run(args) -> int:
     package = package_of(args.tag)
     skill_dir = EVALS_DIR / package / args.skill
     cases, questions = load_cases(skill_dir)
-    adapter = ADAPTERS[args.client](package, args.skill)
+    adapter = CLIENTS[args.client][0](package, args.skill)
     version = client_version(args.client)
     sessions = run_job(adapter, cases, questions, held_out=args.repeat == 1)
     record = {
@@ -646,21 +669,165 @@ def version_key(tag: str) -> tuple:
     return tuple(int(p) for p in parts) if all(p.isdigit() for p in parts) else ()
 
 
-def previous_results(package: str, tag: str, workdir: Path) -> dict | None:
-    tags = within_limit(json.loads(gh("release", "list", "--limit", str(RELEASE_LIMIT), "--json", "tagName")),
-                        RELEASE_LIMIT, "release list")
-    older = sorted((t["tagName"] for t in tags if t["tagName"].startswith(f"{package}--v")
-                    and version_key(t["tagName"]) and version_key(t["tagName"]) < version_key(tag)),
-                   key=version_key, reverse=True)
-    if not older:
+def ghcr_owner(repo: str) -> str:
+    return (repo.split("/")[0] if "/" in repo else "akurganow").lower()
+
+
+def ghcr_request(path: str, method: str = "GET", data: bytes | None = None, headers: dict | None = None,
+                 allow_404: bool = False) -> tuple[bytes | None, dict]:
+    url = path if path.startswith("https://") else f"{GHCR_URL}{path}"
+    for attempt in range(JEV_ATTEMPTS):
+        request = urllib.request.Request(url, data=data, headers=headers or {}, method=method)
+        try:
+            with urllib.request.urlopen(request, timeout=60) as response:
+                return response.read(), dict(response.headers.items())
+        except urllib.error.HTTPError as e:
+            if e.code in JEV_RETRY_STATUSES and attempt < JEV_ATTEMPTS - 1:
+                time.sleep(2 ** attempt)
+                continue
+            if e.code == 404 and allow_404:
+                return None, {}
+            try:
+                detail = e.read()[:300].decode(errors="replace")
+            except (OSError, http.client.HTTPException) as cut:
+                detail = f"error body unreadable: {cut!r}"
+            raise SystemExit(f"ghcr {method} {url} -> {e.code}: {detail}") from e
+        except (OSError, http.client.HTTPException) as e:
+            if attempt < JEV_ATTEMPTS - 1:
+                time.sleep(2 ** attempt)
+                continue
+            raise SystemExit(f"ghcr {method} {url} unreachable: {e!r}") from e
+    raise AssertionError("unreachable")
+
+
+def ghcr_token(owner: str, scope: str = "pull", token: str = "") -> str:
+    headers = {}
+    if token:
+        encoded = base64.b64encode(f"token:{token}".encode()).decode()
+        headers["Authorization"] = f"Basic {encoded}"
+    body, _ = ghcr_request(f"/token?service=ghcr.io&scope=repository:{owner}/{GHCR_PACKAGE}:{scope}", headers=headers)
+    assert body is not None
+    return json.loads(body)["token"]
+
+
+def push_blob(owner: str, bearer: str, data: bytes) -> str:
+    digest = f"sha256:{hashlib.sha256(data).hexdigest()}"
+    _, headers = ghcr_request(f"/v2/{owner}/{GHCR_PACKAGE}/blobs/uploads/", method="POST", data=b"",
+                              headers={"Authorization": f"Bearer {bearer}"})
+    location = headers.get("Location") or headers.get("location")
+    if not location:
+        raise SystemExit("ghcr blob upload returned no Location header.")
+    sep = "&" if "?" in location else "?"
+    ghcr_request(f"{location}{sep}digest={digest}", method="PUT", data=data,
+                 headers={"Authorization": f"Bearer {bearer}", "Content-Type": "application/octet-stream"})
+    return digest
+
+
+def oci_tag(record: dict) -> str:
+    return f"{record['tag']}_{record['skill']}_{record['client']}_{record['run']}_r{record['repeat']}"
+
+
+def push_record(owner: str, bearer: str, record: dict, created: str) -> None:
+    config = b"{}"
+    layer = redact(json.dumps(record, indent=1)).encode()
+    config_digest = push_blob(owner, bearer, config)
+    layer_digest = push_blob(owner, bearer, layer)
+    manifest = {
+        "schemaVersion": 2,
+        "mediaType": OCI_MANIFEST_TYPE,
+        "config": {"mediaType": OCI_CONFIG_TYPE, "digest": config_digest, "size": len(config)},
+        "layers": [{"mediaType": OCI_LAYER_TYPE, "digest": layer_digest, "size": len(layer)}],
+        "annotations": {
+            "org.opencontainers.image.created": created,
+            "org.opencontainers.image.version": record["tag"],
+        },
+    }
+    ghcr_request(f"/v2/{owner}/{GHCR_PACKAGE}/manifests/{oci_tag(record)}", method="PUT",
+                 data=json.dumps(manifest, indent=1).encode(),
+                 headers={"Authorization": f"Bearer {bearer}", "Content-Type": OCI_MANIFEST_TYPE})
+
+
+def run_stamp() -> tuple[str, str]:
+    created = os.environ.get("RUN_STAMP") or time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+    stamp = created.translate(str.maketrans("", "", "-:"))
+    attempt = os.environ.get("RUN_ATTEMPT") or "1"
+    return created, f"{stamp}a{attempt}"
+
+
+def next_link(headers: dict) -> str | None:
+    link = headers.get("Link") or headers.get("link") or ""
+    for part in link.split(","):
+        if 'rel="next"' in part and "<" in part and ">" in part:
+            return part[part.index("<") + 1:part.index(">")]
+    return None
+
+
+def ghcr_tags(owner: str, bearer: str) -> list[str]:
+    tags, path = [], f"/v2/{owner}/{GHCR_PACKAGE}/tags/list"
+    while path:
+        body, headers = ghcr_request(path, headers={"Authorization": f"Bearer {bearer}"}, allow_404=True)
+        if body is None:
+            return []
+        tags += json.loads(body).get("tags") or []
+        path = next_link(headers)
+    return tags
+
+
+def fetch_record(owner: str, bearer: str, tag_name: str) -> dict | None:
+    manifest_body, _ = ghcr_request(
+        f"/v2/{owner}/{GHCR_PACKAGE}/manifests/{tag_name}",
+        headers={"Authorization": f"Bearer {bearer}", "Accept": OCI_MANIFEST_TYPE},
+        allow_404=True,
+    )
+    if manifest_body is None:
         return None
-    previous = older[0]
-    assets = json.loads(gh("release", "view", previous, "--json", "assets"))["assets"]
-    if not any(a["name"] == "evals.json" for a in assets):
+    layers = json.loads(manifest_body).get("layers") or []
+    if not layers or not layers[0].get("digest"):
         return None
-    target = workdir / "previous" / previous
-    gh("release", "download", previous, "--pattern", "evals.json", "--dir", str(target))
-    return json.loads((target / "evals.json").read_text())
+    blob_body, _ = ghcr_request(
+        f"/v2/{owner}/{GHCR_PACKAGE}/blobs/{layers[0]['digest']}",
+        headers={"Authorization": f"Bearer {bearer}"},
+        allow_404=True,
+    )
+    return json.loads(blob_body) if blob_body is not None else None
+
+
+def previous_results(owner: str, package: str, tag: str, bearer: str | None = None) -> dict | None:
+    bearer = bearer or ghcr_token(owner, "pull")
+    current_run_id = os.environ.get("GITHUB_RUN_ID") or None
+    target_key = version_key(tag)
+    grouped: dict[tuple[str, str], dict[tuple[str, str, int], dict[int, str]]] = {}
+    for name in ghcr_tags(owner, bearer):
+        if not name.startswith(f"{package}--v"):
+            continue
+        head, sep_r, rep = name.rpartition("_r")
+        head, sep_l, run_label = head.rpartition("_")
+        head, sep_c, client = head.rpartition("_")
+        cand_tag, sep_s, skill = head.partition("_")
+        stamp, sep_a, attempt = run_label.rpartition("a")
+        vkey = version_key(cand_tag)
+        if not (sep_r and sep_l and sep_c and sep_s and sep_a and cand_tag.rpartition("--v")[0] == package
+                and rep in ("1", "2", "3") and stamp and attempt.isdigit() and vkey and vkey <= target_key):
+            continue
+        grouped.setdefault((skill, client), {}).setdefault((cand_tag, stamp, int(attempt)), {})[int(rep)] = name
+    baseline = []
+    for skill, client in sorted(grouped):
+        candidates = sorted(
+            ((cand_tag, stamp, attempt, reps) for (cand_tag, stamp, attempt), reps in grouped[(skill, client)].items()
+             if set(reps) == {1, 2, 3}),
+            key=lambda item: (version_key(item[0]), item[1], item[2]),
+            reverse=True,
+        )
+        for _, _, _, reps in candidates:
+            cand_runs = [fetch_record(owner, bearer, reps[r]) for r in (1, 2, 3)]
+            if current_run_id and any(r and r.get("run_id") == current_run_id for r in cand_runs):
+                continue
+            # shortcut: a single errored case inside a repeat stays in Excluded and does not disqualify the baseline; tighten if partial repeats reach releases
+            if (all(r and r.get("sessions") and not run_broke(r["sessions"]) for r in cand_runs)
+                    and len({r.get("client_version") for r in cand_runs if r}) == 1):
+                baseline += [r for r in cand_runs if r]
+                break
+    return {"tag": baseline[0]["tag"], "runs": baseline} if baseline else None
 
 
 def open_fingerprints() -> set[str]:
@@ -733,15 +900,16 @@ def counted(runs: list[dict], metric: str) -> str:
 def issue_body(package, skill, client, old_tag, new_tag, found, old_runs, new_runs, run_url, repo) -> str:
     rows = "\n".join(f"| `{m}` | {span(old)} ({covers(old)}) | {span(new)} ({covers(new)}) |"
                      for m, (old, new) in found.items())
-    asset = "https://github.com/{}/releases/download/{}/evals.json"
+    old_head = f"`{old_tag}` (`{old_runs[0].get('run', 'old')}`)" if old_tag == new_tag else f"`{old_tag}`"
+    new_head = f"`{new_tag}` (`{new_runs[0].get('run', 'new')}`)" if old_tag == new_tag else f"`{new_tag}`"
     return (
         f"{fingerprint(package, skill, client)}\n\n"
-        f"`{package}/{skill}` on {client} regressed between `{old_tag}` and `{new_tag}`. "
+        f"`{package}/{skill}` on {client} regressed between {old_head} and {new_head}. "
         "Each range spans the repeats of one release, and the two ranges do not overlap.\n\n"
-        f"| Metric | `{old_tag}` | `{new_tag}` |\n| :-- | :-- | :-- |\n{rows}\n\n"
+        f"| Metric | {old_head} | {new_head} |\n| :-- | :-- | :-- |\n{rows}\n\n"
         f"Client version: {old_runs[0]['client_version']} → {new_runs[0]['client_version']}. "
         f"Model: {old_runs[0]['model']} → {new_runs[0]['model']}.\n\n"
-        f"Run: {run_url}. Results: {asset.format(repo, old_tag)} and {asset.format(repo, new_tag)}.\n"
+        f"Run: {run_url}. Results: https://github.com/{repo}/pkgs/container/{GHCR_PACKAGE}.\n"
     )
 
 
@@ -750,8 +918,12 @@ def file_issue(title: str, body: str) -> None:
 
 
 def cmd_report(args) -> int:
-    records = [json.loads(p.read_text()) for p in Path(args.runs).rglob("*.json")]
+    records = [json.loads(p.read_text()) for p in sorted(Path(args.runs).rglob("*.json"))]
     repo = os.environ.get("GITHUB_REPOSITORY", "")
+    owner = ghcr_owner(repo)
+    created, label = run_stamp()
+    run_id = os.environ.get("GITHUB_RUN_ID") or None
+    bearer = None
     run_url = f"{os.environ.get('GITHUB_SERVER_URL', 'https://github.com')}/{repo}/actions/runs/{os.environ.get('GITHUB_RUN_ID', '')}"
     summary = ["# Behavioural evals", "",
                "Each cell is the range over the repeats that gave a figure, so a repeat without one drops out. "
@@ -759,26 +931,24 @@ def cmd_report(args) -> int:
                "and for improvement the graded answers with and without the package.", ""]
     seen = open_fingerprints()
     can_file = label_exists("police-report")
-    with tempfile.TemporaryDirectory() as tmp:
-        workdir = Path(tmp)
-        for tag in dict.fromkeys(args.tags.split()):
-            package = package_of(tag)
-            runs = [r for r in records if r["tag"] == tag]
-            no_cases = [s for s in skills_of(package) if not has_cases(package, s)]
-            if not runs:
-                # A failed manual run must not replace a release's complete evals.json.
-                summary += [f"## `{tag}`", "", "No run reported, so nothing was uploaded.", ""]
-                if no_cases:
-                    summary += ["No cases: " + ", ".join(no_cases), ""]
-                continue
-            # gh names the asset after the file. A "#" suffix sets only a display
-            # label (documentation: https://cli.github.com/manual/gh_release_upload).
-            results = workdir / tag / "evals.json"
-            results.parent.mkdir()
-            results.write_text(json.dumps({"tag": tag, "package": package, "no_cases": no_cases, "runs": runs}, indent=1))
-            gh("release", "upload", tag, str(results), "--clobber")
-            previous = previous_results(package, tag, workdir)
-            summary += report_tag(tag, package, runs, no_cases, previous, seen, run_url, repo, can_file)
+    for tag in dict.fromkeys(args.tags.split()):
+        package = package_of(tag)
+        runs = [r for r in records if r["tag"] == tag]
+        no_cases = [s for s in skills_of(package) if not has_cases(package, s)]
+        if not runs:
+            summary += [f"## `{tag}`", "", "No run reported, so nothing was uploaded.", ""]
+            if no_cases:
+                summary += ["No cases: " + ", ".join(no_cases), ""]
+            continue
+        if bearer is None:
+            bearer = ghcr_token(owner, "pull,push",
+                                os.environ.get("GH_TOKEN") or os.environ.get("GITHUB_TOKEN") or "")
+        previous = previous_results(owner, package, tag, bearer)
+        for r in runs:
+            r["run"] = label
+            r["run_id"] = run_id
+            push_record(owner, bearer, r, created)
+        summary += report_tag(tag, package, runs, no_cases, previous, seen, run_url, repo, can_file)
     Path(os.environ.get("GITHUB_STEP_SUMMARY", "/dev/stdout")).write_text("\n".join(summary) + "\n")
     return 0
 
@@ -879,8 +1049,9 @@ def report_tag(tag, package, runs, no_cases, previous, seen, run_url, repo, can_
                     if not can_file:
                         status += " (no issue: the label police-report is not on the label list)"
                     elif mark not in seen:
+                        old_tag = old[0]["tag"] if "--v" in old[0].get("tag", "") else previous["tag"]
                         file(f"evals: {package}/{skill} regressed on {client} in {tag}",
-                             issue_body(package, skill, client, previous["tag"], tag, outcome["regressed"],
+                             issue_body(package, skill, client, old_tag, tag, outcome["regressed"],
                                         old, group, run_url, repo))
                         seen.add(mark)
                 else:
@@ -965,6 +1136,11 @@ def _selftest_parsers() -> None:
 
     assert Codex("p", "s").command("q", "without")[-3:] == ["--disable", "plugins", "q"]
     assert Omp("p", "s").command("q", "without")[-3:] == ["--no-skills", "--no-rules", "q"]
+    assert {k: (cls.name, cls.model, key) for k, (cls, key) in CLIENTS.items()} == {
+        "claude": ("claude", "sonnet", "ANTHROPIC_API_KEY"),
+        "codex": ("codex", "gpt-6-luna", "CODEX_API_KEY"),
+        "omp": ("omp", "openrouter/z-ai/glm-5.3-flash", "OPENROUTER_API_KEY"),
+    }
 
 
 def _session(case, kind, arm, fired, nouls=None, error=None) -> dict:
@@ -979,6 +1155,25 @@ def _expect_error(call, *needles: str) -> None:
         assert all(n in str(e) for n in needles), e
     else:
         raise AssertionError(f"expected an error naming {needles}")
+
+
+@contextlib.contextmanager
+def _fixture_tree(specs: dict[str, list[str]]):
+    global PLUGINS_DIR, EVALS_DIR
+    real_plugins, real_evals = PLUGINS_DIR, EVALS_DIR
+    with tempfile.TemporaryDirectory() as tmp:
+        root = Path(tmp)
+        PLUGINS_DIR, EVALS_DIR = root / "plugins", root / "evals"
+        try:
+            for pkg, skills in specs.items():
+                (PLUGINS_DIR / pkg).mkdir(parents=True, exist_ok=True)
+                for skill in skills:
+                    (PLUGINS_DIR / pkg / "skills" / skill).mkdir(parents=True, exist_ok=True)
+                    (PLUGINS_DIR / pkg / "skills" / skill / "SKILL.md").write_text("")
+                    (EVALS_DIR / pkg / skill).mkdir(parents=True, exist_ok=True)
+            yield root
+        finally:
+            PLUGINS_DIR, EVALS_DIR = real_plugins, real_evals
 
 
 def _selftest_core() -> None:
@@ -1032,10 +1227,11 @@ def _selftest_core() -> None:
     subprocess.run = lambda cmd, **kw: spawned.append(kw["env"]) or subprocess.CompletedProcess(cmd, 0, stdout="1.0\n")
     try:
         Claude("p", "s").switch_to_without()
+        Claude("p", "s").switch_back()
         assert client_version("claude") == "1.0"
     finally:
         subprocess.run = real_run
-    assert len(spawned) == 2 and all("TYPESAFE_API_KEY" not in e and "ANTHROPIC_API_KEY" in e for e in spawned), spawned
+    assert len(spawned) == 3 and all("TYPESAFE_API_KEY" not in e and "ANTHROPIC_API_KEY" in e for e in spawned), spawned
 
     class Reply:
         def __enter__(self):
@@ -1093,6 +1289,9 @@ def _selftest_core() -> None:
         def switch_to_without(self):
             self.order.append("switch")
 
+        def switch_back(self):
+            self.order.append("back")
+
     fake = Fake()
     cases = {"positive": [{"id": "p", "prompt": "P"}], "near_miss": [{"id": "n", "prompt": "N"}]}
 
@@ -1103,14 +1302,21 @@ def _selftest_core() -> None:
     seen = []
     graded = run_job(fake, cases, {"q": "Q"}, session=fake_session,
                      grader=lambda r, a, q: seen.append(a) or {"q": 1.0})
-    assert fake.order == ["p:with", "n:with", "switch", "p:without"], fake.order
+    assert fake.order == ["p:with", "n:with", "switch", "p:without", "back"], fake.order
     assert [s["nouls"] for s in graded] == [{"q": 1.0}, None, {"q": 1.0}], graded
     assert seen == ["leaked ***", "leaked ***"], seen
     assert not run_broke(graded)
     spare = cases | {"held_out": {"positive": [{"id": "hp", "prompt": "HP"}], "near_miss": [{"id": "hn", "prompt": "HN"}]}}
     fake = Fake()
     first = run_job(fake, spare, {"q": "Q"}, session=fake_session, grader=lambda r, a, q: {"q": 1.0}, held_out=True)
-    assert fake.order == ["p:with", "n:with", "hp:with", "hn:with", "switch", "p:without"], fake.order
+    assert fake.order == ["p:with", "n:with", "hp:with", "hn:with", "switch", "p:without", "back"], fake.order
+    boom = Fake()
+    try:
+        run_job(boom, cases, {"q": "Q"},
+                session=lambda a, c, k, arm: (_ for _ in ()).throw(RuntimeError("boom")) if arm == "without" else fake_session(a, c, k, arm))
+    except RuntimeError:
+        pass
+    assert boom.order == ["p:with", "n:with", "switch", "back"], boom.order
     assert [s["kind"] for s in first[2:4]] == ["held_out_positive", "held_out_near_miss"], first
     assert all(s["nouls"] is None for s in first[2:4]), first
     assert len(run_job(Fake(), spare, {"q": "Q"}, session=fake_session, grader=lambda r, a, q: {"q": 1.0})) == 3
@@ -1189,15 +1395,16 @@ def _selftest_publish() -> None:
     nested = (f"```\n~~~\n{mark['f']}\n```\n````\n```\n{mark['g']}\n````\n"
               f"```\n```python\n{mark['i']}\n```\n{mark['h']}\n")
     assert fingerprint_lines(nested) == [mark["h"]], fingerprint_lines(nested)
-    assert package_of("triz--v0.2.0") == "triz"
-    for bad in ("triz-v0.3.12", "nosuch--v1.0.0"):
-        try:
-            package_of(bad)
-        except SystemExit:
-            pass
-        else:
-            raise AssertionError(f"{bad} must be rejected")
-    assert version_key("triz--v0.10.0") > version_key("triz--v0.9.1")
+    with _fixture_tree({"alpha": ["s"]}):
+        assert package_of("alpha--v0.2.0") == "alpha"
+        for bad in ("alpha-v0.3.12", "nosuch--v1.0.0"):
+            try:
+                package_of(bad)
+            except SystemExit:
+                pass
+            else:
+                raise AssertionError(f"{bad} must be rejected")
+    assert version_key("alpha--v0.10.0") > version_key("alpha--v0.9.1")
     assert span([0.5, 0.25]) == "0.25–0.50" and span([]) == "–"
 
     def run(repeat, fired, version, extra=()):
@@ -1218,6 +1425,7 @@ def _selftest_publish() -> None:
     lines = report(current, True, seen)
     assert len(filed) == 1 and fingerprint("p", "s", "claude") in filed[0][1], filed
     assert "Client version: 1.0 → 2.0" in filed[0][1], filed[0][1]
+    assert "https://github.com/o/r/pkgs/container/ai-plugins-evals" in filed[0][1], filed[0][1]
     row = next(line for line in lines if line.startswith("| s | claude |"))
     assert "regressed: trigger_hit" in row and "0.00–0.00 (n=1, 3 of 3 repeats)" in row, row
     assert "| `trigger_hit` | 1.00–1.00 (3 of 3 repeats) | 0.00–0.00 (3 of 3 repeats) |" in filed[0][1], filed[0][1]
@@ -1279,7 +1487,7 @@ def _selftest_publish() -> None:
 
 
 def _selftest_gh() -> None:
-    global gh, PLUGINS_DIR
+    global gh
     calls, replies = [], {}
 
     def fake(*args):
@@ -1288,35 +1496,76 @@ def _selftest_gh() -> None:
 
     real_gh, gh = gh, fake
     try:
-        with tempfile.TemporaryDirectory() as tmp:
-            workdir = Path(tmp)
+        with _fixture_tree({"alpha": ["s"]}) as workdir:
             runs_dir = workdir / "runs"
             runs_dir.mkdir()
-            record = {"tag": "triz--v0.3.0", "skill": "ariz", "client": "claude", "repeat": 1, "client_version": "1",
+            record = {"tag": "alpha--v0.3.0", "skill": "s", "client": "claude", "repeat": 1, "client_version": "1",
                       "model": "m", "cases_sha256": "a", "rubric_sha256": "r",
-                      "sessions": [_session("p", "positive", "with", True) | {"cost_usd": 0.1, "tokens": None}]}
+                      "sessions": [_session("p", "positive", "with", True)
+                                   | {"answer": "secret selftest-secret-value", "cost_usd": 0.1, "tokens": None}]}
             (runs_dir / "run.json").write_text(json.dumps(record))
-            os.environ["GITHUB_STEP_SUMMARY"] = str(workdir / "summary.md")
-            assert cmd_report(argparse.Namespace(tags="triz--v0.2.0 triz--v0.3.0", runs=str(runs_dir))) == 0
-            uploads = [c[2] for c in calls if c[:2] == ("release", "upload")]
-            assert uploads == ["triz--v0.3.0"], "a tag with no runs must not replace its evals.json"
-            summary = (workdir / "summary.md").read_text()
-            assert "## `triz--v0.2.0`\n\nNo run reported, so nothing was uploaded." in summary, summary
+            os.environ.update({"GITHUB_STEP_SUMMARY": str(workdir / "summary.md"),
+                               "GITHUB_REPOSITORY": "Akurganow/ai-plugins", "GH_TOKEN": "gh-tok",
+                               "RUN_STAMP": "2026-10-20T21:53:00Z", "RUN_ATTEMPT": "2", "GITHUB_RUN_ID": "99"})
+            pushed = []
 
-            real_dir, PLUGINS_DIR = PLUGINS_DIR, workdir / "plugins"
-            (PLUGINS_DIR / "nocases" / "skills" / "s").mkdir(parents=True)
+            class RegistryReply:
+                def __init__(self, body=b"", headers=None):
+                    self.body, self.headers = body, headers or {}
+
+                def __enter__(self):
+                    return self
+
+                def __exit__(self, *exc):
+                    return False
+
+                def read(self):
+                    return self.body
+
+            def fake_registry(req, timeout):
+                pushed.append((req.get_method(), req.full_url, dict(req.header_items()), req.data))
+                if "/token?" in req.full_url:
+                    return RegistryReply(b'{"token": "reg-tok"}')
+                if "/tags/list" in req.full_url:
+                    return RegistryReply(b'{"tags": []}')
+                if req.full_url.endswith("/blobs/uploads/"):
+                    return RegistryReply(headers={"Location": "/v2/akurganow/ai-plugins-evals/blobs/uploads/u1"})
+                return RegistryReply()
+
+            real_open = urllib.request.urlopen
+            urllib.request.urlopen = fake_registry
             try:
-                cmd_report(argparse.Namespace(tags="nocases--v1.0.0", runs=str(runs_dir)))
-            finally:
-                PLUGINS_DIR = real_dir
-            summary = (workdir / "summary.md").read_text()
-            assert "No run reported, so nothing was uploaded.\n\nNo cases: s" in summary, summary
+                assert cmd_report(argparse.Namespace(tags="alpha--v0.2.0 alpha--v0.3.0", runs=str(runs_dir))) == 0
+                assert not [c for c in calls if c[:2] == ("release", "upload")], calls
+                urls = [p[1] for p in pushed]
+                assert urls.index("https://ghcr.io/v2/akurganow/ai-plugins-evals/tags/list") < next(
+                    i for i, u in enumerate(urls) if "/blobs/uploads/" in u), urls
+                manifests = [p for p in pushed if "/manifests/" in p[1]]
+                assert len(manifests) == 1, pushed
+                assert manifests[0][1].endswith(
+                    "/v2/akurganow/ai-plugins-evals/manifests/alpha--v0.3.0_s_claude_20261020T215300Za2_r1"), manifests[0][1]
+                manifest = json.loads(manifests[0][3])
+                assert manifest["mediaType"] == OCI_MANIFEST_TYPE and manifest["config"]["mediaType"] == OCI_CONFIG_TYPE
+                assert manifest["annotations"] == {
+                    "org.opencontainers.image.created": "2026-10-20T21:53:00Z",
+                    "org.opencontainers.image.version": "alpha--v0.3.0",
+                }, manifest["annotations"]
+                blobs = {p[1].split("digest=")[1]: p[3] for p in pushed if "digest=" in p[1]}
+                layer_bytes = blobs[manifest["layers"][0]["digest"]]
+                assert manifest["layers"][0]["mediaType"] == OCI_LAYER_TYPE
+                stored = json.loads(layer_bytes)
+                assert stored["run"] == "20261020T215300Za2" and stored["run_id"] == "99", stored
+                assert stored["sessions"][0]["answer"] == "secret ***", stored["sessions"][0]
+                summary = (workdir / "summary.md").read_text()
+                assert "## `alpha--v0.2.0`\n\nNo run reported, so nothing was uploaded." in summary, summary
 
-            replies["release view"] = '{"assets": []}'
-            replies["release list"] = json.dumps([{"tagName": f"p--v0.0.{i}"} for i in range(RELEASE_LIMIT - 1)])
-            assert previous_results("p", "p--v1.0.0", workdir) is None
-            replies["release list"] = json.dumps([{"tagName": f"p--v0.0.{i}"} for i in range(RELEASE_LIMIT)])
-            _expect_error(lambda: previous_results("p", "p--v1.0.0", workdir), "release list", str(RELEASE_LIMIT))
+                (PLUGINS_DIR / "nocases" / "skills" / "s").mkdir(parents=True)
+                cmd_report(argparse.Namespace(tags="nocases--v1.0.0", runs=str(runs_dir)))
+                summary = (workdir / "summary.md").read_text()
+                assert "No run reported, so nothing was uploaded.\n\nNo cases: s" in summary, summary
+            finally:
+                urllib.request.urlopen = real_open
+
             replies["issue list"] = json.dumps([{"body": ""}] * (ISSUE_LIMIT - 1))
             assert open_fingerprints() == set()
             replies["issue list"] = json.dumps([{"body": ""}] * ISSUE_LIMIT)
@@ -1325,35 +1574,133 @@ def _selftest_gh() -> None:
         gh = real_gh
 
 
+def _selftest_registry() -> None:
+    class Reply:
+        def __init__(self, body=b"", headers=None):
+            self.body, self.headers = body, headers or {}
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *exc):
+            return False
+
+        def read(self):
+            return self.body
+
+    def make_run(tag, repeat, run_label, version="1.0", fired=True, sessions=None, run_id=None):
+        if sessions is None:
+            sessions = [_session("p", "positive", "with", fired) | {"cost_usd": 0.1, "tokens": None}]
+        return {"tag": tag, "package": "alpha", "skill": "s", "client": "claude", "repeat": repeat,
+                "run": run_label, "run_id": run_id, "client_version": version, "model": "m", "cases_sha256": "a",
+                "rubric_sha256": "r", "sessions": sessions}
+
+    store_manifests, store_blobs, pages = {}, {}, []
+    status_override = {}
+
+    def put_candidate(tag, run_label, repeats=(1, 2, 3), versions=("1.0", "1.0", "1.0"), sessions_list=None,
+                      run_id=None):
+        for idx, rep in enumerate(repeats):
+            rec = make_run(tag, rep, run_label, version=versions[idx],
+                           sessions=None if sessions_list is None else sessions_list[idx], run_id=run_id)
+            raw = json.dumps(rec).encode()
+            digest = f"sha256:{hashlib.sha256(raw).hexdigest()}"
+            store_blobs[digest] = raw
+            tname = f"{tag}_s_claude_{run_label}_r{rep}"
+            store_manifests[tname] = json.dumps({"layers": [{"digest": digest}]}).encode()
+
+    put_candidate("alpha--v0.2.9", "20261009T000000Za1", versions=("0.9", "0.9", "0.9"))
+    put_candidate("alpha--v0.2.10", "20261010T000000Za1", versions=("1.0", "1.0", "1.0"))
+    put_candidate("alpha--v0.2.10", "20261012T000000Za1", repeats=(1, 2), versions=("1.2", "1.2"))
+    put_candidate("alpha--v0.2.10", "20261013T000000Za1", versions=("1.3", "1.3", "1.4"))
+    put_candidate("alpha--v0.2.10", "20261014T000000Za1", sessions_list=([], [], []))
+    broke = [_session("p", "positive", "with", False, error="exit 1")]
+    put_candidate("alpha--v0.2.10", "20261015T000000Za1", sessions_list=(broke, broke, broke))
+    put_candidate("alpha--v0.2.10", "20261015T120000Za1", versions=("1.5", "1.5", "1.5"), run_id="same-run")
+    put_candidate("alpha--v0.2.11", "20261016T000000Za1", versions=("2.0", "2.0", "2.0"))
+
+    all_tags = sorted(store_manifests)
+    mid = len(all_tags) // 2
+    pages[:] = [all_tags[:mid], all_tags[mid:]]
+    auth_seen = []
+
+    def transport(req, timeout):
+        url = req.full_url
+        for key, code in status_override.items():
+            if key in url:
+                raise urllib.error.HTTPError(url, code, "err", http.client.HTTPMessage(), None)
+        if "/token?" in url:
+            auth_seen.append(dict(req.header_items()).get("Authorization"))
+            return Reply(b'{"token": "anon-tok"}')
+        if url.endswith("/tags/list"):
+            return Reply(json.dumps({"tags": pages[0]}).encode(),
+                         headers={"Link": '</v2/akurganow/ai-plugins-evals/tags/list?page=2>; rel="next"'})
+        if "tags/list?page=2" in url:
+            return Reply(json.dumps({"tags": pages[1]}).encode())
+        if "/manifests/" in url:
+            tname = url.rsplit("/", 1)[1]
+            if tname not in store_manifests:
+                raise urllib.error.HTTPError(url, 404, "not found", http.client.HTTPMessage(), None)
+            return Reply(store_manifests[tname])
+        if "/blobs/sha256:" in url:
+            digest = url.rsplit("/", 1)[1]
+            return Reply(store_blobs[digest])
+        raise AssertionError(f"unexpected url: {url}")
+
+    real_open = urllib.request.urlopen
+    urllib.request.urlopen = transport
+    os.environ["GITHUB_RUN_ID"] = "same-run"
+    try:
+        got = previous_results("akurganow", "alpha", "alpha--v0.2.10")
+        assert auth_seen == [None], auth_seen
+        assert got is not None and len(got["runs"]) == 3, got
+        assert {r["run"] for r in got["runs"]} == {"20261010T000000Za1"}, got["runs"]
+        assert {r["client_version"] for r in got["runs"]} == {"1.0"}, got["runs"]
+        reused = previous_results("akurganow", "alpha", "alpha--v0.2.10", bearer="pre-tok")
+        assert auth_seen == [None] and reused == got, auth_seen
+
+        status_override["/tags/list"] = 404
+        assert previous_results("akurganow", "alpha", "alpha--v0.2.10") is None
+        for code in (401, 403):
+            status_override["/tags/list"] = code
+            _expect_error(lambda: previous_results("akurganow", "alpha", "alpha--v0.2.10"), str(code))
+    finally:
+        urllib.request.urlopen = real_open
+
+    old_runs = [make_run("alpha--v0.2.10", r, "20261010T000000Za1", "1.0", True) for r in (1, 2, 3)]
+    new_runs = [make_run("alpha--v0.2.10", r, "20261020T000000Za1", "1.1", False) for r in (1, 2, 3)]
+    same_tag_body = issue_body("alpha", "s", "claude", "alpha--v0.2.10", "alpha--v0.2.10",
+                               {"trigger_hit": ([1.0] * 3, [0.0] * 3)}, old_runs, new_runs, "RUN_URL", "o/r")
+    assert "`alpha--v0.2.10` (`20261010T000000Za1`)" in same_tag_body, same_tag_body
+    assert "`alpha--v0.2.10` (`20261020T000000Za1`)" in same_tag_body, same_tag_body
+    assert "| Metric | `alpha--v0.2.10` (`20261010T000000Za1`) | `alpha--v0.2.10` (`20261020T000000Za1`) |" in same_tag_body
+    assert "https://github.com/o/r/pkgs/container/ai-plugins-evals" in same_tag_body, same_tag_body
+
+
 def _selftest_folders() -> None:
-    global PLUGINS_DIR
-    real_dir = PLUGINS_DIR
-    with tempfile.TemporaryDirectory() as tmp:
-        PLUGINS_DIR = Path(tmp)
-        try:
-            (PLUGINS_DIR / "bare").mkdir()
-            (PLUGINS_DIR / "p" / "skills" / "s").mkdir(parents=True)
-            (PLUGINS_DIR / "p" / "skills" / "s" / "SKILL.md").write_text("")
-            assert package_of("bare--v1.0.0") == "bare" and skills_of("bare") == []
-            assert matrix(["bare--v1.0.0"]) == {"include": []}
-            _expect_error(lambda: package_of("nosuch--v1.0.0"), "nosuch")
-            loaded = []
-            assert check_folder(Path("evals/p/s"), load=loaded.append) is None and loaded == [Path("evals/p/s")]
-            loaded.clear()
-            assert check_folder(Path("evals/p/gone"), load=loaded.append) == (
-                "evals/p/gone: no plugins/p/skills/gone/SKILL.md.") and not loaded
+    with _fixture_tree({"bare": [], "alpha": ["s"]}):
+        assert package_of("bare--v1.0.0") == "bare" and skills_of("bare") == []
+        assert matrix(["bare--v1.0.0"]) == {"include": []}
+        assert [j["client"] for j in matrix(["alpha--v1.0.0"])["include"]] == ["claude"] * 3 + ["codex"] * 3 + ["omp"] * 3
+        assert [j["client"] for j in matrix(["alpha--v1.0.0"], ["claude", "omp", "claude"])["include"]] == (
+            ["claude"] * 3 + ["omp"] * 3)
+        _expect_error(lambda: matrix(["alpha--v1.0.0"], ["claude", "hermes"]), "hermes")
+        _expect_error(lambda: package_of("nosuch--v1.0.0"), "nosuch")
+        loaded = []
+        assert check_folder(Path("evals/alpha/s"), load=loaded.append) is None and loaded == [Path("evals/alpha/s")]
+        loaded.clear()
+        assert check_folder(Path("evals/alpha/gone"), load=loaded.append) == (
+            "evals/alpha/gone: no plugins/alpha/skills/gone/SKILL.md.") and not loaded
 
-            def refuse(folder):
-                raise SystemExit("evals/p/s/cases.yaml: case ids repeat.")
+        def refuse(folder):
+            raise SystemExit("evals/alpha/s/cases.yaml: case ids repeat.")
 
-            def corrupt(folder):
-                raise ValueError("expected the node content,\n  found '<stream end>'")
+        def corrupt(folder):
+            raise ValueError("expected the node content,\n  found '<stream end>'")
 
-            assert check_folder(Path("evals/p/s"), load=refuse) == "evals/p/s/cases.yaml: case ids repeat."
-            assert check_folder(Path("evals/p/s"), load=corrupt) == (
-                "evals/p/s: ValueError: expected the node content, found '<stream end>'")
-        finally:
-            PLUGINS_DIR = real_dir
+        assert check_folder(Path("evals/alpha/s"), load=refuse) == "evals/alpha/s/cases.yaml: case ids repeat."
+        assert check_folder(Path("evals/alpha/s"), load=corrupt) == (
+            "evals/alpha/s: ValueError: expected the node content, found '<stream end>'")
 
 
 def selftest() -> int:
@@ -1361,6 +1708,7 @@ def selftest() -> int:
     _selftest_core()
     _selftest_publish()
     _selftest_gh()
+    _selftest_registry()
     _selftest_folders()
     print("selftest passed")
     return 0
@@ -1371,6 +1719,7 @@ def main() -> int:
     sub = parser.add_subparsers(dest="command", required=True)
     m = sub.add_parser("matrix", help="print the job matrix for some release tags")
     m.add_argument("--tags", required=True)
+    m.add_argument("--clients", default="")
     r = sub.add_parser("run", help="run one skill on one client, one repeat")
     for name in ("--tag", "--skill", "--out"):
         r.add_argument(name, required=True)
@@ -1383,7 +1732,7 @@ def main() -> int:
     sub.add_parser("selftest", help="check the parsers and the arithmetic without a model")
     args = parser.parse_args()
     if args.command == "matrix":
-        result = matrix(args.tags.split())
+        result = matrix(args.tags.split(), args.clients.split())
         print(json.dumps(result))
         return 0
     if args.command == "run":

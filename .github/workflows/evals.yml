@@ -26,6 +26,11 @@ on:
         description: Release tags separated by spaces, such as "triz--v0.2.0"
         type: string
         required: true
+      clients:
+        description: Clients separated by spaces, or empty for all clients
+        type: string
+        required: false
+        default: ""
 
 permissions:
   contents: read
@@ -47,8 +52,9 @@ jobs:
       - id: list
         env:
           TAGS: ${{ inputs.tags }}
+          CLIENTS: ${{ inputs.clients }}
         run: |
-          matrix=$(python tools/evals.py matrix --tags "$TAGS")
+          matrix=$(python tools/evals.py matrix --tags "$TAGS" --clients "$CLIENTS")
           echo "matrix=$matrix" >> "$GITHUB_OUTPUT"
           echo "count=$(jq '.include | length' <<<"$matrix")" >> "$GITHUB_OUTPUT"
 
@@ -136,8 +142,7 @@ jobs:
           python tools/evals.py run --tag "$TAG" --skill "$SKILL" --client "$CLIENT"
           --repeat "$REPEAT" --out "$RUNNER_TEMP/run.json"
 
-      - if: always()
-        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: evals-${{ matrix.tag }}-${{ matrix.skill }}-${{ matrix.client }}-${{ matrix.repeat }}
           path: ${{ runner.temp }}/run.json
@@ -149,8 +154,8 @@ jobs:
 
   report:
     needs: [matrix, run]
-    # Not always(): that also runs after a cancel, and would replace a release's
-    # complete evals.json with a partial one (documentation:
+    # Not always(): that also runs after a cancel, and would publish a cancelled
+    # run's partial set (documentation:
     # https://docs.github.com/en/actions/reference/workflows-and-actions/expressions#always,
     # read 2026-10-08). It does run after a failed run job: compare in
     # tools/evals.py ranges a metric only with all three repeats on both sides,
@@ -158,8 +163,9 @@ jobs:
     if: ${{ !cancelled() && needs.matrix.result == 'success' }}
     runs-on: ubuntu-latest
     permissions:
-      contents: write
+      contents: read
       issues: write
+      packages: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
@@ -174,6 +180,8 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           TAGS: ${{ inputs.tags }}
+          RUN_ATTEMPT: ${{ github.run_attempt }}
+          GITHUB_RUN_ID: ${{ github.run_id }}
         run: |
           mkdir -p "$RUNNER_TEMP/runs"
           python tools/evals.py report --tags "$TAGS" --runs "$RUNNER_TEMP/runs"

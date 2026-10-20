@@ -366,14 +366,13 @@ So `cases.yaml` lists such clients under `always_on`.
 For them the summary shows `trigger_hit` and `compliance` as `n/a`, and `compare` skips both.
 Their block leaves out the skill-loaded column and the loads per positive prompt.
 
-The run attaches its results to the release as `evals.json`.
-Workflow artifacts would not serve as the record, because a public repository keeps them 90 days at most.
-(documentation: GitHub Docs, [artifact and log retention L1](https://github.com/github/docs/blob/7b807926df3ccb7f3d1bcd4ad1c652fb42b0931d/data/reusables/actions/about-artifact-log-retention.md#L1) and [L15](https://github.com/github/docs/blob/7b807926df3ccb7f3d1bcd4ad1c652fb42b0931d/data/reusables/actions/about-artifact-log-retention.md#L15))
-A package can go longer than that between releases.
+The run publishes each repeat's record to `ghcr.io/akurganow/ai-plugins-evals` as an immutable OCI artifact tagged `<tag>_<skill>_<client>_<stamp>a<attempt>_r<repeat>`.
+Earlier releases' `evals.json` assets stay on their releases as frozen history, and the runner writes no new ones.
 A metric regressed when the three repeats of this release and of the package's previous release do not overlap, and the new ones are worse.
 The spread between repeats is the tolerance, so the rule has no threshold.
-Where a package's previous release has no `evals.json`, nothing is compared.
-`release.yml` runs one release at a time, its evals included, so a release's `evals.json` exists before the next release compares against it.
+For each skill and client, `previous_results` selects the package's newest earlier complete run: three non-broken repeats with one `client_version`.
+Where no such run exists, nothing is compared.
+`release.yml` runs one release at a time, its evals included, so a release's records exist before the next release compares against them.
 A regression opens an issue.
 Two releases are compared only when their `cases.yaml` and their `rubric.yaml` are byte-identical.
 `held-out.yaml` is outside that comparison, so adding or changing it does not break the chain.

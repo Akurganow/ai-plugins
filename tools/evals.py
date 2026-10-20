@@ -100,11 +100,16 @@ class Claude:
         return ["claude", "-p", prompt, "--model", self.model, "--output-format", "stream-json",
                 "--verbose", "--allowedTools", "Skill", "Read"]
 
-    # `claude plugin disable` changes the plugin's state for later sessions, so it
-    # runs once between the arms (documentation:
-    # https://code.claude.com/docs/en/plugins/cli-reference#plugin-disable).
+    # `claude plugin disable` and `enable` change the plugin's state across sessions,
+    # so `run_job` disables it once and restores it in `finally` (documentation:
+    # https://code.claude.com/docs/en/plugins/cli-reference#plugin-disable,
+    # https://code.claude.com/docs/en/plugins/cli-reference#plugin-enable).
     def switch_to_without(self) -> None:
         subprocess.run(["claude", "plugin", "disable", f"{self.package}@{MARKETPLACE}"], check=True,
+                       env=client_env(self.name))
+
+    def switch_back(self) -> None:
+        subprocess.run(["claude", "plugin", "enable", f"{self.package}@{MARKETPLACE}"], check=True,
                        env=client_env(self.name))
 
     # Claude Code 2.1.293 shows a loaded skill as a Skill tool call whose `skill`
@@ -156,6 +161,9 @@ class Codex:
         return cmd + [prompt]
 
     def switch_to_without(self) -> None:
+        pass
+
+    def switch_back(self) -> None:
         pass
 
     # Codex has no skill item kind (source: ThreadItemDetails in
@@ -221,6 +229,9 @@ class Omp:
         return cmd + [prompt]
 
     def switch_to_without(self) -> None:
+        pass
+
+    def switch_back(self) -> None:
         pass
 
     # Oh-My-Pi loads a skill by reading skill://<name>, a file under it, or either
@@ -455,7 +466,10 @@ def run_job(adapter, cases: dict, questions: dict, session=run_session, grader=g
         sessions += [session(adapter, c, HELD_OUT_KINDS[kind], "with")
                      for kind in ("positive", "near_miss") for c in cases["held_out"][kind]]
     adapter.switch_to_without()
-    sessions += [session(adapter, c, "positive", "without") for c in cases["positive"]]
+    try:
+        sessions += [session(adapter, c, "positive", "without") for c in cases["positive"]]
+    finally:
+        adapter.switch_back()
     prompts = {c["id"]: c["prompt"] for c in cases["positive"]}
     for s in sessions:
         if s["kind"] != "positive" or s["error"]:
@@ -1034,10 +1048,11 @@ def _selftest_core() -> None:
     subprocess.run = lambda cmd, **kw: spawned.append(kw["env"]) or subprocess.CompletedProcess(cmd, 0, stdout="1.0\n")
     try:
         Claude("p", "s").switch_to_without()
+        Claude("p", "s").switch_back()
         assert client_version("claude") == "1.0"
     finally:
         subprocess.run = real_run
-    assert len(spawned) == 2 and all("TYPESAFE_API_KEY" not in e and "ANTHROPIC_API_KEY" in e for e in spawned), spawned
+    assert len(spawned) == 3 and all("TYPESAFE_API_KEY" not in e and "ANTHROPIC_API_KEY" in e for e in spawned), spawned
 
     class Reply:
         def __enter__(self):
@@ -1095,6 +1110,9 @@ def _selftest_core() -> None:
         def switch_to_without(self):
             self.order.append("switch")
 
+        def switch_back(self):
+            self.order.append("back")
+
     fake = Fake()
     cases = {"positive": [{"id": "p", "prompt": "P"}], "near_miss": [{"id": "n", "prompt": "N"}]}
 
@@ -1105,14 +1123,21 @@ def _selftest_core() -> None:
     seen = []
     graded = run_job(fake, cases, {"q": "Q"}, session=fake_session,
                      grader=lambda r, a, q: seen.append(a) or {"q": 1.0})
-    assert fake.order == ["p:with", "n:with", "switch", "p:without"], fake.order
+    assert fake.order == ["p:with", "n:with", "switch", "p:without", "back"], fake.order
     assert [s["nouls"] for s in graded] == [{"q": 1.0}, None, {"q": 1.0}], graded
     assert seen == ["leaked ***", "leaked ***"], seen
     assert not run_broke(graded)
     spare = cases | {"held_out": {"positive": [{"id": "hp", "prompt": "HP"}], "near_miss": [{"id": "hn", "prompt": "HN"}]}}
     fake = Fake()
     first = run_job(fake, spare, {"q": "Q"}, session=fake_session, grader=lambda r, a, q: {"q": 1.0}, held_out=True)
-    assert fake.order == ["p:with", "n:with", "hp:with", "hn:with", "switch", "p:without"], fake.order
+    assert fake.order == ["p:with", "n:with", "hp:with", "hn:with", "switch", "p:without", "back"], fake.order
+    boom = Fake()
+    try:
+        run_job(boom, cases, {"q": "Q"},
+                session=lambda a, c, k, arm: (_ for _ in ()).throw(RuntimeError("boom")) if arm == "without" else fake_session(a, c, k, arm))
+    except RuntimeError:
+        pass
+    assert boom.order == ["p:with", "n:with", "switch", "back"], boom.order
     assert [s["kind"] for s in first[2:4]] == ["held_out_positive", "held_out_near_miss"], first
     assert all(s["nouls"] is None for s in first[2:4]), first
     assert len(run_job(Fake(), spare, {"q": "Q"}, session=fake_session, grader=lambda r, a, q: {"q": 1.0})) == 3

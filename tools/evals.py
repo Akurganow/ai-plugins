@@ -25,6 +25,7 @@ above `_selftest_parsers` gives the fixtures' origin.
 """
 
 import argparse
+import contextlib
 import hashlib
 import http.client
 import json
@@ -997,6 +998,25 @@ def _expect_error(call, *needles: str) -> None:
         raise AssertionError(f"expected an error naming {needles}")
 
 
+@contextlib.contextmanager
+def _fixture_tree(specs: dict[str, list[str]]):
+    global PLUGINS_DIR, EVALS_DIR
+    real_plugins, real_evals = PLUGINS_DIR, EVALS_DIR
+    with tempfile.TemporaryDirectory() as tmp:
+        root = Path(tmp)
+        PLUGINS_DIR, EVALS_DIR = root / "plugins", root / "evals"
+        try:
+            for pkg, skills in specs.items():
+                (PLUGINS_DIR / pkg).mkdir(parents=True, exist_ok=True)
+                for skill in skills:
+                    (PLUGINS_DIR / pkg / "skills" / skill).mkdir(parents=True, exist_ok=True)
+                    (PLUGINS_DIR / pkg / "skills" / skill / "SKILL.md").write_text("")
+                    (EVALS_DIR / pkg / skill).mkdir(parents=True, exist_ok=True)
+            yield root
+        finally:
+            PLUGINS_DIR, EVALS_DIR = real_plugins, real_evals
+
+
 def _selftest_core() -> None:
     assert regressed("trigger_hit", [0.8, 0.9, 0.9], [0.5, 0.6, 0.7])
     assert not regressed("trigger_hit", [0.8, 0.9, 0.9], [0.7, 0.8, 0.9])
@@ -1216,15 +1236,16 @@ def _selftest_publish() -> None:
     nested = (f"```\n~~~\n{mark['f']}\n```\n````\n```\n{mark['g']}\n````\n"
               f"```\n```python\n{mark['i']}\n```\n{mark['h']}\n")
     assert fingerprint_lines(nested) == [mark["h"]], fingerprint_lines(nested)
-    assert package_of("triz--v0.2.0") == "triz"
-    for bad in ("triz-v0.3.12", "nosuch--v1.0.0"):
-        try:
-            package_of(bad)
-        except SystemExit:
-            pass
-        else:
-            raise AssertionError(f"{bad} must be rejected")
-    assert version_key("triz--v0.10.0") > version_key("triz--v0.9.1")
+    with _fixture_tree({"alpha": ["s"]}):
+        assert package_of("alpha--v0.2.0") == "alpha"
+        for bad in ("alpha-v0.3.12", "nosuch--v1.0.0"):
+            try:
+                package_of(bad)
+            except SystemExit:
+                pass
+            else:
+                raise AssertionError(f"{bad} must be rejected")
+    assert version_key("alpha--v0.10.0") > version_key("alpha--v0.9.1")
     assert span([0.5, 0.25]) == "0.25–0.50" and span([]) == "–"
 
     def run(repeat, fired, version, extra=()):
@@ -1306,7 +1327,7 @@ def _selftest_publish() -> None:
 
 
 def _selftest_gh() -> None:
-    global gh, PLUGINS_DIR
+    global gh
     calls, replies = [], {}
 
     def fake(*args):
@@ -1315,27 +1336,22 @@ def _selftest_gh() -> None:
 
     real_gh, gh = gh, fake
     try:
-        with tempfile.TemporaryDirectory() as tmp:
-            workdir = Path(tmp)
+        with _fixture_tree({"alpha": ["s"]}) as workdir:
             runs_dir = workdir / "runs"
             runs_dir.mkdir()
-            record = {"tag": "triz--v0.3.0", "skill": "ariz", "client": "claude", "repeat": 1, "client_version": "1",
+            record = {"tag": "alpha--v0.3.0", "skill": "s", "client": "claude", "repeat": 1, "client_version": "1",
                       "model": "m", "cases_sha256": "a", "rubric_sha256": "r",
                       "sessions": [_session("p", "positive", "with", True) | {"cost_usd": 0.1, "tokens": None}]}
             (runs_dir / "run.json").write_text(json.dumps(record))
             os.environ["GITHUB_STEP_SUMMARY"] = str(workdir / "summary.md")
-            assert cmd_report(argparse.Namespace(tags="triz--v0.2.0 triz--v0.3.0", runs=str(runs_dir))) == 0
+            assert cmd_report(argparse.Namespace(tags="alpha--v0.2.0 alpha--v0.3.0", runs=str(runs_dir))) == 0
             uploads = [c[2] for c in calls if c[:2] == ("release", "upload")]
-            assert uploads == ["triz--v0.3.0"], "a tag with no runs must not replace its evals.json"
+            assert uploads == ["alpha--v0.3.0"], "a tag with no runs must not replace its evals.json"
             summary = (workdir / "summary.md").read_text()
-            assert "## `triz--v0.2.0`\n\nNo run reported, so nothing was uploaded." in summary, summary
+            assert "## `alpha--v0.2.0`\n\nNo run reported, so nothing was uploaded." in summary, summary
 
-            real_dir, PLUGINS_DIR = PLUGINS_DIR, workdir / "plugins"
             (PLUGINS_DIR / "nocases" / "skills" / "s").mkdir(parents=True)
-            try:
-                cmd_report(argparse.Namespace(tags="nocases--v1.0.0", runs=str(runs_dir)))
-            finally:
-                PLUGINS_DIR = real_dir
+            cmd_report(argparse.Namespace(tags="nocases--v1.0.0", runs=str(runs_dir)))
             summary = (workdir / "summary.md").read_text()
             assert "No run reported, so nothing was uploaded.\n\nNo cases: s" in summary, summary
 
@@ -1353,34 +1369,25 @@ def _selftest_gh() -> None:
 
 
 def _selftest_folders() -> None:
-    global PLUGINS_DIR
-    real_dir = PLUGINS_DIR
-    with tempfile.TemporaryDirectory() as tmp:
-        PLUGINS_DIR = Path(tmp)
-        try:
-            (PLUGINS_DIR / "bare").mkdir()
-            (PLUGINS_DIR / "p" / "skills" / "s").mkdir(parents=True)
-            (PLUGINS_DIR / "p" / "skills" / "s" / "SKILL.md").write_text("")
-            assert package_of("bare--v1.0.0") == "bare" and skills_of("bare") == []
-            assert matrix(["bare--v1.0.0"]) == {"include": []}
-            _expect_error(lambda: package_of("nosuch--v1.0.0"), "nosuch")
-            loaded = []
-            assert check_folder(Path("evals/p/s"), load=loaded.append) is None and loaded == [Path("evals/p/s")]
-            loaded.clear()
-            assert check_folder(Path("evals/p/gone"), load=loaded.append) == (
-                "evals/p/gone: no plugins/p/skills/gone/SKILL.md.") and not loaded
+    with _fixture_tree({"bare": [], "alpha": ["s"]}):
+        assert package_of("bare--v1.0.0") == "bare" and skills_of("bare") == []
+        assert matrix(["bare--v1.0.0"]) == {"include": []}
+        _expect_error(lambda: package_of("nosuch--v1.0.0"), "nosuch")
+        loaded = []
+        assert check_folder(Path("evals/alpha/s"), load=loaded.append) is None and loaded == [Path("evals/alpha/s")]
+        loaded.clear()
+        assert check_folder(Path("evals/alpha/gone"), load=loaded.append) == (
+            "evals/alpha/gone: no plugins/alpha/skills/gone/SKILL.md.") and not loaded
 
-            def refuse(folder):
-                raise SystemExit("evals/p/s/cases.yaml: case ids repeat.")
+        def refuse(folder):
+            raise SystemExit("evals/alpha/s/cases.yaml: case ids repeat.")
 
-            def corrupt(folder):
-                raise ValueError("expected the node content,\n  found '<stream end>'")
+        def corrupt(folder):
+            raise ValueError("expected the node content,\n  found '<stream end>'")
 
-            assert check_folder(Path("evals/p/s"), load=refuse) == "evals/p/s/cases.yaml: case ids repeat."
-            assert check_folder(Path("evals/p/s"), load=corrupt) == (
-                "evals/p/s: ValueError: expected the node content, found '<stream end>'")
-        finally:
-            PLUGINS_DIR = real_dir
+        assert check_folder(Path("evals/alpha/s"), load=refuse) == "evals/alpha/s/cases.yaml: case ids repeat."
+        assert check_folder(Path("evals/alpha/s"), load=corrupt) == (
+            "evals/alpha/s: ValueError: expected the node content, found '<stream end>'")
 
 
 def selftest() -> int:

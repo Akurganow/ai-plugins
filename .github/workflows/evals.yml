@@ -154,8 +154,8 @@ jobs:
 
   report:
     needs: [matrix, run]
-    # Not always(): that also runs after a cancel, and would replace a release's
-    # complete evals.json with a partial one (documentation:
+    # Not always(): that also runs after a cancel, and would publish a cancelled
+    # run's partial set (documentation:
     # https://docs.github.com/en/actions/reference/workflows-and-actions/expressions#always,
     # read 2026-10-08). It does run after a failed run job: compare in
     # tools/evals.py ranges a metric only with all three repeats on both sides,

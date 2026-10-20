@@ -17,7 +17,7 @@ permissions:
   contents: read
 
 # One run at a time, its evals job included. The next run starts from the main
-# this one pushed, and its evals compare against the evals.json this run writes.
+# this one pushed, and its evals compare against the records this run publishes.
 concurrency:
   group: release
   cancel-in-progress: false

@@ -792,8 +792,9 @@ def fetch_record(owner: str, bearer: str, tag_name: str) -> dict | None:
     return json.loads(blob_body) if blob_body is not None else None
 
 
-def previous_results(owner: str, package: str, tag: str) -> dict | None:
-    bearer = ghcr_token(owner, "pull")
+def previous_results(owner: str, package: str, tag: str, bearer: str | None = None) -> dict | None:
+    bearer = bearer or ghcr_token(owner, "pull")
+    current_run_id = os.environ.get("GITHUB_RUN_ID") or None
     target_key = version_key(tag)
     grouped: dict[tuple[str, str], dict[tuple[str, str, int], dict[int, str]]] = {}
     for name in ghcr_tags(owner, bearer):
@@ -817,8 +818,10 @@ def previous_results(owner: str, package: str, tag: str) -> dict | None:
             key=lambda item: (version_key(item[0]), item[1], item[2]),
             reverse=True,
         )
-        for cand_tag, _, _, reps in candidates:
+        for _, _, _, reps in candidates:
             cand_runs = [fetch_record(owner, bearer, reps[r]) for r in (1, 2, 3)]
+            if current_run_id and any(r and r.get("run_id") == current_run_id for r in cand_runs):
+                continue
             # shortcut: a single errored case inside a repeat stays in Excluded and does not disqualify the baseline; tighten if partial repeats reach releases
             if (all(r and r.get("sessions") and not run_broke(r["sessions"]) for r in cand_runs)
                     and len({r.get("client_version") for r in cand_runs if r}) == 1):
@@ -937,10 +940,10 @@ def cmd_report(args) -> int:
             if no_cases:
                 summary += ["No cases: " + ", ".join(no_cases), ""]
             continue
-        previous = previous_results(owner, package, tag)
         if bearer is None:
             bearer = ghcr_token(owner, "pull,push",
                                 os.environ.get("GH_TOKEN") or os.environ.get("GITHUB_TOKEN") or "")
+        previous = previous_results(owner, package, tag, bearer)
         for r in runs:
             r["run"] = label
             r["run_id"] = run_id
@@ -1585,20 +1588,21 @@ def _selftest_registry() -> None:
         def read(self):
             return self.body
 
-    def make_run(tag, repeat, run_label, version="1.0", fired=True, sessions=None):
+    def make_run(tag, repeat, run_label, version="1.0", fired=True, sessions=None, run_id=None):
         if sessions is None:
             sessions = [_session("p", "positive", "with", fired) | {"cost_usd": 0.1, "tokens": None}]
         return {"tag": tag, "package": "alpha", "skill": "s", "client": "claude", "repeat": repeat,
-                "run": run_label, "client_version": version, "model": "m", "cases_sha256": "a",
+                "run": run_label, "run_id": run_id, "client_version": version, "model": "m", "cases_sha256": "a",
                 "rubric_sha256": "r", "sessions": sessions}
 
     store_manifests, store_blobs, pages = {}, {}, []
     status_override = {}
 
-    def put_candidate(tag, run_label, repeats=(1, 2, 3), versions=("1.0", "1.0", "1.0"), sessions_list=None):
+    def put_candidate(tag, run_label, repeats=(1, 2, 3), versions=("1.0", "1.0", "1.0"), sessions_list=None,
+                      run_id=None):
         for idx, rep in enumerate(repeats):
             rec = make_run(tag, rep, run_label, version=versions[idx],
-                           sessions=None if sessions_list is None else sessions_list[idx])
+                           sessions=None if sessions_list is None else sessions_list[idx], run_id=run_id)
             raw = json.dumps(rec).encode()
             digest = f"sha256:{hashlib.sha256(raw).hexdigest()}"
             store_blobs[digest] = raw
@@ -1612,6 +1616,7 @@ def _selftest_registry() -> None:
     put_candidate("alpha--v0.2.10", "20261014T000000Za1", sessions_list=([], [], []))
     broke = [_session("p", "positive", "with", False, error="exit 1")]
     put_candidate("alpha--v0.2.10", "20261015T000000Za1", sessions_list=(broke, broke, broke))
+    put_candidate("alpha--v0.2.10", "20261015T120000Za1", versions=("1.5", "1.5", "1.5"), run_id="same-run")
     put_candidate("alpha--v0.2.11", "20261016T000000Za1", versions=("2.0", "2.0", "2.0"))
 
     all_tags = sorted(store_manifests)
@@ -1644,12 +1649,15 @@ def _selftest_registry() -> None:
 
     real_open = urllib.request.urlopen
     urllib.request.urlopen = transport
+    os.environ["GITHUB_RUN_ID"] = "same-run"
     try:
         got = previous_results("akurganow", "alpha", "alpha--v0.2.10")
         assert auth_seen == [None], auth_seen
         assert got is not None and len(got["runs"]) == 3, got
         assert {r["run"] for r in got["runs"]} == {"20261010T000000Za1"}, got["runs"]
         assert {r["client_version"] for r in got["runs"]} == {"1.0"}, got["runs"]
+        reused = previous_results("akurganow", "alpha", "alpha--v0.2.10", bearer="pre-tok")
+        assert auth_seen == [None] and reused == got, auth_seen
 
         status_override["/tags/list"] = 404
         assert previous_results("akurganow", "alpha", "alpha--v0.2.10") is None

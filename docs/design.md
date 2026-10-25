@@ -379,13 +379,25 @@ Two releases are compared only when their `cases.yaml` and their `rubric.yaml` a
 Each run installs the client's latest release, so the issue shows both client versions.
 
 Four repository secrets reach the run, each only in the steps that need it: `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, `OPENROUTER_API_KEY` and `TYPESAFE_API_KEY`.
-Each client process sees its own key alone, and the runner removes every key value from the published results.
+The step that runs a client's sessions sets that client's key alone, and the runner removes every key value from the published results.
+`TYPESAFE_API_KEY` is set only in the report job, which grades the answers and runs no client.
+A Codex or Oh-My-Pi session has a shell, and the shell can read `/proc/<pid>/environ` of the job's other processes, `tools/evals.py` among them.
+So removing a key from the session's environment does not hide it from the session.
+A `PTRACE_MODE_READ_FSCREDS` check governs that file, and Yama's `ptrace_scope` restricts only attach mode.
+(documentation: [proc_pid_environ(5)](https://man7.org/linux/man-pages/man5/proc_pid_environ.5.html), read 2026-10-25;
+source: [`yama_lsm.c` L349–L356](https://github.com/torvalds/linux/blob/21a7f44fd0765fcc5194130b28767786eba1d1e7/security/yama/yama_lsm.c#L349-L356))
+GitHub's hosted runners give the runner's user passwordless `sudo`, so no separation inside one job would hold.
+(documentation: [GitHub-hosted runners](https://docs.github.com/en/actions/reference/runners/github-hosted-runners), read 2026-10-25)
+The report job grades the runs one after another.
+In two jobs of run 39507094886, the step that ran forty sessions and graded twenty answers took at most 3 s longer than the sessions.
+(running: [run 39507094886](https://github.com/Akurganow/ai-plugins/actions/runs/39507094886), 2026-10-20)
 Every session makes model calls billed to its key, and so does every Jev request.
 No session has a time or cost limit, because no measurement shows that a limit would prevent a failure.
 GitHub terminates a hosted job at six hours of execution, and that is the only bound.
 (documentation: [GitHub Docs, Actions limits L45](https://github.com/github/docs/blob/7b807926df3ccb7f3d1bcd4ad1c652fb42b0931d/content/actions/reference/limits.md#L45))
-A session or a grade that errors does not fail the job.
-The job fails when the client does not install, every session errors, or every grade does.
+A session or a grade that errors does not fail its job.
+A run job fails when the client does not install or every session errors.
+The grading step fails when every grade of a run errors, and that run is left out of the published records.
 `conformance.yml` runs `python tools/evals.py selftest`, which checks the event parsers and the arithmetic without a model.
 How each client shows a loaded skill is written beside its parser in `tools/evals.py`, with the source it was read from.
 

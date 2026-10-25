@@ -123,10 +123,11 @@ commit.
   eval command, `claude plugin eval`. The records are its module docstring and
   `docs/design.md`, the section "Behavioural evals run after each release" and
   its paragraph "Five alternatives lost".
-- **Seams for the selftest.** `grade(..., send=)`, `run_job(..., session=,
-  grader=)`, `report_tag(..., file=)` and `check_folder(..., load=)` take a
-  callable that production never replaces. The selftest passes a fake to each,
-  and `_fixture_tree` points `PLUGINS_DIR` and `EVALS_DIR` at a temporary tree.
+- **Seams for the selftest.** `grade(..., send=)`, `run_job(..., session=)`,
+  `grade_sessions(..., grader=)`, `grade_runs(..., load=, grader=)`,
+  `report_tag(..., file=)` and `check_folder(..., load=)` take a callable that
+  production never replaces. The selftest passes a fake to each, and
+  `_fixture_tree` points `PLUGINS_DIR` and `EVALS_DIR` at a temporary tree.
   The `conformance.yml` comment records that the selftest calls no model, and a
   comment above `check_folder` records its seam. These parameters have a
   non-default caller.

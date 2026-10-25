@@ -40,7 +40,7 @@ Other kinds: the shared tests page.
 
 The OCI artifacts in `ghcr.io/akurganow/ai-plugins-evals` are the record of
 how a case behaved against real clients. `tools/evals.py` writes them
-(`cmd_run`, `run_session`, `cmd_report`, `push_record`).
+(`cmd_run`, `run_session`, `grade_runs`, `cmd_report`, `push_record`).
 
 - **Fields.** Each artifact holds one run record per skill, client and repeat.
   A run records `tag`, `package`, `skill`, `client`, `repeat`, `run`,

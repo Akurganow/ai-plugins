@@ -3,10 +3,11 @@
 
 CI runs this after a package release (`.github/workflows/evals.yml`). One
 `run` covers one skill, one client and one repeat: positive prompts with the
-package, near-miss prompts with it, then positive prompts without it. Jev
-grades every positive answer against the skill's rubric. `report` publishes
-each repeat to GitHub Container Registry (`ghcr.io/<owner>/ai-plugins-evals`)
-and files an issue when a metric regresses against the latest complete run.
+package, near-miss prompts with it, then positive prompts without it. `grade`
+has Jev grade every positive answer against the skill's rubric, in a job that
+runs no client. `report` publishes each repeat to GitHub Container Registry
+(`ghcr.io/<owner>/ai-plugins-evals`) and files an issue when a metric
+regresses against the latest complete run.
 
 The runner is this repository's own. In Claude Code 2.1.293, `claude plugin
 eval` wrote the final reply only as the evidence of an LLM grader (running,
@@ -65,8 +66,11 @@ JEV_MODEL = "jev-1.13.0"
 JEV_RETRY_STATUSES = (429, 529)
 JEV_ATTEMPTS = 6
 
-# Each client process sees only its own key. The answers are published to
-# the container registry, and an agent with a shell can print its environment.
+# A session's environment holds only its own client's key. The answers are
+# published to the container registry, and an agent with a shell can print its
+# environment. That shell can also read /proc/<pid>/environ of the job's other
+# processes, so the grading key stays out of every job that runs a client.
+# docs/design.md, "Behavioural evals run after each release", gives the sources.
 SECRET_VARS = ("ANTHROPIC_API_KEY", "CODEX_API_KEY", "OPENAI_API_KEY", "OPENROUTER_API_KEY", "TYPESAFE_API_KEY")
 
 # `gh ... list` stops at --limit without saying so, so a listing that fills its
@@ -451,8 +455,8 @@ def jev_question(q) -> dict:
 
 # The answer is never split, and Jev limits the state plus the longest question
 # to 32k tokens (documentation: https://docs.typesafe.ai/models.md, read
-# 2026-10-08). A request Jev rejects raises `JevError`, and `run_job` records
-# the session as not graded.
+# 2026-10-08). A request Jev rejects raises `JevError`, and `grade_sessions`
+# records the session as not graded.
 def grade(request_text: str, answer: str, questions: dict, send=jev_request) -> dict:
     body = {
         "model": JEV_MODEL,
@@ -466,8 +470,7 @@ def grade(request_text: str, answer: str, questions: dict, send=jev_request) -> 
         raise JevError(f"jev reply without a noul: {json.dumps(reply)[:300]}") from e
 
 
-def run_job(adapter, cases: dict, questions: dict, session=run_session, grader=grade,
-            held_out: bool = False) -> list[dict]:
+def run_job(adapter, cases: dict, session=run_session, held_out: bool = False) -> list[dict]:
     sessions = [session(adapter, c, kind, "with") for kind in ("positive", "near_miss") for c in cases[kind]]
     # Held-out prompts measure loading alone: with the package only, never graded.
     if held_out and "held_out" in cases:
@@ -478,15 +481,18 @@ def run_job(adapter, cases: dict, questions: dict, session=run_session, grader=g
         sessions += [session(adapter, c, "positive", "without") for c in cases["positive"]]
     finally:
         adapter.switch_back()
+    return sessions
+
+
+def grade_sessions(sessions: list[dict], cases: dict, questions: dict, grader=grade) -> None:
     prompts = {c["id"]: c["prompt"] for c in cases["positive"]}
     for s in sessions:
         if s["kind"] != "positive" or s["error"]:
             continue
         try:
-            s["nouls"] = grader(prompts[s["case"]], redact(s["answer"]), applicable(questions, s["case"]))
+            s["nouls"] = grader(prompts[s["case"]], s["answer"], applicable(questions, s["case"]))
         except JevError as e:
             s["grade_error"] = str(e)
-    return sessions
 
 
 def redact(text: str) -> str:
@@ -635,7 +641,7 @@ def cmd_run(args) -> int:
     cases, questions = load_cases(skill_dir)
     adapter = CLIENTS[args.client][0](package, args.skill)
     version = client_version(args.client)
-    sessions = run_job(adapter, cases, questions, held_out=args.repeat == 1)
+    sessions = run_job(adapter, cases, held_out=args.repeat == 1)
     record = {
         "tag": args.tag, "package": package, "skill": args.skill, "client": args.client, "repeat": args.repeat,
         "client_version": version, "model": next((s["model"] for s in sessions if s["model"]), None),
@@ -645,10 +651,32 @@ def cmd_run(args) -> int:
     }
     Path(args.out).write_text(redact(json.dumps(record, indent=1)))
     failed = sum(1 for s in sessions if s["error"])
-    ungraded = sum(1 for s in sessions if s["grade_error"])
     print(f"{package}/{args.skill} on {args.client}, repeat {args.repeat}: {len(sessions)} sessions, "
-          f"{failed} failed, {ungraded} not graded.")
+          f"{failed} failed.")
     return 1 if run_broke(sessions) else 0
+
+
+# Each record keeps its path under `runs`, so `report` reads `out` as it would
+# read `runs`. A record whose every grade failed is not written, so `report`
+# publishes no broken run. Only this step holds the grading key, so a Jev error
+# that echoes it is redacted here or nowhere.
+def grade_runs(runs: Path, out: Path, load=load_cases, grader=grade) -> int:
+    broke = 0
+    for path in sorted(runs.rglob("*.json")):
+        record = json.loads(path.read_text())
+        cases, questions = load(EVALS_DIR / record["package"] / record["skill"])
+        grade_sessions(record["sessions"], cases, questions, grader)
+        ungraded = sum(1 for s in record["sessions"] if s["grade_error"])
+        broken = run_broke(record["sessions"])
+        print(f"{record['package']}/{record['skill']} on {record['client']}, repeat {record['repeat']}: "
+              f"{ungraded} not graded{', so it is left out' if broken else ''}.")
+        if broken:
+            broke += 1
+            continue
+        target = out / path.relative_to(runs)
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_text(redact(json.dumps(record, indent=1)))
+    return 1 if broke else 0
 
 
 # stderr goes straight to the job log, so a refused upload or a missing release
@@ -1297,35 +1325,38 @@ def _selftest_core() -> None:
 
     def fake_session(adapter, case, kind, arm):
         adapter.order.append(f"{case['id']}:{arm}")
-        return _session(case["id"], kind, arm, arm == "with") | {"answer": "leaked selftest-secret-value"}
+        return _session(case["id"], kind, arm, arm == "with") | {"answer": "A"}
 
     seen = []
-    graded = run_job(fake, cases, {"q": "Q"}, session=fake_session,
-                     grader=lambda r, a, q: seen.append(a) or {"q": 1.0})
+    graded = run_job(fake, cases, session=fake_session)
     assert fake.order == ["p:with", "n:with", "switch", "p:without", "back"], fake.order
+    assert all(s["nouls"] is None for s in graded), graded
+    grade_sessions(graded, cases, {"q": "Q"}, grader=lambda r, a, q: seen.append(a) or {"q": 1.0})
     assert [s["nouls"] for s in graded] == [{"q": 1.0}, None, {"q": 1.0}], graded
-    assert seen == ["leaked ***", "leaked ***"], seen
+    assert seen == ["A", "A"], seen
     assert not run_broke(graded)
     spare = cases | {"held_out": {"positive": [{"id": "hp", "prompt": "HP"}], "near_miss": [{"id": "hn", "prompt": "HN"}]}}
     fake = Fake()
-    first = run_job(fake, spare, {"q": "Q"}, session=fake_session, grader=lambda r, a, q: {"q": 1.0}, held_out=True)
+    first = run_job(fake, spare, session=fake_session, held_out=True)
+    grade_sessions(first, spare, {"q": "Q"}, grader=lambda r, a, q: {"q": 1.0})
     assert fake.order == ["p:with", "n:with", "hp:with", "hn:with", "switch", "p:without", "back"], fake.order
     boom = Fake()
     try:
-        run_job(boom, cases, {"q": "Q"},
+        run_job(boom, cases,
                 session=lambda a, c, k, arm: (_ for _ in ()).throw(RuntimeError("boom")) if arm == "without" else fake_session(a, c, k, arm))
     except RuntimeError:
         pass
     assert boom.order == ["p:with", "n:with", "switch", "back"], boom.order
     assert [s["kind"] for s in first[2:4]] == ["held_out_positive", "held_out_near_miss"], first
     assert all(s["nouls"] is None for s in first[2:4]), first
-    assert len(run_job(Fake(), spare, {"q": "Q"}, session=fake_session, grader=lambda r, a, q: {"q": 1.0})) == 3
+    assert len(run_job(Fake(), spare, session=fake_session)) == 3
     assert metrics(first)["trigger_hit"] == 1.0 and metrics(first)["counts"]["positive_with"] == 1, metrics(first)
 
     two = {"positive": [{"id": "p", "prompt": "P"}, {"id": "o", "prompt": "O"}], "near_miss": []}
     asked = {}
-    scoped_run = run_job(Fake(), two, {"q1": "Q1", "q2": {"instructions": "Q2", "cases": ["p"]}}, session=fake_session,
-                         grader=lambda r, a, q: asked.setdefault(r, []).append(list(q)) or dict.fromkeys(q, 1.0))
+    scoped_run = run_job(Fake(), two, session=fake_session)
+    grade_sessions(scoped_run, two, {"q1": "Q1", "q2": {"instructions": "Q2", "cases": ["p"]}},
+                   grader=lambda r, a, q: asked.setdefault(r, []).append(list(q)) or dict.fromkeys(q, 1.0))
     assert asked == {"P": [["q1", "q2"]] * 2, "O": [["q1"]] * 2}, asked
     assert [s["nouls"] for s in scoped_run] == [{"q1": 1.0, "q2": 1.0}, {"q1": 1.0}] * 2, scoped_run
 
@@ -1335,10 +1366,36 @@ def _selftest_core() -> None:
     def refusing(request_text, answer, questions):
         raise JevError("jev 401: invalid key")
 
-    refused = run_job(Fake(), cases, {"q": "Q"}, session=broken_session, grader=refusing)
+    refused = run_job(Fake(), cases, session=broken_session)
+    assert not run_broke(refused)
+    grade_sessions(refused, cases, {"q": "Q"}, grader=refusing)
     assert [s["grade_error"] for s in refused] == ["jev 401: invalid key", None, None], refused
     assert run_broke(refused)
     assert run_broke([_session("p", "positive", "with", False, error="exit 1")])
+
+    with tempfile.TemporaryDirectory() as tmp:
+        runs, out = Path(tmp, "runs"), Path(tmp, "out")
+        for name, answers in (("evals-ok", ["good", "echo"]), ("evals-bad", ["bad"])):
+            (runs / name).mkdir(parents=True)
+            record = {"package": "p", "skill": "s", "client": "claude", "repeat": 1,
+                      "sessions": [_session("p", "positive", "with", True) | {"answer": a} for a in answers]}
+            (runs / name / "run.json").write_text(json.dumps(record))
+
+        def picky(request_text, answer, questions):
+            if answer == "bad":
+                raise JevError("jev 401: invalid key")
+            if answer == "echo":
+                raise JevError("jev 500: bearer selftest-secret-value")
+            return {"q": 1.0}
+
+        loaded = []
+        assert grade_runs(runs, out, load=lambda d: loaded.append(d) or (cases, {"q": "Q"}), grader=picky) == 1
+        assert loaded == [EVALS_DIR / "p" / "s"] * 2, loaded
+        assert [p.relative_to(out).as_posix() for p in out.rglob("*.json")] == ["evals-ok/run.json"]
+        written = json.loads((out / "evals-ok" / "run.json").read_text())["sessions"]
+        assert [(s["nouls"], s["grade_error"]) for s in written] == [
+            ({"q": 1.0}, None), (None, "jev 500: bearer ***")], written
+        assert grade_runs(Path(tmp, "none"), out) == 0
 
     sent = {}
     grade("R", "A", {"q": "Q?"}, send=lambda body: sent.update(body) or {"answers": {"q": {"noul": 0.9}}})
@@ -1725,6 +1782,9 @@ def main() -> int:
         r.add_argument(name, required=True)
     r.add_argument("--client", required=True, choices=CLIENTS)
     r.add_argument("--repeat", required=True, type=int)
+    g = sub.add_parser("grade", help="grade the positive answers of some runs with Jev")
+    g.add_argument("--runs", required=True)
+    g.add_argument("--out", required=True)
     p = sub.add_parser("report", help="publish the runs of some release tags")
     p.add_argument("--tags", required=True)
     p.add_argument("--runs", required=True)
@@ -1737,6 +1797,8 @@ def main() -> int:
         return 0
     if args.command == "run":
         return cmd_run(args)
+    if args.command == "grade":
+        return grade_runs(Path(args.runs), Path(args.out))
     if args.command == "report":
         return cmd_report(args)
     if args.command == "validate":

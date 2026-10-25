@@ -126,7 +126,8 @@ jobs:
           esac
           "$CLIENT" --version
 
-      # Each client gets only its own key. Codex's documentation says not to set
+      # The step's environment holds only its own client's key, and the grading key
+      # stays in the report job. Codex's documentation says not to set
       # CODEX_API_KEY at job level in a workflow that runs repository code
       # (documentation: https://learn.chatgpt.com/docs/non-interactive-mode, read 2026-10-08).
       - name: Run the skill
@@ -134,7 +135,6 @@ jobs:
           ANTHROPIC_API_KEY: ${{ matrix.client == 'claude' && secrets.ANTHROPIC_API_KEY || '' }}
           CODEX_API_KEY: ${{ matrix.client == 'codex' && secrets.OPENAI_API_KEY || '' }}
           OPENROUTER_API_KEY: ${{ matrix.client == 'omp' && secrets.OPENROUTER_API_KEY || '' }}
-          TYPESAFE_API_KEY: ${{ secrets.TYPESAFE_API_KEY }}
           TAG: ${{ matrix.tag }}
           SKILL: ${{ matrix.skill }}
           REPEAT: ${{ matrix.repeat }}
@@ -176,12 +176,23 @@ jobs:
         with:
           pattern: evals-*
           path: ${{ runner.temp }}/runs
+      - run: python -m pip install --disable-pip-version-check pyyaml==6.0.3
+      # Jev grades in this job because it runs no client: a session's shell can
+      # read /proc/<pid>/environ of the other processes in its job. The sources
+      # are in docs/design.md, "Behavioural evals run after each release". A run
+      # whose every grade failed is left out and fails this step.
+      - name: Grade the answers
+        env:
+          TYPESAFE_API_KEY: ${{ secrets.TYPESAFE_API_KEY }}
+        run: python tools/evals.py grade --runs "$RUNNER_TEMP/runs" --out "$RUNNER_TEMP/graded"
+      # After a failed grade step, the runs that were graded are still published.
       - name: Publish the results
+        if: ${{ !cancelled() }}
         env:
           GH_TOKEN: ${{ github.token }}
           TAGS: ${{ inputs.tags }}
           RUN_ATTEMPT: ${{ github.run_attempt }}
           GITHUB_RUN_ID: ${{ github.run_id }}
         run: |
-          mkdir -p "$RUNNER_TEMP/runs"
-          python tools/evals.py report --tags "$TAGS" --runs "$RUNNER_TEMP/runs"
+          mkdir -p "$RUNNER_TEMP/graded"
+          python tools/evals.py report --tags "$TAGS" --runs "$RUNNER_TEMP/graded"

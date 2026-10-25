@@ -1,5 +1,5 @@
 ---
-contract_version: 1
+contract_version: 2
 ---
 
 # Constitution of Akurganow/ai-plugins
@@ -81,6 +81,22 @@ contract_version: 1
 - .agents/rules/claims.md
 - .agents/rules/slop.md
 - CONTRIBUTING.md
+
+## Labels
+
+- `needs-human` (owner attention): Lawman sent this feature request out of its funnel. A person decides on it.
+- `install`: A package does not install or load in a client
+- `package`: A proposal for a new package
+- `bug`: Something isn't working
+- `documentation`: Improvements or additions to documentation
+- `duplicate`: This issue or pull request already exists
+- `enhancement`: New feature or request
+- `good first issue`: Good for newcomers
+- `help wanted`: Extra attention is needed
+- `invalid`: This doesn't seem right
+- `question`: Further information is requested
+- `wontfix`: This will not be worked on
+- `accessibility`: Barrier affecting people with disabilities
 
 ## Precedents
 

@@ -100,4 +100,4 @@ contract_version: 3
 
 ## Precedents
 
-none
+- 2026-10-27 #1: A README that credits paraphrased content to an original author is `lying` when the package's own source record names a third-party transcription as the source and lists the author's text as not read. (https://github.com/Akurganow/ai-plugins/issues/60#issuecomment-6430638753)

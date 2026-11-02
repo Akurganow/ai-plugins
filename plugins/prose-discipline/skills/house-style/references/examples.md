@@ -34,7 +34,7 @@ After:
 
 ## Change description
 
-Specimens quote PR descriptions; the same shape holds for release
+Specimens quote PR descriptions. The same shape holds for release
 notes, migration notes, and handoff summaries.
 
 Before:

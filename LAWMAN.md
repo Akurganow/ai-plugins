@@ -101,3 +101,9 @@ contract_version: 3
 ## Precedents
 
 none
+
+## Licenses
+
+reaches copies
+use non-commercial
+sources deps-dev,npm-registry,clearly-defined

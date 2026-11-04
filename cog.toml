@@ -45,4 +45,4 @@ cognitive-load = { path = "src/cognitive-load", include = ["bundles/cognitive-lo
 design-review = { path = "src/design-review", include = ["bundles/design-review/**", "plugins/design-review/**"] }
 prose-discipline = { path = "src/prose-discipline", include = ["bundles/prose-discipline/**", "plugins/prose-discipline/**"] }
 toc-thinking = { path = "src/toc-thinking", include = ["bundles/toc-thinking/**", "plugins/toc-thinking/**"] }
-triz = { path = "src/triz", include = ["bundles/triz/**", "plugins/triz/**"] }
+triz-thinking = { path = "src/triz-thinking", include = ["bundles/triz-thinking/**", "plugins/triz-thinking/**"] }

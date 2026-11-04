@@ -119,7 +119,7 @@ commit. The Categories of Legitimate Reservation are Dettmer's eight, and
 - The skill attributes nothing to Goldratt or Dettmer without a chapter or
   a dictionary entry that `sources.md` names.
 - A cloud that reduces to a trade-off between two measurable parameters
-  belongs to the `contradiction` skill of [`triz`](https://github.com/Akurganow/ai-plugins/tree/main/plugins/triz).
+  belongs to the `contradiction` skill of [`triz-thinking`](https://github.com/Akurganow/ai-plugins/tree/main/plugins/triz-thinking).
   `root-cause` hands over only when `contradiction` is installed.
 
 ## License

@@ -28,8 +28,8 @@
       "description": "Applies Goldratt's Thinking Processes to software: finds the core problem behind many symptoms, resolves the conflict that sustains it, and plans the change."
     },
     {
-      "name": "triz",
-      "source": "./bundles/triz",
+      "name": "triz-thinking",
+      "source": "./bundles/triz-thinking",
       "description": "Resolves software trade-offs with TRIZ: the contradiction matrix and 40 inventive principles, the separation principles, and ARIZ-85C walked part by part with the user."
     }
   ]

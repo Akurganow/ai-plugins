@@ -172,7 +172,7 @@ with the reason it lost. `references/decisions.md` gives the shape.
 Close with what the review did not cover:
 
 - A conflict between two qualities the user measures belongs to the
-  `contradiction` skill of this marketplace's `triz` package. It resolves
+  `contradiction` skill of this marketplace's `triz-thinking` package. It resolves
   the conflict with the contradiction matrix and hands a hard case to the
   `ariz` skill of the same package. Hand over only if the `contradiction`
   skill is installed.

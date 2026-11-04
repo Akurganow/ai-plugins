@@ -214,7 +214,7 @@ effect is observed: a command, a test or a metric. Say so when you add it.
   its category from `references/clr.md`. Do this for a plan or a check of a
   change too, not only for a tree.
 - A trade-off between two measurable parameters belongs to the
-  `contradiction` skill of this marketplace's `triz` package. That skill
+  `contradiction` skill of this marketplace's `triz-thinking` package. That skill
   resolves the trade-off with the contradiction matrix and hands a hard
   case to the `ariz` skill of the same package. Hand over when a cloud
   reduces to such a trade-off, and only if the `contradiction` skill is

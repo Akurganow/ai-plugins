@@ -45,7 +45,7 @@ body:
     attributes:
       label: Plugin
       description: The plugin name, as the README's plugin table lists it.
-      placeholder: triz
+      placeholder: triz-thinking
     validations:
       required: true
   - type: input

@@ -37,9 +37,9 @@ releases a minor version and `fix!:` a patch version. Source:
 [`bump.rs`](https://github.com/cocogitto/cocogitto/blob/055a9fa8db8ac8ce50074d50162b48b92e9d0c47/crates/cocogitto/src/conventional/bump.rs#L258-L273),
 cocogitto source at 7.0.0, the release that `release.yml` installs.
 
-Put the package name in the scope, as in `fix(triz): correct one matrix cell`.
+Put the package name in the scope, as in `fix(triz-thinking): correct one matrix cell`.
 Renaming a skill breaks its users, so it takes `!`, as in
-`feat(triz)!: rename the skill`. Use `docs:`, `ci:` or `chore:` for changes
+`feat(triz-thinking)!: rename the skill`. Use `docs:`, `ci:` or `chore:` for changes
 outside a package's source and builds.
 
 Pull requests merge with a merge commit, so each commit reaches `main` as
@@ -172,7 +172,7 @@ also runs the Agent Skills and Hermes validators on `plugins/<name>`. It install
 
 1. Open a **New package** issue before you write the package.
 2. Once a maintainer accepts the proposal, open a pull request that adds `src/<name>/`.
-3. Follow the shape of an existing package, such as `src/triz/`.
+3. Follow the shape of an existing package, such as `src/triz-thinking/`.
 4. Write `source.json` with the nine fields that `tools/source.schema.json` requires, and no other.
 5. Make its `description` one sentence of at most 250 characters and 25 words.
 6. Set its `category` to the category of the closest package.

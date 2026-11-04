@@ -126,7 +126,7 @@ fifteen, and the references say which is which.
 - The skill reads the design you give it. It does not read a code base on
   its own and measures nothing.
 - A trade-off between two measured qualities belongs to the
-  `contradiction` skill of [`triz`](https://github.com/Akurganow/ai-plugins/tree/main/plugins/triz). Many symptoms with
+  `contradiction` skill of [`triz-thinking`](https://github.com/Akurganow/ai-plugins/tree/main/plugins/triz-thinking). Many symptoms with
   one unclear cause belong to `root-cause` in
   [`toc-thinking`](https://github.com/Akurganow/ai-plugins/tree/main/plugins/toc-thinking). What a reader cannot hold
   in their head belongs to `extraneous` in

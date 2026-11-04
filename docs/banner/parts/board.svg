@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2100 900" width="2100" height="900">
+<!-- Hardboard pegboard. 17.3 px per cm: pitch 25.4 mm = 44 px, hole 6.35 mm = 11 px, centres (16 + 44i, 16 + 44j). Light from 10 o'clock. -->
+<defs>
+  <clipPath id="board-clip"><rect width="2100" height="900" rx="24"/></clipPath>
+  <radialGradient id="board-light" gradientUnits="userSpaceOnUse" cx="420" cy="90" r="1650">
+    <stop offset="0" stop-color="#ffe9c4" stop-opacity=".34"/>
+    <stop offset=".4" stop-color="#ffe9c4" stop-opacity=".05"/>
+    <stop offset=".56" stop-color="#ffe9c4" stop-opacity="0"/>
+  </radialGradient>
+  <!-- The falloff's dark half, kept apart so it can lie over the holes while the cream half stays under them. -->
+  <radialGradient id="board-shade" gradientUnits="userSpaceOnUse" cx="420" cy="90" r="1650">
+    <stop offset=".4" stop-color="#000" stop-opacity="0"/>
+    <stop offset=".72" stop-color="#000" stop-opacity=".14"/>
+    <stop offset="1" stop-color="#140a02" stop-opacity=".55"/>
+  </radialGradient>
+  <filter id="board-fibre" filterUnits="userSpaceOnUse" x="0" y="0" width="2100" height="900" color-interpolation-filters="sRGB">
+    <feTurbulence type="fractalNoise" baseFrequency="0.02 0.45" numOctaves="2" seed="11" result="streak"/>
+    <feColorMatrix in="streak" type="matrix" values="0 0 0 0 0.17  0 0 0 0 0.09  0 0 0 0 0.03  -3.4 0 0 0 1.55" result="dark"/>
+    <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="3" result="grain"/>
+    <feColorMatrix in="grain" type="matrix" values="0 0 0 0 0.98  0 0 0 0 0.84  0 0 0 0 0.62  3.4 0 0 0 -1.95" result="light"/>
+    <feMerge><feMergeNode in="dark"/><feMergeNode in="light"/></feMerge>
+  </filter>
+  <filter id="board-mottle" filterUnits="userSpaceOnUse" x="0" y="0" width="2100" height="900" color-interpolation-filters="sRGB">
+    <feTurbulence type="fractalNoise" baseFrequency="0.004 0.012" numOctaves="3" seed="21"/>
+    <feColorMatrix type="matrix" values="0 0 0 0 0.25  0 0 0 0 0.13  0 0 0 0 0.04  -2.2 0 0 0 1.15"/>
+  </filter>
+
+  <!-- Hole, centred on 0,0. Gradients run along the light, from (-0.87,-0.5) to (0.87,0.5). -->
+  <linearGradient id="board-hole-bore" x1=".07" y1=".25" x2=".93" y2=".75">
+    <stop offset="0" stop-color="#080402"/>
+    <stop offset=".6" stop-color="#1a0e06"/>
+    <stop offset="1" stop-color="#3a2614"/>
+  </linearGradient>
+  <linearGradient id="board-hole-wall" x1=".07" y1=".25" x2=".93" y2=".75">
+    <stop offset=".62" stop-color="#5b4526" stop-opacity="0"/>
+    <stop offset=".85" stop-color="#7a5e35"/>
+    <stop offset="1" stop-color="#b09060"/>
+  </linearGradient>
+  <linearGradient id="board-hole-deep" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#030100"/>
+    <stop offset=".55" stop-color="#0d0603"/>
+    <stop offset="1" stop-color="#1e1108"/>
+  </linearGradient>
+  <radialGradient id="board-hole-open">
+    <stop offset="0" stop-color="#0a0503"/>
+    <stop offset=".75" stop-color="#0a0503"/>
+    <stop offset="1" stop-color="#0a0503" stop-opacity="0"/>
+  </radialGradient>
+  <linearGradient id="board-hole-ring" gradientUnits="userSpaceOnUse" x1="-5.2" y1="-3" x2="5.2" y2="3">
+    <stop offset="0" stop-color="#0e0602"/>
+    <stop offset="1" stop-color="#0e0602" stop-opacity=".7"/>
+  </linearGradient>
+  <linearGradient id="board-hole-lip" gradientUnits="userSpaceOnUse" x1="-5.2" y1="-3" x2="5.2" y2="3">
+    <stop offset=".7" stop-color="#f3d9aa" stop-opacity="0"/>
+    <stop offset=".88" stop-color="#f3d9aa" stop-opacity=".55"/>
+    <stop offset="1" stop-color="#fff0cf" stop-opacity=".95"/>
+  </linearGradient>
+  <g id="board-hole">
+    <circle r="5.5" fill="url(#board-hole-bore)"/>
+    <circle r="5.05" fill="url(#board-hole-wall)"/>
+    <circle cx="-.85" cy="-.5" r="4.85" fill="url(#board-hole-deep)"/>
+    <circle cx="-.35" cy="-.2" r="3.9" fill="url(#board-hole-open)"/>
+    <!-- fibre flecks on the lit wall -->
+    <circle cx="4.23" cy="1.54" r=".22" fill="#3a2a14"/>
+    <circle cx="2.89" cy="3.45" r=".22" fill="#3a2a14"/>
+    <circle cx="3.77" cy="2.64" r=".2" fill="#d2b27c"/>
+    <circle r="5.55" fill="none" stroke="url(#board-hole-ring)" stroke-width=".8"/>
+    <path d="M5.59 -2.04A5.95 5.95 0 0 1 .52 5.93" fill="none" stroke="url(#board-hole-lip)" stroke-width=".6" stroke-linecap="round"/>
+  </g>
+  <pattern id="board-hole-grid" x="-6" y="-6" width="44" height="44" patternUnits="userSpaceOnUse"><use href="#board-hole" x="22" y="22"/></pattern>
+
+  <!-- Bevel split at the corners on 45 degree lines: top and left face the light, bottom and right turn away. -->
+  <clipPath id="board-lit-side"><path d="M0 0H2100L2050 50 50 850 0 900Z"/></clipPath>
+  <clipPath id="board-shade-side"><path d="M2100 0V900H0L50 850 2050 50Z"/></clipPath>
+  <path id="board-bevel" fill-rule="evenodd" d="M24 0H2076A24 24 0 0 1 2100 24V876A24 24 0 0 1 2076 900H24A24 24 0 0 1 0 876V24A24 24 0 0 1 24 0Z M24 5H2076A19 19 0 0 1 2095 24V876A19 19 0 0 1 2076 895H24A19 19 0 0 1 5 876V24A19 19 0 0 1 24 5Z"/>
+</defs>
+
+<g id="board-art" clip-path="url(#board-clip)">
+  <rect width="2100" height="900" fill="#8a6a4a"/>
+  <rect width="2100" height="900" filter="url(#board-mottle)" opacity=".5"/>
+  <rect width="2100" height="900" filter="url(#board-fibre)" opacity=".5"/>
+  <rect width="2100" height="900" fill="url(#board-light)"/>
+    <rect width="2100" height="874" fill="url(#board-hole-grid)"/>
+  <rect width="2100" height="900" fill="url(#board-shade)"/>
+  <use href="#board-bevel" fill="#f6dcae" opacity=".42" clip-path="url(#board-lit-side)"/>
+  <use href="#board-bevel" fill="#1a0c03" opacity=".5" clip-path="url(#board-shade-side)"/>
+  <rect x="5.5" y="5.5" width="2089" height="889" rx="18.5" fill="none" stroke="#2a1606" stroke-opacity=".35"/>
+  <rect x=".5" y=".5" width="2099" height="899" rx="23.5" fill="none" stroke="#1e0f04" stroke-opacity=".6"/>
+</g>
+</svg>

@@ -1,0 +1,183 @@
+{
+ "name": "hooks",
+ "width": 480,
+ "height": 200,
+ "usage": "Each hook is two groups in <defs>: <id>-back and <id>-front, drawn with the origin at the upper (left) anchor hole centre. Place both with the same translate(hole_x, hole_y): back, then the hung object, then front. Back alone plus front alone is the empty hook.",
+ "projection": {
+  "a": 0.15,
+  "b": 0.25,
+  "means": "a point at depth z px in front of the board is drawn at (x + a*z, y + b*z); depth reads as down-right"
+ },
+ "light": "upper left, 10 o'clock; no cast shadow drawn (scripts/compose-banner.py adds it)",
+ "hooks": {
+  "hook-single": {
+   "kind": "single",
+   "anchors": [
+    {
+     "x": 0,
+     "y": 0,
+     "role": "tab hooks behind the board"
+    },
+    {
+     "x": 0,
+     "y": 44,
+     "role": "bend seated in the hole below; prong root"
+    }
+   ],
+   "hang": {
+    "x": 12.6,
+    "y": 76.3,
+    "means": "top surface of the prong where the object rests: put the inside top edge of the hang hole (or loop) here; a round hole of radius r is centred at (x, y + r)"
+   },
+   "prong_axis_at_rest": [
+    12.6,
+    80.7
+   ],
+   "wire_px": 7.79,
+   "prong_cm": 7.3,
+   "rest_depth_px": 84,
+   "bbox_back": [
+    -7.8,
+    -13.9,
+    20.4,
+    88.5
+   ],
+   "bbox_front": [
+    2.9,
+    67.0,
+    28.7,
+    96.2
+   ]
+  },
+  "hook-heavy": {
+   "kind": "heavy",
+   "anchors": [
+    {
+     "x": 0,
+     "y": 0,
+     "role": "left tab"
+    },
+    {
+     "x": 44,
+     "y": 0,
+     "role": "right tab"
+    },
+    {
+     "x": 0,
+     "y": 44,
+     "role": "left leg, seated in hole"
+    },
+    {
+     "x": 44,
+     "y": 44,
+     "role": "right leg, seated in hole"
+    }
+   ],
+   "hang": {
+    "x": 46.0,
+    "y": 100.6,
+    "means": "top of the two prongs where the loop rests (the loop spans both wires): put the inside top of the backpack's grab loop here"
+   },
+   "prong_axis_at_rest": [
+    46.0,
+    106.6
+   ],
+   "loop_min_inner_width_px": 36.1,
+   "wire_px": 9.34,
+   "prong_cm": 12.1,
+   "rest_depth_px": 160,
+   "bbox_back": [
+    -9.3,
+    -15.5,
+    65.3,
+    116.0
+   ],
+   "bbox_front": [
+    22.9,
+    87.9,
+    76.5,
+    126.0
+   ]
+  },
+  "shelf": {
+   "kind": "shelf",
+   "anchors": [
+    {
+     "x": 0,
+     "y": 0,
+     "role": "left bracket tab"
+    },
+    {
+     "x": 132,
+     "y": 0,
+     "role": "right bracket tab"
+    },
+    {
+     "x": 0,
+     "y": 88,
+     "role": "left brace, seated in hole"
+    },
+    {
+     "x": 132,
+     "y": 88,
+     "role": "right brace, seated in hole"
+    }
+   ],
+   "hang": {
+    "x": 78.0,
+    "y": 6.1,
+    "means": "where the bottle stands: its centre line at x, the bottom of its glass on the shelf's top surface at y"
+   },
+   "bottle_centre_x": 78.0,
+   "bottle_bottom_y": 6.1,
+   "bottle_offset": [
+    -3.0,
+    -480.9
+   ],
+   "top_surface_y": [
+    -13.4,
+    25.1
+   ],
+   "size_cm": [
+    11.0,
+    8.9
+   ],
+   "lip_px": 10,
+   "wire_px": 7.79,
+   "bottle_depth_px": 80,
+   "bbox_back": [
+    -36.5,
+    -21.2,
+    192.2,
+    101.3
+   ],
+   "bbox_front": [
+    -6.8,
+    14.1,
+    185.4,
+    28.1
+   ]
+  }
+ },
+ "preview_origins": {
+  "hook-single": [
+   40,
+   40
+  ],
+  "hook-heavy": [
+   120,
+   40
+  ],
+  "shelf": [
+   240,
+   60
+  ]
+ },
+ "real_size_cm": {
+  "hook-single": "4.5 mm wire, 7.3 cm reach",
+  "hook-heavy": "5.4 mm wire, two parallel 12.1 cm prongs 20 px apart",
+  "shelf": "sheet shelf 11.0 x 8.9 cm, 6 mm front lip, two 4.5 mm wire brackets"
+ },
+ "traced_from": "US 4,750,700 Fig. 3 (United States patent drawing, https://patents.google.com/patent/US4750700A): side profile, bend radii, 5.0 deg prong droop, 35.9 deg upturn",
+ "notes": "parts/hooks-notes.md"
+}

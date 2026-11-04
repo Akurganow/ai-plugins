@@ -7,7 +7,8 @@ gives the `abstractions` and `proportion` departments words to point with. It
 also lists the shapes in this tree that already answer a question. Their
 findings are tried by it.
 
-The code here is Python (`tools/check-conformance.py`, `tools/evals.py`), shell
+The code here is Python (`tools/check-conformance.py`, `tools/evals.py`,
+`scripts/compose-banner.py`), shell
 (`tools/regenerate.sh`, `tools/build.sh`, `tools/regions.sh`) and
 workflows (`.github/workflows/`). The words below apply to all three. An
 interface is what a reader must learn to use a unit without reading it:

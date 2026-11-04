@@ -1,0 +1,10 @@
+[
+ {"object": "ruler", "kind": "single", "i": 3, "j": 4, "hang": [47.5, 25.0], "shadow": "flat"},
+ {"object": null, "kind": "single", "i": 8, "j": 10},
+ {"object": "compass", "kind": "single", "i": 10, "j": 2, "hang": [59.0, 26.0], "shadow": "flat"},
+ {"object": "backpack", "kind": "heavy", "i": 22, "j": 0, "hang": [302.0, 43.0], "shadow": "far"},
+ {"object": null, "kind": "heavy", "i": 31, "j": 7},
+ {"object": "wrench", "kind": "single", "i": 35, "j": 2, "hang": [85.4, 32.5], "shadow": "flat"},
+ {"object": "bottle", "kind": "shelf", "i": 40, "j": 16, "hang": [81.0, 487.0], "shadow": "far"},
+ {"object": null, "kind": "single", "i": 45, "j": 4}
+]

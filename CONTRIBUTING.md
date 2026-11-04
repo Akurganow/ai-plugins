@@ -88,6 +88,9 @@ tools/package.json                pins doctoc for tools/regenerate.sh
 tools/package-lock.json           pins doctoc's dependency tree
 docs/clients.md                   how each client loads a package, with sources
 docs/design.md                    why the repository is built this way
+docs/banner.svg                   the README banner, written by scripts/compose-banner.py
+docs/banner/                      the banner's parts and layout, and how to add a tool
+scripts/compose-banner.py         writes docs/banner.svg; no check or workflow runs it
 evals/<name>/<skill>/             prompts and Jev questions for one skill's evals
 cog.toml                          release configuration, one entry per package
 .github/                          CI workflows and issue forms

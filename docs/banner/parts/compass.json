@@ -1,0 +1,8 @@
+{
+  "name": "compass",
+  "width": 126,
+  "height": 310,
+  "hang": [{"x": 59, "y": 26, "kind": "single"}],
+  "real_size_cm": {"length": 15.6, "width": 5.0},
+  "notes": "School drafting compass hanging plumb from the nickel ring on top of its knurled handle. Ring centre (59, 32), outer radius 11.1, inner radius 6.1; the hang point is the inside top of the ring, where the prong passes, so draw the prong tip in front of the ring. Ring top y 21, needle and lead tips y 290 (269 px = 15.6 cm). Legs spread 20 degrees in total from the brass hinge screw at (59, 96). Needle leg on the left, brass lead clamp with thumb screw on the right, arc brace across both legs at y 186. Light from the upper left; no cast shadow."
+}

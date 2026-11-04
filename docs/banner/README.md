@@ -16,7 +16,7 @@ holds its sources, and `scripts/compose-banner.py` writes the banner from them.
 | :-- | :-- |
 | `wrench` | `triz-thinking` |
 | `compass` | `design-review` |
-| `ruler` | `prose-discipline` |
+| `book` | `prose-discipline` |
 | `backpack` | `cognitive-load` |
 | `bottle` | `toc-thinking` |
 
@@ -52,7 +52,8 @@ back, then the tool, then the hook's front.
 
 - `single`: one prong, for a tool with a hang hole or ring;
 - `heavy`: two parallel prongs, for a loop at least 36.1 px wide inside;
-- `shelf`: a small shelf on two brackets, for a tool that stands.
+- `shelf`: a small shelf on two brackets, for a tool that stands;
+- `pocket`: a wire literature pocket, for a book that stands with its cover forward.
 
 Each kind gives its anchor holes and its `hang` point: where the inside top
 edge of a hole or loop rests, or where a standing tool's bottom stands.

@@ -1,0 +1,18 @@
+{
+ "name": "book",
+ "width": 299,
+ "height": 425,
+ "hang": [
+  {
+   "x": 153.3,
+   "y": 405.0,
+   "kind": "pocket"
+  }
+ ],
+ "real_size_cm": {
+  "height": 21.5,
+  "width": 14.5,
+  "thickness": 3.0
+ },
+ "notes": "Green cloth hardcover reference handbook standing upright, front cover to the viewer, spine on the left. Front face x 27.8..278.8, y 33..405 (251 x 372 px). Depth 52 px (3 cm) projected by the board's (0.15, 0.25): the left side (spine, x 20..27.8) and the top edge (back board, cream page block, front board, y 20..33) show; the right side and bottom are hidden in this view. Hang (153.3, 405) is the bottom edge of the front face on its centre line; the pocket's hang point is the same edge. White paper title label x 78.5..241.5, y 76..190, with abstract title bars as rects; blind-embossed frame x 56.5..262.5; hinge groove at x 41. Cloth weave is a 3 px pattern. Light from the upper left; no cast shadow."
+}

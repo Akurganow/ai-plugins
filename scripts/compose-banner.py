@@ -13,7 +13,7 @@ PARTS = BANNER / "parts"
 OUT = ROOT / "docs" / "banner.svg"
 
 HOOKS = json.loads((PARTS / "hooks.json").read_text())["hooks"]
-HOOK_ID = {"single": "hook-single", "heavy": "hook-heavy", "shelf": "shelf"}
+HOOK_ID = {"single": "hook-single", "heavy": "hook-heavy", "shelf": "shelf", "pocket": "pocket"}
 
 # Shadow opacity along the board's own light falloff (centre (420, 90),
 # r 1650): darker board, denser shadow, so shadows read on the right too.

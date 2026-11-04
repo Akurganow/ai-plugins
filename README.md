@@ -1,6 +1,6 @@
 # pegboard
 
-<p align="center"><img src="docs/banner.svg" alt="Five tools hanging on a pegboard: an adjustable wrench, a drafting compass, a school ruler, a backpack and a bottle" width="100%"></p>
+<p align="center"><img src="docs/banner.svg" alt="Five tools hanging on a pegboard: an adjustable wrench, a drafting compass, a green reference book, a backpack and a bottle" width="100%"></p>
 
 Agent plugins that make an agent follow published methods, such as design review and root-cause analysis.
 

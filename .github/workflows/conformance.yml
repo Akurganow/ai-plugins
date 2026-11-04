@@ -1,11 +1,14 @@
 name: conformance
 
 # Runs the repository's checks and the validators Claude Code, Agent Skills and
-# Hermes publish. The checks are Agent Plugins 1.0.0 conformance, that every
-# generated file equals what its source produces, and the size bound on the
-# prose-discipline rules. It also runs the evals runner's selftest and checks
-# that every evals folder has a matching skill and loads. On a pull request,
-# every commit touching plugins/ must also be conventional. Hosted Linux
+# Hermes publish. The checks are Agent Plugins 1.0.0 conformance of plugins/,
+# the metadata of each src/ package, and that no symlink sits under a generated
+# directory. Claude Code validates each bundle and the Claude catalogue. Every
+# generated file must equal what the builder writes, and the builder must refuse
+# each input its limits name. The evals runner's selftest runs, and every evals
+# folder must have a matching skill and load. On a pull request, every commit
+# touching a path the release reads must be conventional, and every commit that
+# changes src/ or a shared file must carry the builds it produces. Hosted Linux
 # runners, no services, no model calls.
 #
 # `push` is restricted to `main`. Without that restriction a pull request from
@@ -71,12 +74,13 @@ jobs:
           node-version: "22"
 
       # `ubuntu-latest` moves between images, and jq is not promised on
-      # every one.
+      # every one. The builder needs it.
       - name: Install jq
         run: command -v jq >/dev/null || { sudo apt-get update && sudo apt-get install -y jq; }
 
       # `--intent-to-add` makes a generated file missing from the commit show
-      # in `git diff`, which otherwise ignores untracked files.
+      # in `git diff`, which otherwise ignores untracked files. The builder runs
+      # last in regenerate.sh, so a bundle or catalogue that differs fails here.
       - name: Check generated files
         run: |
           bash tools/regenerate.sh
@@ -86,23 +90,132 @@ jobs:
             exit 1
           }
 
-      # The prose-discipline hook prints this file into the session. Codex
-      # spills hook context over its default 2500-token threshold to a file
-      # (documentation: https://learn.chatgpt.com/docs/hooks), so the rules stay under 8000 bytes.
-      - name: Keep the prose-discipline rules under 8000 bytes
+      # Probe, protected by .agents/rules/tests.md, "Protected", item 1. The builder
+      # must refuse hook text with &, which cmd.exe runs as an operator. The step
+      # fails when the builder accepts that text, or refuses it for another reason.
+      - name: Probe the builder with a forbidden character
         run: |
-          f=plugins/prose-discipline/rules/prose-discipline.md
-          size=$(wc -c < "$f" | tr -d ' ')
-          if [ "$size" -ge 8000 ]; then
-            echo "::error file=$f::$f is $size bytes; the bound is under 8000 bytes. The prose-discipline hook prints this file, and Codex spills hook context over its default 2500-token threshold (https://learn.chatgpt.com/docs/hooks). Shorten the rules."
+          scratch=$(mktemp -d)
+          tar --exclude=.git --exclude=node_modules -cf - . | tar -xf - -C "$scratch"
+          cd "$scratch"
+          awk '{ print } /^<!-- hook-text:start -->$/ { print "Use & here." }' \
+            src/prose-discipline/rules/prose-discipline.md > "$scratch/rules.md"
+          cp "$scratch/rules.md" src/prose-discipline/rules/prose-discipline.md
+          if out=$(bash tools/build.sh 2>&1); then
+            printf '%s\n' "$out"
+            echo "::error::The builder accepted a short form with a forbidden character."
             exit 1
           fi
-          echo "$f is $size bytes; the bound is under 8000 bytes."
+          printf '%s\n' "$out"
+          grep -qF 'holds a character outside letters' <<<"$out" ||
+            { echo "::error::The builder refused the short form, but not for its character limit."; exit 1; }
+
+      # Probe, protected by .agents/rules/tests.md, "Protected", item 1. The builder
+      # must refuse a hook line that starts with a slash, because cmd.exe prints help
+      # for it. The step fails when the builder accepts that line, or refuses it for another reason.
+      - name: Probe the builder with a line that starts with a slash
+        run: |
+          scratch=$(mktemp -d)
+          tar --exclude=.git --exclude=node_modules -cf - . | tar -xf - -C "$scratch"
+          cd "$scratch"
+          awk '{ print } /^<!-- hook-text:start -->$/ { print "/plugin install prose-discipline" }' \
+            src/prose-discipline/rules/prose-discipline.md > "$scratch/rules.md"
+          cp "$scratch/rules.md" src/prose-discipline/rules/prose-discipline.md
+          if out=$(bash tools/build.sh 2>&1); then
+            printf '%s\n' "$out"
+            echo "::error::The builder accepted a short form with a line that starts with a slash."
+            exit 1
+          fi
+          printf '%s\n' "$out"
+          grep -qF 'starts with something other than' <<<"$out" ||
+            { echo "::error::The builder refused the short form, but not for its line-start limit."; exit 1; }
+
+      # Probe, protected by .agents/rules/tests.md, "Protected", item 1. Codex moves
+      # hook context over 2500 tokens to a file, so the builder must refuse a short
+      # form of 8000 bytes or more. The probe adds one 8000-byte line. The step fails
+      # when the builder accepts it, or refuses it for another reason.
+      - name: Probe the builder with an 8000-byte line in the hook text
+        run: |
+          scratch=$(mktemp -d)
+          tar --exclude=.git --exclude=node_modules -cf - . | tar -xf - -C "$scratch"
+          cd "$scratch"
+          awk '{ print } /^<!-- hook-text:start -->$/ { for (i = 0; i < 8000; i++) printf "a"; print "" }' \
+            src/prose-discipline/rules/prose-discipline.md > "$scratch/rules.md"
+          cp "$scratch/rules.md" src/prose-discipline/rules/prose-discipline.md
+          if out=$(bash tools/build.sh 2>&1); then
+            printf '%s\n' "$out"
+            echo "::error::The builder accepted a short form of 8000 bytes."
+            exit 1
+          fi
+          printf '%s\n' "$out"
+          grep -qF 'prints as' <<<"$out" ||
+            { echo "::error::The builder refused the short form, but not for its size limit."; exit 1; }
+
+      # Probe, protected by .agents/rules/tests.md, "Protected", item 1. The probe adds
+      # 1000 lines of 4 bytes, so the short form stays under 8000 bytes, while its
+      # cmd.exe command runs past 8191 characters. The builder must refuse it. The step
+      # fails when the builder accepts it, or refuses it for another reason.
+      - name: Probe the builder with a Windows command over 8191 characters
+        run: |
+          scratch=$(mktemp -d)
+          tar --exclude=.git --exclude=node_modules -cf - . | tar -xf - -C "$scratch"
+          cd "$scratch"
+          awk '{ print } /^<!-- hook-text:start -->$/ { for (i = 0; i < 1000; i++) print "- a" }' \
+            src/prose-discipline/rules/prose-discipline.md > "$scratch/rules.md"
+          cp "$scratch/rules.md" src/prose-discipline/rules/prose-discipline.md
+          if out=$(bash tools/build.sh 2>&1); then
+            printf '%s\n' "$out"
+            echo "::error::The builder accepted a Windows command over 8191 characters."
+            exit 1
+          fi
+          printf '%s\n' "$out"
+          grep -qF 'the Windows command is' <<<"$out" ||
+            { echo "::error::The builder refused the short form, but not for its Windows limit."; exit 1; }
+
+      # Probe, protected by .agents/rules/tests.md, "Protected", item 1. A symlink under
+      # bundles/ fails Codex's plugin fingerprint, and Git for Windows checks it out as
+      # a plain file, so the conformance check must refuse it. The step fails when the
+      # check accepts the symlink, or fails for another reason.
+      - name: Probe the conformance check with a symlink under bundles
+        run: |
+          scratch=$(mktemp -d)
+          tar --exclude=.git --exclude=node_modules -cf - . | tar -xf - -C "$scratch"
+          cd "$scratch"
+          bash tools/build.sh
+          ln -s README.md bundles/prose-discipline/README-link.md
+          if out=$(python tools/check-conformance.py 2>&1); then
+            printf '%s\n' "$out"
+            echo "::error::The conformance check accepted a symlink under bundles/."
+            exit 1
+          fi
+          printf '%s\n' "$out"
+          grep -qF 'README-link.md: is a symlink' <<<"$out" ||
+            { echo "::error::The conformance check failed, but not on the symlink."; exit 1; }
+
+      # Probe, protected by .agents/rules/tests.md, "Protected", item 1. A source name
+      # that differs from its folder makes a catalogue entry install under another name,
+      # so the conformance check must refuse it. The step fails when the check accepts
+      # the name, or fails for another reason.
+      - name: Probe the conformance check with a source name that differs from its folder
+        run: |
+          scratch=$(mktemp -d)
+          tar --exclude=.git --exclude=node_modules -cf - . | tar -xf - -C "$scratch"
+          cd "$scratch"
+          jq '.name = "not-the-folder"' src/triz/source.json > "$scratch/source.json"
+          cp "$scratch/source.json" src/triz/source.json
+          if out=$(python tools/check-conformance.py 2>&1); then
+            printf '%s\n' "$out"
+            echo "::error::The conformance check accepted a source name that differs from its folder."
+            exit 1
+          fi
+          printf '%s\n' "$out"
+          grep -qF "must equal the folder name 'triz'" <<<"$out" ||
+            { echo "::error::The conformance check failed, but not on the source name."; exit 1; }
 
   # Pull requests only. The release bump silently skips a package commit that does
   # not parse (source, and measured in a rehearsal bump with cog 7.0.0:
   # https://github.com/cocogitto/cocogitto/blob/055a9fa8db8ac8ce50074d50162b48b92e9d0c47/crates/cocogitto/src/conventional/bump.rs#L204-L208).
-  # A commit that touches nothing under plugins/ releases nothing, so its message may be free-form.
+  # A commit that touches no path the release reads releases nothing, so its message may be free-form.
   commits:
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
@@ -129,7 +242,7 @@ jobs:
 
       # A failing cog check that names no commit is a failure, so an unread
       # output format cannot pass the step.
-      - name: Refuse a non-conventional commit that touches plugins/
+      - name: Refuse a non-conventional commit that touches a path the release reads
         env:
           RANGE: ${{ github.event.pull_request.base.sha }}..${{ github.sha }}
           NO_COLOR: "1"
@@ -149,15 +262,73 @@ jobs:
           fi
           bad=0
           for sha in $shas; do
-            paths=$(git diff-tree --no-commit-id --name-only -r "$sha" | grep '^plugins/' || true)
+            paths=$(git diff-tree --no-commit-id --name-only -r "$sha" | grep -E '^(src/|bundles/|plugins/|LICENSE|tools/build\.sh|tools/regions\.sh)' || true)
             if [ -n "$paths" ]; then
-              echo "::error::Commit $sha is not conventional and touches plugins/, so the release bump would skip it."
+              echo "::error::Commit $sha is not conventional and touches a path the release reads, so the release bump would skip it."
               printf '  %s\n' $paths
               bad=1
             fi
           done
-          [ "$bad" -eq 0 ] && echo "Every non-conventional commit in $RANGE leaves plugins/ untouched."
+          [ "$bad" -eq 0 ] && echo "Every non-conventional commit in $RANGE leaves the release paths untouched."
           exit "$bad"
+
+      # The builder needs jq, which the check job installs for the same reason.
+      - name: Install jq
+        run: command -v jq >/dev/null || { sudo apt-get update && sudo apt-get install -y jq; }
+
+      # A commit that changes src/ or a shared file must carry the builds
+      # tools/build.sh writes from it. Without this, its builds land in a later
+      # commit, and the release counts that commit's builds, so the earlier
+      # commit releases nothing.
+      - name: Build each commit that changes src/ or a shared file
+        env:
+          RANGE: ${{ github.event.pull_request.base.sha }}..${{ github.sha }}
+        run: |
+          status=0
+          for sha in $(git rev-list --reverse "$RANGE"); do
+            changed=$(git diff-tree --no-commit-id --name-only -r "$sha")
+            grep -qE '^(src/|LICENSE$|tools/build\.sh$|tools/regions\.sh$)' <<<"$changed" || continue
+            git checkout --quiet --force "$sha"
+            git clean -fdq
+            bash tools/build.sh
+            if [ -n "$(git status --porcelain)" ]; then
+              echo "::error::Commit $sha changes src/ or a shared file, and tools/build.sh writes a different tree from it. Run bash tools/build.sh on that commit and commit the builds with it."
+              git status --porcelain
+              status=1
+            fi
+          done
+          exit "$status"
+
+      # Probe, protected by .agents/rules/tests.md, "Protected", item 1. It commits a
+      # change to tools/build.sh without its builds. The step fails when the per-commit
+      # check above would pass that commit.
+      - name: Probe the per-commit check with a builder change and no builds
+        run: |
+          scratch=$(mktemp -d)
+          tar --exclude=.git --exclude=node_modules -cf - . | tar -xf - -C "$scratch"
+          cd "$scratch"
+          git init --quiet
+          bash tools/build.sh
+          git add --all
+          git -c user.name=probe -c user.email=probe@invalid commit --quiet -m "base"
+          bash tools/build.sh
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "::error::The probe base is not clean after tools/build.sh, so the probe proves nothing."
+            exit 1
+          fi
+          # The builder writes a file the base commit does not carry.
+          printf '%s\n' 'printf probe > probe-output.txt' >> tools/build.sh
+          git -c user.name=probe -c user.email=probe@invalid commit --quiet -am "change the builder"
+          changed=$(git diff-tree --no-commit-id --name-only -r HEAD)
+          if ! grep -qE '^(src/|LICENSE$|tools/build\.sh$|tools/regions\.sh$)' <<<"$changed"; then
+            echo "::error::The per-commit trigger does not select a commit that changes tools/build.sh."
+            exit 1
+          fi
+          bash tools/build.sh
+          if [ -z "$(git status --porcelain)" ]; then
+            echo "::error::The per-commit check would pass a commit that changes tools/build.sh without its builds."
+            exit 1
+          fi
 
   validate-claude:
     runs-on: ubuntu-latest
@@ -175,20 +346,56 @@ jobs:
         with:
           node-version: "22"
 
+      # 2.1.305 is the version whose `claude plugin validate --help` lists
+      # `--profile directory`, which the step below needs. 2.1.278, 2.1.293,
+      # 2.1.301, 2.1.303 and 2.1.304 do not (running: the help of each npm release).
       - name: Install Claude Code
         run: |
-          npm install -g @anthropic-ai/claude-code@2.1.278
+          npm install -g @anthropic-ai/claude-code@2.1.305
           claude --version
 
-      # Without --strict, the Agent Plugins fields Claude Code does not recognise
-      # stay warnings in the log instead of failing the run
+      # --strict treats the warnings as errors, so an unrecognised field or a
+      # missing metadata field fails the run. The icon warning does not fail it.
       # (documentation: https://code.claude.com/docs/en/plugins/cli-reference, "plugin validate").
-      - name: claude plugin validate, per package
+      - name: claude plugin validate --strict, per bundle and catalogue
         run: |
           status=0
-          for dir in plugins/*/; do
-            echo "::group::claude plugin validate ${dir%/}"
-            claude plugin validate "${dir%/}" || status=1
+          for dir in bundles/*/; do
+            echo "::group::claude plugin validate --strict ${dir%/}"
+            claude plugin validate --strict "${dir%/}" || status=1
+            echo "::endgroup::"
+          done
+          echo "::group::claude plugin validate --strict .claude-plugin/marketplace.json"
+          claude plugin validate --strict .claude-plugin/marketplace.json || status=1
+          echo "::endgroup::"
+          exit "$status"
+
+      # The directory profile runs the checks the plugin directory applies before
+      # it accepts a submission. The plain command runs fewer. The profile exits 1
+      # on a finding that blocks a submission, and on a check it cannot make, such
+      # as a hooks file that is not valid JSON (running: the help of
+      # `claude plugin validate`, Claude Code 2.1.305). This step fails on either.
+      # ICON_MISSING is the one finding it ignores: an icon is a binary image, and
+      # this repository stores text only (.agents/rules/conformance.md, "Text only").
+      # The directory also runs a safety scan and a policy review that this command
+      # does not (running: its output, Claude Code 2.1.305), so a passing step does
+      # not clear a submission. The directory's own Validate therefore runs by hand
+      # on bundles/prose-discipline before a pull request leaves draft.
+      - name: claude plugin validate --profile directory, per bundle
+        run: |
+          status=0
+          for dir in bundles/*/; do
+            name=${dir%/}
+            echo "::group::claude plugin validate --profile directory $name"
+            rc=0
+            out=$(claude plugin validate --profile directory --json "$name") || rc=$?
+            printf '%s\n' "$out"
+            blocking=$(jq -r '.directory.findings[]? | select(.code != "ICON_MISSING") | "\(.code) \(.file): \(.message)"' <<<"$out")
+            if [ -n "$blocking" ] || [ "$rc" -ne 0 ]; then
+              printf '%s\n' "$blocking"
+              echo "::error::$name fails the plugin directory check (exit $rc)."
+              status=1
+            fi
             echo "::endgroup::"
           done
           exit "$status"

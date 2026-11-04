@@ -1,9 +1,12 @@
 name: integration
 
 # Installs every package from this checkout into Claude Code, Codex and Oh-My-Pi
-# on Linux, macOS and Windows, and into Hermes on Linux and macOS.
-# Claude Code, Codex and Oh-My-Pi must list every skill.
-# Hermes must show each package installed and enabled. No step calls a model.
+# on Linux, macOS and Windows, and into Hermes on Linux and macOS. Claude Code,
+# Codex and Oh-My-Pi install through the catalogues at the root, which point at
+# bundles/. Hermes gets a copy of plugins/. Claude Code, Codex and Oh-My-Pi must
+# list every skill. Hermes must show each package installed and enabled. The
+# prose-discipline hook commands of Claude Code and Codex must print the short
+# form. No step calls a model.
 #
 # The windows-latest image installs Git with symlinks enabled
 # (source: https://github.com/actions/runner-images/blob/ebade26c60adcb867918b31c8f8caa37343a3d39/images/windows/scripts/build/Install-Git.ps1).
@@ -94,6 +97,11 @@ jobs:
         if: matrix.client == 'hermes'
         run: echo "HERMES_HOME=${{ runner.temp }}/hermes-home" >> "$GITHUB_ENV"
 
+      # Claude Code 2.1.305 is the version whose `claude plugin validate --help` lists
+      # `--profile directory`, which the conformance job runs. 2.1.278, 2.1.293, 2.1.301,
+      # 2.1.303 and 2.1.304 do not (running: the help of each npm release). This pin
+      # moves with that job's pin.
+      #
       # Install routes, documentation: https://code.claude.com/docs/en/setup,
       # https://developers.openai.com/codex/cli and the Oh-My-Pi README:
       # https://github.com/can1357/oh-my-pi/blob/6204b7508014bcdf12d95f0b3fd470905fd99344/README.md#L51-L55
@@ -104,7 +112,7 @@ jobs:
       - name: Install the client
         run: |
           case "$CLIENT" in
-            claude) npm install -g @anthropic-ai/claude-code@2.1.278 && claude --version ;;
+            claude) npm install -g @anthropic-ai/claude-code@2.1.305 && claude --version ;;
             codex)  npm install -g @openai/codex@0.155.1 && codex --version ;;
             omp)    bun install -g @oh-my-pi/pi-coding-agent@18.2.8 && omp --version ;;
             hermes)
@@ -126,6 +134,8 @@ jobs:
       # https://github.com/NousResearch/hermes-agent/blob/f97608f178d1ffeca59860195ab7da295f7c8e5f/website/docs/developer-guide/plugins/index.md#L62-L71
       # https://github.com/NousResearch/hermes-agent/blob/f97608f178d1ffeca59860195ab7da295f7c8e5f/website/docs/user-guide/features/plugins.md#L127
       # https://github.com/NousResearch/hermes-agent/blob/f97608f178d1ffeca59860195ab7da295f7c8e5f/website/docs/developer-guide/plugins/index.md#L748
+      # The root catalogues name ./bundles/<name> for each package. Hermes reads no
+      # catalogue here, so it gets the Agent Plugins build in plugins/<name>.
       - name: Add the marketplace and install every package
         run: |
           names=$(printf '%s\n' $PAIRS | cut -d: -f1 | sort -u)
@@ -237,14 +247,99 @@ jobs:
           done
           exit "$status"
 
-      # Not run. Codex 0.155.1's loader returns no hooks for an Agent Plugins package,
-      # and its config parser skips a plugin_hooks toggle (source, at rust-v0.155.1):
-      # https://github.com/openai/codex/blob/be2951ea34f0d295ed0becf97079f92fa5f6950e/codex-rs/core-plugins/src/loader.rs#L954-L964
-      # https://github.com/openai/codex/blob/be2951ea34f0d295ed0becf97079f92fa5f6950e/codex-rs/features/src/lib.rs#L607-L609
-      # The notice's "removed" is the feature's stage, lib.rs L238-L239 at the same commit.
-      # Upstream hook loading, in Codex's issue tracker:
-      # https://github.com/openai/codex/issues/39895,
-      # https://github.com/openai/codex/issues/47925
-      - name: Report the prose-discipline hook check as not run (Codex)
-        if: matrix.client == 'codex'
-        run: echo "::notice::Hook check not run - Codex 0.155.1 lists plugin_hooks as removed, and debug prompt-input runs no plugin hook."
+      # Runs the prose-discipline hook commands of the installed copy and compares
+      # the text each prints with the short form in src/, after CRs are removed. It
+      # fails when a copy lacks hooks/hooks.json or hooks/codex.json, or when a
+      # command prints other text, or when cmd.exe does not print it on Windows.
+      # It proves that the commands print the text, not that a client delivers it.
+      # Claude Code: a relative-path plugin of a marketplace added from a local path
+      # loads in place, and `readFromFolder` names that folder. `installPath` names
+      # the cache copy of any other plugin (documentation:
+      # https://code.claude.com/docs/en/plugins/loading.md#in-place-and-copied-plugins,
+      # https://code.claude.com/docs/en/plugins/cli-reference, "plugin list", "JSON output").
+      # Codex: the installed copy is plugins/cache/<marketplace>/<plugin>/<version> under
+      # CODEX_HOME, which defaults to ~/.codex (source, at rust-v0.155.1:
+      # https://github.com/openai/codex/blob/be2951ea34f0d295ed0becf97079f92fa5f6950e/codex-rs/core-plugins/src/store.rs#L26,
+      # https://github.com/openai/codex/blob/be2951ea34f0d295ed0becf97079f92fa5f6950e/codex-rs/core-plugins/src/store.rs#L131-L138,
+      # https://github.com/openai/codex/blob/be2951ea34f0d295ed0becf97079f92fa5f6950e/codex-rs/utils/home-dir/src/lib.rs#L59).
+      # `codex plugin add` installed the same path under CODEX_HOME in a local run of codex-cli 0.155.1.
+      # Git Bash rewrites arguments that look like Unix paths. MSYS2_ARG_CONV_EXCL='*'
+      # turns that off, so the /C switch reaches cmd as written (documentation:
+      # https://www.msys2.org/docs/filesystem-paths/, "Automatic Unix to Windows path conversion").
+      - name: Run the prose-discipline hook commands (Claude Code and Codex)
+        if: matrix.client == 'claude' || matrix.client == 'codex'
+        run: |
+          case "$CLIENT" in
+            claude)
+              root=$(claude plugin list --json | jq -r --arg id "prose-discipline@$MARKETPLACE" '.[] | select(.id == $id) | .readFromFolder // .installPath')
+              hooks=hooks.json ;;
+            codex)
+              version=$(jq -r .version bundles/prose-discipline/.codex-plugin/plugin.json)
+              root="${CODEX_HOME:-$HOME/.codex}/plugins/cache/$MARKETPLACE/prose-discipline/$version"
+              hooks=codex.json ;;
+          esac
+          # On Windows, cygpath gives the copy's path in the form the bash tests below use.
+          if [ "$RUNNER_OS" = Windows ]; then root=$(cygpath -u "$root"); fi
+          status=0
+          for file in hooks/hooks.json hooks/codex.json; do
+            if [ ! -f "$root/$file" ]; then
+              echo "::error::The installed prose-discipline of $CLIENT has no $file under $root."
+              status=1
+            fi
+          done
+          [ "$status" -eq 0 ] || exit 1
+          # bash -euc runs in its own process, so it defines die before it sources the helpers.
+          expected=$(bash -euc 'die() { printf "%s\n" "$*" >&2; exit 1; }; . tools/regions.sh; short_form src/prose-discipline/rules/prose-discipline.md')
+          handlers=$(jq -c '.hooks | to_entries[] | .key as $event | .value[].hooks[] | {event: $event, command, commandWindows}' "$root/hooks/$hooks")
+          while IFS= read -r handler; do
+            event=$(jq -r .event <<<"$handler")
+            command=$(jq -r .command <<<"$handler")
+            windows=$(jq -r '.commandWindows // empty' <<<"$handler")
+            # Claude Code's SubagentStart prints JSON, and the text is in additionalContext.
+            if [ "$CLIENT" = claude ] && [ "$event" = SubagentStart ]; then
+              if ! printed=$(sh -c "$command" | jq -r '.hookSpecificOutput.additionalContext' | tr -d '\r'); then
+                echo "::error::The Claude Code $event command did not print JSON with additionalContext."
+                status=1
+                continue
+              fi
+            elif ! printed=$(sh -c "$command" | tr -d '\r'); then
+              echo "::error::The $CLIENT $event command failed to run."
+              status=1
+              continue
+            fi
+            if [ "$printed" = "$expected" ]; then
+              echo "$CLIENT $event prints the short form."
+            else
+              printf '%s\n' "$printed"
+              echo "::error::The $CLIENT $event command prints other text than the short form."
+              status=1
+            fi
+            if [ "$RUNNER_OS" = Windows ] && [ -n "$windows" ]; then
+              if ! printed=$(MSYS2_ARG_CONV_EXCL='*' cmd /C "$windows" | tr -d '\r'); then
+                echo "::error::The $CLIENT $event commandWindows did not run under cmd.exe."
+                status=1
+                continue
+              fi
+              if [ "$printed" = "$expected" ]; then
+                echo "$CLIENT $event commandWindows prints the short form."
+              else
+                printf '%s\n' "$printed"
+                echo "::error::The $CLIENT $event commandWindows prints other text than the short form."
+                status=1
+              fi
+            fi
+          done <<<"$handlers"
+          exit "$status"
+
+  # Cursor has no install route this workflow can run. The Cursor docs read on
+  # 2026-11-04 document no command that installs a plugin from a catalogue
+  # (documentation: https://cursor.com/docs/plugins.md, "Installing plugins"). The
+  # CLI's API-key route for automation reads CURSOR_API_KEY (documentation:
+  # https://cursor.com/docs/cli/reference/authentication.md, "API key authentication").
+  # The notice keeps the gap visible in the run.
+  cursor:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Report the Cursor checks as not run
+        run: echo "::notice::Cursor checks not run - no documented command installs a plugin from a catalogue, and the CLI's API-key route needs CURSOR_API_KEY."

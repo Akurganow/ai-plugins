@@ -3,6 +3,18 @@ All notable changes to this project will be documented in this file. See [conven
 
 - - -
 
+## prose-discipline--v2.1.0 - 2026-11-04
+#### Features
+- give every package a listing icon (5028179)
+- build every package from src/ into a client bundle and an Agent Plugins build (fc8fd33)
+#### Bug Fixes
+- ship the listing icon at .claude-plugin/icon.png without an icon field (22da772)
+#### Documentation
+- document per-client bundles and their sources (4b2a8b8)
+
+- - -
+
+
 ## prose-discipline--v2.0.3 - 2026-10-10
 #### Bug Fixes
 - (**prose-discipline**) put the rules the evals found missing into the core rules (41fd01e)

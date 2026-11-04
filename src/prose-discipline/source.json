@@ -1,6 +1,6 @@
 {
   "name": "prose-discipline",
-  "version": "2.0.3",
+  "version": "2.1.0",
   "description": "An engineering prose standard for agent-written text: short active sentences, plain words, comments that explain why, and labelled review comments.",
   "author": {
     "name": "Alexander Kurganov",

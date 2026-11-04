@@ -13,7 +13,7 @@ Reviews a software design for complexity with the red flags and principles of Ou
 ### Claude Code
 
 ```
-/plugin marketplace add Akurganow/ai-plugins
+/plugin marketplace add Akurganow/pegboard
 /plugin install design-review@pegboard
 ```
 
@@ -22,7 +22,7 @@ Source: Claude Code documentation, <https://code.claude.com/docs/en/discover-plu
 ### Codex
 
 ```
-codex plugin marketplace add Akurganow/ai-plugins --ref main
+codex plugin marketplace add Akurganow/pegboard --ref main
 codex plugin add design-review@pegboard
 ```
 
@@ -31,7 +31,7 @@ Source: Codex documentation, <https://developers.openai.com/plugins/build/plugin
 ### Oh-My-Pi
 
 ```
-omp plugin marketplace add Akurganow/ai-plugins
+omp plugin marketplace add Akurganow/pegboard
 omp plugin install design-review@pegboard
 ```
 
@@ -40,7 +40,7 @@ Source: Oh-My-Pi documentation, [`docs/marketplace.md`](https://github.com/can13
 ### Hermes
 
 ```
-hermes plugins install Akurganow/ai-plugins/plugins/design-review --no-enable
+hermes plugins install Akurganow/pegboard/plugins/design-review --no-enable
 hermes plugins list
 hermes plugins enable design-review
 ```
@@ -54,7 +54,7 @@ Source: Hermes documentation, [`developer-guide/plugins/index.md`](https://githu
 Cursor's documentation names no command that installs from a repository. It names three routes:
 
 - Public marketplace: open **Customize**, find the plugin, select **Install**. A plugin appears there only after Cursor reviews a submitted repository, and this repository claims no listing.
-- Team marketplace, on Teams and Enterprise plans: in **Dashboard**, **Plugins & MCPs**, **Team Marketplaces**, select **Add Marketplace**, then **Import from Repo**, and paste `https://github.com/Akurganow/ai-plugins`. Developers then install from **Customize**.
+- Team marketplace, on Teams and Enterprise plans: in **Dashboard**, **Plugins & MCPs**, **Team Marketplaces**, select **Add Marketplace**, then **Import from Repo**, and paste `https://github.com/Akurganow/pegboard`. Developers then install from **Customize**.
 - Local: copy `bundles/design-review` to `~/.cursor/plugins/local/design-review`, then restart Cursor or run **Developer: Reload Window**.
 
 Source: Cursor documentation, [Plugins](https://cursor.com/docs/plugins), read 2026-11-04, for the three routes; [Plugins reference](https://cursor.com/docs/reference/plugins), read 2026-11-04, for the submission and review. CI does not install it.
@@ -62,7 +62,7 @@ Source: Cursor documentation, [Plugins](https://cursor.com/docs/plugins), read 2
 ### OpenClaw
 
 ```
-openclaw plugins install design-review --marketplace Akurganow/ai-plugins
+openclaw plugins install design-review --marketplace Akurganow/pegboard
 ```
 
 Source: OpenClaw documentation, [`docs/cli/plugins/install.md`](https://github.com/openclaw/openclaw/blob/db6ac584cf205ea9a72de7ae83a4e65199b926a4/docs/cli/plugins/install.md#L277-L283). OpenClaw reads this repository's `.claude-plugin/marketplace.json` (OpenClaw source, [`marketplace.ts`](https://github.com/openclaw/openclaw/blob/db6ac584cf205ea9a72de7ae83a4e65199b926a4/src/plugins/marketplace.ts#L35-L38)). CI does not install it.
@@ -126,11 +126,11 @@ fifteen, and the references say which is which.
 - The skill reads the design you give it. It does not read a code base on
   its own and measures nothing.
 - A trade-off between two measured qualities belongs to the
-  `contradiction` skill of [`triz-thinking`](https://github.com/Akurganow/ai-plugins/tree/main/plugins/triz-thinking). Many symptoms with
+  `contradiction` skill of [`triz-thinking`](https://github.com/Akurganow/pegboard/tree/main/plugins/triz-thinking). Many symptoms with
   one unclear cause belong to `root-cause` in
-  [`toc-thinking`](https://github.com/Akurganow/ai-plugins/tree/main/plugins/toc-thinking). What a reader cannot hold
+  [`toc-thinking`](https://github.com/Akurganow/pegboard/tree/main/plugins/toc-thinking). What a reader cannot hold
   in their head belongs to `extraneous` in
-  [`cognitive-load`](https://github.com/Akurganow/ai-plugins/tree/main/plugins/cognitive-load). The skill hands over
+  [`cognitive-load`](https://github.com/Akurganow/pegboard/tree/main/plugins/cognitive-load). The skill hands over
   only to a skill that is installed.
 
 ## License
@@ -139,4 +139,4 @@ MIT. See [LICENSE](LICENSE).
 
 ## Help
 
-See [SUPPORT.md](https://github.com/Akurganow/ai-plugins/blob/main/SUPPORT.md).
+See [SUPPORT.md](https://github.com/Akurganow/pegboard/blob/main/SUPPORT.md).

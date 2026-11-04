@@ -10,35 +10,35 @@
       "name": "cognitive-load",
       "source": "./bundles/cognitive-load",
       "description": "Separates the cognitive load a task needs from the load a code base's structure adds, and names the change that removes the second.",
-      "homepage": "https://github.com/Akurganow/ai-plugins/tree/main/plugins/cognitive-load",
+      "homepage": "https://github.com/Akurganow/pegboard/tree/main/plugins/cognitive-load",
       "category": "Developer Tools"
     },
     {
       "name": "design-review",
       "source": "./bundles/design-review",
       "description": "Reviews a software design for complexity with the red flags and principles of Ousterhout's A Philosophy of Software Design, each finding cited by chapter.",
-      "homepage": "https://github.com/Akurganow/ai-plugins/tree/main/plugins/design-review",
+      "homepage": "https://github.com/Akurganow/pegboard/tree/main/plugins/design-review",
       "category": "Developer Tools"
     },
     {
       "name": "prose-discipline",
       "source": "./bundles/prose-discipline",
       "description": "An engineering prose standard for agent-written text: short active sentences, plain words, comments that explain why, and labelled review comments.",
-      "homepage": "https://github.com/Akurganow/ai-plugins/tree/main/plugins/prose-discipline",
+      "homepage": "https://github.com/Akurganow/pegboard/tree/main/plugins/prose-discipline",
       "category": "Productivity"
     },
     {
       "name": "toc-thinking",
       "source": "./bundles/toc-thinking",
       "description": "Applies Goldratt's Thinking Processes to software: finds the core problem behind many symptoms, resolves the conflict that sustains it, and plans the change.",
-      "homepage": "https://github.com/Akurganow/ai-plugins/tree/main/plugins/toc-thinking",
+      "homepage": "https://github.com/Akurganow/pegboard/tree/main/plugins/toc-thinking",
       "category": "Developer Tools"
     },
     {
       "name": "triz-thinking",
       "source": "./bundles/triz-thinking",
       "description": "Resolves software trade-offs with TRIZ: the contradiction matrix and 40 inventive principles, the separation principles, and ARIZ-85C walked part by part with the user.",
-      "homepage": "https://github.com/Akurganow/ai-plugins/tree/main/plugins/triz-thinking",
+      "homepage": "https://github.com/Akurganow/pegboard/tree/main/plugins/triz-thinking",
       "category": "Developer Tools"
     }
   ]

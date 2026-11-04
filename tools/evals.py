@@ -11,7 +11,7 @@ regresses against the latest complete run.
 
 The runner is this repository's own. In Claude Code 2.1.293, `claude plugin
 eval` wrote the final reply only as the evidence of an LLM grader (running,
-2026-10-08: https://github.com/Akurganow/ai-plugins/actions/runs/37784785554).
+2026-10-08: https://github.com/Akurganow/pegboard/actions/runs/37784785554).
 That grader runs a judge model of its own. `claude plugin eval` has no
 custom-code grader, so Jev could not take the judge's place (documentation:
 https://code.claude.com/docs/en/plugin-evals).
@@ -108,7 +108,7 @@ class Claude:
 
     # Read lets the skill open its reference files. With only Skill allowed,
     # Claude Code 2.1.293 denied the skill's Read call (running, 2026-10-08:
-    # https://github.com/Akurganow/ai-plugins/actions/runs/37784785554).
+    # https://github.com/Akurganow/pegboard/actions/runs/37784785554).
     def command(self, prompt: str, arm: str) -> list[str]:
         return ["claude", "-p", prompt, "--model", self.model, "--output-format", "stream-json",
                 "--verbose", "--allowedTools", "Skill", "Read"]
@@ -128,7 +128,7 @@ class Claude:
     # Claude Code 2.1.293 shows a loaded skill as a Skill tool call whose `skill`
     # input holds "<package>:<skill>". Its init event lists `skills` and `plugins`,
     # each plugin with a `source` of "<package>@<marketplace>" (running, 2026-10-08:
-    # https://github.com/Akurganow/ai-plugins/actions/runs/37789029106).
+    # https://github.com/Akurganow/pegboard/actions/runs/37789029106).
     def parse(self, events: list[dict]) -> Parsed:
         fired, answer, cost, model, error, loaded, tools = False, None, None, None, None, None, []
         for e in events:
@@ -165,7 +165,7 @@ class Codex:
     # On GitHub's ubuntu-latest the read-only sandbox failed every command with
     # "bwrap: loopback: Failed RTM_NEWADDR", so Codex never read SKILL.md
     # (running: Codex 0.161.0, 2026-10-08,
-    # https://github.com/Akurganow/ai-plugins/actions/runs/37786134780).
+    # https://github.com/Akurganow/pegboard/actions/runs/37786134780).
     def command(self, prompt: str, arm: str) -> list[str]:
         cmd = ["codex", "exec", "--json", "--skip-git-repo-check", "--sandbox", "danger-full-access",
                "-m", self.model]
@@ -182,7 +182,7 @@ class Codex:
     # Codex has no skill item kind (source: ThreadItemDetails in
     # https://github.com/openai/codex/blob/979011409de0a60b52f179721948e65531d26144/codex-rs/exec/src/exec_events.rs#L107-L133).
     # A skill load is a shell read of its SKILL.md in the plugin cache (running:
-    # https://github.com/Akurganow/ai-plugins/actions/runs/37786134780).
+    # https://github.com/Akurganow/pegboard/actions/runs/37786134780).
     # A top-level "error" event also announces each retry, so only "turn.failed"
     # marks a failed turn (source:
     # https://github.com/openai/codex/blob/979011409de0a60b52f179721948e65531d26144/codex-rs/exec/src/event_processor_with_jsonl_output.rs#L447-L457,
@@ -233,7 +233,7 @@ class Omp:
     # https://github.com/can1357/oh-my-pi/blob/cde91bb38674d365e8c3916d05d2292273bb8554/docs/settings.md#L495).
     # On three red-flags cases `low` took 116 s against 472 s at `high`, and loaded
     # the skill every time (running, Oh-My-Pi 18.8.6, 2026-10-08:
-    # https://github.com/Akurganow/ai-plugins/actions/runs/37860528358).
+    # https://github.com/Akurganow/pegboard/actions/runs/37860528358).
     def command(self, prompt: str, arm: str) -> list[str]:
         cmd = ["omp", "-p", "--mode", "json", "--no-session", "--no-title", "--auto-approve",
                "--model", self.model, "--thinking", "low"]
@@ -1104,8 +1104,8 @@ def report_tag(tag, package, runs, no_cases, previous, seen, run_url, repo, can_
 
 # The fixtures are event streams trimmed from runs on GitHub's ubuntu-latest on
 # 2026-10-08: Claude Code 2.1.293 and Oh-My-Pi 18.8.4 in
-# https://github.com/Akurganow/ai-plugins/actions/runs/37789029106, and Codex
-# 0.161.0 in https://github.com/Akurganow/ai-plugins/actions/runs/37786134780.
+# https://github.com/Akurganow/pegboard/actions/runs/37789029106, and Codex
+# 0.161.0 in https://github.com/Akurganow/pegboard/actions/runs/37786134780.
 def _selftest_parsers() -> None:
     def events(name):
         return load_events((FIXTURES_DIR / f"{name}.jsonl").read_text())
@@ -1570,7 +1570,7 @@ def _selftest_gh() -> None:
                                    | {"answer": "secret selftest-secret-value", "cost_usd": 0.1, "tokens": None}]}
             (runs_dir / "run.json").write_text(json.dumps(record))
             os.environ.update({"GITHUB_STEP_SUMMARY": str(workdir / "summary.md"),
-                               "GITHUB_REPOSITORY": "Akurganow/ai-plugins", "GH_TOKEN": "gh-tok",
+                               "GITHUB_REPOSITORY": "Akurganow/pegboard", "GH_TOKEN": "gh-tok",
                                "RUN_STAMP": "2026-10-20T21:53:00Z", "RUN_ATTEMPT": "2", "GITHUB_RUN_ID": "99"})
             pushed = []
 

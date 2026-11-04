@@ -133,9 +133,9 @@ Documentation pages in this subsection were read on 2026-11-04.
 
 - Claude Code 2.1.278 added this marketplace and installed every package on Ubuntu, macOS and Windows.
   It printed `Successfully added marketplace: ai-plugins` and `Successfully installed plugin: <name>@ai-plugins (scope: user)`.
-  (running: [run 36189587613](https://github.com/Akurganow/ai-plugins/actions/runs/36189587613), at `7dd891d`)
+  (running: [run 36189587613](https://github.com/Akurganow/pegboard/actions/runs/36189587613), at `7dd891d`)
 - `claude plugin details <name>@ai-plugins` printed a `Skills (N)` line with the bare skill names.
-  (running: [run 36189587613](https://github.com/Akurganow/ai-plugins/actions/runs/36189587613))
+  (running: [run 36189587613](https://github.com/Akurganow/pegboard/actions/runs/36189587613))
 
 ## Codex
 
@@ -279,12 +279,12 @@ Documentation pages were read on 2026-11-04.
 
 - Codex 0.155.1 added this marketplace and every package on Ubuntu, macOS and Windows.
   It printed ``Added plugin `<name>` from marketplace `ai-plugins`.`` for each package.
-  (running: [run 36189587613](https://github.com/Akurganow/ai-plugins/actions/runs/36189587613), at `7dd891d`)
+  (running: [run 36189587613](https://github.com/Akurganow/pegboard/actions/runs/36189587613), at `7dd891d`)
 - `codex debug prompt-input` listed each skill as `- <plugin>:<skill>: ` followed by its description.
-  (running: [run 36189587613](https://github.com/Akurganow/ai-plugins/actions/runs/36189587613))
+  (running: [run 36189587613](https://github.com/Akurganow/pegboard/actions/runs/36189587613))
 - The run checks no plugin hook, because the loader drops such hooks, as above.
   It reports that check as not run.
-  (running: [run 36189587613](https://github.com/Akurganow/ai-plugins/actions/runs/36189587613))
+  (running: [run 36189587613](https://github.com/Akurganow/pegboard/actions/runs/36189587613))
 
 ## Oh-My-Pi
 
@@ -365,9 +365,9 @@ Links in this subsection are permalinks at commit `33ea58a`.
 
 - Oh-My-Pi 18.2.8 added this marketplace and installed every package on Ubuntu, macOS and Windows.
   It printed `✔ Installed <name> from ai-plugins (<version>)` for each package.
-  (running: [run 36189587613](https://github.com/Akurganow/ai-plugins/actions/runs/36189587613), at `7dd891d`)
+  (running: [run 36189587613](https://github.com/Akurganow/pegboard/actions/runs/36189587613), at `7dd891d`)
 - `omp read skill://<skill>:raw` resolved each skill by its bare name and printed `name: <skill>`.
-  (running: [run 36189587613](https://github.com/Akurganow/ai-plugins/actions/runs/36189587613))
+  (running: [run 36189587613](https://github.com/Akurganow/pegboard/actions/runs/36189587613))
 
 ## Hermes
 
@@ -455,14 +455,14 @@ Facts about Hermes 0.21.5, the version the runs install, link to its commit `f97
 
 - Hermes 0.21.5 installed on Ubuntu and macOS, and every package installed and enabled.
   `hermes plugins show <name>` printed `Key: <name>` and `Status: enabled` for each package.
-  (running: [run 36189587613](https://github.com/Akurganow/ai-plugins/actions/runs/36189587613), at `7dd891d`)
+  (running: [run 36189587613](https://github.com/Akurganow/pegboard/actions/runs/36189587613), at `7dd891d`)
 - `hermes plugins validate` printed `✓ security scan — safe` for every package, `howp` included.
-  (running: [run 36197524862](https://github.com/Akurganow/ai-plugins/actions/runs/36197524862), job `validate-hermes`, at `a8a3c94`)
+  (running: [run 36197524862](https://github.com/Akurganow/pegboard/actions/runs/36197524862), job `validate-hermes`, at `a8a3c94`)
 - On the windows-latest runner, the pinned checkout failed: `Your local changes to the following files would be overwritten by checkout`.
-  (running: [run 36183358181](https://github.com/Akurganow/ai-plugins/actions/runs/36183358181), at `0f89614`)
+  (running: [run 36183358181](https://github.com/Akurganow/pegboard/actions/runs/36183358181), at `0f89614`)
 - The integration matrix excludes Hermes on the windows-latest runner, so run 36189587613 has no such job.
-  (source: [`integration.yml` L56–L64](https://github.com/Akurganow/ai-plugins/blob/7dd891d8fbd3eb576d96567f5266ab7b7d81db08/.github/workflows/integration.yml#L56-L64);
-  running: [run 36189587613](https://github.com/Akurganow/ai-plugins/actions/runs/36189587613))
+  (source: [`integration.yml` L56–L64](https://github.com/Akurganow/pegboard/blob/7dd891d8fbd3eb576d96567f5266ab7b7d81db08/.github/workflows/integration.yml#L56-L64);
+  running: [run 36189587613](https://github.com/Akurganow/pegboard/actions/runs/36189587613))
 
 ## Cursor
 

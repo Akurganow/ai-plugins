@@ -13,7 +13,7 @@ Resolves software trade-offs with TRIZ: the contradiction matrix and 40 inventiv
 ### Claude Code
 
 ```
-/plugin marketplace add Akurganow/ai-plugins
+/plugin marketplace add Akurganow/pegboard
 /plugin install triz-thinking@pegboard
 ```
 
@@ -22,7 +22,7 @@ Source: Claude Code documentation, <https://code.claude.com/docs/en/discover-plu
 ### Codex
 
 ```
-codex plugin marketplace add Akurganow/ai-plugins --ref main
+codex plugin marketplace add Akurganow/pegboard --ref main
 codex plugin add triz-thinking@pegboard
 ```
 
@@ -31,7 +31,7 @@ Source: Codex documentation, <https://developers.openai.com/plugins/build/plugin
 ### Oh-My-Pi
 
 ```
-omp plugin marketplace add Akurganow/ai-plugins
+omp plugin marketplace add Akurganow/pegboard
 omp plugin install triz-thinking@pegboard
 ```
 
@@ -40,7 +40,7 @@ Source: Oh-My-Pi documentation, [`docs/marketplace.md`](https://github.com/can13
 ### Hermes
 
 ```
-hermes plugins install Akurganow/ai-plugins/plugins/triz-thinking --no-enable
+hermes plugins install Akurganow/pegboard/plugins/triz-thinking --no-enable
 hermes plugins list
 hermes plugins enable triz-thinking
 ```
@@ -54,7 +54,7 @@ Source: Hermes documentation, [`developer-guide/plugins/index.md`](https://githu
 Cursor's documentation names no command that installs from a repository. It names three routes:
 
 - Public marketplace: open **Customize**, find the plugin, select **Install**. A plugin appears there only after Cursor reviews a submitted repository, and this repository claims no listing.
-- Team marketplace, on Teams and Enterprise plans: in **Dashboard**, **Plugins & MCPs**, **Team Marketplaces**, select **Add Marketplace**, then **Import from Repo**, and paste `https://github.com/Akurganow/ai-plugins`. Developers then install from **Customize**.
+- Team marketplace, on Teams and Enterprise plans: in **Dashboard**, **Plugins & MCPs**, **Team Marketplaces**, select **Add Marketplace**, then **Import from Repo**, and paste `https://github.com/Akurganow/pegboard`. Developers then install from **Customize**.
 - Local: copy `bundles/triz-thinking` to `~/.cursor/plugins/local/triz-thinking`, then restart Cursor or run **Developer: Reload Window**.
 
 Source: Cursor documentation, [Plugins](https://cursor.com/docs/plugins), read 2026-11-04, for the three routes; [Plugins reference](https://cursor.com/docs/reference/plugins), read 2026-11-04, for the submission and review. CI does not install it.
@@ -62,7 +62,7 @@ Source: Cursor documentation, [Plugins](https://cursor.com/docs/plugins), read 2
 ### OpenClaw
 
 ```
-openclaw plugins install triz-thinking --marketplace Akurganow/ai-plugins
+openclaw plugins install triz-thinking --marketplace Akurganow/pegboard
 ```
 
 Source: OpenClaw documentation, [`docs/cli/plugins/install.md`](https://github.com/openclaw/openclaw/blob/db6ac584cf205ea9a72de7ae83a4e65199b926a4/docs/cli/plugins/install.md#L277-L283). OpenClaw reads this repository's `.claude-plugin/marketplace.json` (OpenClaw source, [`marketplace.ts`](https://github.com/openclaw/openclaw/blob/db6ac584cf205ea9a72de7ae83a4e65199b926a4/src/plugins/marketplace.ts#L35-L38)). CI does not install it.
@@ -132,7 +132,7 @@ than 1,248 cells, so the often-quoted count of 1,263 stays unconfirmed.
   39 parameters to software, and no study of the matrix on software
   problems.
 - A tangle of symptoms with no trade-off in sight belongs to the
-  `root-cause` skill of [`toc-thinking`](https://github.com/Akurganow/ai-plugins/tree/main/plugins/toc-thinking).
+  `root-cause` skill of [`toc-thinking`](https://github.com/Akurganow/pegboard/tree/main/plugins/toc-thinking).
   Both skills hand over only when `root-cause` is installed.
 
 ## License
@@ -141,4 +141,4 @@ MIT. See [LICENSE](LICENSE).
 
 ## Help
 
-See [SUPPORT.md](https://github.com/Akurganow/ai-plugins/blob/main/SUPPORT.md).
+See [SUPPORT.md](https://github.com/Akurganow/pegboard/blob/main/SUPPORT.md).

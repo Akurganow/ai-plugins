@@ -5,7 +5,7 @@
 specVersion: "1.0.0"
 
 project:
-  name: ai-plugins
+  name: pegboard
   description: >-
     A public marketplace of agent plugins. Every package under `plugins/`,
     built from `src/`, is an Agent Plugins 1.0.0 package, and the

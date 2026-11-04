@@ -14,7 +14,7 @@ vulnerability](https://docs.github.com/en/code-security/how-tos/report-and-fix-v
 GitHub documentation, read 2026-09-14.
 
 The form's direct address is
-<https://github.com/Akurganow/ai-plugins/security/advisories/new>. If that
+<https://github.com/Akurganow/pegboard/security/advisories/new>. If that
 link opens no form, use the **Report a vulnerability** control instead.
 
 **Do not open a public issue describing a vulnerability.** If no route

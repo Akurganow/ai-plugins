@@ -6,7 +6,7 @@ body:
     attributes:
       value: |
         Use this form when a plugin from this marketplace does not install, enable or load.
-        Report a vulnerability as [SECURITY.md](https://github.com/Akurganow/ai-plugins/blob/main/SECURITY.md) describes, never in a public issue.
+        Report a vulnerability as [SECURITY.md](https://github.com/Akurganow/pegboard/blob/main/SECURITY.md) describes, never in a public issue.
   - type: dropdown
     id: client
     attributes:

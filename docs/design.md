@@ -422,14 +422,14 @@ The same guide warns against adding keywords from failed queries to a descriptio
 (documentation: [Optimizing descriptions](https://agentskills.io/skill-creation/optimizing-descriptions), read 2026-10-10)
 Oh-My-Pi runs `z-ai/glm-5.3-flash`, because in Oh-My-Pi 18.8.6 it loaded `red-flags` in 3 of 3 sessions.
 `deepseek-v4-flash` loaded it in 1 of 3, and `gemini-3.1-flash-lite` in 0 of 3.
-(running: [run 37847660604](https://github.com/Akurganow/ai-plugins/actions/runs/37847660604), 2026-10-08)
+(running: [run 37847660604](https://github.com/Akurganow/pegboard/actions/runs/37847660604), 2026-10-08)
 TypeSafe's Jev grades each positive answer against the yes-or-no questions in `rubric.yaml`.
 It is pinned to `jev-1.13.0`, because `jev-latest` moves to each new stable release and its answers can change with it.
 (documentation: [Models](https://docs.typesafe.ai/models.md), read 2026-10-08)
 A question that lists `cases` is asked only of the answers to those positive prompts.
 
 Four of the rubric rules in [CONTRIBUTING.md](../CONTRIBUTING.md#write-a-skills-evals-cases) rest on one run of `design-review--v0.2.0` and `prose-discipline--v2.0.0`.
-(running: [run 37882206779](https://github.com/Akurganow/ai-plugins/actions/runs/37882206779), 2026-10-09)
+(running: [run 37882206779](https://github.com/Akurganow/pegboard/actions/runs/37882206779), 2026-10-09)
 A prompt asks for its result in the reply.
 On the two prompts that asked for a file, Codex and Oh-My-Pi wrote the file and replied with a summary of it, and Claude Code was refused the write and replied with an apology.
 A question every answer passes is dropped.
@@ -450,7 +450,7 @@ Codex turns off its `plugins` feature with `--disable plugins`.
 (documentation: [Command line options, `--disable`](https://learn.chatgpt.com/docs/cli/reference.md) and [Configuration reference, `features.plugins`](https://learn.chatgpt.com/docs/config-file/config-reference.md), read 2026-10-09;
 source: [`Feature::Plugins`](https://github.com/openai/codex/blob/979011409de0a60b52f179721948e65531d26144/codex-rs/features/src/lib.rs#L257-L258))
 With it, Codex 0.161.0 listed only its four built-in skills and none from this package.
-(running: [run 37789029106](https://github.com/Akurganow/ai-plugins/actions/runs/37789029106), 2026-10-08)
+(running: [run 37789029106](https://github.com/Akurganow/pegboard/actions/runs/37789029106), 2026-10-08)
 Oh-My-Pi disables every skill with `--no-skills` and every rule with `--no-rules`.
 (documentation: [CLI reference, `--no-skills` and `--no-rules`](https://github.com/can1357/oh-my-pi/blob/40e9368ef0458fd9073329cdff4174895f91bc6b/docs/cli-reference.md#L159-L160))
 So a comparison of `improvement` across clients compares different removals.
@@ -458,7 +458,7 @@ So a comparison of `improvement` across clients compares different removals.
 Each session records the tools the model called: the skill or file for Claude Code, the whole command for Codex, and the path for Oh-My-Pi.
 They show which of the skill's files the model read.
 A Claude Code session also records the plugins and skills that its `init` event lists.
-(running: Claude Code 2.1.293, [run 37789029106](https://github.com/Akurganow/ai-plugins/actions/runs/37789029106), 2026-10-08)
+(running: Claude Code 2.1.293, [run 37789029106](https://github.com/Akurganow/pegboard/actions/runs/37789029106), 2026-10-08)
 
 Each skill and client gets four numbers per repeat:
 
@@ -510,7 +510,7 @@ GitHub's hosted runners give the runner's user passwordless `sudo`, so no separa
 (documentation: [GitHub-hosted runners](https://docs.github.com/en/actions/reference/runners/github-hosted-runners), read 2026-10-25)
 The report job grades the runs one after another.
 In two jobs of run 39507094886, the step that ran forty sessions and graded twenty answers took at most 3 s longer than the sessions.
-(running: [run 39507094886](https://github.com/Akurganow/ai-plugins/actions/runs/39507094886), 2026-10-20)
+(running: [run 39507094886](https://github.com/Akurganow/pegboard/actions/runs/39507094886), 2026-10-20)
 Every session makes model calls billed to its key, and so does every Jev request.
 No session has a time or cost limit, because no measurement shows that a limit would prevent a failure.
 GitHub terminates a hosted job at six hours of execution, and that is the only bound.
@@ -544,7 +544,7 @@ For `house-style` that conclusion rests on the index fact alone, because the one
 Five alternatives lost.
 In Claude Code 2.1.293, `claude plugin eval` wrote the final reply only as the evidence of an LLM grader.
 That grader runs a judge model of its own.
-(running: [run 37784785554](https://github.com/Akurganow/ai-plugins/actions/runs/37784785554), 2026-10-08)
+(running: [run 37784785554](https://github.com/Akurganow/pegboard/actions/runs/37784785554), 2026-10-08)
 `claude plugin eval` has no custom-code graders, so Jev could not take the judge's place.
 (documentation: [Test plugins with evals](https://code.claude.com/docs/en/plugin-evals), read 2026-10-08)
 Concurrent sessions of one client sharing one configuration were not tested, so each job runs on a runner of its own.
@@ -571,7 +571,7 @@ It also includes `raw.githubusercontent.com`, where the skill can read the packa
 
 The skill checks each archive's SHA-256 against `plugins/howp/binaries.json`.
 A digest proves the archive is the recorded one, not who built it.
-The release [`howp-v0.3.7`](https://github.com/Akurganow/ai-plugins/releases/tag/howp-v0.3.7) carries `SHA256SUMS` and `SHA256SUMS.sigstore.json`, a Sigstore bundle over the table (release assets, read 2026-09-26).
+The release [`howp-v0.3.7`](https://github.com/Akurganow/pegboard/releases/tag/howp-v0.3.7) carries `SHA256SUMS` and `SHA256SUMS.sigstore.json`, a Sigstore bundle over the table (release assets, read 2026-09-26).
 The certificate in that bundle names `https://github.com/Akurganow/how-possible/.github/workflows/release.yml@refs/heads/main` as the signer and `https://token.actions.githubusercontent.com` as the issuer (the bundle's certificate, read 2026-09-26).
 Those are the two values a GitHub Actions workflow gets under keyless signing.
 The identity is the workflow file at a branch, and no long-lived key exists.

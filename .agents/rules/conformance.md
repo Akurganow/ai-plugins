@@ -8,9 +8,14 @@ that difference visible.
 
 The check is `tools/check-conformance.py`, and it must exit 0.
 
-It imports `jsonschema`, which validates the manifest against the schema
-vendored in `tools/schemas/`, and `yaml`, which reads `SKILL.md` front
-matter. Both have to be importable by whatever runs the script. **How they
+It imports `jsonschema`, which validates each `plugins/<name>/plugin.json`
+against the schema vendored in `tools/schemas/` and each
+`src/<name>/source.json` against `tools/source.schema.json`, and `yaml`,
+which reads `SKILL.md` front matter. Both have to be importable by whatever
+runs the script. A schema cannot compare a value with the folder that holds
+it, so the check also requires `name` in `source.json` to equal the folder
+name. Without that, a catalogue lists `./bundles/<folder>` while the manifest
+there installs under another name. **How they
 get there is not recorded here, and neither is the invocation**: those are
 facts about an environment, and they belong to whoever runs the check there.
 An environment that writes its own down is
@@ -82,13 +87,31 @@ rule only says that it happens and that the schema does not bend.
 
 The rules that decide whether a client loads a package at all:
 
-- The manifest is a real file at the plugin root. A vendor discovery path
-  inside the package is a byte-identical copy of it, written by the
-  regeneration entry point, `tools/regenerate.sh`. The check compares the
-  two byte for byte. §5.1 says: "No other file can replace, supplement, or
-  override the core fields in root `plugin.json`." An identical copy
-  overrides nothing. The copy is not a symlink. Git for
-  Windows disables symbolic links by default
+- `src/<name>/` is the hand-written source of a package, and no client reads
+  it. `tools/build.sh` writes two committed builds from it, and
+  `tools/regenerate.sh` runs the builder last. A build is never edited by
+  hand. CI runs the same scripts and fails on any difference, so a hand edit
+  does not merge.
+- `plugins/<name>/` is the Agent Plugins 1.0.0 package. Its manifest is a
+  real file at the plugin root, beside `README.md`, `LICENSE` and `skills/`.
+  No vendor discovery path and no other manifest sits in it. §5.1 says: "No
+  other file can replace, supplement, or override the core fields in root
+  `plugin.json`."
+- `bundles/<name>/` is one tree with a manifest folder per client:
+  `.claude-plugin/`, `.codex-plugin/` and `.cursor-plugin/`. It has no root
+  `plugin.json`, and that is why the second build exists. Codex looks for a
+  root manifest in the Agent Plugins format before any manifest folder
+  ([`plugin_namespace.rs` L43–L83](https://github.com/openai/codex/blob/6ff1e1ca3b30fc8b914720681fcf5fe62e95f856/codex-rs/utils/plugins/src/plugin_namespace.rs#L43-L83),
+  source), and loads no hooks for a package in that format
+  ([`loader.rs` L984–L996](https://github.com/openai/codex/blob/6ff1e1ca3b30fc8b914720681fcf5fe62e95f856/codex-rs/core-plugins/src/loader.rs#L984-L996),
+  source). Both links are at `rust-v0.166.0`. The bundle carries
+  prose-discipline's hooks, so it holds no such manifest. A `hooks` entry
+  declared in the Codex manifest replaces the default `hooks/hooks.json`
+  ([`loader.rs` L1220–L1275](https://github.com/openai/codex/blob/6ff1e1ca3b30fc8b914720681fcf5fe62e95f856/codex-rs/core-plugins/src/loader.rs#L1220-L1275),
+  source, same revision). Codex therefore reads its own hooks file and never
+  the one Claude Code reads.
+- No symlink exists under `bundles/` or `plugins/`, and the check fails on
+  one. Git for Windows disables symbolic links by default
   ([Git for Windows](https://gitforwindows.org/symbolic-links),
   documentation). With them off, git checks a link out as a plain file
   holding the link text
@@ -96,8 +119,12 @@ The rules that decide whether a client loads a package at all:
   documentation). Claude Code documents one manifest location,
   `.claude-plugin/plugin.json`, and fails on a file that is not JSON
   ([plugins reference](https://code.claude.com/docs/en/plugins-reference),
-  documentation). The root manifest may not be a symlink either. Codex's
-  loader rejects a symlinked root manifest outright — `symlink_metadata` in
+  documentation). Codex hashes an installed package to decide whether the
+  user has approved its hooks, and that hash fails on any entry that is
+  neither a regular file nor a directory
+  ([`plugin_fingerprint.rs` L36–L90](https://github.com/openai/codex/blob/6ff1e1ca3b30fc8b914720681fcf5fe62e95f856/codex-rs/hooks/src/engine/plugin_fingerprint.rs#L36-L90),
+  source, `rust-v0.166.0`). Codex's loader also rejects a symlinked root
+  manifest outright — `symlink_metadata` in
   [`plugin_namespace.rs`](https://github.com/openai/codex/blob/e3e5ad28470f6a225301518c30a66e749a880164/codex-rs/utils/plugins/src/plugin_namespace.rs),
   pinned by its own `rejects_symlinked_root_plugin_manifest` test. That one
   is **from source**. The `plugin_namespace.rs` link is a commit permalink,
@@ -124,26 +151,36 @@ The rules that decide whether a client loads a package at all:
 ## Versions
 
 Every package is released by `.github/workflows/release.yml`, which runs
-cocogitto. It writes `version` in each `plugins/<name>/plugin.json` and in
-its `.claude-plugin/plugin.json` copy, and each `plugins/<name>/CHANGELOG.md`.
-**Nobody edits those by hand, ever.** Each is a claim about a released
-artifact: a hand edit asserts a version no release produced, and the next
-release overwrites it without noticing.
-**The catalogue index carries no version at all**: `.claude-plugin/marketplace.json`
-has no top-level `version`, none under `metadata`, and no `version` in a
-plugin entry, because a version no machine writes is a version somebody moves
-by hand.
+cocogitto. It writes `version` in `src/<name>/source.json`, then runs the
+builder, which copies it into every manifest of both builds. It also writes
+`src/<name>/CHANGELOG.md`. **Nobody edits those versions or that changelog
+by hand, ever.** Each is a
+claim about a released artifact: a hand edit asserts a version no release
+produced, and the next release overwrites it without noticing.
+cocogitto counts `src/<name>/`, `bundles/<name>/**` and `plugins/<name>/**`
+toward a package's release, so every commit carries the builds it produces,
+and CI checks that per commit.
+**No catalogue carries a version at all**: `.claude-plugin/marketplace.json`,
+`.agents/plugins/marketplace.json`, `.omp-plugin/marketplace.json` and
+`.cursor-plugin/marketplace.json` have no top-level `version`, none under
+`metadata`, and no `version` in a plugin entry, because a version no machine
+writes is a version somebody moves by hand.
 
 ## Text only
 
-No executables and no built artefacts are stored in the tree. Released
-binaries are published elsewhere and referenced from here. This repository
-runs three programs of its own. The first is its check,
-`tools/check-conformance.py`. The second is its regeneration entry point,
-`tools/regenerate.sh`, which writes every generated copy from its one source.
-`.github/workflows/conformance.yml` runs both, and fails when a regenerated
-copy differs from the committed one. The third is the evals runner,
-`tools/evals.py`, which `.github/workflows/evals.yml` runs after a release.
+No executables and no compiled artefacts are stored in the tree. The two
+builds are generated text, and prose-discipline's hooks in them are literal
+output commands, not scripts. Released binaries are published elsewhere and
+referenced from here. This repository runs four programs of its own. The
+first is its check, `tools/check-conformance.py`. The second is its
+regeneration entry point, `tools/regenerate.sh`, which writes every generated
+copy from its one source and runs the builder last. The third is the builder,
+`tools/build.sh`, which writes `bundles/`, `plugins/` and the four catalogues
+from `src/`. `tools/regions.sh` is not a program: both scripts source it for
+their region logic. `.github/workflows/conformance.yml` runs the check and
+the regeneration, and fails when a regenerated copy differs from the
+committed one. The fourth is the evals runner, `tools/evals.py`,
+which `.github/workflows/evals.yml` runs after a release.
 `conformance.yml` runs its selftest, which calls no model, and its `validate`
 subcommand, which checks that every folder under `evals/` has its skill and
 loads.

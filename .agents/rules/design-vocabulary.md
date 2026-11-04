@@ -8,13 +8,13 @@ also lists the shapes in this tree that already answer a question. Their
 findings are tried by it.
 
 The code here is Python (`tools/check-conformance.py`, `tools/evals.py`), shell
-(`tools/regenerate.sh`, `plugins/prose-discipline/hooks/print-rules.sh`) and
+(`tools/regenerate.sh`, `tools/build.sh`, `tools/regions.sh`) and
 workflows (`.github/workflows/`). The words below apply to all three. An
 interface is what a reader must learn to use a unit without reading it:
 
 - a function's signature and docstring;
 - a shell function's arguments and exit status;
-- a script's arguments (`tools/regenerate.sh` takes none);
+- a script's arguments (`tools/regenerate.sh` and `tools/build.sh` take none);
 - a tool's subcommands (`tools/evals.py` has `matrix`, `run`, `report`,
   `validate` and `selftest`);
 - a workflow's `workflow_call` inputs, secrets and job `outputs`.
@@ -48,11 +48,10 @@ The `design-review` package states the first four with chapter references, in
   stream.
 - **Deep on purpose.** A small interface over many hidden decisions is the
   goal, and a long body is not a symptom. `replace_region` in
-  `tools/regenerate.sh` takes three arguments and hides marker counting, CRLF
+  `tools/regions.sh` takes three arguments and hides marker counting, CRLF
   detection and an `awk` rewrite. `parse_frontmatter` in
   `tools/check-conformance.py` returns a dict or `None`, and its docstring
-  records why it does not split on the substring `---`. `print-rules.sh` takes
-  nothing or `--json`.
+  records why it does not split on the substring `---`.
 - **Shallow on purpose.** A block of constants with the reason beside each is a
   recalibration seam. Do not fold it into callers. The constants at the top
   of `tools/evals.py` carry comments such as the one above `JEV_MODEL`
@@ -62,7 +61,7 @@ The `design-review` package states the first four with chapter references, in
 - **What counts as a caller.** A caller is reached from an entry point:
   - a `main` subcommand;
   - a workflow `run:` or `uses:`;
-  - a hook named in `hooks.json`, or a `cog.toml` hook;
+  - a `cog.toml` hook;
   - a command that a failure message or `CONTRIBUTING.md` tells a person to run.
 
   A `_selftest_*` function reaches a unit only to test it, so it does not keep
@@ -72,9 +71,9 @@ The `design-review` package states the first four with chapter references, in
 - **Prefer the specific mechanism** until a second caller exists. Say what a
   general one buys before proposing it.
 - **Errors defined out of existence.** A design that cannot hold the bad state
-  beats a check somewhere else. `tools/regenerate.sh` skips a file that has
-  neither region marker, so a region takes effect once someone adds its
-  markers. A lone, duplicate or reversed marker stops the run.
+  beats a check somewhere else. `replace_region` in `tools/regions.sh` skips a
+  file that has neither region marker, so a region takes effect once someone
+  adds its markers. A lone, duplicate or reversed marker stops the run.
 - **A guard is in proportion when its state can arise where the code runs.**
   To call it disproportionate, name the layer that makes the state
   impossible, with `path:line`. Without that layer the guard stands.
@@ -83,7 +82,7 @@ The `design-review` package states the first four with chapter references, in
   that provides it. The files are:
   - the `pip install` line of `.github/workflows/conformance.yml`;
   - `tools/package.json`;
-  - the tool list at the top of `tools/regenerate.sh`;
+  - the tool lists at the top of `tools/regenerate.sh` and `tools/build.sh`;
   - an `import` in the program itself.
 - **A hand-written check says which of two reasons it has.** It enforces what a
   schema cannot express. Or it turns a rejection into a message someone can act
@@ -100,19 +99,24 @@ commit.
 
 - **Copies of one source.** Each of these repeats a fact that lives in one
   source:
-  - `plugins/<name>/.claude-plugin/plugin.json`;
-  - each package's `LICENSE`;
+  - everything under `bundles/` and `plugins/`: the manifests, each package's
+    `LICENSE`, the copied skills, and prose-discipline's hooks and `.mdc`
+    rule;
+  - the four catalogues, `.claude-plugin/marketplace.json`,
+    `.agents/plugins/marketplace.json`, `.omp-plugin/marketplace.json` and
+    `.cursor-plugin/marketplace.json`;
   - the README regions between `<!-- NAME:start -->` markers;
-  - `.claude-plugin/marketplace.json`;
-  - the rules region of `plugins/prose-discipline/skills/house-style/SKILL.md`.
+  - the rules region of
+    `src/prose-discipline/skills/house-style/SKILL.md`.
 
-  `tools/regenerate.sh` writes every one, and `conformance.yml` fails a copy
-  that differs. The records are the `docs/design.md` sections "One source for
-  every copy" and "The vendor manifest is a byte copy, not a symlink". The
-  section "One rules file, one documented route per client" records the rules
-  region. The `cmp` hook in `cog.toml` repeats the byte check, and its comment
-  says no workflow runs on the version commit. A copy edited by hand, or two
-  sources for one fact, is the defect. A generated copy is not.
+  `tools/build.sh` writes the builds and the catalogues, `tools/regenerate.sh`
+  writes the regions and runs the builder last, and `conformance.yml` fails a
+  copy that differs. The records are the `docs/design.md` sections "One source
+  for every copy" and "One rules file, one documented route per client", which
+  records the rules region. The `pre_package_bump_hooks` of `cog.toml` run the
+  builder, so the version commit carries the version in each copy. A copy
+  edited by hand, or two sources for one fact, is the defect. A generated copy
+  is not.
 - **The schema duplicates, the digest and the `$id` check.** The `$schema`
   check, the closed field set, `CANONICAL_SCHEMA_ID` and the `$id` comparison
   repeat what the vendored schema says. The records are
@@ -134,9 +138,9 @@ commit.
 - **Guards with the reason beside them.**
   - `within_limit` and the `ISSUE_LIMIT` comment in `tools/evals.py`;
   - `doctoc_install_is_stale` in `tools/regenerate.sh`;
-  - the `jq` install step and the 8000-byte step in `conformance.yml`;
-  - `print-rules.sh` exiting 0 on every failure, which `docs/design.md`, "No
-    hook blocks the agent", records as the package's stance.
+  - the `jq` install steps in `conformance.yml` and `release.yml`;
+  - the limits in `check_short_form` in `tools/build.sh`, each of which names
+    the failure it prevents.
 - **Overlapping fences.** Five checks judge the same packages, each as a
   different party would:
   - the conformance check, `tools/check-conformance.py`;

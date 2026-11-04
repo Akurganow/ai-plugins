@@ -15,8 +15,8 @@ words the check cannot read.
 > Does this text carry a fact a reader cannot get from the text or the code
 > beside it, in the same file?
 
-Ask it of every comment and name in the check, in `tools/regenerate.sh` and
-in `tools/evals.py`. Ask it of every step name in a workflow, every paragraph
+Ask it of every comment and name in the check, in `tools/regenerate.sh`,
+`tools/build.sh`, `tools/regions.sh` and in `tools/evals.py`. Ask it of every step name in a workflow, every paragraph
 of the README or a skill, and every manifest `description`. No fact left over
 is noise; a false fact is a lie. Judge the sentence, not the block: a
 paragraph that states a reason and adds one empty sentence is a reason, not a
@@ -73,18 +73,21 @@ Never a finding:
   runner instead of `claude plugin eval`. `conformance.md` argues the two
   checks that duplicate the schema. The workflow's comments say why a commit
   sha and not a tag. Other reviews read these as evidence.
-- **What a release writes.** `version` in `plugins/<name>/plugin.json` and
-  its `.claude-plugin/plugin.json` copy, and `plugins/<name>/CHANGELOG.md`,
-  are machine-written. `.github/workflows/release.yml` writes them, and
-  they are never judged here. Each copy is judged through its source, the
-  root `plugin.json`.
+- **What a release writes.** `version` in `src/<name>/source.json`, in every
+  manifest the builder writes from it under `bundles/<name>/` and
+  `plugins/<name>/`, and `src/<name>/CHANGELOG.md`, are machine-written.
+  `.github/workflows/release.yml` writes them, and they are never judged
+  here. Each manifest is judged through its source, `source.json`.
 - **A cited source and its date.** The per-fact source and its kind, a date
   and a tag beside a measurement. To an outside eye these read as hedging;
   each is a fact.
 - **A section number beside every claim about the specification.**
 - **The vendored schema.** `tools/schemas/` is a verbatim copy; its text
   belongs to its publisher.
-- **The instructions.** `.agents/**`. Read, never judged.
+- **The instructions.** `.agents/**`, except `.agents/plugins/`. Read, never
+  judged. `.agents/plugins/marketplace.json` is the Codex catalogue, a
+  generated copy and no instruction, so it is judged through its source like
+  the other three catalogues.
 
 ## The fence
 

@@ -3,6 +3,13 @@ All notable changes to this project will be documented in this file. See [conven
 
 - - -
 
+## prose-discipline--v2.2.0 - 2026-11-04
+#### Features
+- (**prose-discipline**) show a reference book as the listing icon (84e7ee8)
+
+- - -
+
+
 ## prose-discipline--v2.1.1 - 2026-11-04
 #### Bug Fixes
 - point every link at Akurganow/pegboard (2fb81f7)

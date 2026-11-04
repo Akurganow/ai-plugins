@@ -17,5 +17,5 @@
     "root-cause",
     "goldratt"
   ],
-  "logo": "assets/icon.png"
+  "logo": ".claude-plugin/icon.png"
 }

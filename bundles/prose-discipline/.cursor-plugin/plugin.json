@@ -17,5 +17,5 @@
     "conventional-comments",
     "commit-messages"
   ],
-  "logo": "assets/icon.png"
+  "logo": ".claude-plugin/icon.png"
 }

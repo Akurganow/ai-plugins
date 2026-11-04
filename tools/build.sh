@@ -128,19 +128,21 @@ build_bundle() {
   local from="src/$1/source.json" out="bundles/$1" skills=0 hooks=0
   [ -d "src/$1/skills" ] && skills=1
   [ "$1" = prose-discipline ] && hooks=1
-  mkdir -p "$out/.claude-plugin" "$out/.codex-plugin" "$out/.cursor-plugin" "$out/assets" ||
+  mkdir -p "$out/.claude-plugin" "$out/.codex-plugin" "$out/.cursor-plugin" ||
     die "cannot create $out"
   project "$from" "$out/.claude-plugin/plugin.json" \
-    '{name, version, description, author, homepage, repository, license, keywords, icon: "./assets/icon.png"}'
+    '{name, version, description, author, homepage, repository, license, keywords}'
   project "$from" "$out/.codex-plugin/plugin.json" \
     '{name, version, description, keywords,
-      interface: {composerIcon: "./assets/icon.png", logo: "./assets/icon.png"}}
+      interface: {composerIcon: "./.claude-plugin/icon.png", logo: "./.claude-plugin/icon.png"}}
      + (if $skills == "1" then {skills: "./skills/"} else {} end)
      + (if $hooks == "1" then {hooks: "./hooks/codex.json"} else {} end)' \
     --arg skills "$skills" --arg hooks "$hooks"
   project "$from" "$out/.cursor-plugin/plugin.json" \
-    '{name, description, version, author: {name: .author.name}, homepage, repository, license, keywords, logo: "assets/icon.png"}'
-  copy_into "$WORK/icons/$1.png" "$out/assets/icon.png"
+    '{name, description, version, author: {name: .author.name}, homepage, repository, license, keywords, logo: ".claude-plugin/icon.png"}'
+  # The directory finds the icon here without the `icon` field, which it
+  # reports as a field from another tool's manifest.
+  copy_into "$WORK/icons/$1.png" "$out/.claude-plugin/icon.png"
   copy_into "src/$1/README.md" "$out/README.md"
   copy_into LICENSE "$out/LICENSE"
   if [ "$skills" = 1 ]; then

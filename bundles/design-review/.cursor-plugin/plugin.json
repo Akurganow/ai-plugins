@@ -17,5 +17,5 @@
     "red-flags",
     "ousterhout"
   ],
-  "logo": "assets/icon.png"
+  "logo": ".claude-plugin/icon.png"
 }

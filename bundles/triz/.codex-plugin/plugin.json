@@ -13,8 +13,8 @@
     "problem-solving"
   ],
   "interface": {
-    "composerIcon": "./assets/icon.png",
-    "logo": "./assets/icon.png"
+    "composerIcon": "./.claude-plugin/icon.png",
+    "logo": "./.claude-plugin/icon.png"
   },
   "skills": "./skills/"
 }

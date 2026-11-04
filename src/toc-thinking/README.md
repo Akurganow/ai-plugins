@@ -14,7 +14,7 @@ Applies Goldratt's Thinking Processes to software: finds the core problem behind
 
 ```
 /plugin marketplace add Akurganow/ai-plugins
-/plugin install toc-thinking@ai-plugins
+/plugin install toc-thinking@pegboard
 ```
 
 Source: Claude Code documentation, <https://code.claude.com/docs/en/discover-plugins>. CI installs it on Ubuntu, macOS and Windows.
@@ -23,7 +23,7 @@ Source: Claude Code documentation, <https://code.claude.com/docs/en/discover-plu
 
 ```
 codex plugin marketplace add Akurganow/ai-plugins --ref main
-codex plugin add toc-thinking@ai-plugins
+codex plugin add toc-thinking@pegboard
 ```
 
 Source: Codex documentation, <https://developers.openai.com/plugins/build/plugins>, for `marketplace add`; Codex source, [`plugin_cmd.rs`](https://github.com/openai/codex/blob/e3e5ad28470f6a225301518c30a66e749a880164/codex-rs/cli/src/plugin_cmd.rs), for `plugin add`. CI installs it on Ubuntu, macOS and Windows.
@@ -32,7 +32,7 @@ Source: Codex documentation, <https://developers.openai.com/plugins/build/plugin
 
 ```
 omp plugin marketplace add Akurganow/ai-plugins
-omp plugin install toc-thinking@ai-plugins
+omp plugin install toc-thinking@pegboard
 ```
 
 Source: Oh-My-Pi documentation, [`docs/marketplace.md`](https://github.com/can1357/oh-my-pi/blob/a33cc26824e3c91edd9fa42d681f10dceb4ac2f0/docs/marketplace.md). CI installs it on Ubuntu, macOS and Windows.

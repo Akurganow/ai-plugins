@@ -36,7 +36,7 @@ permissions:
   contents: read
 
 env:
-  MARKETPLACE: ai-plugins
+  MARKETPLACE: pegboard
 
 jobs:
   matrix:

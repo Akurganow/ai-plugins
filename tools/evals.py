@@ -1123,27 +1123,34 @@ def _selftest_parsers() -> None:
             "message": {"content": [{"type": "tool_use", "name": "Bash", "input": {"command": "ls"}}]}}
     assert Claude("p", "s").parse([bash]).tools == ["Bash"]
 
-    codex = Codex("design-review", "red-flags").parse(events("codex"))
-    assert codex.fired and codex.error is None, codex
-    assert codex.answer.startswith("I\u2019ll use the design-review skill"), codex.answer
-    assert codex.answer.count("\n\n## Review") == 1 and len(codex.answer.split("\n\n")) >= 4, codex.answer
-    said = [{"type": "item.completed", "item": {"type": "agent_message", "text": "Draft"}},
-            {"type": "item.completed", "item": {"type": "agent_message", "text": "The draft is above."}},
-            {"type": "turn.completed", "usage": {}}]
-    assert Codex("p", "s").parse(said).answer == "Draft\n\nThe draft is above."
-    assert codex.tokens["input_tokens"] == 141929, codex.tokens
-    assert not Codex("triz", "red-flags").parse(events("codex")).fired
-    assert codex.loaded is None and len(codex.tools) == 3, codex
-    assert all(t.startswith("command ") for t in codex.tools), codex.tools
-    assert codex.tools[0].endswith("red-flags/SKILL.md'"), codex.tools[0]
-    retry = {"type": "error", "message": "Reconnecting... 1/5"}
-    assert Codex("design-review", "red-flags").parse([retry] + events("codex")).error is None
-    failed = {"type": "turn.failed", "error": {"message": "quota exceeded"}}
-    assert "quota exceeded" in Codex("design-review", "red-flags").parse(events("codex") + [failed]).error
-    only_retry = Codex("design-review", "red-flags").parse([{"type": "turn.started"}, retry])
-    assert only_retry.error == "no agent_message, last error: Reconnecting... 1/5", only_retry
-    interrupted = Codex("design-review", "red-flags").parse(events("codex")[:-1])
-    assert interrupted.error == "no turn.completed" and interrupted.answer, interrupted
+    # The Codex stream was recorded while the catalogue was named ai-plugins,
+    # and the cache path the parser matches carries that name.
+    global MARKETPLACE
+    current, MARKETPLACE = MARKETPLACE, "ai-plugins"
+    try:
+        codex = Codex("design-review", "red-flags").parse(events("codex"))
+        assert codex.fired and codex.error is None, codex
+        assert codex.answer.startswith("I\u2019ll use the design-review skill"), codex.answer
+        assert codex.answer.count("\n\n## Review") == 1 and len(codex.answer.split("\n\n")) >= 4, codex.answer
+        said = [{"type": "item.completed", "item": {"type": "agent_message", "text": "Draft"}},
+                {"type": "item.completed", "item": {"type": "agent_message", "text": "The draft is above."}},
+                {"type": "turn.completed", "usage": {}}]
+        assert Codex("p", "s").parse(said).answer == "Draft\n\nThe draft is above."
+        assert codex.tokens["input_tokens"] == 141929, codex.tokens
+        assert not Codex("triz", "red-flags").parse(events("codex")).fired
+        assert codex.loaded is None and len(codex.tools) == 3, codex
+        assert all(t.startswith("command ") for t in codex.tools), codex.tools
+        assert codex.tools[0].endswith("red-flags/SKILL.md'"), codex.tools[0]
+        retry = {"type": "error", "message": "Reconnecting... 1/5"}
+        assert Codex("design-review", "red-flags").parse([retry] + events("codex")).error is None
+        failed = {"type": "turn.failed", "error": {"message": "quota exceeded"}}
+        assert "quota exceeded" in Codex("design-review", "red-flags").parse(events("codex") + [failed]).error
+        only_retry = Codex("design-review", "red-flags").parse([{"type": "turn.started"}, retry])
+        assert only_retry.error == "no agent_message, last error: Reconnecting... 1/5", only_retry
+        interrupted = Codex("design-review", "red-flags").parse(events("codex")[:-1])
+        assert interrupted.error == "no turn.completed" and interrupted.answer, interrupted
+    finally:
+        MARKETPLACE = current
 
     omp = Omp("design-review", "red-flags").parse(events("omp"))
     assert omp.fired and omp.error is None, omp

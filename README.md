@@ -1,4 +1,4 @@
-# ai-plugins
+# pegboard
 
 Agent plugins for Claude Code, Codex, Cursor, Oh-My-Pi, Hermes, OpenClaw and
 Kiro. Each plugin has one hand-written source and two builds. The bundle in
@@ -36,7 +36,7 @@ installs the plugins into that client.
 
 ```
 /plugin marketplace add Akurganow/ai-plugins
-/plugin install <name>@ai-plugins
+/plugin install <name>@pegboard
 ```
 
 Source: Claude Code documentation, <https://code.claude.com/docs/en/discover-plugins>. CI installs it on Ubuntu, macOS and Windows.
@@ -45,7 +45,7 @@ Source: Claude Code documentation, <https://code.claude.com/docs/en/discover-plu
 
 ```
 codex plugin marketplace add Akurganow/ai-plugins --ref main
-codex plugin add <name>@ai-plugins
+codex plugin add <name>@pegboard
 ```
 
 Source: Codex documentation, <https://developers.openai.com/plugins/build/plugins>, for `marketplace add`; Codex source, [`plugin_cmd.rs`](https://github.com/openai/codex/blob/e3e5ad28470f6a225301518c30a66e749a880164/codex-rs/cli/src/plugin_cmd.rs), for `plugin add`. CI installs it on Ubuntu, macOS and Windows.
@@ -54,7 +54,7 @@ Source: Codex documentation, <https://developers.openai.com/plugins/build/plugin
 
 ```
 omp plugin marketplace add Akurganow/ai-plugins
-omp plugin install <name>@ai-plugins
+omp plugin install <name>@pegboard
 ```
 
 Source: Oh-My-Pi documentation, [`docs/marketplace.md`](https://github.com/can1357/oh-my-pi/blob/a33cc26824e3c91edd9fa42d681f10dceb4ac2f0/docs/marketplace.md). CI installs it on Ubuntu, macOS and Windows.
@@ -293,7 +293,7 @@ code. A link into a repository points at the commit at which the note holds.
   legacy-compatible marketplace. Source:
   [Build plugins](https://developers.openai.com/plugins/build/plugins),
   documentation, read 2026-09-25.
-- Codex identifies the marketplace by the catalogue's top-level `name`, `ai-plugins`.
+- Codex identifies the marketplace by the catalogue's top-level `name`, `pegboard`.
   Source: [Build plugins](https://developers.openai.com/plugins/build/plugins),
   documentation, read 2026-09-25.
 - `codex plugin marketplace add` takes no name argument. Source:

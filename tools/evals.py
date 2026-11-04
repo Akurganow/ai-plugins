@@ -6,7 +6,7 @@ CI runs this after a package release (`.github/workflows/evals.yml`). One
 package, near-miss prompts with it, then positive prompts without it. `grade`
 has Jev grade every positive answer against the skill's rubric, in a job that
 runs no client. `report` publishes each repeat to GitHub Container Registry
-(`ghcr.io/<owner>/ai-plugins-evals`) and files an issue when a metric
+(`ghcr.io/<owner>/pegboard-evals`) and files an issue when a metric
 regresses against the latest complete run.
 
 The runner is this repository's own. In Claude Code 2.1.293, `claude plugin
@@ -79,7 +79,7 @@ SECRET_VARS = ("ANTHROPIC_API_KEY", "CODEX_API_KEY", "OPENAI_API_KEY", "OPENROUT
 ISSUE_LIMIT = 500
 
 GHCR_URL = "https://ghcr.io"
-GHCR_PACKAGE = "ai-plugins-evals"
+GHCR_PACKAGE = "pegboard-evals"
 OCI_MANIFEST_TYPE = "application/vnd.oci.image.manifest.v1+json"
 OCI_CONFIG_TYPE = "application/vnd.oci.empty.v1+json"
 OCI_LAYER_TYPE = "application/vnd.ai-plugins.evals.run.v1+json"
@@ -756,7 +756,7 @@ def oci_tag(record: dict) -> str:
     return f"{record['tag']}_{record['skill']}_{record['client']}_{record['run']}_r{record['repeat']}"
 
 
-def push_record(owner: str, bearer: str, record: dict, created: str) -> None:
+def push_record(owner: str, bearer: str, record: dict, created: str, source: str) -> None:
     config = b"{}"
     layer = redact(json.dumps(record, indent=1)).encode()
     config_digest = push_blob(owner, bearer, config)
@@ -769,6 +769,10 @@ def push_record(owner: str, bearer: str, record: dict, created: str) -> None:
         "annotations": {
             "org.opencontainers.image.created": created,
             "org.opencontainers.image.version": record["tag"],
+            # A package whose first push names its repository inherits that
+            # repository's access, so the workflow's GITHUB_TOKEN may push to it
+            # (documentation: https://docs.github.com/en/packages/learn-github-packages/configuring-a-packages-access-control-and-visibility#about-inheritance-of-access-permissions).
+            "org.opencontainers.image.source": source,
         },
     }
     ghcr_request(f"/v2/{owner}/{GHCR_PACKAGE}/manifests/{oci_tag(record)}", method="PUT",
@@ -953,7 +957,8 @@ def cmd_report(args) -> int:
     created, label = run_stamp()
     run_id = os.environ.get("GITHUB_RUN_ID") or None
     bearer = None
-    run_url = f"{os.environ.get('GITHUB_SERVER_URL', 'https://github.com')}/{repo}/actions/runs/{os.environ.get('GITHUB_RUN_ID', '')}"
+    source = f"{os.environ.get('GITHUB_SERVER_URL', 'https://github.com')}/{repo}"
+    run_url = f"{source}/actions/runs/{os.environ.get('GITHUB_RUN_ID', '')}"
     summary = ["# Behavioural evals", "",
                "Each cell is the range over the repeats that gave a figure, so a repeat without one drops out. "
                "n is the sessions or graded answers behind it, "
@@ -976,7 +981,7 @@ def cmd_report(args) -> int:
         for r in runs:
             r["run"] = label
             r["run_id"] = run_id
-            push_record(owner, bearer, r, created)
+            push_record(owner, bearer, r, created, source)
         summary += report_tag(tag, package, runs, no_cases, previous, seen, run_url, repo, can_file)
     Path(os.environ.get("GITHUB_STEP_SUMMARY", "/dev/stdout")).write_text("\n".join(summary) + "\n")
     return 0
@@ -1490,7 +1495,7 @@ def _selftest_publish() -> None:
     lines = report(current, True, seen)
     assert len(filed) == 1 and fingerprint("p", "s", "claude") in filed[0][1], filed
     assert "Client version: 1.0 → 2.0" in filed[0][1], filed[0][1]
-    assert "https://github.com/o/r/pkgs/container/ai-plugins-evals" in filed[0][1], filed[0][1]
+    assert "https://github.com/o/r/pkgs/container/pegboard-evals" in filed[0][1], filed[0][1]
     row = next(line for line in lines if line.startswith("| s | claude |"))
     assert "regressed: trigger_hit" in row and "0.00–0.00 (n=1, 3 of 3 repeats)" in row, row
     assert "| `trigger_hit` | 1.00–1.00 (3 of 3 repeats) | 0.00–0.00 (3 of 3 repeats) |" in filed[0][1], filed[0][1]
@@ -1594,7 +1599,7 @@ def _selftest_gh() -> None:
                 if "/tags/list" in req.full_url:
                     return RegistryReply(b'{"tags": []}')
                 if req.full_url.endswith("/blobs/uploads/"):
-                    return RegistryReply(headers={"Location": "/v2/akurganow/ai-plugins-evals/blobs/uploads/u1"})
+                    return RegistryReply(headers={"Location": "/v2/akurganow/pegboard-evals/blobs/uploads/u1"})
                 return RegistryReply()
 
             real_open = urllib.request.urlopen
@@ -1603,17 +1608,18 @@ def _selftest_gh() -> None:
                 assert cmd_report(argparse.Namespace(tags="alpha--v0.2.0 alpha--v0.3.0", runs=str(runs_dir))) == 0
                 assert not [c for c in calls if c[:2] == ("release", "upload")], calls
                 urls = [p[1] for p in pushed]
-                assert urls.index("https://ghcr.io/v2/akurganow/ai-plugins-evals/tags/list") < next(
+                assert urls.index("https://ghcr.io/v2/akurganow/pegboard-evals/tags/list") < next(
                     i for i, u in enumerate(urls) if "/blobs/uploads/" in u), urls
                 manifests = [p for p in pushed if "/manifests/" in p[1]]
                 assert len(manifests) == 1, pushed
                 assert manifests[0][1].endswith(
-                    "/v2/akurganow/ai-plugins-evals/manifests/alpha--v0.3.0_s_claude_20261020T215300Za2_r1"), manifests[0][1]
+                    "/v2/akurganow/pegboard-evals/manifests/alpha--v0.3.0_s_claude_20261020T215300Za2_r1"), manifests[0][1]
                 manifest = json.loads(manifests[0][3])
                 assert manifest["mediaType"] == OCI_MANIFEST_TYPE and manifest["config"]["mediaType"] == OCI_CONFIG_TYPE
                 assert manifest["annotations"] == {
                     "org.opencontainers.image.created": "2026-10-20T21:53:00Z",
                     "org.opencontainers.image.version": "alpha--v0.3.0",
+                    "org.opencontainers.image.source": "https://github.com/Akurganow/pegboard",
                 }, manifest["annotations"]
                 blobs = {p[1].split("digest=")[1]: p[3] for p in pushed if "digest=" in p[1]}
                 layer_bytes = blobs[manifest["layers"][0]["digest"]]
@@ -1699,7 +1705,7 @@ def _selftest_registry() -> None:
             return Reply(b'{"token": "anon-tok"}')
         if url.endswith("/tags/list"):
             return Reply(json.dumps({"tags": pages[0]}).encode(),
-                         headers={"Link": '</v2/akurganow/ai-plugins-evals/tags/list?page=2>; rel="next"'})
+                         headers={"Link": '</v2/akurganow/pegboard-evals/tags/list?page=2>; rel="next"'})
         if "tags/list?page=2" in url:
             return Reply(json.dumps({"tags": pages[1]}).encode())
         if "/manifests/" in url:
@@ -1739,7 +1745,7 @@ def _selftest_registry() -> None:
     assert "`alpha--v0.2.10` (`20261010T000000Za1`)" in same_tag_body, same_tag_body
     assert "`alpha--v0.2.10` (`20261020T000000Za1`)" in same_tag_body, same_tag_body
     assert "| Metric | `alpha--v0.2.10` (`20261010T000000Za1`) | `alpha--v0.2.10` (`20261020T000000Za1`) |" in same_tag_body
-    assert "https://github.com/o/r/pkgs/container/ai-plugins-evals" in same_tag_body, same_tag_body
+    assert "https://github.com/o/r/pkgs/container/pegboard-evals" in same_tag_body, same_tag_body
 
 
 def _selftest_folders() -> None:

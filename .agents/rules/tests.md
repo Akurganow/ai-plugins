@@ -48,8 +48,8 @@ how a case behaved against real clients. `tools/evals.py` writes them
   `rubric_sha256`, `always_on`, `questions` and `sessions`. A session records
   `case`, `kind`, `arm`, `fired`, `answer`, `cost_usd`, `error` and `nouls`,
   Jev's score per question id.
-- **Comparable.** Two runs are comparable when both hashes are equal.
-  `compare` applies the same rule. A record measures the folder at the
+- **Comparable.** Two runs are comparable when both hashes are equal and
+  both recorded the same `model`. `compare` applies the same rule. A record measures the folder at the
   analysed commit when its hashes equal the `sha256` of `cases.yaml` and
   `rubric.yaml` there.
 - **The unit is the metric range over the three repeats** of one complete run

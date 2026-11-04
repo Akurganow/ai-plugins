@@ -427,7 +427,7 @@ howp is not measured here, because another repository builds, checks and release
 Each skill has ten positive and ten near-miss prompts in `evals/<package>/<skill>/cases.yaml`.
 The folder sits outside the packages, so no installed package carries the prompts.
 A positive prompt runs with the package and again without it, and a near-miss prompt runs with it.
-Each prompt runs three times in each of three clients: Claude Code with `sonnet`, Codex with `gpt-6-luna`, and Oh-My-Pi with `openrouter/z-ai/glm-5.3-flash`.
+Each prompt runs three times in each of three clients: Claude Code with `haiku`, Codex with `gpt-6-luna`, and Oh-My-Pi with `openrouter/z-ai/glm-5.3-flash`.
 The counts follow the Agent Skills guide on trigger tests.
 (documentation: [Optimizing descriptions](https://agentskills.io/skill-creation/optimizing-descriptions), read 2026-10-08)
 A skill may add five positive and five near-miss prompts in `held-out.yaml`.
@@ -510,6 +510,7 @@ Where no such run exists, nothing is compared.
 `release.yml` runs one release at a time, its evals included, so a release's records exist before the next release compares against them.
 A regression opens an issue.
 Two releases are compared only when their `cases.yaml` and their `rubric.yaml` are byte-identical.
+They are also compared only when both ran the same model, because a model change moves every metric.
 `held-out.yaml` is outside that comparison, so adding or changing it does not break the chain.
 Each run installs the client's latest release, so the issue shows both client versions.
 

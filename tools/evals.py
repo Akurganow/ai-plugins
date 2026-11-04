@@ -104,7 +104,7 @@ class Parsed:
 
 class Claude:
     name = "claude"
-    model = "sonnet"
+    model = "haiku"
 
     def __init__(self, package: str, skill: str):
         self.package, self.skill = package, skill
@@ -565,6 +565,9 @@ def compare(old_runs: list[dict], new_runs: list[dict]) -> dict:
     for field, label in (("cases_sha256", "cases"), ("rubric_sha256", "rubric")):
         if {r[field] for r in old_runs} != {r[field] for r in new_runs}:
             return {"comparable": False, "reason": f"not comparable: {label} changed"}
+    # A run without a recorded model says nothing about which model ran it.
+    if {r.get("model") for r in old_runs} - {None} != {r.get("model") for r in new_runs} - {None}:
+        return {"comparable": False, "reason": "not comparable: model changed"}
     found = {}
     for metric in METRICS:
         old = [v for r in old_runs if (v := metrics(r["sessions"], r.get("always_on", False))[metric]) is not None]
@@ -1184,7 +1187,7 @@ def _selftest_parsers() -> None:
     assert Codex("p", "s").command("q", "without")[-3:] == ["--disable", "plugins", "q"]
     assert Omp("p", "s").command("q", "without")[-3:] == ["--no-skills", "--no-rules", "q"]
     assert {k: (cls.name, cls.model, key) for k, (cls, key) in CLIENTS.items()} == {
-        "claude": ("claude", "sonnet", "ANTHROPIC_API_KEY"),
+        "claude": ("claude", "haiku", "ANTHROPIC_API_KEY"),
         "codex": ("codex", "gpt-6-luna", "CODEX_API_KEY"),
         "omp": ("omp", "openrouter/z-ai/glm-5.3-flash", "OPENROUTER_API_KEY"),
     }
@@ -1254,6 +1257,10 @@ def _selftest_core() -> None:
         "comparable": False, "reason": "not comparable: cases changed"}
     assert compare(old, [{"cases_sha256": "a", "rubric_sha256": "s", "sessions": sample}]) == {
         "comparable": False, "reason": "not comparable: rubric changed"}
+    assert compare([dict(old[0], model="a")], [dict(old[0], model="b")]) == {
+        "comparable": False, "reason": "not comparable: model changed"}
+    assert compare([dict(old[0], model="a")], [dict(old[0], model="a"), old[0]])["comparable"], \
+        "a repeat without a model is no change"
     assert compare(old, old) == {"comparable": True, "regressed": {}}
 
     def runs(sessions, count=REPEATS):

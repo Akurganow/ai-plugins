@@ -438,6 +438,10 @@ The same guide warns against adding keywords from failed queries to a descriptio
 Oh-My-Pi runs `z-ai/glm-5.3-flash`, because in Oh-My-Pi 18.8.6 it loaded `red-flags` in 3 of 3 sessions.
 `deepseek-v4-flash` loaded it in 1 of 3, and `gemini-3.1-flash-lite` in 0 of 3.
 (running: [run 37847660604](https://github.com/Akurganow/pegboard/actions/runs/37847660604), 2026-10-08)
+Claude Code runs `haiku`, so that every release can afford its run.
+On the same five release tags in Claude Code 2.1.318, `haiku` loaded the on-demand skills on 10–60% of positive prompts per repeat, and `sonnet` on 60–100%.
+So a Claude Code `improvement` mostly reflects how often a skill loads, and `sonnet` users see larger gains than the records show.
+(running: [haiku, run 41930852622](https://github.com/Akurganow/pegboard/actions/runs/41930852622) and [sonnet, run 41925911197](https://github.com/Akurganow/pegboard/actions/runs/41925911197), 2026-11-04)
 TypeSafe's Jev grades each positive answer against the yes-or-no questions in `rubric.yaml`.
 It is pinned to `jev-1.13.0`, because `jev-latest` moves to each new stable release and its answers can change with it.
 (documentation: [Models](https://docs.typesafe.ai/models.md), read 2026-10-08)

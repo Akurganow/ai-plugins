@@ -203,7 +203,7 @@ installed:
   if that skill is installed.
 - A trade-off between two measured qualities, load against performance
   or against flexibility, belongs to the `contradiction` skill of this
-  marketplace's `triz` package. It resolves the trade-off with the
+  marketplace's `triz-thinking` package. It resolves the trade-off with the
   contradiction matrix and hands a hard case to the `ariz` skill of the
   same package. Hand over only if the `contradiction` skill is installed.
 - Many complaints with one unclear cause belong to the `root-cause` skill

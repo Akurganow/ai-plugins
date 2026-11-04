@@ -126,7 +126,7 @@ the full text or nothing.
   places, belongs to the `red-flags` skill of
   [`design-review`](https://github.com/Akurganow/ai-plugins/tree/main/plugins/design-review). A trade-off between two
   measured qualities belongs to `contradiction` in
-  [`triz`](https://github.com/Akurganow/ai-plugins/tree/main/plugins/triz). Many complaints with one unclear cause
+  [`triz-thinking`](https://github.com/Akurganow/ai-plugins/tree/main/plugins/triz-thinking). Many complaints with one unclear cause
   belong to `root-cause` in [`toc-thinking`](https://github.com/Akurganow/ai-plugins/tree/main/plugins/toc-thinking).
   The skill hands over only to a skill that is installed.
 

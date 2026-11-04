@@ -22,9 +22,10 @@ contract_version: 3
 
 ## Fence
 
-- The conformance check (`python tools/check-conformance.py`), the evals runner selftest and folder check (`python tools/evals.py selftest`, `python tools/evals.py validate`), the regeneration diff (`bash tools/regenerate.sh`) and the size bound on plugins/prose-discipline/rules/prose-discipline.md run on every pull request and on pushes to main, in the `check` job: .github/workflows/conformance.yml
-- A pull request commit that touches plugins/ must be a conventional commit, in the `commits` job: .github/workflows/conformance.yml
-- The client validators `claude plugin validate`, `skills-ref validate`, `hermes plugins validate` and `hermes plugins doctor --ci` run on every pull request and on pushes to main: .github/workflows/conformance.yml
+- The conformance check (`python tools/check-conformance.py`), the evals runner selftest and folder check (`python tools/evals.py selftest`, `python tools/evals.py validate`), the regeneration diff (`bash tools/regenerate.sh`, which runs `tools/build.sh` and so its limits on the prose-discipline short form) run on every pull request and on pushes to main, in the `check` job: .github/workflows/conformance.yml
+- A pull request commit that touches src/, bundles/ or plugins/ must be a conventional commit, in the `commits` job: .github/workflows/conformance.yml
+- A pull request commit that changes src/, LICENSE, tools/build.sh or tools/regions.sh must carry the builds it produces: .github/workflows/conformance.yml
+- The client validators run on every pull request and on pushes to main: `claude plugin validate` on each bundles/<name> and on .claude-plugin/marketplace.json, and `skills-ref validate`, `hermes plugins validate` and `hermes plugins doctor --ci` on each plugins/<name>: .github/workflows/conformance.yml
 - Every package installs into Claude Code, Codex and Oh-My-Pi on Linux, macOS and Windows, and into Hermes on Linux and macOS, on every pull request and on pushes to main: .github/workflows/integration.yml
 - The fence does not run a skill against a model on a pull request. .github/workflows/evals.yml runs after a release or by hand.
 - The fence does not lint, type check or scan for unused code. A dead function in tools/ passes it.
@@ -43,23 +44,16 @@ contract_version: 3
 ## Not judged
 
 - .claude-plugin/marketplace.json
-- plugins/cognitive-load/.claude-plugin/plugin.json
-- plugins/design-review/.claude-plugin/plugin.json
-- plugins/howp/.claude-plugin/plugin.json
-- plugins/prose-discipline/.claude-plugin/plugin.json
-- plugins/toc-thinking/.claude-plugin/plugin.json
-- plugins/triz/.claude-plugin/plugin.json
-- plugins/cognitive-load/LICENSE
-- plugins/design-review/LICENSE
-- plugins/howp/LICENSE
-- plugins/prose-discipline/LICENSE
-- plugins/toc-thinking/LICENSE
-- plugins/triz/LICENSE
-- plugins/cognitive-load/CHANGELOG.md
-- plugins/design-review/CHANGELOG.md
-- plugins/prose-discipline/CHANGELOG.md
-- plugins/toc-thinking/CHANGELOG.md
-- plugins/triz/CHANGELOG.md
+- .agents/plugins/marketplace.json
+- .omp-plugin/marketplace.json
+- .cursor-plugin/marketplace.json
+- bundles
+- plugins
+- src/cognitive-load/CHANGELOG.md
+- src/design-review/CHANGELOG.md
+- src/prose-discipline/CHANGELOG.md
+- src/toc-thinking/CHANGELOG.md
+- src/triz/CHANGELOG.md
 - plugins/howp/binaries.json
 - plugins/howp/skills/forecast/references/commands.md
 - tools/schemas

@@ -1,0 +1,20 @@
+{
+  "name": "triz",
+  "version": "0.2.3",
+  "description": "Resolves software trade-offs with TRIZ: the contradiction matrix and 40 inventive principles, the separation principles, and ARIZ-85C walked part by part with the user.",
+  "keywords": [
+    "triz",
+    "contradiction-matrix",
+    "inventive-principles",
+    "ariz",
+    "ariz-85c",
+    "altshuller",
+    "trade-offs",
+    "problem-solving"
+  ],
+  "interface": {
+    "composerIcon": "./.claude-plugin/icon.png",
+    "logo": "./.claude-plugin/icon.png"
+  },
+  "skills": "./skills/"
+}

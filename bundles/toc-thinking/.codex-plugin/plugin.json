@@ -1,0 +1,19 @@
+{
+  "name": "toc-thinking",
+  "version": "0.2.1",
+  "description": "Applies Goldratt's Thinking Processes to software: finds the core problem behind many symptoms, resolves the conflict that sustains it, and plans the change.",
+  "keywords": [
+    "toc",
+    "theory-of-constraints",
+    "thinking-processes",
+    "current-reality-tree",
+    "evaporating-cloud",
+    "root-cause",
+    "goldratt"
+  ],
+  "interface": {
+    "composerIcon": "./.claude-plugin/icon.png",
+    "logo": "./.claude-plugin/icon.png"
+  },
+  "skills": "./skills/"
+}

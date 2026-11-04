@@ -1,6 +1,12 @@
 # cocogitto configuration (https://docs.cocogitto.io/reference/config).
-# Each package under plugins/ is released on its own, from the conventional
-# commits that touched its directory.
+# Each package under src/ is released on its own, from the conventional
+# commits that touched its source or its shipped builds. include counts
+# bundles/<name>/ and plugins/<name>/ beside the package path
+# (source: https://github.com/cocogitto/cocogitto/blob/055a9fa8db8ac8ce50074d50162b48b92e9d0c47/crates/cocogitto/src/settings/mod.rs#L367-L372),
+# so a commit that changes a package's builds releases it. Builds are counted
+# rather than the shared tools files: a builder change then releases only the
+# packages whose output it changes, and CI requires every commit to carry the
+# builds it produces.
 
 # Tags read <name>--v<version>, the form Claude Code documents for plugin
 # dependencies (https://code.claude.com/docs/en/plugins/dependencies).
@@ -14,14 +20,15 @@ ignore_merge_commits = true
 # Releases are cut from main only; a detached or other checkout refuses the bump.
 branch_whitelist = ["main"]
 
-# Runs in the package directory before the version commit. plugin.json and
-# .claude-plugin/plugin.json are one source and its byte-identical copy, so
-# both get the new version and must still be equal afterwards. No workflow
-# runs on the version commit, so this is its byte-identity check.
+# Runs in the package directory before the version commit. The jq line writes
+# the new version into source.json, and the build rewrites every manifest in
+# bundles/ and plugins/ from it, so the version commit carries the version in
+# each copy. The build reads every package, but a package whose source did not
+# change gets byte-identical output, so the version commit holds no change
+# for it.
 pre_package_bump_hooks = [
-  "jq --arg v '{{version}}' '.version = $v' plugin.json > plugin.json.next && mv plugin.json.next plugin.json",
-  "jq --arg v '{{version}}' '.version = $v' .claude-plugin/plugin.json > .claude-plugin/plugin.json.next && mv .claude-plugin/plugin.json.next .claude-plugin/plugin.json",
-  "cmp plugin.json .claude-plugin/plugin.json",
+  "jq --arg v '{{version}}' '.version = $v' source.json > source.json.next && mv source.json.next source.json",
+  "bash ../../tools/build.sh",
 ]
 
 # The package changelog template names no author and writes no HTML, unlike
@@ -32,10 +39,10 @@ pre_package_bump_hooks = [
 [changelog]
 package_template = "tools/templates/changelog.tera"
 
-# Each package writes its own CHANGELOG.md in its directory (the default).
+# Each package writes its own CHANGELOG.md in its directory, src/<name>/ (the default).
 [monorepo.packages]
-cognitive-load = { path = "plugins/cognitive-load" }
-design-review = { path = "plugins/design-review" }
-prose-discipline = { path = "plugins/prose-discipline" }
-toc-thinking = { path = "plugins/toc-thinking" }
-triz = { path = "plugins/triz" }
+cognitive-load = { path = "src/cognitive-load", include = ["bundles/cognitive-load/**", "plugins/cognitive-load/**"] }
+design-review = { path = "src/design-review", include = ["bundles/design-review/**", "plugins/design-review/**"] }
+prose-discipline = { path = "src/prose-discipline", include = ["bundles/prose-discipline/**", "plugins/prose-discipline/**"] }
+toc-thinking = { path = "src/toc-thinking", include = ["bundles/toc-thinking/**", "plugins/toc-thinking/**"] }
+triz = { path = "src/triz", include = ["bundles/triz/**", "plugins/triz/**"] }

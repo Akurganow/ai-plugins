@@ -59,7 +59,7 @@ how a case behaved against real clients. `tools/evals.py` writes them
 - **A per-prompt load count is a lead.** A prompt has three sessions per
   client, so its count can move from 0 of 3 to 3 of 3 with nothing changed.
 - **A claim that a test is unstable** needs three things. They are two
-  comparable releases, an empty `git diff` of `plugins/<package>/skills`
+  comparable releases, an empty `git diff` of `src/<package>/skills`
   between their tags, and equal `client_version`, `model` and `jev_model`.
   Otherwise the input that moved is the client or the model, and the runner
   installs the latest client by design (`docs/design.md`, same section). One

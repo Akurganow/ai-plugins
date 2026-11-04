@@ -1,11 +1,11 @@
 # What an agent working in this repository may do, and where it must stop.
 id: repository
 description: >-
-  Ordinary maintenance: the plugin packages, the conformance check and
-  regeneration script, the entry point and rule links, the root
-  documents, the workflows and release configuration. Narrow, because the
-  repository is small and public and its whole value is that its claims
-  hold.
+  Ordinary maintenance: the package sources and their builds, the
+  conformance check, the regeneration and build scripts, the entry point and
+  rule links, the root documents, the workflows and release configuration.
+  Narrow, because the repository is small and public and its whole value is
+  that its claims hold.
 
 capabilities:
   filesystem:
@@ -23,7 +23,11 @@ paths:
     - ".agents/**"
     - ".claude/rules"
     - ".claude-plugin/**"
+    - ".omp-plugin/**"
+    - ".cursor-plugin/**"
     - ".github/**"
+    - "src/**"
+    - "bundles/**"
     - "plugins/**"
     - "tools/**"
     - "docs/**"
@@ -51,5 +55,5 @@ paths:
 confirmations:
   requiredFor:
     - "publishing a release"
-    - "adding a package under `plugins/`"
+    - "adding a package under `src/`"
     - "changing the vendored specification schema"

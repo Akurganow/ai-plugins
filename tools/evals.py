@@ -43,7 +43,8 @@ from dataclasses import dataclass
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
-PLUGINS_DIR = REPO_ROOT / "plugins"
+# Skills are read from the hand-written source. Clients install the builds made from it.
+SOURCES_DIR = REPO_ROOT / "src"
 EVALS_DIR = REPO_ROOT / "evals"
 FIXTURES_DIR = REPO_ROOT / "tools" / "evals-fixtures"
 MARKETPLACE = json.loads((REPO_ROOT / ".claude-plugin" / "marketplace.json").read_text())["name"]
@@ -573,7 +574,7 @@ def compare(old_runs: list[dict], new_runs: list[dict]) -> dict:
 
 # A package without skills/ is valid (Agent Plugins 1.0.0 §6.2) and has nothing to measure.
 def skills_of(package: str) -> list[str]:
-    skills = PLUGINS_DIR / package / "skills"
+    skills = SOURCES_DIR / package / "skills"
     return sorted(p.name for p in skills.iterdir() if p.is_dir()) if skills.is_dir() else []
 
 
@@ -585,8 +586,8 @@ def package_of(tag: str) -> str:
     package, sep, version = tag.rpartition("--v")
     if not sep or not package or not version:
         raise SystemExit(f"{tag}: not a <package>--v<version> tag.")
-    if not (PLUGINS_DIR / package).is_dir():
-        raise SystemExit(f"{tag}: no package {package} under plugins/.")
+    if not (SOURCES_DIR / package).is_dir():
+        raise SystemExit(f"{tag}: no package {package} under src/.")
     return package
 
 
@@ -610,8 +611,8 @@ def matrix(tags: list[str], clients: list[str] | tuple = ()) -> dict:
 # `load` is a parameter so that the selftest runs without PyYAML.
 def check_folder(folder: Path, load=load_cases) -> str | None:
     package, skill = folder.parent.name, folder.name
-    if not (PLUGINS_DIR / package / "skills" / skill / "SKILL.md").is_file():
-        return f"evals/{package}/{skill}: no plugins/{package}/skills/{skill}/SKILL.md."
+    if not (SOURCES_DIR / package / "skills" / skill / "SKILL.md").is_file():
+        return f"evals/{package}/{skill}: no src/{package}/skills/{skill}/SKILL.md."
     try:
         load(folder)
     except SystemExit as e:
@@ -1187,21 +1188,21 @@ def _expect_error(call, *needles: str) -> None:
 
 @contextlib.contextmanager
 def _fixture_tree(specs: dict[str, list[str]]):
-    global PLUGINS_DIR, EVALS_DIR
-    real_plugins, real_evals = PLUGINS_DIR, EVALS_DIR
+    global SOURCES_DIR, EVALS_DIR
+    real_sources, real_evals = SOURCES_DIR, EVALS_DIR
     with tempfile.TemporaryDirectory() as tmp:
         root = Path(tmp)
-        PLUGINS_DIR, EVALS_DIR = root / "plugins", root / "evals"
+        SOURCES_DIR, EVALS_DIR = root / "src", root / "evals"
         try:
             for pkg, skills in specs.items():
-                (PLUGINS_DIR / pkg).mkdir(parents=True, exist_ok=True)
+                (SOURCES_DIR / pkg).mkdir(parents=True, exist_ok=True)
                 for skill in skills:
-                    (PLUGINS_DIR / pkg / "skills" / skill).mkdir(parents=True, exist_ok=True)
-                    (PLUGINS_DIR / pkg / "skills" / skill / "SKILL.md").write_text("")
+                    (SOURCES_DIR / pkg / "skills" / skill).mkdir(parents=True, exist_ok=True)
+                    (SOURCES_DIR / pkg / "skills" / skill / "SKILL.md").write_text("")
                     (EVALS_DIR / pkg / skill).mkdir(parents=True, exist_ok=True)
             yield root
         finally:
-            PLUGINS_DIR, EVALS_DIR = real_plugins, real_evals
+            SOURCES_DIR, EVALS_DIR = real_sources, real_evals
 
 
 def _selftest_core() -> None:
@@ -1616,7 +1617,7 @@ def _selftest_gh() -> None:
                 summary = (workdir / "summary.md").read_text()
                 assert "## `alpha--v0.2.0`\n\nNo run reported, so nothing was uploaded." in summary, summary
 
-                (PLUGINS_DIR / "nocases" / "skills" / "s").mkdir(parents=True)
+                (SOURCES_DIR / "nocases" / "skills" / "s").mkdir(parents=True)
                 cmd_report(argparse.Namespace(tags="nocases--v1.0.0", runs=str(runs_dir)))
                 summary = (workdir / "summary.md").read_text()
                 assert "No run reported, so nothing was uploaded.\n\nNo cases: s" in summary, summary
@@ -1747,7 +1748,7 @@ def _selftest_folders() -> None:
         assert check_folder(Path("evals/alpha/s"), load=loaded.append) is None and loaded == [Path("evals/alpha/s")]
         loaded.clear()
         assert check_folder(Path("evals/alpha/gone"), load=loaded.append) == (
-            "evals/alpha/gone: no plugins/alpha/skills/gone/SKILL.md.") and not loaded
+            "evals/alpha/gone: no src/alpha/skills/gone/SKILL.md.") and not loaded
 
         def refuse(folder):
             raise SystemExit("evals/alpha/s/cases.yaml: case ids repeat.")

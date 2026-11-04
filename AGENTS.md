@@ -6,9 +6,14 @@ file and that file disagree, that file is right and this one is stale.
 
 ## What this repository is
 
-A public marketplace of Agent Plugins 1.0.0 packages. `README.md` owns what it
-publishes and which clients it claims, `plugins/` holds the packages, and
-`.claude-plugin/marketplace.json` is the catalogue index.
+A public marketplace of agent plugins. `README.md` owns what it publishes and
+which clients it claims. `src/<name>/` holds each package's hand-written source,
+and no client reads it. `tools/build.sh` writes two committed builds from it:
+`bundles/<name>/`, one tree with a manifest folder per client, and
+`plugins/<name>/`, an Agent Plugins 1.0.0 package. It also writes four
+catalogues, which index the bundles. Everything under `bundles/` and
+`plugins/` and every catalogue is a generated copy of `src/`.
+`.agents/rules/conformance.md` owns the layout.
 
 ## Read these before changing anything
 
@@ -20,7 +25,7 @@ rule bears on every change.
 | :-- | :-- |
 | `agent-plugins-review.md` | the sources of record for the marketplace's claims and the agent configuration |
 | `claims.md` | what a sentence about a client may rest on, and that it cites where it was read |
-| `conformance.md` | the check, what the check is allowed to be, package shape, versions |
+| `conformance.md` | the check, what the check is allowed to be, source and builds, package shape, versions |
 | `design-vocabulary.md` | the words for a design objection, and the shapes in this tree that already answer one |
 | `slop.md` | what generator residue looks like here, and what is protected from that judgement |
 | `tests.md` | what counts as a test here, how to read the evals records, and which protections are not findings |

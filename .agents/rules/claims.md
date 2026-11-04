@@ -37,8 +37,9 @@ act on, and the standing rule is that a claim names where it was read.
   that restates a property of the current build is not corrected at the next
   release — nothing in the release path can correct it — so it is not written
   that way. `.github/workflows/release.yml` rewrites `version` in
-  `plugin.json` and in its `.claude-plugin/plugin.json` copy, and
-  `CHANGELOG.md`, and no other file. Every other sentence about what ships
+  `src/<name>/source.json` and `src/<name>/CHANGELOG.md`, and runs the
+  builder, which copies the version into every manifest of both builds. It
+  writes no other hand-written file. Every other sentence about what ships
   stays exactly as it was, and a reader cannot tell a fresh one from one
   the last release falsified.
 

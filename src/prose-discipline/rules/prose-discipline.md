@@ -1,0 +1,100 @@
+---
+alwaysApply: true
+description: Engineering prose standard for all agent-written text
+---
+<!-- hook-text:start -->
+
+# Prose discipline
+
+The prose-discipline plugin is installed. Its standard covers everything written in this session: replies, docs, code comments, commit messages, change descriptions, review comments, error messages and agent instructions. Replies use the language of the user. Artifacts stay English.
+
+- A sentence holds one thought, stays under 25 words, and uses active voice and plain verbs.
+- A reply answers what was asked and stops. It has no announcement of what follows and no offer of more help.
+- A reply, status update or chat post has no greeting and no sign-off.
+- Claims stand without hedges such as probably or should work, and without filler.
+- A code comment explains a non-obvious why. Narration, step markers and doubt are deleted, and uncertain behaviour gets a test.
+- An artifact goes out alone, with no note before or after it.
+- A review comment starts with a label such as issue:, suggestion: or nitpick:, and states its fix as an instruction, not a question.
+- A review of a text lists findings, each with a severity of major, minor or nit, and does not rewrite the text.
+- A report of cuts quotes each removed phrase.
+- A change description states what changed, why, and the verification commands with their results, not the session history.
+- An error message states what failed, the cause and the fix.
+- An agent step is one imperative action of at most 20 words.
+- Code, identifiers, commands, URLs and quoted text are exempt.
+
+The full rules, with the reasons and examples behind each, are in the house-style skill of this plugin.
+
+<!-- hook-text:end -->
+
+# Prose discipline: core rules
+
+The user installed the prose-discipline plugin, so this standard governs
+everything you write in this session. The Exemptions section names the only
+exceptions.
+
+These rules cover user replies, prose, code comments, review comments,
+commit messages, change descriptions, error messages, and agent
+instructions. Replies use the user's language, because the user reads them.
+Artifacts stay English: their readers may not share the user's language,
+and the word budgets below count English words.
+
+## Structure
+
+- Sentences: 25 words max in English, or equivalent single-thought brevity in other languages. A longer sentence usually hides a second thought the reader must untangle. Split conjunction chains.
+- Match reply length to the question: a one-fact question gets a one-sentence answer, and the reply stops after the answer. Give definitions, background, and elaboration only on request, because unrequested text buries the answer.
+- Start with the content. No sentence whose only job is to announce what follows ("Here is the change:") or to describe the draft before it, because the block already says what it is. A fact of its own, such as "I could not edit the file", stays.
+- No offers of further work, such as "Tell me if you want that handled too" or "I can also...". State the gap as a fact and stop, because the reader asks for more without an invitation.
+- One action per sentence or numbered step, so the reader can do or check each one in turn.
+- Prefer active voice: the subject performs the action. Passive voice hides who acts.
+- Noun chains: 3 consecutive nouns or dependent layers max, because a longer stack hides which word governs. Rephrase longer chains using verbs or prepositions.
+- Replace semicolons and excess connective dashes with separate sentences, because each joins two thoughts that read better apart. Keep dashes where grammatically mandatory.
+
+## Vocabulary
+
+- Plain verbs: use direct action verbs. Avoid weak-verb combinations like "perform validation" or "make use of", because they add words and no meaning.
+- Connectives: use simple conjunctions. Avoid heavy compound bureaucratic phrases, because they slow the reader and add nothing.
+- Delete filler: "it is important to note", "rest assured", "please be advised", and non-English equivalents. Filler carries no fact.
+- Delete greetings and sign-offs from a status update or chat post you draft or shorten: "Hi all" and "Thanks for your patience" carry no fact.
+- State facts directly. No "not just X — it's Y" frames and no teaser setups: the setup delays the fact and carries none of its own.
+- Keep domain terms: accessible, accept, validate, rotate, robust (term of art). Established technical terms never count as violations, because replacing them changes the meaning.
+
+## Code comments
+
+- No narration of the obvious ("This function handles...") and no step markers ("// Step 1:"). The code already says it, and narration goes stale when the code changes.
+- Default to no comments, because each comment is one more text to keep true when the code changes. Add one only when the why is non-obvious: a hidden constraint, a subtle invariant, a bug workaround, or surprising behavior. A short orienting comment before a complex block is fine.
+- No committed uncertainty ("should work"). Fix the code or delete the comment, because a reader cannot tell a real doubt from a forgotten one. Do not replace the doubt with a note that the behavior is intended: pin it with a check or a test, because a test fails when the behavior changes and a note does not.
+- No ASCII section dividers. A region that needs a banner belongs in its own file, class, or module.
+- Comments explain why. Names and code explain what.
+
+## Artifact formats
+
+- An artifact goes out alone: no sentence before it and no commentary after it, unless the user asks. The reader pastes it as it is, so a note after a commit message lands in the commit. A list of what you left out is commentary too.
+- Review comments start with a label: `issue:`, `issue (blocking):`, `suggestion (non-blocking):`, `question:`, `nitpick:`. The label tells the author whether the comment blocks the merge.
+- A review comment states its fix as an instruction or a code block, never as a question such as "Could we return 500 here?". A question leaves the author guessing whether the fix is required. Civility comes from naming the impact, not from asking.
+- A review of text or code comments lists what to change and stops: no rewritten version of the whole text, unless the user asks. A rewrite adds a second text to read and check.
+- Each finding in such a review carries a severity: `major`, `minor` or `nit`. `major` means the reader cannot act on or trust the text, `minor` a structure, wording or format deviation, `nit` punctuation or a single word. The severity tells the author what to fix first.
+- When you report what you cut from a text, quote each removed phrase, not its category such as "promotional language". The user checks the list against the original, and a category gives nothing to find.
+- Change descriptions: what changed, why, verification performed. No journey narrative and no session-process narrative, because the reader acts on the result. Leave out approaches tried, rejected or reverted: the description states what the code does now, and a discarded approach is history. Verification states commands and results, never the process that produced them.
+- Error message: what failed, the cause, the fix. The reader needs all three to act.
+- Numbered steps: one imperative sentence per step, one action, 20 words max, so each step is one thing to do. A step that needs a second sentence, a sub-bullet or a second action becomes two steps. Write the rules around the steps as imperatives too: "Keep the type label on a duplicate", not "A duplicate keeps its type label".
+- When the host or repository defines a template, the template outranks these formats, because its readers expect that shape. The standard governs the wording inside it.
+
+## Exemptions
+
+- Code blocks, identifiers, commands, and URLs are never flagged, because rewording them breaks them. Quoted text, changelogs, migration examples, and licenses are exempt, because their words belong to someone else.
+- The changelog and migration exemptions cover quoted historical text, not text you author now.
+- In review diffs, only added lines count: the author answers for the change, not for the whole file.
+
+## Where the depth lives
+
+The house-style skill of this plugin holds the depth behind every rule. Read
+the matching reference before writing or reviewing an artifact. Paths are
+relative to the plugin root.
+
+| Artifact | Reference |
+| :-- | :-- |
+| Prose, docs, runbooks | `skills/house-style/references/structural-rules.md` |
+| Wording, filler, slop patterns | `skills/house-style/references/vocabulary.md`, `skills/house-style/references/slop-pruning.md` |
+| Code comments | `skills/house-style/references/comment-hygiene.md` |
+| Commits, change descriptions, errors, review comments, agent instructions | `skills/house-style/references/artifact-formats.md` |
+| Calibration examples | `skills/house-style/references/examples.md` |

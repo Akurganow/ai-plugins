@@ -15,7 +15,7 @@ than asserted.
 
 - A job of `.github/workflows/conformance.yml` fails. `check` runs
   `tools/check-conformance.py`, the selftest and folder check of
-  `tools/evals.py`, the regeneration diff and the size bound.
+  `tools/evals.py`, and the regeneration diff.
   `commits` checks a pull request's commits. `validate-claude`,
   `validate-skills` and `validate-hermes` run the client validators.
 - A claim about a client is stated without naming where it was read.

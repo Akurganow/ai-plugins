@@ -18,10 +18,5 @@
     "onboarding",
     "sweller",
     "zakirullin"
-  ],
-  "extensions": {
-    "io.github.akurganow.ai-plugins": {
-      "category": "Developer Tools"
-    }
-  }
+  ]
 }

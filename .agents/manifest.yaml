@@ -7,10 +7,10 @@ specVersion: "1.0.0"
 project:
   name: ai-plugins
   description: >-
-    A public marketplace of agent plugins. Every package under `plugins/` is
-    an Agent Plugins 1.0.0 package, and the repository's job is that a client
-    implementing the specification can install one without knowing anything
-    about this repository.
+    A public marketplace of agent plugins. Every package under `plugins/`,
+    built from `src/`, is an Agent Plugins 1.0.0 package, and the
+    repository's job is that a client implementing the specification can
+    install one without knowing anything about this repository.
 
 defaults:
   mode: maintainer

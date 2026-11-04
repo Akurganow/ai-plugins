@@ -18,13 +18,5 @@
     "code-review",
     "conventional-comments",
     "commit-messages"
-  ],
-  "extensions": {
-    "com.openai": {
-      "hooks": "./hooks/hooks.json"
-    },
-    "io.github.akurganow.ai-plugins": {
-      "category": "Productivity"
-    }
-  }
+  ]
 }

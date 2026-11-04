@@ -1,0 +1,16 @@
+{
+  "name": "prose-discipline",
+  "version": "2.0.3",
+  "description": "An engineering prose standard for agent-written text: short active sentences, plain words, comments that explain why, and labelled review comments.",
+  "keywords": [
+    "prose",
+    "writing",
+    "style-guide",
+    "anti-slop",
+    "code-review",
+    "conventional-comments",
+    "commit-messages"
+  ],
+  "skills": "./skills/",
+  "hooks": "./hooks/codex.json"
+}

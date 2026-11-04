@@ -1,0 +1,65 @@
+{
+  "name": "ai-plugins",
+  "plugins": [
+    {
+      "name": "cognitive-load",
+      "source": {
+        "source": "local",
+        "path": "./bundles/cognitive-load"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools"
+    },
+    {
+      "name": "design-review",
+      "source": {
+        "source": "local",
+        "path": "./bundles/design-review"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools"
+    },
+    {
+      "name": "prose-discipline",
+      "source": {
+        "source": "local",
+        "path": "./bundles/prose-discipline"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    },
+    {
+      "name": "toc-thinking",
+      "source": {
+        "source": "local",
+        "path": "./bundles/toc-thinking"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools"
+    },
+    {
+      "name": "triz",
+      "source": {
+        "source": "local",
+        "path": "./bundles/triz"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools"
+    }
+  ]
+}

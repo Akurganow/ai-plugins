@@ -18,10 +18,5 @@
     "information-hiding",
     "red-flags",
     "ousterhout"
-  ],
-  "extensions": {
-    "io.github.akurganow.ai-plugins": {
-      "category": "Developer Tools"
-    }
-  }
+  ]
 }

@@ -18,10 +18,5 @@
     "evaporating-cloud",
     "root-cause",
     "goldratt"
-  ],
-  "extensions": {
-    "io.github.akurganow.ai-plugins": {
-      "category": "Developer Tools"
-    }
-  }
+  ]
 }

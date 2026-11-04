@@ -56,6 +56,10 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 PLUGINS_DIR = REPO_ROOT / "plugins"
+SOURCE_DIR = REPO_ROOT / "src"
+# Directories of generated output. Neither may hold a symlink.
+BUILD_DIRS = (REPO_ROOT / "bundles", PLUGINS_DIR)
+SOURCE_SCHEMA_PATH = REPO_ROOT / "tools/source.schema.json"
 SCHEMA_PATH = REPO_ROOT / "tools/schemas/agent-plugins/1.0.0/plugin.schema.json"
 
 # Agent Plugins 1.0.0 §5.2: for this version the value of `$schema` MUST be
@@ -204,7 +208,7 @@ def check_manifest(plugin_root: Path, validator) -> dict | None:
         fail(where, "no plugin.json at the plugin root (§4.1, §5.1)")
         return None
     # A loader reality and a repository rule, not a spec rule: the root
-    # manifest is the real file, never a link. Vendor copies are made from it.
+    # manifest is the real file, never a link.
     # Codex's loader refuses a symlinked root manifest outright --
     # find_plugin_manifest_path() calls symlink_metadata() and returns None
     # for a symlink, pinned by rejects_symlinked_root_plugin_manifest. From
@@ -382,52 +386,69 @@ def check_containment(plugin_root: Path) -> None:
                 )
 
 
-def check_vendor_manifest_copies(plugin_root: Path) -> None:
-    """Repository rule: a vendor path holds a byte-identical copy of the manifest.
+def check_sources(source_dir: Path) -> None:
+    """Every `src/<folder>/source.json` parses, fits its schema, and is named for its folder.
 
-    Written by hand because it enforces what a JSON Schema cannot express: a
-    schema cannot compare two files.
-
-    §5.1: "No other file can replace, supplement, or override the core fields
-    in root `plugin.json`." A copy equal to it byte for byte overrides
-    nothing, and `tools/regenerate.sh` writes it. It is a copy and not a
-    symlink for two reasons. Git for Windows checks a symlink out as a text
-    file holding its path unless symlinks are enabled. Claude Code documents
-    one manifest location, `.claude-plugin/plugin.json`, and fails that text
-    as a corrupt manifest.
-
-    Sources, all documentation:
-    - Git for Windows, for symlinks being off unless enabled:
-      https://gitforwindows.org/symbolic-links
-    - the git manual, `core.symlinks`, for a symlink checked out as a text
-      file:
-      https://github.com/git/git/blob/c44beea485f0f2feaf460e2ac87fdd5608d63cf0/Documentation/config/core.adoc#L237-L246
-    - Claude Code, for the manifest location and the corrupt-manifest error:
-      https://code.claude.com/docs/en/plugins-reference
+    Written by hand for the second reason in the carve-out, turning a schema
+    rejection into a line somebody can act on: the schema reports a field, never
+    the file it came from. The name rule is the first reason, because a JSON
+    Schema cannot compare a field with the directory that holds the file. The
+    failure it prevents is a catalogue listing `./bundles/<folder>` while the
+    manifest built there installs under another name. This is the only place
+    that rule is checked. `tools/source.schema.json` is this repository's own
+    file, so it is loaded without a digest.
     """
-    root_manifest = plugin_root / "plugin.json"
-    # A missing, symlinked or non-regular root manifest: check_manifest
-    # already reported it.
-    if root_manifest.is_symlink() or not root_manifest.is_file():
-        return
-    expected = root_manifest.read_bytes()
-    root_rel = root_manifest.relative_to(REPO_ROOT)
-    for dirpath, _dirnames, filenames in os.walk(plugin_root):
-        if Path(dirpath) == plugin_root or "plugin.json" not in filenames:
+    import jsonschema
+
+    validator = jsonschema.Draft202012Validator(
+        json.loads(SOURCE_SCHEMA_PATH.read_text(encoding="utf-8"))
+    )
+    for folder in sorted(p for p in source_dir.iterdir() if p.is_dir() and not p.name.startswith(".")):
+        where = str(folder.relative_to(REPO_ROOT) / "source.json")
+        path = folder / "source.json"
+        if not path.is_file():
+            fail(where, "no source.json in the source folder")
             continue
-        path = Path(dirpath) / "plugin.json"
-        rel = path.relative_to(REPO_ROOT)
-        if path.is_symlink():
-            fail(
-                str(rel),
-                f"is a symlink; it must be a byte-identical copy of {root_rel}; "
-                "run `bash tools/regenerate.sh` and commit the result",
-            )
-        elif path.read_bytes() != expected:
-            fail(
-                str(rel),
-                f"differs from {root_rel}; run `bash tools/regenerate.sh` and commit the result",
-            )
+        try:
+            source = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, UnicodeError, json.JSONDecodeError) as exc:
+            fail(where, f"does not parse: {exc}")
+            continue
+        for error in sorted(validator.iter_errors(source), key=lambda e: list(e.path)):
+            location = ".".join(str(p) for p in error.path) or "(root)"
+            fail(where, f"fails tools/source.schema.json at {location}: {error.message}")
+        if isinstance(source, dict) and source.get("name") != folder.name:
+            fail(where, f"name is {source.get('name')!r}, must equal the folder name {folder.name!r}")
+
+
+def check_no_symlinks(root: Path) -> None:
+    """Nothing under a generated directory is a symlink.
+
+    Written by hand for the first reason in the carve-out: a JSON Schema
+    cannot see the filesystem. A symlink in a plugin root fails Codex's
+    plugin fingerprint, and Git for Windows checks any symlink out as a plain
+    file holding the link text unless symlinks are enabled. A generated tree
+    holds copies, so a link there is a build that did not copy.
+
+    Sources:
+    - Codex, source, for the fingerprint refusing an entry that is neither a
+      file nor a directory, and the installer copying only those two kinds:
+      https://github.com/openai/codex/blob/6ff1e1ca3b30fc8b914720681fcf5fe62e95f856/codex-rs/hooks/src/engine/plugin_fingerprint.rs#L83-L87
+      https://github.com/openai/codex/blob/6ff1e1ca3b30fc8b914720681fcf5fe62e95f856/codex-rs/core-plugins/src/store.rs#L737-L760
+    - Git for Windows, documentation: https://gitforwindows.org/symbolic-links
+    - the git manual, `core.symlinks`, documentation:
+      https://github.com/git/git/blob/c44beea485f0f2feaf460e2ac87fdd5608d63cf0/Documentation/config/core.adoc#L237-L246
+    """
+    if root.is_symlink():
+        fail(str(root.relative_to(REPO_ROOT)), "is a symlink; generated directories hold real files")
+        return
+    # os.walk does not follow links, so a directory link is listed in
+    # `dirnames` and never entered.
+    for dirpath, dirnames, filenames in os.walk(root):
+        for entry in dirnames + filenames:
+            path = Path(dirpath) / entry
+            if path.is_symlink():
+                fail(str(path.relative_to(REPO_ROOT)), "is a symlink; generated trees hold real files")
 
 
 def report() -> int:
@@ -442,9 +463,19 @@ def report() -> int:
 def main() -> int:
     validator = load_schema_validator()
 
+    # A tree with no packages has no src/ or bundles/, and that is a valid
+    # tree, so each check below runs only on a directory that exists.
+    if SOURCE_DIR.is_dir():
+        check_sources(SOURCE_DIR)
+    for build_dir in BUILD_DIRS:
+        if build_dir.is_dir():
+            check_no_symlinks(build_dir)
+
     if not PLUGINS_DIR.is_dir():
-        print("no plugins/ directory, nothing to check")
-        return 0
+        exit_code = report()
+        if exit_code == 0:
+            print("no plugins/ directory, nothing to check")
+        return exit_code
 
     manifests: dict[str, dict] = {}
     plugin_roots = sorted(p for p in PLUGINS_DIR.iterdir() if p.is_dir())
@@ -454,7 +485,6 @@ def main() -> int:
             manifests[str(plugin_root.relative_to(REPO_ROOT))] = manifest
         check_skills(plugin_root)
         check_containment(plugin_root)
-        check_vendor_manifest_copies(plugin_root)
 
     exit_code = report()
     if exit_code == 0:

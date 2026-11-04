@@ -1,0 +1,20 @@
+{
+  "name": "prose-discipline",
+  "description": "An engineering prose standard for agent-written text: short active sentences, plain words, comments that explain why, and labelled review comments.",
+  "version": "2.0.3",
+  "author": {
+    "name": "Alexander Kurganov"
+  },
+  "homepage": "https://github.com/Akurganow/ai-plugins/tree/main/plugins/prose-discipline",
+  "repository": "https://github.com/Akurganow/ai-plugins",
+  "license": "MIT",
+  "keywords": [
+    "prose",
+    "writing",
+    "style-guide",
+    "anti-slop",
+    "code-review",
+    "conventional-comments",
+    "commit-messages"
+  ]
+}

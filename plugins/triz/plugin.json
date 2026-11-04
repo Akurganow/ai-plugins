@@ -19,10 +19,5 @@
     "altshuller",
     "trade-offs",
     "problem-solving"
-  ],
-  "extensions": {
-    "io.github.akurganow.ai-plugins": {
-      "category": "Developer Tools"
-    }
-  }
+  ]
 }

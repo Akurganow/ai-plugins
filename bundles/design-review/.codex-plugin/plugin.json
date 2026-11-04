@@ -1,0 +1,15 @@
+{
+  "name": "design-review",
+  "version": "0.2.3",
+  "description": "Reviews a software design for complexity with the red flags and principles of Ousterhout's A Philosophy of Software Design, each finding cited by chapter.",
+  "keywords": [
+    "design-review",
+    "software-design",
+    "complexity",
+    "deep-modules",
+    "information-hiding",
+    "red-flags",
+    "ousterhout"
+  ],
+  "skills": "./skills/"
+}

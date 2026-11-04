@@ -1,0 +1,21 @@
+{
+  "name": "triz",
+  "description": "Resolves software trade-offs with TRIZ: the contradiction matrix and 40 inventive principles, the separation principles, and ARIZ-85C walked part by part with the user.",
+  "version": "0.2.3",
+  "author": {
+    "name": "Alexander Kurganov"
+  },
+  "homepage": "https://github.com/Akurganow/ai-plugins/tree/main/plugins/triz",
+  "repository": "https://github.com/Akurganow/ai-plugins",
+  "license": "MIT",
+  "keywords": [
+    "triz",
+    "contradiction-matrix",
+    "inventive-principles",
+    "ariz",
+    "ariz-85c",
+    "altshuller",
+    "trade-offs",
+    "problem-solving"
+  ]
+}

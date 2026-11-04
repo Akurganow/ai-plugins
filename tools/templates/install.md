@@ -60,3 +60,11 @@ Source: OpenClaw documentation, [`docs/cli/plugins/install.md`](https://github.c
 No install command is given. Kiro's documentation says Powers follow the Agent Plugins specification, and `plugins/{{name}}/plugin.json` carries every field the documentation requires. The documentation does not say how Kiro finds several packages in one repository. CI does not install it.
 
 Source: Kiro documentation, [Create a power](https://kiro.dev/docs/powers/create) and [Installation](https://kiro.dev/docs/powers/installation), read 2026-11-04.
+
+### If you added the marketplace as `ai-plugins`
+
+This marketplace was named `ai-plugins` before it was named `pegboard`. An install from that time keeps the old name, so remove it and install again with the commands above.
+
+- Claude Code: `claude plugin marketplace remove ai-plugins` removes the marketplace and uninstalls its plugins. Source: Claude Code documentation, [Plugin marketplaces](https://code.claude.com/docs/en/plugin-marketplaces), "Remove the marketplace to start over".
+- Codex: run `codex plugin remove {{name}}@ai-plugins`, then `codex plugin marketplace remove ai-plugins`. Source: Codex documentation, [Build plugins](https://developers.openai.com/plugins/build/plugins), for `marketplace remove`; Codex source, [`plugin_cmd.rs` L61–L112](https://github.com/openai/codex/blob/e3e5ad28470f6a225301518c30a66e749a880164/codex-rs/cli/src/plugin_cmd.rs#L61-L112), for `plugin remove`.
+- Oh-My-Pi: run `omp plugin uninstall {{name}}@ai-plugins`, then `omp plugin marketplace remove ai-plugins`. Removing a marketplace alone leaves its plugins installed. Source: Oh-My-Pi documentation, [`docs/marketplace.md`](https://github.com/can1357/oh-my-pi/blob/7ceb80109236dbe6bbc90e303a14fd7748cc472d/docs/marketplace.md#L64-L73), for the commands, and [L226](https://github.com/can1357/oh-my-pi/blob/7ceb80109236dbe6bbc90e303a14fd7748cc472d/docs/marketplace.md#L226) for what removal leaves.

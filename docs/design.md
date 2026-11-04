@@ -83,6 +83,21 @@ Agent Plugins 1.0.0 §5.1 says no other file can "replace, supplement, or overri
 (documentation: [Agent Plugins specification §5.1](https://github.com/agentplugins/agent-plugins-spec/blob/ff8ab5e392cc87bd88d87c060815a87490e51003/spec/1.0.0.md#L133-L137))
 The cost of two builds is the same skills twice, which the builder and CI keep equal.
 
+## What conformance buys
+
+Agent Plugins 1.0.0 describes a plugin as a directory with a single root (§4.1).
+A conforming client can at least load a plugin from a directory path (§11.1).
+Every `plugins/<name>/` keeps its manifest at the root with the canonical `$schema` (§5.1, §5.2).
+Its skills sit in the fixed `skills/` location (§6.1).
+(documentation: [Agent Plugins 1.0.0](https://agent-plugins.org/specification), the specification)
+
+A client that implements Agent Plugins 1.0.0 can load `plugins/<name>` directly.
+`bundles/<name>/` is not an Agent Plugins package, and [Two builds from one source](#two-builds-from-one-source) says why it has no root `plugin.json`.
+
+The specification defines no repository-level catalogue.
+How a client gets from this repository to a plugin root is specific to that client.
+So each install command in the [README](../README.md#install) cites that client's own source.
+
 ## Icons are rendered from SVG
 
 Each bundle ships one listing icon, `.claude-plugin/icon.png`.
@@ -486,7 +501,7 @@ So `cases.yaml` lists such clients under `always_on`.
 For them the summary shows `trigger_hit` and `compliance` as `n/a`, and `compare` skips both.
 Their block leaves out the skill-loaded column and the loads per positive prompt.
 
-The run publishes each repeat's record to `ghcr.io/akurganow/ai-plugins-evals` as an immutable OCI artifact tagged `<tag>_<skill>_<client>_<stamp>a<attempt>_r<repeat>`.
+The run publishes each repeat's record to `ghcr.io/akurganow/pegboard-evals` as an immutable OCI artifact tagged `<tag>_<skill>_<client>_<stamp>a<attempt>_r<repeat>`.
 Earlier releases' `evals.json` assets stay on their releases as frozen history, and the runner writes no new ones.
 A metric regressed when the three repeats of this release and of the package's previous release do not overlap, and the new ones are worse.
 The spread between repeats is the tolerance, so the rule has no threshold.

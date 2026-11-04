@@ -4,7 +4,7 @@ This page says what each client reads from a package in this repository.
 Every fact names its kind: documentation, source read at a commit, or running the client.
 A documentation page with no revision is dated by the day it was read.
 A running fact names the client version and the command, or cites a GitHub Actions run of this repository on hosted runners, with no client signed in.
-Install commands and install-time notes are in the [README](../README.md).
+Install commands and install-time notes are in the [README](../README.md#install).
 The reasons built on these facts are in [About this repository's design](design.md).
 
 ## Claude Code
@@ -28,6 +28,15 @@ Documentation pages below were read on 2026-09-25.
   (documentation: [Host and maintain a marketplace, Release a new version](https://code.claude.com/docs/en/plugins/host-marketplace#release-a-new-version))
 - Release tags take the form `<plugin-name>--v<version>`.
   (documentation: [Plugin dependencies, Create a release tag](https://code.claude.com/docs/en/plugins/dependencies#create-a-release-tag))
+- The desktop app accepts marketplace and plugin names of at most 128 characters from letters, digits, `.`, `_` and `-`.
+  A name starts with a letter or digit.
+  Every name here meets that rule.
+  (documentation: [Troubleshoot plugins](https://code.claude.com/docs/en/plugins/troubleshooting), read 2026-09-25)
+- The desktop app installs from configured marketplaces: the **+** button, then **Plugins**, then **Add plugin**.
+  (documentation: [Desktop](https://code.claude.com/docs/en/desktop), read 2026-09-25)
+- A change here reaches Claude Code users only after the plugin's next release.
+  It arrives through background auto-update once a user or an admin turns that on, and otherwise when the user updates the plugin.
+  (documentation: [Host and maintain a marketplace](https://code.claude.com/docs/en/plugins/host-marketplace), read 2026-09-25)
 
 ### Skills
 
@@ -163,12 +172,22 @@ Source links are commit permalinks into `openai/codex`.
   [`marketplace.rs` L945](https://github.com/openai/codex/blob/edd0df9084eb8446e586305b68a4d62202278afd/codex-rs/core-plugins/src/marketplace.rs#L945))
 - Adding a marketplace runs `git clone`.
   (source: [`install.rs` L7–L45](https://github.com/openai/codex/blob/dda227891d27b6e0f3f244eda149a98d098969ad/codex-rs/core-plugins/src/marketplace_add/install.rs#L7-L45))
+- `codex plugin marketplace add` takes no name argument.
+  (source: `AddMarketplaceArgs` in [`marketplace_cmd.rs`](https://github.com/openai/codex/blob/e3e5ad28470f6a225301518c30a66e749a880164/codex-rs/cli/src/marketplace_cmd.rs#L63-L83))
+- Codex reads the marketplace name from the catalogue.
+  (source: `validate_marketplace_root` in [`marketplace.rs`](https://github.com/openai/codex/blob/e3e5ad28470f6a225301518c30a66e749a880164/codex-rs/core-plugins/src/marketplace.rs#L312-L321))
+- Codex identifies the marketplace by the catalogue's top-level `name`, `pegboard` here.
+  (documentation: [Build plugins](https://developers.openai.com/plugins/build/plugins), read 2026-09-25)
+- The ChatGPT desktop app can read `.claude-plugin/marketplace.json` as a legacy-compatible marketplace.
+  (documentation: [Build plugins](https://developers.openai.com/plugins/build/plugins), read 2026-09-25)
 
 ### Skills
 
 - Codex starts with each skill's name and description, and loads the full `SKILL.md` when it uses the skill.
   Users run `/skills` or type `$` to mention one.
   (documentation: [Build skills](https://learn.chatgpt.com/docs/build-skills))
+- Start a new session after you install a plugin, before you use its skills.
+  (documentation: [Plugins](https://learn.chatgpt.com/docs/plugins), read 2026-09-25)
 - The listing tells the model it "must use that skill" when a task clearly matches the description.
   (source: [`catalog_prompt.rs` L8](https://github.com/openai/codex/blob/549455f3ec5a7f2a0489894543a0e49f307142a6/codex-rs/ext/skills/src/catalog_prompt.rs#L8))
 - Codex exposes a plugin skill as `<plugin>:<skill>`, with the prefix taken from the manifest `name`.
@@ -218,6 +237,7 @@ Documentation pages were read on 2026-11-04.
 
 - Codex looks for a catalogue at `.agents/plugins/marketplace.json`, then `.agents/plugins/api_marketplace.json`, `.claude-plugin/marketplace.json` and `.cursor-plugin/marketplace.json`.
   The first file found wins.
+  This repository ships the first, so nothing rests on the fallbacks.
   (source: [`marketplace.rs` L21–L24](https://github.com/openai/codex/blob/6ff1e1ca3b30fc8b914720681fcf5fe62e95f856/codex-rs/core-plugins/src/marketplace.rs#L21-L24), and the same list at `rust-v0.155.1`)
 - Codex documents that each entry carries `policy.installation`, `policy.authentication` and `category`.
   The loader defaults them to `AVAILABLE` and `ON_INSTALL`, and accepts `NOT_AVAILABLE`, `INSTALLED_BY_DEFAULT` and `ON_USE`.
@@ -360,6 +380,8 @@ Links in this subsection are permalinks at commit `33ea58a`.
   source: [`fetcher.ts` L105–L220](https://github.com/can1357/oh-my-pi/blob/33ea58aa7dfd696c1ac419ba51fb915660740ab2/packages/coding-agent/src/extensibility/plugins/marketplace/fetcher.ts#L105-L220))
 - `--plugin-dir <dir>` adds a local plugin directory to discovery.
   (documentation: [`docs/cli-reference.md` L137](https://github.com/can1357/oh-my-pi/blob/a33cc26824e3c91edd9fa42d681f10dceb4ac2f0/docs/cli-reference.md#L137), at `a33cc26`)
+- A plugin identifier is `name@marketplace-name`, and the marketplace half is the catalogue's `name` field.
+  (documentation: [`docs/skills/authoring-marketplaces.md`](https://github.com/can1357/oh-my-pi/blob/a33cc26824e3c91edd9fa42d681f10dceb4ac2f0/docs/skills/authoring-marketplaces.md), at `a33cc26`)
 
 ### Measured on hosted runners
 
@@ -405,6 +427,18 @@ Facts about Hermes 0.21.5, the version the runs install, link to its commit `f97
   (source: [`desktop-plugin-install.ts` L94–L100](https://github.com/NousResearch/hermes-agent/blob/f97608f178d1ffeca59860195ab7da295f7c8e5f/apps/desktop/electron/desktop-plugin-install.ts#L94-L100))
 - On Windows, `install.ps1` clones a branch and then checks out the pinned commit.
   (source: [`install.ps1` L20–L24](https://github.com/NousResearch/hermes-agent/blob/f97608f178d1ffeca59860195ab7da295f7c8e5f/scripts/install.ps1#L20-L24))
+- Hermes reads no per-repository catalogue.
+  It installs a package by identifier, and its community index is `NousResearch/hermes-plugin-index`.
+  (documentation: [`user-guide/features/plugins.md`](https://github.com/NousResearch/hermes-agent/blob/a0ca7c19204e514f9590ce3b812e029b315ab9e9/website/docs/user-guide/features/plugins.md), at `a0ca7c1`)
+- Installed with `--no-enable`, a package stays disabled until `hermes plugins enable <name>` runs.
+  (documentation: [`developer-guide/plugins/index.md`](https://github.com/NousResearch/hermes-agent/blob/a0ca7c19204e514f9590ce3b812e029b315ab9e9/website/docs/developer-guide/plugins/index.md) and [`user-guide/features/plugins.md`](https://github.com/NousResearch/hermes-agent/blob/a0ca7c19204e514f9590ce3b812e029b315ab9e9/website/docs/user-guide/features/plugins.md), at `a0ca7c1`)
+- In the desktop app, a `hermes://plugin/install?repo=owner/repo` link installs a plugin after a confirmation dialog.
+  An agent-plugin install from that link goes through the same install-time security scanning as `hermes plugins install`.
+  (documentation: the "One-click install links (Desktop)" section of [`user-guide/features/plugins.md`](https://github.com/NousResearch/hermes-agent/blob/a0ca7c19204e514f9590ce3b812e029b315ab9e9/website/docs/user-guide/features/plugins.md), at `a0ca7c1`)
+- Hermes scans a package when it installs it.
+  A `caution` verdict shows the findings and asks `Install anyway? [y/N]`.
+  A `dangerous` verdict blocks the install, and `--force` does not override it.
+  (documentation: [`user-guide/features/plugins.md` L625–L643](https://github.com/NousResearch/hermes-agent/blob/a0ca7c19204e514f9590ce3b812e029b315ab9e9/website/docs/user-guide/features/plugins.md#L625-L643), at `a0ca7c1`)
 
 ### Skills
 
@@ -501,6 +535,7 @@ The pages show no commit, so each link is dated by that read.
   A manifest field for a component replaces discovery of that component.
   (documentation: [Plugins reference, component discovery](https://cursor.com/docs/reference/plugins))
 - A rule with `alwaysApply: true` applies to all files, and `false` makes it available on request.
+  That is how `prose-discipline` reaches Cursor.
   (documentation: [Plugins reference](https://cursor.com/docs/reference/plugins))
 - Discovery parses `hooks/hooks.json` for hook event names.
   Claude Code's file sits at that path in the bundle.
@@ -567,6 +602,8 @@ No OpenClaw client ran for these facts, and CI installs nothing into OpenClaw.
   (documentation: [`docs/plugins/bundles.md` L79](https://github.com/openclaw/openclaw/blob/db6ac584cf205ea9a72de7ae83a4e65199b926a4/docs/plugins/bundles.md#L79),
   [L331–L337](https://github.com/openclaw/openclaw/blob/db6ac584cf205ea9a72de7ae83a4e65199b926a4/docs/plugins/bundles.md#L331-L337))
 - The hooks answer comes from reading source, not from running OpenClaw.
+- So `prose-discipline` gets its skills from OpenClaw, and no hook or rule.
+  (documentation and source: the hook and rule bullets above)
 
 ## Kiro
 

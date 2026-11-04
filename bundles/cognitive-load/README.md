@@ -13,8 +13,8 @@ Separates the cognitive load a task needs from the load a code base's structure 
 ### Claude Code
 
 ```
-/plugin marketplace add Akurganow/ai-plugins
-/plugin install cognitive-load@ai-plugins
+/plugin marketplace add Akurganow/pegboard
+/plugin install cognitive-load@pegboard
 ```
 
 Source: Claude Code documentation, <https://code.claude.com/docs/en/discover-plugins>. CI installs it on Ubuntu, macOS and Windows.
@@ -22,8 +22,8 @@ Source: Claude Code documentation, <https://code.claude.com/docs/en/discover-plu
 ### Codex
 
 ```
-codex plugin marketplace add Akurganow/ai-plugins --ref main
-codex plugin add cognitive-load@ai-plugins
+codex plugin marketplace add Akurganow/pegboard --ref main
+codex plugin add cognitive-load@pegboard
 ```
 
 Source: Codex documentation, <https://developers.openai.com/plugins/build/plugins>, for `marketplace add`; Codex source, [`plugin_cmd.rs`](https://github.com/openai/codex/blob/e3e5ad28470f6a225301518c30a66e749a880164/codex-rs/cli/src/plugin_cmd.rs), for `plugin add`. CI installs it on Ubuntu, macOS and Windows.
@@ -31,8 +31,8 @@ Source: Codex documentation, <https://developers.openai.com/plugins/build/plugin
 ### Oh-My-Pi
 
 ```
-omp plugin marketplace add Akurganow/ai-plugins
-omp plugin install cognitive-load@ai-plugins
+omp plugin marketplace add Akurganow/pegboard
+omp plugin install cognitive-load@pegboard
 ```
 
 Source: Oh-My-Pi documentation, [`docs/marketplace.md`](https://github.com/can1357/oh-my-pi/blob/a33cc26824e3c91edd9fa42d681f10dceb4ac2f0/docs/marketplace.md). CI installs it on Ubuntu, macOS and Windows.
@@ -40,7 +40,7 @@ Source: Oh-My-Pi documentation, [`docs/marketplace.md`](https://github.com/can13
 ### Hermes
 
 ```
-hermes plugins install Akurganow/ai-plugins/plugins/cognitive-load --no-enable
+hermes plugins install Akurganow/pegboard/plugins/cognitive-load --no-enable
 hermes plugins list
 hermes plugins enable cognitive-load
 ```
@@ -54,7 +54,7 @@ Source: Hermes documentation, [`developer-guide/plugins/index.md`](https://githu
 Cursor's documentation names no command that installs from a repository. It names three routes:
 
 - Public marketplace: open **Customize**, find the plugin, select **Install**. A plugin appears there only after Cursor reviews a submitted repository, and this repository claims no listing.
-- Team marketplace, on Teams and Enterprise plans: in **Dashboard**, **Plugins & MCPs**, **Team Marketplaces**, select **Add Marketplace**, then **Import from Repo**, and paste `https://github.com/Akurganow/ai-plugins`. Developers then install from **Customize**.
+- Team marketplace, on Teams and Enterprise plans: in **Dashboard**, **Plugins & MCPs**, **Team Marketplaces**, select **Add Marketplace**, then **Import from Repo**, and paste `https://github.com/Akurganow/pegboard`. Developers then install from **Customize**.
 - Local: copy `bundles/cognitive-load` to `~/.cursor/plugins/local/cognitive-load`, then restart Cursor or run **Developer: Reload Window**.
 
 Source: Cursor documentation, [Plugins](https://cursor.com/docs/plugins), read 2026-11-04, for the three routes; [Plugins reference](https://cursor.com/docs/reference/plugins), read 2026-11-04, for the submission and review. CI does not install it.
@@ -62,7 +62,7 @@ Source: Cursor documentation, [Plugins](https://cursor.com/docs/plugins), read 2
 ### OpenClaw
 
 ```
-openclaw plugins install cognitive-load --marketplace Akurganow/ai-plugins
+openclaw plugins install cognitive-load --marketplace Akurganow/pegboard
 ```
 
 Source: OpenClaw documentation, [`docs/cli/plugins/install.md`](https://github.com/openclaw/openclaw/blob/db6ac584cf205ea9a72de7ae83a4e65199b926a4/docs/cli/plugins/install.md#L277-L283). OpenClaw reads this repository's `.claude-plugin/marketplace.json` (OpenClaw source, [`marketplace.ts`](https://github.com/openclaw/openclaw/blob/db6ac584cf205ea9a72de7ae83a4e65199b926a4/src/plugins/marketplace.ts#L35-L38)). CI does not install it.
@@ -124,10 +124,10 @@ the full text or nothing.
   own, run a linter, or measure a reader.
 - An interface as wide as what it hides, or one change that touches many
   places, belongs to the `red-flags` skill of
-  [`design-review`](https://github.com/Akurganow/ai-plugins/tree/main/plugins/design-review). A trade-off between two
+  [`design-review`](https://github.com/Akurganow/pegboard/tree/main/plugins/design-review). A trade-off between two
   measured qualities belongs to `contradiction` in
-  [`triz-thinking`](https://github.com/Akurganow/ai-plugins/tree/main/plugins/triz-thinking). Many complaints with one unclear cause
-  belong to `root-cause` in [`toc-thinking`](https://github.com/Akurganow/ai-plugins/tree/main/plugins/toc-thinking).
+  [`triz-thinking`](https://github.com/Akurganow/pegboard/tree/main/plugins/triz-thinking). Many complaints with one unclear cause
+  belong to `root-cause` in [`toc-thinking`](https://github.com/Akurganow/pegboard/tree/main/plugins/toc-thinking).
   The skill hands over only to a skill that is installed.
 
 ## License
@@ -136,4 +136,4 @@ MIT. See [LICENSE](LICENSE).
 
 ## Help
 
-See [SUPPORT.md](https://github.com/Akurganow/ai-plugins/blob/main/SUPPORT.md).
+See [SUPPORT.md](https://github.com/Akurganow/pegboard/blob/main/SUPPORT.md).

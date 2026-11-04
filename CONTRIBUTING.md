@@ -53,6 +53,52 @@ package's `CHANGELOG.md`. [`release.yml`](.github/workflows/release.yml) writes
 the version and the changelog when it releases a package, and runs the builder
 so that every manifest carries the new version.
 
+## Read the layout
+
+```
+src/<name>/                       the hand-written source; no client reads it
+  source.json                     name, version, description and the other metadata
+  README.md                       what the plugin does and how to use it
+  CHANGELOG.md                    written by the release
+  skills/<skill>/SKILL.md         a skill, Agent Skills format
+  skills/<skill>/references/      files the skill reads when a step needs them
+src/prose-discipline/rules/       the full rules, with the marked short form the hooks print
+bundles/<name>/                   generated; one tree with a manifest folder per client
+  .claude-plugin/plugin.json      Claude Code, and OpenClaw when no Codex manifest exists
+  .codex-plugin/plugin.json       Codex, and OpenClaw
+  .cursor-plugin/plugin.json      Cursor
+  hooks/, rules/                  prose-discipline only: two hooks files and the .mdc rule
+plugins/<name>/                   generated; the Agent Plugins 1.0.0 package
+  plugin.json                     manifest with the canonical $schema
+  README.md, LICENSE, skills/     copies of the source and the root LICENSE
+.claude-plugin/marketplace.json   generated catalogue, read by Claude Code and OpenClaw
+.agents/plugins/marketplace.json  generated catalogue, read by Codex
+.omp-plugin/marketplace.json      generated catalogue, read by Oh-My-Pi
+.cursor-plugin/marketplace.json   generated catalogue, read by Cursor
+tools/build.sh                    writes bundles/, plugins/ and the catalogues from src/
+tools/regenerate.sh               fills the README regions, then runs the builder
+tools/regions.sh                  region helpers both scripts source
+tools/check-conformance.py        the conformance check
+tools/evals.py                    the post-release evals runner, with selftest and validate
+tools/evals-fixtures/             event streams recorded from the clients, for the selftest
+tools/templates/                  sources of generated text
+tools/source.schema.json          schema of source.json
+tools/schemas/                    vendored Agent Plugins manifest schema
+tools/package.json                pins doctoc for tools/regenerate.sh
+tools/package-lock.json           pins doctoc's dependency tree
+docs/clients.md                   how each client loads a package, with sources
+docs/design.md                    why the repository is built this way
+docs/banner.svg                   the README banner, written by scripts/compose-banner.py
+docs/banner/                      the banner's parts and layout, and how to add a tool
+scripts/compose-banner.py         writes docs/banner.svg; no check or workflow runs it
+evals/<name>/<skill>/             prompts and Jev questions for one skill's evals
+cog.toml                          release configuration, one entry per package
+.github/                          CI workflows and issue forms
+```
+
+Edit `src/` only. [Run the checks](#run-the-checks) says how the builds
+follow.
+
 ## Run the checks
 
 CI runs these checks on every pull request. Run them before you push.
@@ -114,6 +160,19 @@ A generated region sits between two comments, `<!-- <region>:start -->` and
 `START doctoc` and `END doctoc` comments. Never edit inside either pair.
 
 ### Run the conformance check
+
+`tools/check-conformance.py` checks the parts of Agent Plugins 1.0.0 that this
+repository controls. It validates each `plugins/<name>/plugin.json` against the
+vendored schema in `tools/schemas/`, and each `src/<name>/source.json` against
+`tools/source.schema.json`. It also checks what a schema cannot express:
+
+- where files sit
+- where paths resolve
+- what skill front matter says
+- that no symlink sits under `bundles/` or `plugins/`
+
+CI runs it on every pull request and on pushes to `main`, as
+[`conformance.yml`](.github/workflows/conformance.yml) defines.
 
 The check needs the Python packages `jsonschema` and `pyyaml`. Install the
 versions that [`conformance.yml`](.github/workflows/conformance.yml) pins,

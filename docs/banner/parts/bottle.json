@@ -1,0 +1,8 @@
+{
+  "name": "bottle",
+  "width": 162,
+  "height": 507,
+  "hang": [{"x": 81, "y": 222, "kind": "holder"}],
+  "real_size_cm": {"height": 27.0, "body_width": 7.0, "neck_width": 1.39},
+  "notes": "Centre line x=81. Body outer x 20.5..141.5 (121 px), full width from y=208 down; shoulder curve y=130..208. Neck outer x 69..93 (24 px), lip x 66.5..95.5 at y 42..56. Cork top y=19, cork bottom inside the neck y=79. Bottom of the glass y=487 (stands or rests here). Hang y=222 is the holder ring line: the ring wraps the body just below the shoulder, where the body is 121 px wide. Liquid (amber, semi-transparent) fills to y=389 with a meniscus. Glass body tint is 0.07-0.30 opacity so the board shows through."
+}

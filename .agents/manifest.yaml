@@ -1,11 +1,11 @@
 # The canonical agent configuration of this repository (.agents folder
-# specification, AGENTS-1). Vendor entry points are symlinks into this tree;
-# only a client's own configuration, which no standard defines, keeps content
-# of its own.
+# specification, AGENTS-1). The vendor entry point, `CLAUDE.md`, imports this
+# tree and holds no text of its own; only a client's own configuration, which
+# no standard defines, keeps content of its own.
 specVersion: "1.0.0"
 
 project:
-  name: ai-plugins
+  name: pegboard
   description: >-
     A public marketplace of agent plugins. Every package under `plugins/`,
     built from `src/`, is an Agent Plugins 1.0.0 package, and the
@@ -39,16 +39,14 @@ x:
       scoping: >-
         None. This repository is small enough that every rule bears on every
         change, so no rule carries `paths` front matter and each one loads
-        unconditionally.
-      vendorPaths:
-        - .claude/rules
+        unconditionally. `CLAUDE.md` imports each rule file by name.
 
     # The root entry point, outside `.agents/` and so not a canonical source
     # under this specification — the layout defines those by location. It is
     # declared here for the same reason `rules` is: so a tool that reads only
-    # the manifest can find it. `AGENTS.md` is the text; `CLAUDE.md` is a
-    # symlink to it, because Claude Code reads that name and every other
-    # harness reads the first, and two files would drift apart.
+    # the manifest can find it. `AGENTS.md` is the text; `CLAUDE.md` imports
+    # it, because Claude Code reads that name and every other harness reads
+    # the first, and two texts would drift apart.
     entryPoint:
       file: ../AGENTS.md
       format: commonmark

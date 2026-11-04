@@ -1,0 +1,8 @@
+{
+  "name": "backpack",
+  "width": 598,
+  "height": 822,
+  "hang": [{"x": 302, "y": 43, "kind": "heavy"}],
+  "real_size_cm": {"body_height": 41, "body_width": 30, "with_loop_and_straps": [32, 46]},
+  "notes": "Black matte ripstop daypack, modelled in dark charcoal with a cool rim on the upper-left edge and broad low sheen. Dome top with a zipper running round it; lower front pocket in a near-black berry print (cloudberries, cranberries, blueberries, leaves, twigs) with its own zipper and black rubber pulls; black side pockets, webbing and buckles; no label or lettering. The loop fits the heavy hook: it has a flat top, apex x 338 in the art's inner coordinates, and inner width 47.5 px at the heavy hook's prong axis (5.8 px below the inside top), 43.5 px 3 px below it. (x, y) is the inside top of the loop. The art sits 30 px higher than in v1, so hang y is 43 (v1 redraw 73); the body keeps its place relative to the hang point. The right strap tail already ends at 810. Body tilted 3 degrees with the same sag, folds and stitching as v1. No cast shadow."
+}

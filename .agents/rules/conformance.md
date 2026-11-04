@@ -191,5 +191,10 @@ which `.github/workflows/evals.yml` runs after a release.
 subcommand, which checks that every folder under `evals/` has its skill and
 loads.
 
+`scripts/` holds maintainer tools that no check, workflow or catalogue reads.
+Its one program, `scripts/compose-banner.py`, writes the README banner,
+`docs/banner.svg`, from the parts in `docs/banner/`. A maintainer runs it
+after changing a part or the layout; `docs/banner/README.md` says how.
+
 If this file and the things it describes ever disagree — the specification,
 the scripts, the workflow — they are right and this file is stale.

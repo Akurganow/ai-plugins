@@ -1,0 +1,18 @@
+{
+ "name": "wrench",
+ "width": 167,
+ "height": 474,
+ "hang": [
+  {
+   "x": 83.0,
+   "y": 44.7,
+   "kind": "single",
+   "r": 12.2
+  }
+ ],
+ "real_size_cm": {
+  "length": 25.0,
+  "head_width": 7.3
+ },
+ "notes": "Adjustable wrench traced from https://commons.wikimedia.org/wiki/File:Adjustable_wrench_-_15_x_2_cm_-_B2.jpg (CC0, by Fructibus), hanging head down, jaws pointing down, movable jaw on the left. Hang hole: an ellipse traced from the photo, centre (83.0, 44.7), semi-axes 14.8 x 11.8 at -22 degrees; its inside top edge, where the prong rests, is at (85.4, 32.5), 12.2 above the centre (r). Put the hook-single hang point on that edge and draw the prong front in front of the wrench. The hole is cut out (evenodd), so the board and the hook show through; the head has no other hole, the jaw opening is open at the bottom. The head is traced with its side faces, which are shaded as darker bevels; the handle is traced as its top face. Rotated so the centre of mass of the traced silhouette hangs straight below that edge; handle axis 0.8 degrees off plumb. Length 433 px along the handle axis (25 cm). Light from the upper left; no cast shadow."
+}

@@ -34,11 +34,11 @@ Other kinds: the shared tests page.
 | Kind | Definition | Measurement |
 | :-- | :-- | :-- |
 | `misaligned` | A case or question measures something other than the skill's behaviour. Its expectation contradicts the skill's text, a near-miss prompt matches a "Use when" clause of the description, or it breaks a rule `CONTRIBUTING.md` writes for cases | The two texts side by side, each with its permalink at the analysed commit: the case or question, and the clause of the skill or of the rule. A recorded session where the effect shows is a lead |
-| `ceiling` | A rubric question every graded answer passes in both arms. `CONTRIBUTING.md` says to drop it, "because it measures nothing" | Every recorded answer to the question in the comparable releases, labelled yes or no with its evidence quoted, by arm. Beside it the question's mean per arm and repeat from the evals records in `ghcr.io/akurganow/ai-plugins-evals`. Ceiling when one label stands in both arms |
+| `ceiling` | A rubric question every graded answer passes in both arms. `CONTRIBUTING.md` says to drop it, "because it measures nothing" | Every recorded answer to the question in the comparable releases, labelled yes or no with its evidence quoted, by arm. Beside it the question's mean per arm and repeat from the evals records in `ghcr.io/akurganow/pegboard-evals`. Ceiling when one label stands in both arms |
 
 ## Reading the records
 
-The OCI artifacts in `ghcr.io/akurganow/ai-plugins-evals` are the record of
+The OCI artifacts in `ghcr.io/akurganow/pegboard-evals` are the record of
 how a case behaved against real clients. `tools/evals.py` writes them
 (`cmd_run`, `run_session`, `grade_runs`, `cmd_report`, `push_record`).
 

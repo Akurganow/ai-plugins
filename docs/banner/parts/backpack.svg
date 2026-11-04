@@ -1,0 +1,366 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 598 822" width="598" height="822">
+<defs>
+<linearGradient id="backpack-g-body" x1="0" y1="0" x2="1" y2="0">
+<stop offset="0" stop-color="#363a40"/><stop offset=".35" stop-color="#282b30"/><stop offset=".75" stop-color="#1c1e22"/><stop offset="1" stop-color="#121315"/>
+</linearGradient>
+<linearGradient id="backpack-g-vert" x1="0" y1="0" x2="0" y2="1">
+<stop offset="0" stop-color="#a9b8cf" stop-opacity=".12"/><stop offset=".35" stop-color="#a9b8cf" stop-opacity="0"/><stop offset=".75" stop-color="#050607" stop-opacity="0"/><stop offset="1" stop-color="#050607" stop-opacity=".55"/>
+</linearGradient>
+<linearGradient id="backpack-g-rim" x1="0" y1="0" x2="1" y2="1">
+<stop offset="0" stop-color="#b9c8de" stop-opacity=".85"/><stop offset=".4" stop-color="#b9c8de" stop-opacity="0"/>
+</linearGradient>
+<linearGradient id="backpack-g-web" x1="0" y1="0" x2="1" y2="0">
+<stop offset="0" stop-color="#4a4f58"/><stop offset=".5" stop-color="#2a2d33"/><stop offset="1" stop-color="#16181b"/>
+</linearGradient>
+<linearGradient id="backpack-g-strap" x1="0" y1="0" x2="1" y2="0">
+<stop offset="0" stop-color="#40454d"/><stop offset=".45" stop-color="#2a2d33"/><stop offset="1" stop-color="#141518"/>
+</linearGradient>
+<linearGradient id="backpack-g-side" x1="0" y1="0" x2="0" y2="1">
+<stop offset="0" stop-color="#3b4047"/><stop offset=".6" stop-color="#25282d"/><stop offset="1" stop-color="#131417"/>
+</linearGradient>
+<radialGradient id="backpack-g-core" cx=".42" cy=".44" r=".62">
+<stop offset=".72" stop-color="#050607" stop-opacity="0"/><stop offset="1" stop-color="#050607" stop-opacity=".5"/>
+</radialGradient>
+<radialGradient id="backpack-g-pbulge" cx=".4" cy=".36" r=".72">
+<stop offset="0" stop-color="#c8d4e6" stop-opacity=".2"/><stop offset=".5" stop-color="#c8d4e6" stop-opacity="0"/><stop offset=".85" stop-color="#030304" stop-opacity=".35"/><stop offset="1" stop-color="#030304" stop-opacity=".6"/>
+</radialGradient>
+<radialGradient id="backpack-g-sheen" cx=".5" cy=".5" r=".5">
+<stop offset="0" stop-color="#c9d6ea" stop-opacity=".16"/><stop offset="1" stop-color="#c9d6ea" stop-opacity="0"/>
+</radialGradient>
+<radialGradient id="backpack-g-cb" cx=".35" cy=".3" r=".85">
+<stop offset="0" stop-color="#ffd772"/><stop offset=".5" stop-color="#f2a628"/><stop offset="1" stop-color="#c9700c"/>
+</radialGradient>
+<radialGradient id="backpack-g-cb2" cx=".35" cy=".3" r=".85">
+<stop offset="0" stop-color="#ffc35a"/><stop offset=".5" stop-color="#ea8a1a"/><stop offset="1" stop-color="#b65408"/>
+</radialGradient>
+<radialGradient id="backpack-g-cr" cx=".35" cy=".3" r=".75">
+<stop offset="0" stop-color="#e8434e"/><stop offset=".5" stop-color="#a50d1c"/><stop offset="1" stop-color="#4a050c"/>
+</radialGradient>
+<radialGradient id="backpack-g-bb" cx=".35" cy=".3" r=".75">
+<stop offset="0" stop-color="#7f9cf0"/><stop offset=".45" stop-color="#3550c4"/><stop offset="1" stop-color="#18216a"/>
+</radialGradient>
+<pattern id="backpack-rip" width="6" height="6" patternUnits="userSpaceOnUse">
+<path d="M0 .5H6M.5 0V6" stroke="#c4cedc" stroke-width=".6" opacity=".035"/>
+<path d="M0 2H6M0 3.5H6M0 5H6" stroke="#000" stroke-width=".5" opacity=".12"/>
+</pattern>
+<filter id="backpack-blur8" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="8"/></filter>
+<filter id="backpack-blur4" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="4"/></filter>
+<filter id="backpack-blur2" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="2"/></filter>
+<path id="backpack-body" d="M322 106C306 108 286 118 262 126C190 144 128 184 108 248C96 296 92 380 88 450C84 540 72 620 74 700C78 772 130 810 210 816C270 822 370 822 432 816C514 808 568 774 570 700C572 620 560 540 556 450C552 380 548 296 536 248C516 184 454 144 382 126C358 118 338 108 322 106Z"/>
+<path id="backpack-pocket" d="M128 478C230 468 410 468 512 478C528 560 532 660 518 738C492 782 410 794 320 794C230 794 148 782 122 738C108 660 112 560 128 478Z"/>
+<clipPath id="backpack-clip-body"><use xlink:href="#backpack-body"/></clipPath>
+<clipPath id="backpack-clip-pocket"><use xlink:href="#backpack-pocket"/></clipPath>
+<symbol id="backpack-lf" overflow="visible">
+<path d="M0 0C5-6 15-7 24 0C15 7 5 6 0 0Z" fill="#6f9442" stroke="#34511d" stroke-width=".9"/>
+<path d="M2 0H19" stroke="#34511d" stroke-width=".9"/>
+</symbol>
+<symbol id="backpack-tw" overflow="visible">
+<path d="M0 0C10-4 22-6 36-4M14-3C18-10 22-14 28-17M24-5C28 0 32 4 38 6" fill="none" stroke="#6b4429" stroke-width="2" stroke-linecap="round"/>
+</symbol>
+<symbol id="backpack-cl" overflow="visible">
+<ellipse cx="4" cy="0" rx="4.5" ry="2.2" fill="#4f7d34" stroke="#2c4a1a" stroke-width=".7"/>
+</symbol>
+<symbol id="backpack-cr" overflow="visible">
+<ellipse rx="6.6" ry="6" fill="url(#backpack-g-cr)" stroke="#3d0409" stroke-width=".8"/>
+<ellipse cx="-2.2" cy="-2.4" rx="1.9" ry="1.2" fill="#fff" opacity=".85" transform="rotate(-35 -2.2 -2.4)"/>
+<circle cx="1.2" cy="1.3" r=".9" fill="#3d0409" opacity=".6"/>
+</symbol>
+<symbol id="backpack-crs" overflow="visible">
+<path d="M-26 -4C-16 -9 -6 -2 4 -6C12 -9 20 -5 28 -9M-8 -3C-6 1 -7 4 -10 6M8 -7C11 -3 12 1 10 4M21 -6C24 -2 24 3 21 7" fill="none" stroke="#6e3b25" stroke-width="1" stroke-linecap="round"/>
+<use xlink:href="#backpack-cl" transform="translate(-22 -6) rotate(-120) scale(.8)"/><use xlink:href="#backpack-cl" transform="translate(-20 -5) rotate(60) scale(.8)"/>
+<use xlink:href="#backpack-cl" transform="translate(-2 -4) rotate(-100) scale(.8)"/><use xlink:href="#backpack-cl" transform="translate(0 -4) rotate(70) scale(.8)"/>
+<use xlink:href="#backpack-cl" transform="translate(16 -7) rotate(-80) scale(.8)"/><use xlink:href="#backpack-cl" transform="translate(26 -9) rotate(-10) scale(.8)"/>
+<use xlink:href="#backpack-cr" transform="translate(-10 11)"/><use xlink:href="#backpack-cr" transform="translate(10 10) scale(.92)"/>
+<use xlink:href="#backpack-cr" transform="translate(21 13) scale(.85)"/>
+</symbol>
+<symbol id="backpack-cb" overflow="visible">
+<path d="M0 8V19M0 17C4 17 7 15 10 13.5" fill="none" stroke="#5a6a2a" stroke-width="1.5" stroke-linecap="round"/>
+<path d="M10.5 13L10.8 10.3L11.1 9.6L11.3 8.8L11.6 8.0L12.2 7.4L13.1 7.1L14.0 7.3L14.8 7.5L15.5 7.6L16.2 7.5L17.0 7.3L17.9 7.1L18.8 7.4L19.4 8.0L19.7 8.8L19.9 9.6L20.2 10.3L20.6 10.9L21.2 11.5L21.8 12.2L22.0 13.0L21.8 13.8L21.2 14.5L20.6 15.1L20.2 15.7L19.9 16.4L19.7 17.2L19.4 18.0L18.8 18.6L17.9 18.9L17.0 18.7L16.2 18.5L15.5 18.4L14.8 18.5L14.0 18.7L13.1 18.9L12.3 18.6L11.6 18.0L11.3 17.2L11.1 16.4L10.8 15.7Z" fill="#679040" stroke="#2f4d19" stroke-width=".8" stroke-linejoin="round"/>
+<path d="M10.5 13l7.5-3.5M10.5 13h8.5M10.5 13l7.5 3.5" stroke="#2f4d19" stroke-width=".6"/>
+<path d="M0 4Q-4.9 8.2 -12.3 5.9Q-6.1 1.5 0 4ZM0 4Q-1.2 10.0 -8.4 12.2Q-6.3 5.4 0 4ZM0 4Q3.4 8.9 0.0 15.0Q-3.4 8.9 0 4ZM0 4Q6.3 5.4 8.4 12.2Q1.2 10.0 0 4ZM0 4Q6.1 1.5 12.3 5.9Q4.9 8.2 0 4Z" fill="#5f8a36" stroke="#2f4d19" stroke-width=".8" stroke-linejoin="round"/>
+<ellipse cy="-5" rx="9" ry="11" fill="#a24f0a"/>
+<g fill="url(#backpack-g-cb)" stroke="#9a4a08" stroke-width=".6"><circle cx="-3.2" cy="-14.2" r="3.1"/><circle cx="3.2" cy="-14.2" r="3.1"/><circle cx="-6.8" cy="-9.6" r="3.1"/><circle cx="0.0" cy="-9.6" r="3.1"/><circle cx="6.8" cy="-9.6" r="3.1"/><circle cx="-7.5" cy="-5" r="3.1"/><circle cx="-2.5" cy="-5" r="3.1"/><circle cx="2.5" cy="-5" r="3.1"/><circle cx="7.5" cy="-5" r="3.1"/></g>
+<g fill="url(#backpack-g-cb2)" stroke="#9a4a08" stroke-width=".6"><circle cx="-6.8" cy="-0.4" r="3.1"/><circle cx="0.0" cy="-0.4" r="3.1"/><circle cx="6.8" cy="-0.4" r="3.1"/><circle cx="-4.1" cy="4.2" r="3.1"/><circle cx="4.1" cy="4.2" r="3.1"/></g>
+<g fill="#fff8dc" opacity=".8"><circle cx="-4.2" cy="-15.2" r=".85"/><circle cx="2.2" cy="-15.2" r=".85"/><circle cx="-7.8" cy="-10.6" r=".85"/><circle cx="-1.0" cy="-10.6" r=".85"/><circle cx="5.8" cy="-10.6" r=".85"/><circle cx="-8.5" cy="-6.0" r=".85"/><circle cx="-3.5" cy="-6.0" r=".85"/><circle cx="1.5" cy="-6.0" r=".85"/><circle cx="6.5" cy="-6.0" r=".85"/><circle cx="-7.8" cy="-1.4" r=".85"/><circle cx="-1.0" cy="-1.4" r=".85"/><circle cx="5.8" cy="-1.4" r=".85"/><circle cx="-5.1" cy="3.2" r=".85"/><circle cx="3.1" cy="3.2" r=".85"/></g>
+</symbol>
+<symbol id="backpack-bb" overflow="visible">
+<g fill="url(#backpack-g-bb)" stroke="#0d123d" stroke-width=".8">
+<circle cx="-6" cy="-3" r="7.5"/><circle cx="7" cy="-4" r="7"/><circle cx="1" cy="6" r="7.5"/></g>
+<g fill="none" stroke="#141a52" stroke-width="1.3"><circle cx="-4" cy="-5" r="2"/><circle cx="9" cy="-6" r="1.9"/><circle cx="3" cy="4" r="2"/></g>
+<g fill="#cfdcff" opacity=".55"><circle cx="-9" cy="-6" r="1.2"/><circle cx="4" cy="-8" r="1.1"/><circle cx="-2" cy="3" r="1.2"/></g>
+</symbol>
+<g id="backpack-pull">
+<path d="M-5 0h10v9a5 5 0 0 1-10 0z" fill="#1c1e22" stroke="#050506" stroke-width="1.3"/>
+<path d="M0 11C-4 18-4 24 0 30C4 24 4 18 0 11" fill="none" stroke="#111214" stroke-width="2.4"/>
+<rect x="-5.5" y="28" width="11" height="26" rx="5" fill="#16171a" stroke="#050506" stroke-width="1.3"/>
+<path d="M-5 33h10M-5 37h10M-5 41h10M-5 45h10M-5 49h10" stroke="#3a3d43" stroke-width="1.4"/>
+<rect x="-3.6" y="30" width="2.2" height="21" rx="1.1" fill="#fff" opacity=".28"/>
+</g>
+<clipPath id="backpack-clip-lower"><rect x="40" y="480" width="560" height="360"/></clipPath>
+</defs>
+<g id="backpack-art" transform="translate(-36 -23)">
+<g transform="translate(20 0) rotate(3 320 460)">
+<g id="backpack-straps">
+<path d="M98 684L80 740L79 836" fill="none" stroke="#08090a" stroke-width="22"/><path d="M98 684L80 740L79 836" fill="none" stroke="url(#backpack-g-web)" stroke-width="18"/><path d="M98 684L80 740L79 836" fill="none" stroke="#000" stroke-width="16" stroke-dasharray="1 3" opacity=".35"/>
+<path d="M150 220C110 300 70 420 50 520C38 600 48 660 78 700L124 690C100 650 92 600 100 520C110 430 140 320 190 230Z" fill="url(#backpack-g-strap)" stroke="#060708" stroke-width="3"/>
+<path d="M150 250C116 330 82 430 64 520C56 590 62 650 86 684" fill="none" stroke="#7d8696" stroke-width="2.2" stroke-dasharray="7 5" opacity=".55"/>
+<path d="M546 684L566 740L570 810" fill="none" stroke="#08090a" stroke-width="22"/><path d="M546 684L566 740L570 810" fill="none" stroke="url(#backpack-g-web)" stroke-width="18"/><path d="M546 684L566 740L570 810" fill="none" stroke="#000" stroke-width="16" stroke-dasharray="1 3" opacity=".35"/>
+<path d="M490 220C532 300 576 420 594 520C606 600 594 664 566 700L518 690C544 650 552 600 544 520C534 430 504 320 452 230Z" fill="url(#backpack-g-strap)" stroke="#060708" stroke-width="3"/>
+<path d="M490 250C524 330 564 430 580 520C588 590 582 650 558 684" fill="none" stroke="#7d8696" stroke-width="2.2" stroke-dasharray="7 5" opacity=".4"/>
+</g>
+<g id="backpack-buckles" stroke="#020203" stroke-width="1.5">
+<rect x="64" y="764" width="32" height="20" rx="4" transform="rotate(-3 80 774)" fill="#16171a"/>
+<rect x="551" y="760" width="32" height="20" rx="4" transform="rotate(-3 567 770)" fill="#16171a"/>
+<path d="M70 772h20M557 768h20" stroke="#34373d" stroke-width="3"/>
+<rect x="68" y="767" width="12" height="3" rx="1.5" fill="#fff" stroke="none" opacity=".5"/>
+<rect x="555" y="763" width="12" height="3" rx="1.5" fill="#fff" stroke="none" opacity=".35"/>
+</g>
+<g id="backpack-sides" stroke="#060708" stroke-width="2.5">
+<path d="M104 520C78 530 64 590 62 660C60 730 72 784 110 800L150 804L150 520Z" fill="url(#backpack-g-side)"/>
+<path d="M538 516C566 526 580 588 582 656C584 728 572 780 534 798L494 802L494 516Z" fill="url(#backpack-g-side)"/>
+<path d="M70 560C76 540 88 528 104 522M574 556C568 536 556 524 540 518" fill="none" stroke="#6c7584" stroke-width="3" opacity=".6"/>
+<path d="M72 600C70 660 72 720 92 770" fill="none" stroke="#b9c8de" stroke-width="3" opacity=".22" filter="url(#backpack-blur2)"/>
+</g>
+<use xlink:href="#backpack-body" fill="url(#backpack-g-body)"/>
+<g clip-path="url(#backpack-clip-body)">
+<rect x="60" y="100" width="530" height="720" fill="url(#backpack-rip)"/>
+<use xlink:href="#backpack-body" fill="url(#backpack-g-vert)"/>
+<ellipse cx="210" cy="580" rx="160" ry="210" fill="url(#backpack-g-sheen)"/>
+<ellipse cx="200" cy="310" rx="130" ry="130" fill="url(#backpack-g-sheen)"/>
+<path d="M60 744C140 772 500 772 590 744V830H60Z" fill="#050607" opacity=".45" filter="url(#backpack-blur8)"/>
+<path d="M114 300C104 420 100 560 112 700C126 560 126 420 114 300Z" fill="#050607" opacity=".4" filter="url(#backpack-blur4)"/>
+<path d="M126 320C118 440 116 560 128 690C138 560 136 440 126 320Z" fill="#b9c8de" opacity=".12" filter="url(#backpack-blur4)"/>
+<path d="M532 290C548 420 552 560 536 700C526 560 524 420 532 290Z" fill="#050607" opacity=".45" filter="url(#backpack-blur4)"/>
+<path d="M114 484C114 400 116 316 128 264C144 200 196 164 262 148C292 140 308 132 322 130C336 132 352 140 382 148C448 164 500 200 516 264C528 316 530 400 530 484" fill="none" stroke="#0b0c0e" stroke-width="13" stroke-linecap="round"/>
+<path d="M114 484C114 400 116 316 128 264C144 200 196 164 262 148C292 140 308 132 322 130C336 132 352 140 382 148C448 164 500 200 516 264C528 316 530 400 530 484" fill="none" stroke="#5f656e" stroke-width="5.5" stroke-dasharray="2.4 2"/>
+<path d="M114 484C114 400 116 316 128 264C144 200 196 164 262 148C292 140 308 132 322 130C336 132 352 140 382 148C448 164 500 200 516 264C528 316 530 400 530 484" fill="none" stroke="#000" stroke-width="1"/>
+<path d="M102 486C102 400 104 312 118 256C136 190 190 150 258 134C290 126 306 118 322 116C338 118 354 126 386 134C454 150 508 190 526 256C540 312 542 400 542 486" fill="none" stroke="#6e7887" stroke-width="2.2" stroke-dasharray="8 6" opacity=".5"/>
+<use xlink:href="#backpack-pocket" transform="translate(7 9)" fill="#000" opacity=".55" filter="url(#backpack-blur8)"/>
+</g>
+<use xlink:href="#backpack-pocket" fill="#141316" stroke="#050506" stroke-width="2.5"/>
+<g clip-path="url(#backpack-clip-pocket)">
+<g id="backpack-print">
+<use xlink:href="#backpack-tw" transform="translate(115.0 479.2) scale(0.59 1.06) rotate(169)"/>
+<use xlink:href="#backpack-tw" transform="translate(144.3 476.1) scale(0.79 1.00) rotate(175)"/>
+<use xlink:href="#backpack-tw" transform="translate(211.8 481.4) scale(0.87 0.87) rotate(155)"/>
+<use xlink:href="#backpack-tw" transform="translate(287.6 470.2) scale(1.09 1.09) rotate(147)"/>
+<use xlink:href="#backpack-tw" transform="translate(381.4 469.7) scale(0.95 0.95) rotate(135)"/>
+<use xlink:href="#backpack-tw" transform="translate(471.0 476.6) scale(0.89 0.96) rotate(158)"/>
+<use xlink:href="#backpack-tw" transform="translate(516.6 488.0) scale(0.52 0.85) rotate(-22)"/>
+<use xlink:href="#backpack-tw" transform="translate(119.7 547.0) scale(0.51 0.90) rotate(-9)"/>
+<use xlink:href="#backpack-tw" transform="translate(176.1 541.1) scale(0.95 0.98) rotate(-52)"/>
+<use xlink:href="#backpack-tw" transform="translate(252.5 547.2) scale(0.92 0.92) rotate(203)"/>
+<use xlink:href="#backpack-tw" transform="translate(339.2 552.5) scale(1.02 1.02) rotate(155)"/>
+<use xlink:href="#backpack-tw" transform="translate(433.7 539.6) scale(0.99 0.99) rotate(-53)"/>
+<use xlink:href="#backpack-tw" transform="translate(495.9 547.6) scale(0.79 1.01) rotate(172)"/>
+<use xlink:href="#backpack-tw" transform="translate(525.0 538.8) scale(0.57 1.04) rotate(188)"/>
+<use xlink:href="#backpack-tw" transform="translate(115.0 605.6) scale(0.57 1.04) rotate(-19)"/>
+<use xlink:href="#backpack-tw" transform="translate(138.5 598.6) scale(0.66 0.88) rotate(141)"/>
+<use xlink:href="#backpack-tw" transform="translate(208.8 607.7) scale(1.06 1.06) rotate(156)"/>
+<use xlink:href="#backpack-tw" transform="translate(300.9 606.7) scale(1.06 1.06) rotate(-34)"/>
+<use xlink:href="#backpack-tw" transform="translate(379.7 607.8) scale(1.04 1.04) rotate(-14)"/>
+<use xlink:href="#backpack-tw" transform="translate(469.6 600.4) scale(0.97 1.03) rotate(183)"/>
+<use xlink:href="#backpack-tw" transform="translate(522.9 596.3) scale(0.59 1.07) rotate(-49)"/>
+<use xlink:href="#backpack-tw" transform="translate(119.3 669.9) scale(0.51 0.90) rotate(183)"/>
+<use xlink:href="#backpack-tw" transform="translate(177.6 667.1) scale(1.00 1.02) rotate(172)"/>
+<use xlink:href="#backpack-tw" transform="translate(264.0 677.7) scale(1.06 1.06) rotate(191)"/>
+<use xlink:href="#backpack-tw" transform="translate(340.1 676.6) scale(0.87 0.87) rotate(189)"/>
+<use xlink:href="#backpack-tw" transform="translate(438.1 677.4) scale(0.90 0.90) rotate(195)"/>
+<use xlink:href="#backpack-tw" transform="translate(499.0 658.5) scale(0.74 0.98) rotate(189)"/>
+<use xlink:href="#backpack-tw" transform="translate(525.0 664.6) scale(0.59 1.06) rotate(203)"/>
+<use xlink:href="#backpack-tw" transform="translate(115.0 720.8) scale(0.48 0.87) rotate(-47)"/>
+<use xlink:href="#backpack-tw" transform="translate(150.3 720.5) scale(0.77 0.94) rotate(204)"/>
+<use xlink:href="#backpack-tw" transform="translate(203.0 723.2) scale(1.08 1.08) rotate(-5)"/>
+<use xlink:href="#backpack-tw" transform="translate(285.2 734.3) scale(0.96 0.96) rotate(-30)"/>
+<use xlink:href="#backpack-tw" transform="translate(390.1 728.4) scale(1.00 1.00) rotate(191)"/>
+<use xlink:href="#backpack-tw" transform="translate(463.3 727.6) scale(1.00 1.03) rotate(-23)"/>
+<use xlink:href="#backpack-tw" transform="translate(519.4 729.6) scale(0.50 0.87) rotate(190)"/>
+<use xlink:href="#backpack-tw" transform="translate(118.8 793.3) scale(0.51 0.91) rotate(155)"/>
+<use xlink:href="#backpack-tw" transform="translate(177.4 797.2) scale(0.87 0.89) rotate(183)"/>
+<use xlink:href="#backpack-tw" transform="translate(247.9 791.6) scale(1.02 1.02) rotate(213)"/>
+<use xlink:href="#backpack-tw" transform="translate(344.7 793.0) scale(1.08 1.08) rotate(137)"/>
+<use xlink:href="#backpack-tw" transform="translate(430.9 781.3) scale(0.88 0.88) rotate(198)"/>
+<use xlink:href="#backpack-tw" transform="translate(500.9 794.4) scale(0.77 1.03) rotate(-6)"/>
+<use xlink:href="#backpack-tw" transform="translate(525.0 793.1) scale(0.54 0.98) rotate(-6)"/>
+<use xlink:href="#backpack-lf" transform="translate(115.0 484.9) scale(0.50 0.90) rotate(171)"/>
+<use xlink:href="#backpack-lf" transform="translate(115.0 473.5) scale(0.49 0.88) rotate(51)"/>
+<use xlink:href="#backpack-lf" transform="translate(139.5 456.1) scale(0.57 0.76) rotate(190)"/>
+<use xlink:href="#backpack-lf" transform="translate(140.4 463.5) scale(0.65 0.87) rotate(11)"/>
+<use xlink:href="#backpack-lf" transform="translate(224.8 474.0) scale(0.98 0.98) rotate(198)"/>
+<use xlink:href="#backpack-lf" transform="translate(202.0 468.9) scale(0.88 0.88) rotate(273)"/>
+<use xlink:href="#backpack-lf" transform="translate(310.8 448.9) scale(0.98 0.98) rotate(75)"/>
+<use xlink:href="#backpack-lf" transform="translate(293.7 482.3) scale(0.77 0.77) rotate(143)"/>
+<use xlink:href="#backpack-lf" transform="translate(406.7 453.1) scale(0.75 0.75) rotate(255)"/>
+<use xlink:href="#backpack-lf" transform="translate(387.2 465.0) scale(0.80 0.80) rotate(246)"/>
+<use xlink:href="#backpack-lf" transform="translate(466.9 464.8) scale(0.91 0.95) rotate(350)"/>
+<use xlink:href="#backpack-lf" transform="translate(470.0 485.3) scale(0.80 0.85) rotate(76)"/>
+<use xlink:href="#backpack-lf" transform="translate(522.3 494.4) scale(0.42 0.77) rotate(139)"/>
+<use xlink:href="#backpack-lf" transform="translate(513.8 488.4) scale(0.54 0.84) rotate(6)"/>
+<use xlink:href="#backpack-lf" transform="translate(116.2 555.8) scale(0.45 0.81) rotate(294)"/>
+<use xlink:href="#backpack-lf" transform="translate(116.9 550.5) scale(0.44 0.80) rotate(339)"/>
+<use xlink:href="#backpack-lf" transform="translate(173.4 544.8) scale(0.82 0.86) rotate(141)"/>
+<use xlink:href="#backpack-lf" transform="translate(197.0 537.1) scale(0.98 0.98) rotate(187)"/>
+<use xlink:href="#backpack-lf" transform="translate(278.2 533.3) scale(0.82 0.82) rotate(6)"/>
+<use xlink:href="#backpack-lf" transform="translate(257.4 528.3) scale(0.84 0.84) rotate(63)"/>
+<use xlink:href="#backpack-lf" transform="translate(350.5 536.2) scale(0.75 0.75) rotate(13)"/>
+<use xlink:href="#backpack-lf" transform="translate(365.1 554.9) scale(0.76 0.76) rotate(347)"/>
+<use xlink:href="#backpack-lf" transform="translate(449.1 548.5) scale(0.93 0.93) rotate(265)"/>
+<use xlink:href="#backpack-lf" transform="translate(451.2 548.9) scale(0.92 0.92) rotate(127)"/>
+<use xlink:href="#backpack-lf" transform="translate(497.2 546.2) scale(0.60 0.77) rotate(219)"/>
+<use xlink:href="#backpack-lf" transform="translate(504.2 559.2) scale(0.67 0.93) rotate(317)"/>
+<use xlink:href="#backpack-lf" transform="translate(525.0 538.1) scale(0.44 0.81) rotate(173)"/>
+<use xlink:href="#backpack-lf" transform="translate(525.0 534.7) scale(0.54 0.98) rotate(221)"/>
+<use xlink:href="#backpack-lf" transform="translate(115.0 615.3) scale(0.45 0.81) rotate(179)"/>
+<use xlink:href="#backpack-lf" transform="translate(115.0 593.6) scale(0.52 0.95) rotate(228)"/>
+<use xlink:href="#backpack-lf" transform="translate(139.0 607.3) scale(0.57 0.77) rotate(15)"/>
+<use xlink:href="#backpack-lf" transform="translate(157.3 606.1) scale(0.75 0.87) rotate(41)"/>
+<use xlink:href="#backpack-lf" transform="translate(220.5 598.1) scale(0.82 0.82) rotate(298)"/>
+<use xlink:href="#backpack-lf" transform="translate(219.8 609.7) scale(0.84 0.84) rotate(101)"/>
+<use xlink:href="#backpack-lf" transform="translate(296.6 590.8) scale(0.91 0.91) rotate(17)"/>
+<use xlink:href="#backpack-lf" transform="translate(306.0 606.9) scale(0.95 0.95) rotate(236)"/>
+<use xlink:href="#backpack-lf" transform="translate(388.5 588.4) scale(0.94 0.94) rotate(82)"/>
+<use xlink:href="#backpack-lf" transform="translate(388.7 618.1) scale(1.00 1.00) rotate(180)"/>
+<use xlink:href="#backpack-lf" transform="translate(462.6 595.1) scale(0.95 0.98) rotate(225)"/>
+<use xlink:href="#backpack-lf" transform="translate(471.1 598.5) scale(0.88 0.95) rotate(317)"/>
+<use xlink:href="#backpack-lf" transform="translate(525.0 607.4) scale(0.52 0.95) rotate(193)"/>
+<use xlink:href="#backpack-lf" transform="translate(522.7 605.5) scale(0.46 0.84) rotate(308)"/>
+<use xlink:href="#backpack-lf" transform="translate(131.4 664.8) scale(0.60 0.88) rotate(13)"/>
+<use xlink:href="#backpack-lf" transform="translate(127.0 679.9) scale(0.64 1.00) rotate(169)"/>
+<use xlink:href="#backpack-lf" transform="translate(193.0 661.8) scale(0.96 0.96) rotate(201)"/>
+<use xlink:href="#backpack-lf" transform="translate(185.7 652.9) scale(0.98 0.98) rotate(185)"/>
+<use xlink:href="#backpack-lf" transform="translate(292.3 674.8) scale(0.80 0.80) rotate(206)"/>
+<use xlink:href="#backpack-lf" transform="translate(273.0 673.9) scale(0.76 0.76) rotate(218)"/>
+<use xlink:href="#backpack-lf" transform="translate(332.6 686.2) scale(0.98 0.98) rotate(165)"/>
+<use xlink:href="#backpack-lf" transform="translate(361.1 669.5) scale(0.87 0.87) rotate(89)"/>
+<use xlink:href="#backpack-lf" transform="translate(448.9 686.5) scale(0.94 0.94) rotate(47)"/>
+<use xlink:href="#backpack-lf" transform="translate(425.9 664.2) scale(0.92 0.92) rotate(82)"/>
+<use xlink:href="#backpack-lf" transform="translate(496.7 645.1) scale(0.67 0.86) rotate(191)"/>
+<use xlink:href="#backpack-lf" transform="translate(500.1 651.7) scale(0.59 0.79) rotate(191)"/>
+<use xlink:href="#backpack-lf" transform="translate(525.0 668.3) scale(0.54 0.98) rotate(292)"/>
+<use xlink:href="#backpack-lf" transform="translate(525.0 654.7) scale(0.44 0.80) rotate(332)"/>
+<use xlink:href="#backpack-lf" transform="translate(115.0 714.3) scale(0.43 0.78) rotate(284)"/>
+<use xlink:href="#backpack-lf" transform="translate(115.0 722.7) scale(0.44 0.80) rotate(6)"/>
+<use xlink:href="#backpack-lf" transform="translate(171.6 727.7) scale(0.82 0.87) rotate(289)"/>
+<use xlink:href="#backpack-lf" transform="translate(141.5 724.4) scale(0.75 0.98) rotate(221)"/>
+<use xlink:href="#backpack-lf" transform="translate(193.9 705.6) scale(0.87 0.87) rotate(343)"/>
+<use xlink:href="#backpack-lf" transform="translate(220.1 714.4) scale(0.88 0.88) rotate(168)"/>
+<use xlink:href="#backpack-lf" transform="translate(303.5 727.7) scale(0.79 0.79) rotate(70)"/>
+<use xlink:href="#backpack-lf" transform="translate(293.2 715.7) scale(0.95 0.95) rotate(322)"/>
+<use xlink:href="#backpack-lf" transform="translate(390.4 732.6) scale(0.78 0.78) rotate(101)"/>
+<use xlink:href="#backpack-lf" transform="translate(407.5 713.9) scale(0.78 0.78) rotate(336)"/>
+<use xlink:href="#backpack-lf" transform="translate(454.0 719.1) scale(0.75 0.75) rotate(169)"/>
+<use xlink:href="#backpack-lf" transform="translate(464.1 728.0) scale(0.78 0.81) rotate(225)"/>
+<use xlink:href="#backpack-lf" transform="translate(523.0 725.3) scale(0.43 0.78) rotate(77)"/>
+<use xlink:href="#backpack-lf" transform="translate(520.7 727.9) scale(0.44 0.78) rotate(41)"/>
+<use xlink:href="#backpack-lf" transform="translate(117.7 784.2) scale(0.47 0.85) rotate(195)"/>
+<use xlink:href="#backpack-lf" transform="translate(122.7 800.3) scale(0.52 0.86) rotate(36)"/>
+<use xlink:href="#backpack-lf" transform="translate(182.3 783.3) scale(0.90 0.90) rotate(178)"/>
+<use xlink:href="#backpack-lf" transform="translate(168.0 807.1) scale(0.82 0.88) rotate(151)"/>
+<use xlink:href="#backpack-lf" transform="translate(265.9 773.7) scale(0.90 0.90) rotate(278)"/>
+<use xlink:href="#backpack-lf" transform="translate(260.9 785.2) scale(0.76 0.76) rotate(246)"/>
+<use xlink:href="#backpack-lf" transform="translate(349.0 788.5) scale(0.81 0.81) rotate(350)"/>
+<use xlink:href="#backpack-lf" transform="translate(353.2 802.3) scale(0.87 0.87) rotate(260)"/>
+<use xlink:href="#backpack-lf" transform="translate(451.1 773.0) scale(0.84 0.84) rotate(56)"/>
+<use xlink:href="#backpack-lf" transform="translate(423.2 775.1) scale(0.91 0.91) rotate(216)"/>
+<use xlink:href="#backpack-lf" transform="translate(498.3 778.5) scale(0.72 0.95) rotate(321)"/>
+<use xlink:href="#backpack-lf" transform="translate(508.4 786.0) scale(0.63 0.92) rotate(98)"/>
+<use xlink:href="#backpack-lf" transform="translate(525.0 779.3) scale(0.50 0.91) rotate(246)"/>
+<use xlink:href="#backpack-lf" transform="translate(525.0 781.4) scale(0.42 0.76) rotate(10)"/>
+<use xlink:href="#backpack-cb" transform="translate(115.0 475.2) scale(0.67 1.22) rotate(23)"/>
+<use xlink:href="#backpack-crs" transform="translate(149.1 472.0) scale(1.03 1.25) rotate(-4)"/>
+<use xlink:href="#backpack-bb" transform="translate(218.5 477.2) scale(1.21 1.21) rotate(-28)"/>
+<use xlink:href="#backpack-crs" transform="translate(295.1 465.9) scale(1.24 1.24) rotate(8)"/>
+<use xlink:href="#backpack-cb" transform="translate(388.7 465.5) scale(1.28 1.28) rotate(1)"/>
+<use xlink:href="#backpack-bb" transform="translate(476.5 472.5) scale(1.11 1.22) rotate(21)"/>
+<use xlink:href="#backpack-crs" transform="translate(520.1 483.9) scale(0.65 1.14) rotate(7)"/>
+<use xlink:href="#backpack-cb" transform="translate(123.3 543.3) scale(0.77 1.26) rotate(27)"/>
+<use xlink:href="#backpack-crs" transform="translate(182.0 537.1) scale(1.13 1.14) rotate(29)"/>
+<use xlink:href="#backpack-bb" transform="translate(259.7 543.1) scale(1.14 1.14) rotate(4)"/>
+<use xlink:href="#backpack-crs" transform="translate(346.7 548.3) scale(1.20 1.20) rotate(8)"/>
+<use xlink:href="#backpack-cb" transform="translate(440.1 535.4) scale(1.26 1.26) rotate(24)"/>
+<use xlink:href="#backpack-bb" transform="translate(500.5 543.3) scale(0.93 1.24) rotate(-7)"/>
+<use xlink:href="#backpack-crs" transform="translate(525.0 534.8) scale(0.62 1.12) rotate(-15)"/>
+<use xlink:href="#backpack-cb" transform="translate(115.0 601.6) scale(0.63 1.15) rotate(15)"/>
+<use xlink:href="#backpack-crs" transform="translate(143.1 594.8) scale(0.97 1.25) rotate(26)"/>
+<use xlink:href="#backpack-bb" transform="translate(215.4 603.8) scale(1.21 1.21) rotate(9)"/>
+<use xlink:href="#backpack-crs" transform="translate(308.4 602.6) scale(1.23 1.23) rotate(28)"/>
+<use xlink:href="#backpack-cb" transform="translate(387.0 603.6) scale(1.26 1.26) rotate(-20)"/>
+<use xlink:href="#backpack-bb" transform="translate(475.2 596.1) scale(1.09 1.19) rotate(27)"/>
+<use xlink:href="#backpack-crs" transform="translate(525.0 592.1) scale(0.65 1.19) rotate(-25)"/>
+<use xlink:href="#backpack-cb" transform="translate(122.8 666.3) scale(0.73 1.20) rotate(24)"/>
+<use xlink:href="#backpack-crs" transform="translate(183.5 663.4) scale(1.23 1.23) rotate(-15)"/>
+<use xlink:href="#backpack-bb" transform="translate(271.4 673.8) scale(1.20 1.20) rotate(28)"/>
+<use xlink:href="#backpack-crs" transform="translate(347.7 672.6) scale(1.26 1.26) rotate(-10)"/>
+<use xlink:href="#backpack-cb" transform="translate(444.5 673.3) scale(1.18 1.18) rotate(-11)"/>
+<use xlink:href="#backpack-bb" transform="translate(503.5 654.2) scale(0.89 1.22) rotate(-18)"/>
+<use xlink:href="#backpack-crs" transform="translate(525.0 660.6) scale(0.69 1.26) rotate(30)"/>
+<use xlink:href="#backpack-cb" transform="translate(115.0 716.8) scale(0.70 1.27) rotate(11)"/>
+<use xlink:href="#backpack-crs" transform="translate(155.4 716.8) scale(0.99 1.15) rotate(-1)"/>
+<use xlink:href="#backpack-bb" transform="translate(209.5 719.5) scale(1.22 1.22) rotate(-4)"/>
+<use xlink:href="#backpack-crs" transform="translate(292.7 730.5) scale(1.26 1.26) rotate(12)"/>
+<use xlink:href="#backpack-cb" transform="translate(397.2 724.5) scale(1.21 1.21) rotate(-10)"/>
+<use xlink:href="#backpack-bb" transform="translate(469.1 723.5) scale(1.16 1.23) rotate(27)"/>
+<use xlink:href="#backpack-crs" transform="translate(522.8 725.4) scale(0.66 1.19) rotate(-16)"/>
+<use xlink:href="#backpack-cb" transform="translate(122.3 789.3) scale(0.72 1.21) rotate(9)"/>
+<use xlink:href="#backpack-crs" transform="translate(183.3 793.4) scale(1.18 1.18) rotate(6)"/>
+<use xlink:href="#backpack-bb" transform="translate(255.1 787.9) scale(1.18 1.18) rotate(-11)"/>
+<use xlink:href="#backpack-crs" transform="translate(352.2 789.2) scale(1.25 1.25) rotate(29)"/>
+<use xlink:href="#backpack-cb" transform="translate(437.4 777.5) scale(1.18 1.18) rotate(11)"/>
+<use xlink:href="#backpack-bb" transform="translate(505.2 790.5) scale(0.87 1.21) rotate(4)"/>
+<use xlink:href="#backpack-crs" transform="translate(525.0 789.1) scale(0.64 1.16) rotate(-17)"/>
+</g>
+<rect x="110" y="460" width="430" height="340" fill="url(#backpack-rip)"/>
+<use xlink:href="#backpack-pocket" fill="url(#backpack-g-pbulge)"/>
+<path d="M150 510C220 520 420 520 490 510" fill="none" stroke="#000" stroke-width="14" opacity=".4" filter="url(#backpack-blur4)"/>
+<path d="M232 540C238 610 240 680 252 770C258 680 248 610 232 540Z" fill="#000" opacity=".3" filter="url(#backpack-blur4)"/>
+<path d="M410 540C404 620 404 690 396 772C390 690 398 620 410 540Z" fill="#000" opacity=".32" filter="url(#backpack-blur4)"/>
+<path d="M140 748C230 772 410 772 500 748" fill="none" stroke="#000" stroke-width="22" opacity=".45" filter="url(#backpack-blur8)"/>
+<path d="M126 500C118 580 118 660 128 730" fill="none" stroke="#b9c8de" stroke-width="5" opacity=".18" filter="url(#backpack-blur2)"/>
+</g>
+<use xlink:href="#backpack-pocket" transform="translate(320 632) scale(.94 .92) translate(-320 -632)" fill="none" stroke="#5e6672" stroke-width="2.2" stroke-dasharray="8 6" opacity=".5"/>
+<path d="M150 500C236 490 404 490 490 500" fill="none" stroke="#0b0c0e" stroke-width="12" stroke-linecap="round"/>
+<path d="M150 500C236 490 404 490 490 500" fill="none" stroke="#5f656e" stroke-width="5" stroke-dasharray="2.4 2"/>
+<path d="M150 500C236 490 404 490 490 500" fill="none" stroke="#000" stroke-width="1"/>
+<use xlink:href="#backpack-body" transform="translate(320 470) scale(.93 .945) translate(-320 -470)" fill="none" stroke="#6e7887" stroke-width="2.2" stroke-dasharray="8 6" opacity=".45" clip-path="url(#backpack-clip-lower)"/>
+<g clip-path="url(#backpack-clip-body)">
+<use xlink:href="#backpack-body" fill="none" stroke="url(#backpack-g-rim)" stroke-width="12" filter="url(#backpack-blur2)"/>
+<use xlink:href="#backpack-body" fill="url(#backpack-g-core)"/>
+<g filter="url(#backpack-blur4)" opacity=".7">
+<path d="M306 124C288 168 262 206 236 246C214 282 196 300 170 330C204 306 228 280 252 246C278 208 298 168 306 124Z" fill="#050607" opacity=".6"/>
+<path d="M296 140C278 178 256 210 232 244C252 220 280 182 296 140Z" fill="#c4d0e2" opacity=".2"/>
+<path d="M314 132C304 182 302 226 290 270C280 312 276 342 280 392C292 340 296 312 304 270C314 226 318 182 314 132Z" fill="#050607" opacity=".55"/>
+<path d="M306 160C296 204 290 240 280 280C296 244 304 204 306 160Z" fill="#c4d0e2" opacity=".16"/>
+<path d="M330 128C340 176 344 214 356 254C366 290 380 318 386 368C392 318 380 290 370 254C360 214 346 176 330 128Z" fill="#050607" opacity=".55"/>
+<path d="M340 122C362 164 392 196 424 230C452 260 476 274 498 300C478 268 458 252 434 226C402 192 368 162 340 122Z" fill="#050607" opacity=".6"/>
+<path d="M346 140C366 172 388 196 410 220C392 192 368 166 346 140Z" fill="#c4d0e2" opacity=".12"/>
+<path d="M300 118C258 138 216 160 178 192C158 210 146 222 136 240C156 222 178 208 200 194C232 172 266 146 300 118Z" fill="#050607" opacity=".5"/>
+<path d="M290 136C252 152 214 176 182 204C216 184 254 160 290 136Z" fill="#c4d0e2" opacity=".18"/>
+<path d="M344 118C386 138 424 158 460 188C482 206 494 222 504 240C484 222 466 206 444 192C410 170 378 146 344 118Z" fill="#050607" opacity=".55"/>
+<path d="M248 232C226 270 212 318 208 380C204 420 210 450 206 490C222 450 220 420 222 380C228 320 238 272 248 232Z" fill="#050607" opacity=".35"/>
+<path d="M412 236C432 276 444 320 446 372C448 410 442 440 448 476C432 440 432 410 432 372C430 322 424 278 412 236Z" fill="#050607" opacity=".38"/>
+<path d="M88 722C130 744 176 752 214 746" fill="none" stroke="#050607" stroke-width="7" opacity=".35"/>
+<path d="M430 750C474 754 520 744 556 722" fill="none" stroke="#050607" stroke-width="7" opacity=".35"/>
+</g>
+</g>
+<use xlink:href="#backpack-body" fill="none" stroke="#060708" stroke-width="3"/>
+<use xlink:href="#backpack-pull" transform="translate(150 214) rotate(-3)"/>
+<use xlink:href="#backpack-pull" transform="translate(162 204) rotate(-3)"/>
+<use xlink:href="#backpack-pull" transform="translate(158 500) rotate(-3)"/>
+<use xlink:href="#backpack-pull" transform="translate(170 499) rotate(-3)"/>
+<g fill="#202226" stroke="#040405" stroke-width="1.5">
+<rect x="270" y="116" width="28" height="30" rx="4" transform="rotate(-24 284 131)"/>
+<rect x="342" y="116" width="28" height="30" rx="4" transform="rotate(24 356 131)"/>
+</g>
+<g fill="none" stroke="#7d8696" stroke-width="1.6" opacity=".75">
+<path d="M276 124l16 16M292 124l-16 16M276 124h16v16h-16z" transform="rotate(-24 284 131)"/>
+<path d="M348 124l16 16M364 124l-16 16M348 124h16v16h-16z" transform="rotate(24 356 131)"/>
+</g>
+</g>
+<g id="backpack-loop" fill="none">
+<path d="M320 132C312 112 302 94 302 78C302 63 312 55 326 55L350 55C364 55 374 63 374 78C374 94 386 112 392 136" stroke="#040405" stroke-width="22"/>
+<path d="M320 132C312 112 302 94 302 78C302 63 312 55 326 55L350 55C364 55 374 63 374 78C374 94 386 112 392 136" stroke="url(#backpack-g-web)" stroke-width="18"/>
+<path d="M320 132C312 112 302 94 302 78C302 63 312 55 326 55L350 55C364 55 374 63 374 78C374 94 386 112 392 136" stroke="#000" stroke-width="16" stroke-dasharray="1 3" opacity=".3"/>
+<path d="M311 128C302 108 295 92 295 77C295 58 308 48 326 48L338 48" stroke="#8a93a3" stroke-width="2" opacity=".55"/>
+</g>
+</g>
+</svg>

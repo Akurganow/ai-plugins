@@ -1,0 +1,18 @@
+{
+  "name": "board",
+  "width": 2100,
+  "height": 900,
+  "hang": [],
+  "real_size_cm": [
+    121.4,
+    52.0
+  ],
+  "pitch_px": 44,
+  "hole_diameter_px": 11,
+  "hole_centre": "(16 + 44*i, 16 + 44*j), i = 0..47, j = 0..19",
+  "hole_columns": 48,
+  "hole_rows": 20,
+  "corner_radius_px": 24,
+  "bevel_px": 5,
+  "notes": "Hardboard #8a6a4a with feTurbulence mottle and fibre, light falloff from (420, 90). One hole (#board-hole) tiled by #board-hole-grid, offset (-6, -6) so the side margins are even and the top row sits 16 px from the edge. The cream half of the falloff lies under the holes and the dark half over them, so the openings stay near-black. The grid stops at y = 874; row j = 20 (y = 896) is left out because the bottom edge would cut it."
+}

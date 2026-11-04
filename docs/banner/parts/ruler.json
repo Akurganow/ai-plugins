@@ -1,0 +1,17 @@
+{
+ "name": "ruler",
+ "width": 95,
+ "height": 584,
+ "hang": [
+  {
+   "x": 47.5,
+   "y": 30.5,
+   "kind": "single"
+  }
+ ],
+ "real_size_cm": [
+  3.2,
+  31.4
+ ],
+ "notes": "Vertical amber translucent plastic ruler, hole at the top. Body 55 x 544 px at x 20..75, y 20..564. Scale 0-30 cm (519 px) along the right edge, 0 mark at y 34, 30 mark at y 553.0. The hole is cut out (evenodd), so the prong and board show through. Fill is 80% opaque."
+}

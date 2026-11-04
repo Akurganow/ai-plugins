@@ -2,7 +2,7 @@
 contract_version: 3
 ---
 
-# Constitution of Akurganow/ai-plugins
+# Constitution of Akurganow/pegboard
 
 ## Read first
 

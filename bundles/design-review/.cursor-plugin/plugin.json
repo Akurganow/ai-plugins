@@ -5,8 +5,8 @@
   "author": {
     "name": "Alexander Kurganov"
   },
-  "homepage": "https://github.com/Akurganow/ai-plugins/tree/main/plugins/design-review",
-  "repository": "https://github.com/Akurganow/ai-plugins",
+  "homepage": "https://github.com/Akurganow/pegboard/tree/main/plugins/design-review",
+  "repository": "https://github.com/Akurganow/pegboard",
   "license": "MIT",
   "keywords": [
     "design-review",

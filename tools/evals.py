@@ -6,12 +6,12 @@ CI runs this after a package release (`.github/workflows/evals.yml`). One
 package, near-miss prompts with it, then positive prompts without it. `grade`
 has Jev grade every positive answer against the skill's rubric, in a job that
 runs no client. `report` publishes each repeat to GitHub Container Registry
-(`ghcr.io/<owner>/ai-plugins-evals`) and files an issue when a metric
+(`ghcr.io/<owner>/pegboard-evals`) and files an issue when a metric
 regresses against the latest complete run.
 
 The runner is this repository's own. In Claude Code 2.1.293, `claude plugin
 eval` wrote the final reply only as the evidence of an LLM grader (running,
-2026-10-08: https://github.com/Akurganow/ai-plugins/actions/runs/37784785554).
+2026-10-08: https://github.com/Akurganow/pegboard/actions/runs/37784785554).
 That grader runs a judge model of its own. `claude plugin eval` has no
 custom-code grader, so Jev could not take the judge's place (documentation:
 https://code.claude.com/docs/en/plugin-evals).
@@ -47,7 +47,10 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 SOURCES_DIR = REPO_ROOT / "src"
 EVALS_DIR = REPO_ROOT / "evals"
 FIXTURES_DIR = REPO_ROOT / "tools" / "evals-fixtures"
-MARKETPLACE = json.loads((REPO_ROOT / ".claude-plugin" / "marketplace.json").read_text())["name"]
+# The evals workflow sets MARKETPLACE from the released tag's catalogue,
+# which may carry an older name than this checkout's.
+MARKETPLACE = (os.environ.get("MARKETPLACE")
+               or json.loads((REPO_ROOT / ".claude-plugin" / "marketplace.json").read_text())["name"])
 
 REPEATS = 3
 CASES_PER_KIND = 10
@@ -79,7 +82,7 @@ SECRET_VARS = ("ANTHROPIC_API_KEY", "CODEX_API_KEY", "OPENAI_API_KEY", "OPENROUT
 ISSUE_LIMIT = 500
 
 GHCR_URL = "https://ghcr.io"
-GHCR_PACKAGE = "ai-plugins-evals"
+GHCR_PACKAGE = "pegboard-evals"
 OCI_MANIFEST_TYPE = "application/vnd.oci.image.manifest.v1+json"
 OCI_CONFIG_TYPE = "application/vnd.oci.empty.v1+json"
 OCI_LAYER_TYPE = "application/vnd.ai-plugins.evals.run.v1+json"
@@ -108,7 +111,7 @@ class Claude:
 
     # Read lets the skill open its reference files. With only Skill allowed,
     # Claude Code 2.1.293 denied the skill's Read call (running, 2026-10-08:
-    # https://github.com/Akurganow/ai-plugins/actions/runs/37784785554).
+    # https://github.com/Akurganow/pegboard/actions/runs/37784785554).
     def command(self, prompt: str, arm: str) -> list[str]:
         return ["claude", "-p", prompt, "--model", self.model, "--output-format", "stream-json",
                 "--verbose", "--allowedTools", "Skill", "Read"]
@@ -128,7 +131,7 @@ class Claude:
     # Claude Code 2.1.293 shows a loaded skill as a Skill tool call whose `skill`
     # input holds "<package>:<skill>". Its init event lists `skills` and `plugins`,
     # each plugin with a `source` of "<package>@<marketplace>" (running, 2026-10-08:
-    # https://github.com/Akurganow/ai-plugins/actions/runs/37789029106).
+    # https://github.com/Akurganow/pegboard/actions/runs/37789029106).
     def parse(self, events: list[dict]) -> Parsed:
         fired, answer, cost, model, error, loaded, tools = False, None, None, None, None, None, []
         for e in events:
@@ -165,7 +168,7 @@ class Codex:
     # On GitHub's ubuntu-latest the read-only sandbox failed every command with
     # "bwrap: loopback: Failed RTM_NEWADDR", so Codex never read SKILL.md
     # (running: Codex 0.161.0, 2026-10-08,
-    # https://github.com/Akurganow/ai-plugins/actions/runs/37786134780).
+    # https://github.com/Akurganow/pegboard/actions/runs/37786134780).
     def command(self, prompt: str, arm: str) -> list[str]:
         cmd = ["codex", "exec", "--json", "--skip-git-repo-check", "--sandbox", "danger-full-access",
                "-m", self.model]
@@ -182,7 +185,7 @@ class Codex:
     # Codex has no skill item kind (source: ThreadItemDetails in
     # https://github.com/openai/codex/blob/979011409de0a60b52f179721948e65531d26144/codex-rs/exec/src/exec_events.rs#L107-L133).
     # A skill load is a shell read of its SKILL.md in the plugin cache (running:
-    # https://github.com/Akurganow/ai-plugins/actions/runs/37786134780).
+    # https://github.com/Akurganow/pegboard/actions/runs/37786134780).
     # A top-level "error" event also announces each retry, so only "turn.failed"
     # marks a failed turn (source:
     # https://github.com/openai/codex/blob/979011409de0a60b52f179721948e65531d26144/codex-rs/exec/src/event_processor_with_jsonl_output.rs#L447-L457,
@@ -233,7 +236,7 @@ class Omp:
     # https://github.com/can1357/oh-my-pi/blob/cde91bb38674d365e8c3916d05d2292273bb8554/docs/settings.md#L495).
     # On three red-flags cases `low` took 116 s against 472 s at `high`, and loaded
     # the skill every time (running, Oh-My-Pi 18.8.6, 2026-10-08:
-    # https://github.com/Akurganow/ai-plugins/actions/runs/37860528358).
+    # https://github.com/Akurganow/pegboard/actions/runs/37860528358).
     def command(self, prompt: str, arm: str) -> list[str]:
         cmd = ["omp", "-p", "--mode", "json", "--no-session", "--no-title", "--auto-approve",
                "--model", self.model, "--thinking", "low"]
@@ -756,7 +759,7 @@ def oci_tag(record: dict) -> str:
     return f"{record['tag']}_{record['skill']}_{record['client']}_{record['run']}_r{record['repeat']}"
 
 
-def push_record(owner: str, bearer: str, record: dict, created: str) -> None:
+def push_record(owner: str, bearer: str, record: dict, created: str, source: str) -> None:
     config = b"{}"
     layer = redact(json.dumps(record, indent=1)).encode()
     config_digest = push_blob(owner, bearer, config)
@@ -769,6 +772,10 @@ def push_record(owner: str, bearer: str, record: dict, created: str) -> None:
         "annotations": {
             "org.opencontainers.image.created": created,
             "org.opencontainers.image.version": record["tag"],
+            # A package whose first push names its repository inherits that
+            # repository's access, so the workflow's GITHUB_TOKEN may push to it
+            # (documentation: https://docs.github.com/en/packages/learn-github-packages/configuring-a-packages-access-control-and-visibility#about-inheritance-of-access-permissions).
+            "org.opencontainers.image.source": source,
         },
     }
     ghcr_request(f"/v2/{owner}/{GHCR_PACKAGE}/manifests/{oci_tag(record)}", method="PUT",
@@ -953,7 +960,8 @@ def cmd_report(args) -> int:
     created, label = run_stamp()
     run_id = os.environ.get("GITHUB_RUN_ID") or None
     bearer = None
-    run_url = f"{os.environ.get('GITHUB_SERVER_URL', 'https://github.com')}/{repo}/actions/runs/{os.environ.get('GITHUB_RUN_ID', '')}"
+    source = f"{os.environ.get('GITHUB_SERVER_URL', 'https://github.com')}/{repo}"
+    run_url = f"{source}/actions/runs/{os.environ.get('GITHUB_RUN_ID', '')}"
     summary = ["# Behavioural evals", "",
                "Each cell is the range over the repeats that gave a figure, so a repeat without one drops out. "
                "n is the sessions or graded answers behind it, "
@@ -976,7 +984,7 @@ def cmd_report(args) -> int:
         for r in runs:
             r["run"] = label
             r["run_id"] = run_id
-            push_record(owner, bearer, r, created)
+            push_record(owner, bearer, r, created, source)
         summary += report_tag(tag, package, runs, no_cases, previous, seen, run_url, repo, can_file)
     Path(os.environ.get("GITHUB_STEP_SUMMARY", "/dev/stdout")).write_text("\n".join(summary) + "\n")
     return 0
@@ -1033,11 +1041,14 @@ def question_detail(package, skill, client, group, always_on) -> list[str]:
         notes.append("Held-out prompts loaded, with the package: " + ", ".join(parts) + ".")
     carried = [s for s in sessions if s.get("loaded") is not None]
     if carried:
-        key = f"{package}@{MARKETPLACE}"
+        # The report job runs from this checkout, whose catalogue name may be
+        # newer than the one the released tag installed under.
+        prefix = f"{package}@"
 
         def listed(arm):
             of_arm = [s for s in carried if s["arm"] == arm]
-            return f"{sum(key in s['loaded']['plugins'] for s in of_arm)} of {len(of_arm)}"
+            found = sum(any(p.startswith(prefix) for p in s["loaded"]["plugins"]) for s in of_arm)
+            return f"{found} of {len(of_arm)}"
 
         notes.append(f"Package in the session's plugin list: {listed('with')} sessions with it, "
                      f"{listed('without')} without.")
@@ -1104,8 +1115,8 @@ def report_tag(tag, package, runs, no_cases, previous, seen, run_url, repo, can_
 
 # The fixtures are event streams trimmed from runs on GitHub's ubuntu-latest on
 # 2026-10-08: Claude Code 2.1.293 and Oh-My-Pi 18.8.4 in
-# https://github.com/Akurganow/ai-plugins/actions/runs/37789029106, and Codex
-# 0.161.0 in https://github.com/Akurganow/ai-plugins/actions/runs/37786134780.
+# https://github.com/Akurganow/pegboard/actions/runs/37789029106, and Codex
+# 0.161.0 in https://github.com/Akurganow/pegboard/actions/runs/37786134780.
 def _selftest_parsers() -> None:
     def events(name):
         return load_events((FIXTURES_DIR / f"{name}.jsonl").read_text())
@@ -1123,27 +1134,34 @@ def _selftest_parsers() -> None:
             "message": {"content": [{"type": "tool_use", "name": "Bash", "input": {"command": "ls"}}]}}
     assert Claude("p", "s").parse([bash]).tools == ["Bash"]
 
-    codex = Codex("design-review", "red-flags").parse(events("codex"))
-    assert codex.fired and codex.error is None, codex
-    assert codex.answer.startswith("I\u2019ll use the design-review skill"), codex.answer
-    assert codex.answer.count("\n\n## Review") == 1 and len(codex.answer.split("\n\n")) >= 4, codex.answer
-    said = [{"type": "item.completed", "item": {"type": "agent_message", "text": "Draft"}},
-            {"type": "item.completed", "item": {"type": "agent_message", "text": "The draft is above."}},
-            {"type": "turn.completed", "usage": {}}]
-    assert Codex("p", "s").parse(said).answer == "Draft\n\nThe draft is above."
-    assert codex.tokens["input_tokens"] == 141929, codex.tokens
-    assert not Codex("triz", "red-flags").parse(events("codex")).fired
-    assert codex.loaded is None and len(codex.tools) == 3, codex
-    assert all(t.startswith("command ") for t in codex.tools), codex.tools
-    assert codex.tools[0].endswith("red-flags/SKILL.md'"), codex.tools[0]
-    retry = {"type": "error", "message": "Reconnecting... 1/5"}
-    assert Codex("design-review", "red-flags").parse([retry] + events("codex")).error is None
-    failed = {"type": "turn.failed", "error": {"message": "quota exceeded"}}
-    assert "quota exceeded" in Codex("design-review", "red-flags").parse(events("codex") + [failed]).error
-    only_retry = Codex("design-review", "red-flags").parse([{"type": "turn.started"}, retry])
-    assert only_retry.error == "no agent_message, last error: Reconnecting... 1/5", only_retry
-    interrupted = Codex("design-review", "red-flags").parse(events("codex")[:-1])
-    assert interrupted.error == "no turn.completed" and interrupted.answer, interrupted
+    # The Codex stream was recorded while the catalogue was named ai-plugins,
+    # and the cache path the parser matches carries that name.
+    global MARKETPLACE
+    current, MARKETPLACE = MARKETPLACE, "ai-plugins"
+    try:
+        codex = Codex("design-review", "red-flags").parse(events("codex"))
+        assert codex.fired and codex.error is None, codex
+        assert codex.answer.startswith("I\u2019ll use the design-review skill"), codex.answer
+        assert codex.answer.count("\n\n## Review") == 1 and len(codex.answer.split("\n\n")) >= 4, codex.answer
+        said = [{"type": "item.completed", "item": {"type": "agent_message", "text": "Draft"}},
+                {"type": "item.completed", "item": {"type": "agent_message", "text": "The draft is above."}},
+                {"type": "turn.completed", "usage": {}}]
+        assert Codex("p", "s").parse(said).answer == "Draft\n\nThe draft is above."
+        assert codex.tokens["input_tokens"] == 141929, codex.tokens
+        assert not Codex("triz", "red-flags").parse(events("codex")).fired
+        assert codex.loaded is None and len(codex.tools) == 3, codex
+        assert all(t.startswith("command ") for t in codex.tools), codex.tools
+        assert codex.tools[0].endswith("red-flags/SKILL.md'"), codex.tools[0]
+        retry = {"type": "error", "message": "Reconnecting... 1/5"}
+        assert Codex("design-review", "red-flags").parse([retry] + events("codex")).error is None
+        failed = {"type": "turn.failed", "error": {"message": "quota exceeded"}}
+        assert "quota exceeded" in Codex("design-review", "red-flags").parse(events("codex") + [failed]).error
+        only_retry = Codex("design-review", "red-flags").parse([{"type": "turn.started"}, retry])
+        assert only_retry.error == "no agent_message, last error: Reconnecting... 1/5", only_retry
+        interrupted = Codex("design-review", "red-flags").parse(events("codex")[:-1])
+        assert interrupted.error == "no turn.completed" and interrupted.answer, interrupted
+    finally:
+        MARKETPLACE = current
 
     omp = Omp("design-review", "red-flags").parse(events("omp"))
     assert omp.fired and omp.error is None, omp
@@ -1483,7 +1501,7 @@ def _selftest_publish() -> None:
     lines = report(current, True, seen)
     assert len(filed) == 1 and fingerprint("p", "s", "claude") in filed[0][1], filed
     assert "Client version: 1.0 → 2.0" in filed[0][1], filed[0][1]
-    assert "https://github.com/o/r/pkgs/container/ai-plugins-evals" in filed[0][1], filed[0][1]
+    assert "https://github.com/o/r/pkgs/container/pegboard-evals" in filed[0][1], filed[0][1]
     row = next(line for line in lines if line.startswith("| s | claude |"))
     assert "regressed: trigger_hit" in row and "0.00–0.00 (n=1, 3 of 3 repeats)" in row, row
     assert "| `trigger_hit` | 1.00–1.00 (3 of 3 repeats) | 0.00–0.00 (3 of 3 repeats) |" in filed[0][1], filed[0][1]
@@ -1563,7 +1581,7 @@ def _selftest_gh() -> None:
                                    | {"answer": "secret selftest-secret-value", "cost_usd": 0.1, "tokens": None}]}
             (runs_dir / "run.json").write_text(json.dumps(record))
             os.environ.update({"GITHUB_STEP_SUMMARY": str(workdir / "summary.md"),
-                               "GITHUB_REPOSITORY": "Akurganow/ai-plugins", "GH_TOKEN": "gh-tok",
+                               "GITHUB_REPOSITORY": "Akurganow/pegboard", "GH_TOKEN": "gh-tok",
                                "RUN_STAMP": "2026-10-20T21:53:00Z", "RUN_ATTEMPT": "2", "GITHUB_RUN_ID": "99"})
             pushed = []
 
@@ -1587,7 +1605,7 @@ def _selftest_gh() -> None:
                 if "/tags/list" in req.full_url:
                     return RegistryReply(b'{"tags": []}')
                 if req.full_url.endswith("/blobs/uploads/"):
-                    return RegistryReply(headers={"Location": "/v2/akurganow/ai-plugins-evals/blobs/uploads/u1"})
+                    return RegistryReply(headers={"Location": "/v2/akurganow/pegboard-evals/blobs/uploads/u1"})
                 return RegistryReply()
 
             real_open = urllib.request.urlopen
@@ -1596,17 +1614,18 @@ def _selftest_gh() -> None:
                 assert cmd_report(argparse.Namespace(tags="alpha--v0.2.0 alpha--v0.3.0", runs=str(runs_dir))) == 0
                 assert not [c for c in calls if c[:2] == ("release", "upload")], calls
                 urls = [p[1] for p in pushed]
-                assert urls.index("https://ghcr.io/v2/akurganow/ai-plugins-evals/tags/list") < next(
+                assert urls.index("https://ghcr.io/v2/akurganow/pegboard-evals/tags/list") < next(
                     i for i, u in enumerate(urls) if "/blobs/uploads/" in u), urls
                 manifests = [p for p in pushed if "/manifests/" in p[1]]
                 assert len(manifests) == 1, pushed
                 assert manifests[0][1].endswith(
-                    "/v2/akurganow/ai-plugins-evals/manifests/alpha--v0.3.0_s_claude_20261020T215300Za2_r1"), manifests[0][1]
+                    "/v2/akurganow/pegboard-evals/manifests/alpha--v0.3.0_s_claude_20261020T215300Za2_r1"), manifests[0][1]
                 manifest = json.loads(manifests[0][3])
                 assert manifest["mediaType"] == OCI_MANIFEST_TYPE and manifest["config"]["mediaType"] == OCI_CONFIG_TYPE
                 assert manifest["annotations"] == {
                     "org.opencontainers.image.created": "2026-10-20T21:53:00Z",
                     "org.opencontainers.image.version": "alpha--v0.3.0",
+                    "org.opencontainers.image.source": "https://github.com/Akurganow/pegboard",
                 }, manifest["annotations"]
                 blobs = {p[1].split("digest=")[1]: p[3] for p in pushed if "digest=" in p[1]}
                 layer_bytes = blobs[manifest["layers"][0]["digest"]]
@@ -1692,7 +1711,7 @@ def _selftest_registry() -> None:
             return Reply(b'{"token": "anon-tok"}')
         if url.endswith("/tags/list"):
             return Reply(json.dumps({"tags": pages[0]}).encode(),
-                         headers={"Link": '</v2/akurganow/ai-plugins-evals/tags/list?page=2>; rel="next"'})
+                         headers={"Link": '</v2/akurganow/pegboard-evals/tags/list?page=2>; rel="next"'})
         if "tags/list?page=2" in url:
             return Reply(json.dumps({"tags": pages[1]}).encode())
         if "/manifests/" in url:
@@ -1732,7 +1751,7 @@ def _selftest_registry() -> None:
     assert "`alpha--v0.2.10` (`20261010T000000Za1`)" in same_tag_body, same_tag_body
     assert "`alpha--v0.2.10` (`20261020T000000Za1`)" in same_tag_body, same_tag_body
     assert "| Metric | `alpha--v0.2.10` (`20261010T000000Za1`) | `alpha--v0.2.10` (`20261020T000000Za1`) |" in same_tag_body
-    assert "https://github.com/o/r/pkgs/container/ai-plugins-evals" in same_tag_body, same_tag_body
+    assert "https://github.com/o/r/pkgs/container/pegboard-evals" in same_tag_body, same_tag_body
 
 
 def _selftest_folders() -> None:

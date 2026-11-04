@@ -6,7 +6,7 @@ body:
     attributes:
       value: |
         Propose the package here before you open a pull request.
-        [CONTRIBUTING.md](https://github.com/Akurganow/ai-plugins/blob/main/CONTRIBUTING.md) describes the shape a package takes.
+        [CONTRIBUTING.md](https://github.com/Akurganow/pegboard/blob/main/CONTRIBUTING.md) describes the shape a package takes.
   - type: input
     id: name
     attributes:

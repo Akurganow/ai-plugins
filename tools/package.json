@@ -1,5 +1,5 @@
 {
-  "name": "ai-plugins-tools",
+  "name": "pegboard-tools",
   "private": true,
   "devDependencies": {
     "doctoc": "2.2.1"

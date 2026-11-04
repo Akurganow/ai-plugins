@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 126 310" width="126" height="310">
+<defs>
+<linearGradient id="compass-steel" x1="0" y1="0" x2="1" y2="0">
+<stop offset="0" stop-color="#9aa2ab"/><stop offset=".22" stop-color="#f4f6f8"/><stop offset=".55" stop-color="#c3c9d0"/><stop offset="1" stop-color="#7d858e"/>
+</linearGradient>
+<linearGradient id="compass-chrome" x1="0" y1="0" x2="1" y2="0">
+<stop offset="0" stop-color="#7f8790"/><stop offset=".2" stop-color="#ffffff"/><stop offset=".45" stop-color="#d3d8de"/><stop offset=".8" stop-color="#7b838c"/><stop offset="1" stop-color="#59616a"/>
+</linearGradient>
+<linearGradient id="compass-brass" x1="0" y1="0" x2="1" y2="0">
+<stop offset="0" stop-color="#a8781f"/><stop offset=".22" stop-color="#fff0b8"/><stop offset=".5" stop-color="#e2b54a"/><stop offset=".85" stop-color="#9c6e17"/><stop offset="1" stop-color="#77520e"/>
+</linearGradient>
+<radialGradient id="compass-brass-disc" cx=".35" cy=".3" r=".75">
+<stop offset="0" stop-color="#fff4c8"/><stop offset=".45" stop-color="#e0b04a"/><stop offset="1" stop-color="#8a5f12"/>
+</radialGradient>
+<linearGradient id="compass-head" x1="0" y1="0" x2="1" y2="1">
+<stop offset="0" stop-color="#ffffff"/><stop offset=".45" stop-color="#cfd4da"/><stop offset="1" stop-color="#7a828b"/>
+</linearGradient>
+<linearGradient id="compass-ring" gradientUnits="userSpaceOnUse" x1="60" y1="22" x2="80" y2="42">
+<stop offset="0" stop-color="#ffffff"/><stop offset=".5" stop-color="#bfc5cc"/><stop offset="1" stop-color="#6f7780"/>
+</linearGradient>
+<linearGradient id="compass-lead" x1="0" y1="0" x2="1" y2="0">
+<stop offset="0" stop-color="#2a2d31"/><stop offset=".3" stop-color="#8d939a"/><stop offset="1" stop-color="#1f2225"/>
+</linearGradient>
+<linearGradient id="compass-fade" x1="0" y1="0" x2="0" y2="1">
+<stop offset="0" stop-color="#fff" stop-opacity=".35"/><stop offset=".35" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#1e2a36" stop-opacity=".22"/>
+</linearGradient>
+<pattern id="compass-knurl" width="2.6" height="2.6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+<path d="M0 0H2.6M0 0V2.6" stroke="#3c434b" stroke-width=".7" fill="none"/>
+</pattern>
+</defs>
+<g id="compass-art" transform="translate(-11 0)" stroke-linejoin="round">
+<!-- needle leg -->
+<g transform="translate(66 96) rotate(10)">
+<path d="M-6.5 -4H6.5L4.5 158H-4.5Z" fill="url(#compass-steel)" stroke="#4d545c" stroke-width="1.2"/>
+<path d="M-6.5 -4H6.5L4.5 158H-4.5Z" fill="url(#compass-fade)"/>
+<path d="M5.7 6L4 156" stroke="#5a626b" stroke-width="1" opacity=".8"/>
+<path d="M-4.6 4L-3.2 152" stroke="#fff" stroke-width="1.1" opacity=".8"/>
+<path d="M1.6 2L1 154" stroke="#6f7780" stroke-width=".6" opacity=".6"/>
+<rect x="-4.6" y="156" width="9.2" height="22" rx="1.6" fill="url(#compass-chrome)" stroke="#4d545c" stroke-width="1"/>
+<rect x="-4.6" y="160" width="9.2" height="8" fill="url(#compass-knurl)" opacity=".5"/>
+<path d="M-3.4 158V176" stroke="#fff" stroke-width=".9" opacity=".8"/>
+<path d="M-1.7 178L1.7 178L0 197Z" fill="url(#compass-chrome)" stroke="#3f464d" stroke-width=".7"/>
+</g>
+<!-- pencil leg -->
+<g transform="translate(74 96) rotate(-10)">
+<path d="M-6.5 -4H6.5L4.8 142H-4.8Z" fill="url(#compass-steel)" stroke="#4d545c" stroke-width="1.2"/>
+<path d="M-6.5 -4H6.5L4.8 142H-4.8Z" fill="url(#compass-fade)"/>
+<path d="M5.7 6L4.3 140" stroke="#5a626b" stroke-width="1" opacity=".8"/>
+<path d="M-4.6 4L-3.5 138" stroke="#fff" stroke-width="1.1" opacity=".8"/>
+<path d="M1.6 2L1.1 140" stroke="#6f7780" stroke-width=".6" opacity=".6"/>
+<path d="M-1.5 175H1.5V191L0 197.5L-1.5 191Z" fill="url(#compass-lead)" stroke="#16181a" stroke-width=".6"/>
+<path d="M6 148H11V154H6Z" fill="url(#compass-brass)" stroke="#6b4c12" stroke-width=".8"/>
+<rect x="10.5" y="143.5" width="6.5" height="15" rx="2" fill="url(#compass-brass)" stroke="#6b4c12" stroke-width="1"/>
+<rect x="10.5" y="143.5" width="6.5" height="15" rx="2" fill="url(#compass-knurl)" opacity=".45"/>
+<rect x="-6.5" y="140" width="13" height="36" rx="2.4" fill="url(#compass-brass)" stroke="#6b4c12" stroke-width="1.1"/>
+<path d="M-6 146H6M-6 170H6" stroke="#7a5512" stroke-width=".9"/>
+<path d="M-6 147H6M-6 171H6" stroke="#fff3c4" stroke-width=".6" opacity=".7"/>
+<path d="M0 171.5V176" stroke="#5c400c" stroke-width=".9"/>
+<path d="M-4.4 142.5V173.5" stroke="#fff" stroke-width="1" opacity=".75"/>
+</g>
+<!-- arc brace, riveted to the needle leg, locked on the pencil leg -->
+<path d="M46.2 184.9A92 92 0 0 0 101.5 182.5" fill="none" stroke="#4a5158" stroke-width="5.4" stroke-linecap="round"/>
+<path d="M46.2 184.9A92 92 0 0 0 101.5 182.5" fill="none" stroke="#cdd2d8" stroke-width="3.6" stroke-linecap="round"/>
+<path d="M47 183.9A91 91 0 0 0 100.6 181.6" fill="none" stroke="#fff" stroke-width=".8" opacity=".85"/>
+<circle cx="50.1" cy="185.8" r="2.6" fill="url(#compass-brass-disc)" stroke="#6b4c12" stroke-width=".8"/>
+<circle cx="90" cy="185.8" r="5" fill="url(#compass-brass-disc)" stroke="#6b4c12" stroke-width="1"/>
+<circle cx="90" cy="185.8" r="5" fill="url(#compass-knurl)" opacity=".35"/>
+<circle cx="88.6" cy="184.3" r="1.4" fill="#fff8dc" opacity=".9"/>
+<!-- hinge head -->
+<path d="M61 80H79Q86.5 82 86.5 92V100Q86.5 110.5 70 111.5Q53.5 110.5 53.5 100V92Q53.5 82 61 80Z" fill="url(#compass-head)" stroke="#4a5158" stroke-width="1.3"/>
+<path d="M56 98V92Q56 84.5 61.5 82.6H70" fill="none" stroke="#fff" stroke-width="1.1" opacity=".9"/>
+<path d="M70 109.4Q84 108.6 84.4 99" fill="none" stroke="#5f666e" stroke-width=".8" opacity=".7"/>
+<path d="M54.6 101Q56 109.6 70 110.4Q84 109.6 85.4 101" fill="none" stroke="#6c747d" stroke-width="2.2" opacity=".55"/>
+<circle cx="70" cy="96" r="8" fill="url(#compass-brass-disc)" stroke="#6b4c12" stroke-width="1.1"/>
+<circle cx="70" cy="96" r="5.4" fill="none" stroke="#9c6e17" stroke-width=".7"/>
+<path d="M66.2 99.8L73.8 92.2" stroke="#5c400c" stroke-width="1.4" stroke-linecap="round"/>
+<path d="M65 93.6Q66.4 90.2 70 89.8" fill="none" stroke="#fffbe6" stroke-width="1.1" stroke-linecap="round"/>
+<!-- knurled handle -->
+<rect x="63" y="47" width="14" height="33.5" rx="1.5" fill="url(#compass-chrome)" stroke="#4a5158" stroke-width="1.1"/>
+<rect x="63.6" y="50" width="12.8" height="27.5" fill="url(#compass-knurl)" opacity=".55"/>
+<path d="M63.5 49.5H76.5M63.5 78H76.5" stroke="#4a5158" stroke-width=".8"/>
+<path d="M65.6 50.5V77.5" stroke="#fff" stroke-width="1.4" opacity=".75"/>
+<!-- eye and hanging ring -->
+<path d="M66 47V42.5Q66 40 70 40Q74 40 74 42.5V47Z" fill="url(#compass-chrome)" stroke="#4a5158" stroke-width="1"/>
+<circle cx="70" cy="32" r="8.6" fill="none" stroke="#3f464d" stroke-width="5"/>
+<circle cx="70" cy="32" r="8.6" fill="none" stroke="url(#compass-ring)" stroke-width="3.2"/>
+<path d="M62.9 30.2A7.4 7.4 0 0 1 68.2 24.8" fill="none" stroke="#fff" stroke-width="1" stroke-linecap="round"/>
+<path d="M72 42.2V45.5" stroke="#3f464d" stroke-width=".8"/>
+</g>
+</svg>

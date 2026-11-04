@@ -199,17 +199,17 @@ jobs:
           scratch=$(mktemp -d)
           tar --exclude=.git --exclude=node_modules -cf - . | tar -xf - -C "$scratch"
           cd "$scratch"
-          rm src/triz/icon.svg
+          rm src/triz-thinking/icon.svg
           if out=$(bash tools/build.sh 2>&1); then
             printf '%s\n' "$out"
             echo "::error::The builder accepted a package without icon.svg."
             exit 1
           fi
           printf '%s\n' "$out"
-          grep -qF 'src/triz/icon.svg is missing' <<<"$out" ||
+          grep -qF 'src/triz-thinking/icon.svg is missing' <<<"$out" ||
             { echo "::error::The builder refused the package, but not for its missing icon."; exit 1; }
-          [ -f bundles/triz/.claude-plugin/icon.png ] ||
-            { echo "::error::The builder deleted the triz bundle before it refused the package."; exit 1; }
+          [ -f bundles/triz-thinking/.claude-plugin/icon.png ] ||
+            { echo "::error::The builder deleted the triz-thinking bundle before it refused the package."; exit 1; }
 
       # Probe, protected by .agents/rules/tests.md, "Protected", item 1. Another resvg
       # version writes other PNG bytes, so the builder must refuse it. The fake resvg
@@ -261,15 +261,15 @@ jobs:
           scratch=$(mktemp -d)
           tar --exclude=.git --exclude=node_modules -cf - . | tar -xf - -C "$scratch"
           cd "$scratch"
-          jq '.name = "not-the-folder"' src/triz/source.json > "$scratch/source.json"
-          cp "$scratch/source.json" src/triz/source.json
+          jq '.name = "not-the-folder"' src/triz-thinking/source.json > "$scratch/source.json"
+          cp "$scratch/source.json" src/triz-thinking/source.json
           if out=$(python tools/check-conformance.py 2>&1); then
             printf '%s\n' "$out"
             echo "::error::The conformance check accepted a source name that differs from its folder."
             exit 1
           fi
           printf '%s\n' "$out"
-          grep -qF "must equal the folder name 'triz'" <<<"$out" ||
+          grep -qF "must equal the folder name 'triz-thinking'" <<<"$out" ||
             { echo "::error::The conformance check failed, but not on the source name."; exit 1; }
 
   # Pull requests only. The release bump silently skips a package commit that does

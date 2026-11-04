@@ -23,7 +23,7 @@ on:
   workflow_dispatch:
     inputs:
       tags:
-        description: Release tags separated by spaces, such as "triz--v0.2.0"
+        description: Release tags separated by spaces, such as "triz-thinking--v0.3.0"
         type: string
         required: true
       clients:

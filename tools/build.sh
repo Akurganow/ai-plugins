@@ -8,9 +8,10 @@
 #
 # Each package's two builds are deleted and written whole, so a file removed
 # from src/<name>/ leaves no copy. Nothing is deleted before every source has
-# been read and the prose-discipline short form has passed its limits. CI runs
-# this script and fails when the tree differs from the commit. A second run
-# changes nothing. It needs jq and POSIX tools, no node.
+# been read, every icon has been rendered and the prose-discipline short form
+# has passed its limits. CI runs this script and fails when the tree differs
+# from the commit, rendered icons excepted. A second run changes nothing. It
+# needs jq, resvg and POSIX tools, no node.
 set -euo pipefail
 
 die() {
@@ -20,10 +21,17 @@ die() {
 
 [ "$#" -eq 0 ] || die "takes no arguments"
 
-for tool in jq awk grep mkdir rm cp cmp cat mktemp dirname wc; do
+for tool in jq resvg awk grep mkdir rm cp cmp cat mktemp dirname wc; do
   command -v "$tool" >/dev/null 2>&1 ||
     die "$tool is not installed; install it and re-run bash tools/build.sh"
 done
+
+# One renderer on every machine: another resvg version writes other PNG bytes,
+# and a commit carrying them would release every package. CI and the release
+# job install this version; CONTRIBUTING.md says how to install it locally.
+RESVG_VERSION=0.48.1
+[ "$(resvg --version)" = "$RESVG_VERSION" ] ||
+  die "resvg $(resvg --version) is installed; this build needs resvg $RESVG_VERSION, see CONTRIBUTING.md"
 
 . "$(dirname "$0")/regions.sh" || die "cannot read regions.sh next to $0"
 
@@ -120,17 +128,19 @@ build_bundle() {
   local from="src/$1/source.json" out="bundles/$1" skills=0 hooks=0
   [ -d "src/$1/skills" ] && skills=1
   [ "$1" = prose-discipline ] && hooks=1
-  mkdir -p "$out/.claude-plugin" "$out/.codex-plugin" "$out/.cursor-plugin" ||
+  mkdir -p "$out/.claude-plugin" "$out/.codex-plugin" "$out/.cursor-plugin" "$out/assets" ||
     die "cannot create $out"
   project "$from" "$out/.claude-plugin/plugin.json" \
-    '{name, version, description, author, homepage, repository, license, keywords}'
+    '{name, version, description, author, homepage, repository, license, keywords, icon: "./assets/icon.png"}'
   project "$from" "$out/.codex-plugin/plugin.json" \
-    '{name, version, description, keywords}
+    '{name, version, description, keywords,
+      interface: {composerIcon: "./assets/icon.png", logo: "./assets/icon.png"}}
      + (if $skills == "1" then {skills: "./skills/"} else {} end)
      + (if $hooks == "1" then {hooks: "./hooks/codex.json"} else {} end)' \
     --arg skills "$skills" --arg hooks "$hooks"
   project "$from" "$out/.cursor-plugin/plugin.json" \
-    '{name, description, version, author: {name: .author.name}, homepage, repository, license, keywords}'
+    '{name, description, version, author: {name: .author.name}, homepage, repository, license, keywords, logo: "assets/icon.png"}'
+  copy_into "$WORK/icons/$1.png" "$out/assets/icon.png"
   copy_into "src/$1/README.md" "$out/README.md"
   copy_into LICENSE "$out/LICENSE"
   if [ "$skills" = 1 ]; then
@@ -202,6 +212,15 @@ for name in "${sources[@]}"; do
 done
 jq -s 'sort_by(.name)' "${files[@]}" >"$WORK/all.json" || die "jq cannot combine the source.json files"
 prepare_rules
+
+# Every icon is rendered before any deletion, so a broken SVG deletes nothing.
+mkdir -p "$WORK/icons" || die "cannot create $WORK/icons"
+for name in "${sources[@]}"; do
+  [ -f "src/$name/icon.svg" ] ||
+    die "src/$name/icon.svg is missing; every package needs its icon, restore it from git"
+  resvg -w 1024 -h 1024 "src/$name/icon.svg" "$WORK/icons/$name.png" ||
+    die "resvg cannot render src/$name/icon.svg; fix the SVG and re-run bash tools/build.sh"
+done
 
 # Delete phase. A name from a glob holds no slash and no leading dot, so no
 # path below leaves bundles/ or plugins/.

@@ -17,5 +17,6 @@
     "code-review",
     "conventional-comments",
     "commit-messages"
-  ]
+  ],
+  "icon": "./assets/icon.png"
 }

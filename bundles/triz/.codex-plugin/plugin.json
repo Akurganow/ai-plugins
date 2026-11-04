@@ -12,5 +12,9 @@
     "trade-offs",
     "problem-solving"
   ],
+  "interface": {
+    "composerIcon": "./assets/icon.png",
+    "logo": "./assets/icon.png"
+  },
   "skills": "./skills/"
 }

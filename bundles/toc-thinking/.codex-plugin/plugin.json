@@ -11,5 +11,9 @@
     "root-cause",
     "goldratt"
   ],
+  "interface": {
+    "composerIcon": "./assets/icon.png",
+    "logo": "./assets/icon.png"
+  },
   "skills": "./skills/"
 }

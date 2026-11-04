@@ -17,5 +17,6 @@
     "information-hiding",
     "red-flags",
     "ousterhout"
-  ]
+  ],
+  "icon": "./assets/icon.png"
 }

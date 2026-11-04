@@ -17,5 +17,6 @@
     "evaporating-cloud",
     "root-cause",
     "goldratt"
-  ]
+  ],
+  "icon": "./assets/icon.png"
 }

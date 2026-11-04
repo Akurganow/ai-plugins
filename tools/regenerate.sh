@@ -19,7 +19,7 @@ die() {
 
 [ "$#" -eq 0 ] || die "takes no arguments"
 
-for tool in jq node npm awk sed grep find sort wc cut tr cmp cat mktemp dirname; do
+for tool in jq resvg node npm awk sed grep find sort wc cut tr cmp cat mktemp dirname; do
   command -v "$tool" >/dev/null 2>&1 ||
     die "$tool is not installed; install it and re-run bash tools/regenerate.sh"
 done

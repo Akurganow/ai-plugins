@@ -27,6 +27,8 @@ def hole(i, j):
 
 def split(name):
     svg = (PARTS / f"{name}.svg").read_text()
+    if "<defs>" not in svg:
+        return "", svg[svg.index(">", svg.index("<svg")) + 1 : svg.rindex("</svg>")]
     defs = svg[svg.index("<defs>") + 6 : svg.index("</defs>")]
     body = svg[svg.index("</defs>") + 7 : svg.rindex("</svg>")]
     return defs, body

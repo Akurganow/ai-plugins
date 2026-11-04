@@ -85,8 +85,9 @@ The cost of two builds is the same skills twice, which the builder and CI keep e
 
 ## Icons are rendered from SVG
 
-Each bundle ships one listing icon, `assets/icon.png`, and all three client manifests name it.
-Claude Code's `icon` is read by the Anthropic directory, Codex reads `interface.composerIcon` and `interface.logo`, and Cursor reads `logo` ([Claude Code](clients.md#claude-code), [Codex](clients.md#codex), [Cursor](clients.md#cursor)).
+Each bundle ships one listing icon, `.claude-plugin/icon.png`.
+The Anthropic directory finds it there without a manifest field, and it reports the `icon` field as a field from another tool's manifest ([Anthropic plugin directory](clients.md#anthropic-plugin-directory)).
+Codex reads it through `interface.composerIcon` and `interface.logo`, and Cursor through `logo` ([Codex](clients.md#codex), [Cursor](clients.md#cursor)).
 The directory accepts a PNG or a JPEG and no SVG ([Anthropic plugin directory](clients.md#anthropic-plugin-directory)), so the shipped file is the one binary in the tree.
 Its source is `src/<name>/icon.svg`, which a diff can show, and the builder renders it on every run like every other build file.
 The Agent Plugins build carries no icon, because the 1.0.0 manifest has no field for one.
@@ -94,7 +95,7 @@ The Agent Plugins build carries no icon, because the 1.0.0 manifest has no field
 The builder accepts one resvg version, 0.48.1, and refuses any other.
 Another version renders other PNG bytes, and a commit that carries them releases every package, because cocogitto counts a package's builds.
 CI installs that version from its release archive, checked by a SHA-256 digest committed in the workflow.
-CI still leaves `bundles/*/assets/icon.png` out of both tree comparisons.
+CI still leaves `bundles/*/.claude-plugin/icon.png` out of both tree comparisons.
 Whether one resvg version writes the same bytes on every system was not measured, and a comparison would fail on a difference nobody made.
 The directory profile in CI fails a bundle whose icon is missing.
 

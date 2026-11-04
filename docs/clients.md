@@ -605,6 +605,9 @@ It shows no "Page updated" date.
 - The portal's Validate wants a square PNG or JPEG, 512 to 2048 px a side and under 2 MB, at `.claude-plugin/icon.png` or named by `icon`, and accepts no SVG or WebP.
   The file "may become the listing icon only once: the first time the plugin is saved or submitted in the developer portal".
   (running: the portal's Validate on `bundles/prose-discipline` at `4b2a8b8`, its "No icon" warning, 2026-11-04)
+- With `icon` set in `.claude-plugin/plugin.json`, Validate warns "Field from another tool's manifest": "The plugin directory reads 'icon' for the listing; Claude Code itself ignores it at load time."
+  So the bundles keep the file at `.claude-plugin/icon.png` and set no `icon`.
+  (running: the portal's Validate on `bundles/prose-discipline` at `fd262d6`, 2026-11-04)
 - The plugin folder "can be the repository root or a subfolder".
   (documentation: [Pre-submission checklist](https://claude.com/docs/plugins/pre-submission-checklist))
 - The rule for hook commands, unchanged: "In the command of a hook or an MCP server, write each path in full from `${CLAUDE_PLUGIN_ROOT}`, with no other variable, command substitution, wildcard, or inline program such as `python3 -c`". The result if you do not: "Blocks when the plugin folder is a subfolder of the repository".

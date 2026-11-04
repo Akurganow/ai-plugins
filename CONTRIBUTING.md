@@ -88,7 +88,7 @@ package. Install resvg 0.48.1 from its
 build it with `cargo install resvg --version 0.48.1 --locked`.
 
 Each package's listing icon is `src/<name>/icon.svg`. Change the SVG and run
-the builder, which renders `bundles/<name>/assets/icon.png` at 1024 by 1024 px.
+the builder, which renders `bundles/<name>/.claude-plugin/icon.png` at 1024 by 1024 px.
 CI does not compare that PNG with a fresh render, so commit it with the SVG.
 The icons follow the plugin list of claude.ai: one everyday object, outline
 only, a `#969696` line of width 1.56 on a 24-unit grid with 2 units of padding,

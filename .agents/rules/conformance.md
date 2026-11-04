@@ -171,7 +171,7 @@ writes is a version somebody moves by hand.
 No executables and no compiled artefacts are stored in the tree. The two
 builds are generated text, and prose-discipline's hooks in them are literal
 output commands, not scripts. One exception: each bundle's listing icon,
-`bundles/<name>/assets/icon.png`. The Anthropic directory accepts a PNG or a
+`bundles/<name>/.claude-plugin/icon.png`. The Anthropic directory accepts a PNG or a
 JPEG and no SVG, so the shipped icon cannot be text. Its source is text,
 `src/<name>/icon.svg`, and the builder renders it on every run with the one
 resvg version it names. CI does not compare rendered icons, because another

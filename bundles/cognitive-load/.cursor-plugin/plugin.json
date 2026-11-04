@@ -1,7 +1,7 @@
 {
   "name": "cognitive-load",
   "description": "Separates the cognitive load a task needs from the load a code base's structure adds, and names the change that removes the second.",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "author": {
     "name": "Alexander Kurganov"
   },

@@ -3,6 +3,13 @@ All notable changes to this project will be documented in this file. See [conven
 
 - - -
 
+## design-review--v0.3.1 - 2026-11-04
+#### Bug Fixes
+- point the sibling skills and READMEs at triz-thinking (2d31af7)
+
+- - -
+
+
 ## design-review--v0.3.0 - 2026-11-04
 #### Features
 - give every package a listing icon (5028179)

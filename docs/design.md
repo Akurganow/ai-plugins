@@ -83,6 +83,27 @@ Agent Plugins 1.0.0 §5.1 says no other file can "replace, supplement, or overri
 (documentation: [Agent Plugins specification §5.1](https://github.com/agentplugins/agent-plugins-spec/blob/ff8ab5e392cc87bd88d87c060815a87490e51003/spec/1.0.0.md#L133-L137))
 The cost of two builds is the same skills twice, which the builder and CI keep equal.
 
+## Icons are rendered from SVG
+
+Each bundle ships one listing icon, `assets/icon.png`, and all three client manifests name it.
+Claude Code's `icon` is read by the Anthropic directory, Codex reads `interface.composerIcon` and `interface.logo`, and Cursor reads `logo` ([Claude Code](clients.md#claude-code), [Codex](clients.md#codex), [Cursor](clients.md#cursor)).
+The directory accepts a PNG or a JPEG and no SVG ([Anthropic plugin directory](clients.md#anthropic-plugin-directory)), so the shipped file is the one binary in the tree.
+Its source is `src/<name>/icon.svg`, which a diff can show, and the builder renders it on every run like every other build file.
+The Agent Plugins build carries no icon, because the 1.0.0 manifest has no field for one.
+
+The builder accepts one resvg version, 0.48.1, and refuses any other.
+Another version renders other PNG bytes, and a commit that carries them releases every package, because cocogitto counts a package's builds.
+CI installs that version from its release archive, checked by a SHA-256 digest committed in the workflow.
+CI still leaves `bundles/*/assets/icon.png` out of both tree comparisons.
+Whether one resvg version writes the same bytes on every system was not measured, and a comparison would fail on a difference nobody made.
+The directory profile in CI fails a bundle whose icon is missing.
+
+The icons follow the plugin list of claude.ai, where every plugin is drawn as one glyph of the app's own icon font in a dark tile.
+The tile colour, the line colour and the stroke width were measured on that page, and each icon draws its own object in that frame.
+Two alternatives lost.
+A hand-drawn PNG as the source makes every change invisible in a diff and needs an image editor.
+A renderer that runs only by hand leaves the builder unable to write the whole bundle.
+
 ## Skill names carry no plugin prefix
 
 Claude Code, Codex and Hermes prefix a plugin skill with a namespace ([Claude Code](clients.md#claude-code), [Codex](clients.md#codex), [Hermes](clients.md#hermes)).

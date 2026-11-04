@@ -87,6 +87,9 @@ Documentation pages in this subsection were read on 2026-11-04.
   (running: `claude plugin validate --strict` on Claude Code 2.1.278 and 2.1.308, 2026-11-04)
 - `.codex-plugin/` and `.cursor-plugin/` folders beside `.claude-plugin/` raised no warning.
   (running: `claude plugin validate --strict` on Claude Code 2.1.308, 2026-11-04)
+- `icon` is the path to an image file inside the plugin, such as `./logo.png`: "Icon for the plugin's listing in Anthropic's directory. Claude Code doesn't read it".
+  In a catalogue entry `claude plugin validate` reports it as an unknown field, so it is set in `plugin.json` only.
+  (documentation: [Plugins reference](https://code.claude.com/docs/en/plugins-reference), read 2026-11-04)
 - The default hooks file is `hooks/hooks.json` at the plugin root.
   A `hooks` manifest field names further files, and Claude Code merges them with the default.
   (documentation: [Plugin components, Hooks](https://code.claude.com/docs/en/plugins/components#hooks),
@@ -236,6 +239,12 @@ Documentation pages were read on 2026-11-04.
   (source: [`manifest.rs` L50](https://github.com/openai/codex/blob/6ff1e1ca3b30fc8b914720681fcf5fe62e95f856/codex-rs/core-plugins/src/manifest.rs#L50), which has no `deny_unknown_fields`)
 - The submission documentation says to omit `$schema` from a standalone Codex compatibility manifest.
   (documentation: [Plugin submission](https://developers.openai.com/plugins/deploy/submission))
+- `interface.composerIcon` and `interface.logo` take `./`-prefixed paths to square images of at least 48 by 48 px, PNG among the accepted formats.
+  The same page lists `displayName`, `shortDescription`, `longDescription`, `developerName`, `category` and `capabilities` as required for the Codex format, with limits it calls the limits for public submission.
+  (documentation: [Plugin submission, Listing metadata and Icons and screenshots](https://developers.openai.com/plugins/deploy/submission), read 2026-11-04)
+- The loader reads every `interface` field as optional or defaulted, so an `interface` with only the two icon paths loads.
+  (source: [`manifest.rs` L80–L117](https://github.com/openai/codex/blob/6ff1e1ca3b30fc8b914720681fcf5fe62e95f856/codex-rs/core-plugins/src/manifest.rs#L80-L117), and [L76–L112 at `rust-v0.155.1`](https://github.com/openai/codex/blob/be2951ea34f0d295ed0becf97079f92fa5f6950e/codex-rs/core-plugins/src/manifest.rs#L76-L112))
+  The bundles carry only the two paths, because this repository submits nothing to the Codex directory.
 
 ### Hook files, Windows and trust
 
@@ -467,6 +476,8 @@ The pages show no commit, so each link is dated by that read.
   `name` is required, in lowercase kebab-case.
   Optional fields include `description`, `version`, `author` with `name` and `email`, `homepage`, `repository`, `license`, `keywords`, `logo`, `rules`, `skills`, `hooks` and `mcpServers`.
   (documentation: [Plugins reference, Cursor Plugin manifest](https://cursor.com/docs/reference/plugins))
+- `logo` is a relative path to a logo file in the repository, shown as `assets/logo.svg`, or an absolute URL.
+  (documentation: [Plugins reference, Logos](https://cursor.com/docs/reference/plugins))
 - The reference documents no `category` and no `$schema` for this manifest, and no `url` in `author`.
   It does not say what Cursor does with an unknown manifest key.
   (documentation: [Plugins reference](https://cursor.com/docs/reference/plugins), by absence)
@@ -591,6 +602,9 @@ It shows no "Page updated" date.
 - The portal's Validate runs every directory check.
   A finding labelled "Blocks" stops a submission until it is fixed, and one "Held for a reviewer" still lets the plugin be submitted.
   (documentation: [Pre-submission checklist](https://claude.com/docs/plugins/pre-submission-checklist))
+- The portal's Validate wants a square PNG or JPEG, 512 to 2048 px a side and under 2 MB, at `.claude-plugin/icon.png` or named by `icon`, and accepts no SVG or WebP.
+  The file "may become the listing icon only once: the first time the plugin is saved or submitted in the developer portal".
+  (running: the portal's Validate on `bundles/prose-discipline` at `4b2a8b8`, its "No icon" warning, 2026-11-04)
 - The plugin folder "can be the repository root or a subfolder".
   (documentation: [Pre-submission checklist](https://claude.com/docs/plugins/pre-submission-checklist))
 - The rule for hook commands, unchanged: "In the command of a hook or an MCP server, write each path in full from `${CLAUDE_PLUGIN_ROOT}`, with no other variable, command substitution, wildcard, or inline program such as `python3 -c`". The result if you do not: "Blocks when the plugin folder is a subfolder of the repository".

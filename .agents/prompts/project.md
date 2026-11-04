@@ -36,7 +36,9 @@ fields of each `src/<name>/source.json`.
   surfaces, loader behaviour — each names the documentation or the source
   file it was read from.
 - **The repository holds text only.** No executables, no compiled
-  artefacts. Released binaries live elsewhere and are referenced.
+  artefacts. Released binaries live elsewhere and are referenced. The one
+  exception is each bundle's listing icon, a PNG the builder renders from
+  `src/<name>/icon.svg`.
 - **One source per fact.** Each package has one hand-written source,
   `src/<name>/`. Everything under `bundles/` and `plugins/`, and each
   catalogue, is a copy that `tools/build.sh` writes. CI runs the scripts and

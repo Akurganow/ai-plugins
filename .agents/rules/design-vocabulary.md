@@ -140,7 +140,9 @@ commit.
   - `doctoc_install_is_stale` in `tools/regenerate.sh`;
   - the `jq` install steps in `conformance.yml` and `release.yml`;
   - the limits in `check_short_form` in `tools/build.sh`, each of which names
-    the failure it prevents.
+    the failure it prevents;
+  - the `RESVG_VERSION` check in `tools/build.sh`, whose comment names the
+    release of every package that another renderer's bytes would cause.
 - **Overlapping fences.** Five checks judge the same packages, each as a
   different party would:
   - the conformance check, `tools/check-conformance.py`;

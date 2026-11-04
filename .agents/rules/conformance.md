@@ -170,7 +170,13 @@ writes is a version somebody moves by hand.
 
 No executables and no compiled artefacts are stored in the tree. The two
 builds are generated text, and prose-discipline's hooks in them are literal
-output commands, not scripts. Released binaries are published elsewhere and
+output commands, not scripts. One exception: each bundle's listing icon,
+`bundles/<name>/assets/icon.png`. The Anthropic directory accepts a PNG or a
+JPEG and no SVG, so the shipped icon cannot be text. Its source is text,
+`src/<name>/icon.svg`, and the builder renders it on every run with the one
+resvg version it names. CI does not compare rendered icons, because another
+system may write other bytes from the same SVG. `docs/design.md`, "Icons are
+rendered from SVG", records why. Released binaries are published elsewhere and
 referenced from here. This repository runs four programs of its own. The
 first is its check, `tools/check-conformance.py`. The second is its
 regeneration entry point, `tools/regenerate.sh`, which writes every generated

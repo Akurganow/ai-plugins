@@ -79,9 +79,21 @@ nothing to release.
 
 The script needs `jq`, Node.js with `npm`, and `shasum` or `sha256sum`. It
 installs doctoc from `tools/package-lock.json` when `tools/node_modules` does
-not match it. That install needs the npm registry. The builder needs only
-`jq` and POSIX tools, so `bash tools/build.sh` runs alone when no README region
-changes.
+not match it. That install needs the npm registry. The builder needs `jq`,
+resvg 0.48.1 and POSIX tools, so `bash tools/build.sh` runs alone when no
+README region changes. It refuses any other resvg version, because another
+version renders other PNG bytes, and a commit that carries them releases every
+package. Install resvg 0.48.1 from its
+[release page](https://github.com/linebender/resvg/releases/tag/v0.48.1), or
+build it with `cargo install resvg --version 0.48.1 --locked`.
+
+Each package's listing icon is `src/<name>/icon.svg`. Change the SVG and run
+the builder, which renders `bundles/<name>/assets/icon.png` at 1024 by 1024 px.
+CI does not compare that PNG with a fresh render, so commit it with the SVG.
+The icons follow the plugin list of claude.ai: one everyday object, outline
+only, a `#969696` line of width 1.56 on a 24-unit grid with 2 units of padding,
+scaled into the centre 26 units of a 48-unit `#0b0b0b` tile with radius 8.
+Copy the frame of an existing `icon.svg` and draw only the object.
 
 The builder writes these, from `src/<name>/source.json`, the other files of
 `src/<name>/` and `tools/templates/marketplace.json`:
@@ -148,9 +160,9 @@ claude plugin validate --profile directory bundles/<name>
 
 `--strict` fails on a warning, such as an unknown manifest field. The directory
 profile runs the checks the Anthropic plugin directory applies before it
-accepts a submission, and needs Claude Code 2.1.305 or later. CI ignores one
-finding of that profile, `ICON_MISSING`, because an icon is a binary image and
-this repository stores text only. Source: [Plugins CLI reference](https://code.claude.com/docs/en/plugins/cli-reference),
+accepts a submission, and needs Claude Code 2.1.305 or later. CI fails on any
+finding of that profile, so a bundle without its icon fails with
+`ICON_MISSING`. Source: [Plugins CLI reference](https://code.claude.com/docs/en/plugins/cli-reference),
 Claude Code documentation, read 2026-11-04, for `--strict`; running
 `claude plugin validate --help` on Claude Code 2.1.305, for `--profile`. CI
 also runs the Agent Skills and Hermes validators on `plugins/<name>`. It installs every package into each client that
@@ -165,11 +177,12 @@ also runs the Agent Skills and Hermes validators on `plugins/<name>`. It install
 5. Make its `description` one sentence of at most 250 characters and 25 words.
 6. Set its `category` to the category of the closest package.
 7. Write `README.md` with the sections of the other package READMEs, in their order.
-8. Put each skill in `skills/<skill>/SKILL.md` with `license: MIT` in its front matter.
-9. Add the package to the `[monorepo.packages]` table in `cog.toml`, with the `include` globs of the other entries.
-10. For each skill, write `evals/<name>/<skill>/cases.yaml` and `rubric.yaml` by [these rules](#write-a-skills-evals-cases).
-11. Run `bash tools/regenerate.sh`, then the checks above, and commit the builds with the source.
-12. After the merge, a maintainer pushes the seed tag `<name>--v<version>` at the merge commit.
+8. Draw `icon.svg` as described in [Run the checks](#run-the-checks), and get the maintainer's approval of it.
+9. Put each skill in `skills/<skill>/SKILL.md` with `license: MIT` in its front matter.
+10. Add the package to the `[monorepo.packages]` table in `cog.toml`, with the `include` globs of the other entries.
+11. For each skill, write `evals/<name>/<skill>/cases.yaml` and `rubric.yaml` by [these rules](#write-a-skills-evals-cases).
+12. Run `bash tools/regenerate.sh`, then the checks above, and commit the builds with the source.
+13. After the merge, a maintainer pushes the seed tag `<name>--v<version>` at the merge commit.
 
 In a package README, link a file outside the package by its full GitHub URL,
 and a file inside it by a relative path. A package installs alone, and the

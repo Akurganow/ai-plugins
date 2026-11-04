@@ -45,6 +45,22 @@ jobs:
       - name: Install jq
         run: command -v jq >/dev/null || { sudo apt-get update && sudo apt-get install -y jq; }
 
+      # The builder renders every icon with resvg and accepts only the version it
+      # names (RESVG_VERSION in tools/build.sh). This is the sha256-pinned Linux
+      # release archive conformance.yml installs, which holds the one binary.
+      - name: Install resvg
+        env:
+          RESVG_URL: https://github.com/linebender/resvg/releases/download/v0.48.1/resvg-linux-x86_64.tar.gz
+          RESVG_SHA256: fa8c26495a187e592c501db15bf9e8a9fdc051d4b2b336b39703d5b59f912b9d
+        run: |
+          cd "$RUNNER_TEMP"
+          curl -fsSL --retry 5 --retry-delay 5 --retry-all-errors -o resvg.tar.gz "$RESVG_URL"
+          printf '%s  %s\n' "$RESVG_SHA256" resvg.tar.gz | sha256sum -c -
+          mkdir -p "$HOME/.local/bin"
+          tar -xzf resvg.tar.gz -C "$HOME/.local/bin" resvg
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+          "$HOME/.local/bin/resvg" --version | grep -Fx '0.48.1'
+
       # cocogitto 7.0.0's release archive for this runner, pinned by sha256
       # and checked before use. The digest matches GitHub's record of the upload.
       - name: Install cocogitto

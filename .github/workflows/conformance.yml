@@ -78,14 +78,32 @@ jobs:
       - name: Install jq
         run: command -v jq >/dev/null || { sudo apt-get update && sudo apt-get install -y jq; }
 
+      # The builder renders every icon with resvg and accepts only the version it
+      # names (RESVG_VERSION in tools/build.sh). This is that version's sha256-pinned
+      # Linux release archive, which holds the one binary.
+      - name: Install resvg
+        env:
+          RESVG_URL: https://github.com/linebender/resvg/releases/download/v0.48.1/resvg-linux-x86_64.tar.gz
+          RESVG_SHA256: fa8c26495a187e592c501db15bf9e8a9fdc051d4b2b336b39703d5b59f912b9d
+        run: |
+          cd "$RUNNER_TEMP"
+          curl -fsSL --retry 5 --retry-delay 5 --retry-all-errors -o resvg.tar.gz "$RESVG_URL"
+          printf '%s  %s\n' "$RESVG_SHA256" resvg.tar.gz | sha256sum -c -
+          mkdir -p "$HOME/.local/bin"
+          tar -xzf resvg.tar.gz -C "$HOME/.local/bin" resvg
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+          "$HOME/.local/bin/resvg" --version | grep -Fx '0.48.1'
+
       # `--intent-to-add` makes a generated file missing from the commit show
       # in `git diff`, which otherwise ignores untracked files. The builder runs
       # last in regenerate.sh, so a bundle or catalogue that differs fails here.
+      # Rendered icons are left out: resvg may write other bytes on another
+      # system, and the directory step below fails a bundle without its icon.
       - name: Check generated files
         run: |
           bash tools/regenerate.sh
           git add --intent-to-add --all
-          git diff --exit-code || {
+          git diff --exit-code -- . ':(exclude)bundles/*/assets/icon.png' || {
             echo "::error::Generated files differ from their sources. Run bash tools/regenerate.sh and commit the result."
             exit 1
           }
@@ -171,6 +189,48 @@ jobs:
           printf '%s\n' "$out"
           grep -qF 'the Windows command is' <<<"$out" ||
             { echo "::error::The builder refused the short form, but not for its Windows limit."; exit 1; }
+
+      # Probe, protected by .agents/rules/tests.md, "Protected", item 1. Every package
+      # ships an icon, so the builder must refuse a package without icon.svg before it
+      # deletes anything. The step fails when the builder accepts the package, or
+      # refuses it for another reason.
+      - name: Probe the builder with a package that has no icon
+        run: |
+          scratch=$(mktemp -d)
+          tar --exclude=.git --exclude=node_modules -cf - . | tar -xf - -C "$scratch"
+          cd "$scratch"
+          rm src/triz/icon.svg
+          if out=$(bash tools/build.sh 2>&1); then
+            printf '%s\n' "$out"
+            echo "::error::The builder accepted a package without icon.svg."
+            exit 1
+          fi
+          printf '%s\n' "$out"
+          grep -qF 'src/triz/icon.svg is missing' <<<"$out" ||
+            { echo "::error::The builder refused the package, but not for its missing icon."; exit 1; }
+          [ -f bundles/triz/assets/icon.png ] ||
+            { echo "::error::The builder deleted the triz bundle before it refused the package."; exit 1; }
+
+      # Probe, protected by .agents/rules/tests.md, "Protected", item 1. Another resvg
+      # version writes other PNG bytes, so the builder must refuse it. The fake resvg
+      # reports a version and renders nothing. The step fails when the builder accepts
+      # it, or refuses it for another reason.
+      - name: Probe the builder with another resvg version
+        run: |
+          scratch=$(mktemp -d)
+          tar --exclude=.git --exclude=node_modules -cf - . | tar -xf - -C "$scratch"
+          cd "$scratch"
+          mkdir fake-bin
+          printf '%s\n' '#!/bin/sh' 'echo 0.0.1' > fake-bin/resvg
+          chmod +x fake-bin/resvg
+          if out=$(PATH="$PWD/fake-bin:$PATH" bash tools/build.sh 2>&1); then
+            printf '%s\n' "$out"
+            echo "::error::The builder accepted resvg 0.0.1."
+            exit 1
+          fi
+          printf '%s\n' "$out"
+          grep -qF 'this build needs resvg' <<<"$out" ||
+            { echo "::error::The builder refused, but not for the resvg version."; exit 1; }
 
       # Probe, protected by .agents/rules/tests.md, "Protected", item 1. A symlink under
       # bundles/ fails Codex's plugin fingerprint, and Git for Windows checks it out as
@@ -276,10 +336,26 @@ jobs:
       - name: Install jq
         run: command -v jq >/dev/null || { sudo apt-get update && sudo apt-get install -y jq; }
 
+      # The builder renders every icon with resvg and accepts only the version it
+      # names (RESVG_VERSION in tools/build.sh). This is that version's sha256-pinned
+      # Linux release archive, which holds the one binary.
+      - name: Install resvg
+        env:
+          RESVG_URL: https://github.com/linebender/resvg/releases/download/v0.48.1/resvg-linux-x86_64.tar.gz
+          RESVG_SHA256: fa8c26495a187e592c501db15bf9e8a9fdc051d4b2b336b39703d5b59f912b9d
+        run: |
+          cd "$RUNNER_TEMP"
+          curl -fsSL --retry 5 --retry-delay 5 --retry-all-errors -o resvg.tar.gz "$RESVG_URL"
+          printf '%s  %s\n' "$RESVG_SHA256" resvg.tar.gz | sha256sum -c -
+          mkdir -p "$HOME/.local/bin"
+          tar -xzf resvg.tar.gz -C "$HOME/.local/bin" resvg
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+          "$HOME/.local/bin/resvg" --version | grep -Fx '0.48.1'
+
       # A commit that changes src/ or a shared file must carry the builds
       # tools/build.sh writes from it. Without this, its builds land in a later
       # commit, and the release counts that commit's builds, so the earlier
-      # commit releases nothing.
+      # commit releases nothing. Rendered icons are left out, as in the check job.
       - name: Build each commit that changes src/ or a shared file
         env:
           RANGE: ${{ github.event.pull_request.base.sha }}..${{ github.sha }}
@@ -291,9 +367,10 @@ jobs:
             git checkout --quiet --force "$sha"
             git clean -fdq
             bash tools/build.sh
-            if [ -n "$(git status --porcelain)" ]; then
+            drift=$(git status --porcelain -- . ':(exclude)bundles/*/assets/icon.png')
+            if [ -n "$drift" ]; then
               echo "::error::Commit $sha changes src/ or a shared file, and tools/build.sh writes a different tree from it. Run bash tools/build.sh on that commit and commit the builds with it."
-              git status --porcelain
+              printf '%s\n' "$drift"
               status=1
             fi
           done
@@ -355,7 +432,7 @@ jobs:
           claude --version
 
       # --strict treats the warnings as errors, so an unrecognised field or a
-      # missing metadata field fails the run. The icon warning does not fail it.
+      # missing metadata field fails the run.
       # (documentation: https://code.claude.com/docs/en/plugins/cli-reference, "plugin validate").
       - name: claude plugin validate --strict, per bundle and catalogue
         run: |
@@ -374,9 +451,8 @@ jobs:
       # it accepts a submission. The plain command runs fewer. The profile exits 1
       # on a finding that blocks a submission, and on a check it cannot make, such
       # as a hooks file that is not valid JSON (running: the help of
-      # `claude plugin validate`, Claude Code 2.1.305). This step fails on either.
-      # ICON_MISSING is the one finding it ignores: an icon is a binary image, and
-      # this repository stores text only (.agents/rules/conformance.md, "Text only").
+      # `claude plugin validate`, Claude Code 2.1.305). This step fails on either,
+      # and on any other finding, so a bundle without its icon fails with ICON_MISSING.
       # The directory also runs a safety scan and a policy review that this command
       # does not (running: its output, Claude Code 2.1.305), so a passing step does
       # not clear a submission. The directory's own Validate therefore runs by hand
@@ -390,7 +466,7 @@ jobs:
             rc=0
             out=$(claude plugin validate --profile directory --json "$name") || rc=$?
             printf '%s\n' "$out"
-            blocking=$(jq -r '.directory.findings[]? | select(.code != "ICON_MISSING") | "\(.code) \(.file): \(.message)"' <<<"$out")
+            blocking=$(jq -r '.directory.findings[]? | "\(.code) \(.file): \(.message)"' <<<"$out")
             if [ -n "$blocking" ] || [ "$rc" -ne 0 ]; then
               printf '%s\n' "$blocking"
               echo "::error::$name fails the plugin directory check (exit $rc)."

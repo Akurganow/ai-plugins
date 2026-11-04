@@ -50,10 +50,10 @@
       "category": "Developer Tools"
     },
     {
-      "name": "triz",
+      "name": "triz-thinking",
       "source": {
         "source": "local",
-        "path": "./bundles/triz"
+        "path": "./bundles/triz-thinking"
       },
       "policy": {
         "installation": "AVAILABLE",

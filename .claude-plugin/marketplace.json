@@ -35,10 +35,10 @@
       "category": "Developer Tools"
     },
     {
-      "name": "triz",
-      "source": "./bundles/triz",
+      "name": "triz-thinking",
+      "source": "./bundles/triz-thinking",
       "description": "Resolves software trade-offs with TRIZ: the contradiction matrix and 40 inventive principles, the separation principles, and ARIZ-85C walked part by part with the user.",
-      "homepage": "https://github.com/Akurganow/ai-plugins/tree/main/plugins/triz",
+      "homepage": "https://github.com/Akurganow/ai-plugins/tree/main/plugins/triz-thinking",
       "category": "Developer Tools"
     }
   ]

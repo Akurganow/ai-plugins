@@ -2,8 +2,8 @@
 id: repository
 description: >-
   Ordinary maintenance: the package sources and their builds, the
-  conformance check, the regeneration and build scripts, the entry point and
-  rule links, the root documents, the workflows and release configuration.
+  conformance check, the regeneration and build scripts, the entry point and its
+  imports, the root documents, the workflows and release configuration.
   Narrow, because the repository is small and public and its whole value is
   that its claims hold.
 
@@ -21,7 +21,6 @@ capabilities:
 paths:
   allow:
     - ".agents/**"
-    - ".claude/rules"
     - ".claude-plugin/**"
     - ".omp-plugin/**"
     - ".cursor-plugin/**"

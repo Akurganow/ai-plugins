@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 299 425" width="299" height="425">
+<defs>
+<linearGradient id="book-g-cloth" x1="0" y1="0" x2="1" y2="1">
+<stop offset="0" stop-color="#4a7d54"/><stop offset=".35" stop-color="#37683f"/><stop offset=".75" stop-color="#295433"/><stop offset="1" stop-color="#1c3d24"/>
+</linearGradient>
+<radialGradient id="book-g-glow" cx=".18" cy=".1" r=".8">
+<stop offset="0" stop-color="#e6f5e2" stop-opacity=".26"/><stop offset=".45" stop-color="#e6f5e2" stop-opacity=".06"/><stop offset="1" stop-color="#e6f5e2" stop-opacity="0"/>
+</radialGradient>
+<linearGradient id="book-g-shade-b" x1="0" y1="0" x2="0" y2="1">
+<stop offset=".82" stop-color="#07140a" stop-opacity="0"/><stop offset="1" stop-color="#07140a" stop-opacity=".38"/>
+</linearGradient>
+<linearGradient id="book-g-shade-r" x1="0" y1="0" x2="1" y2="0">
+<stop offset=".86" stop-color="#07140a" stop-opacity="0"/><stop offset="1" stop-color="#07140a" stop-opacity=".32"/>
+</linearGradient>
+<linearGradient id="book-g-spine" x1="0" y1="0" x2="1" y2="0">
+<stop offset="0" stop-color="#2c5534"/><stop offset=".35" stop-color="#5a8c63"/><stop offset=".7" stop-color="#3f6f47"/><stop offset="1" stop-color="#21452a"/>
+</linearGradient>
+<linearGradient id="book-g-spine-v" x1="0" y1="0" x2="0" y2="1">
+<stop offset="0" stop-color="#e6f5e2" stop-opacity=".18"/><stop offset=".3" stop-color="#e6f5e2" stop-opacity="0"/><stop offset=".8" stop-color="#07140a" stop-opacity="0"/><stop offset="1" stop-color="#07140a" stop-opacity=".35"/>
+</linearGradient>
+<linearGradient id="book-g-pages" x1="0" y1="0" x2="0" y2="1">
+<stop offset="0" stop-color="#d9cca9"/><stop offset=".5" stop-color="#f3ebd2"/><stop offset="1" stop-color="#e8dcbc"/>
+</linearGradient>
+<linearGradient id="book-g-pages-h" x1="0" y1="0" x2="1" y2="0">
+<stop offset="0" stop-color="#ffffff" stop-opacity=".35"/><stop offset=".4" stop-color="#ffffff" stop-opacity="0"/><stop offset=".85" stop-color="#5a4a2a" stop-opacity="0"/><stop offset="1" stop-color="#5a4a2a" stop-opacity=".25"/>
+</linearGradient>
+<linearGradient id="book-g-label" x1="0" y1="0" x2="1" y2="1">
+<stop offset="0" stop-color="#fdfbf4"/><stop offset=".6" stop-color="#f1ecdf"/><stop offset="1" stop-color="#e2dac6"/>
+</linearGradient>
+<pattern id="book-weave" width="3" height="3" patternUnits="userSpaceOnUse">
+<path d="M0 .75H3M0 2.25H3" stroke="#000" stroke-width=".55" opacity=".16"/>
+<path d="M.75 0V3M2.25 0V3" stroke="#d8ecd6" stroke-width=".45" opacity=".07"/>
+</pattern>
+<clipPath id="book-clip-face"><rect x="27.8" y="33" width="251" height="372" rx="2.5"/></clipPath>
+</defs>
+<g id="book-art">
+<!-- top edge: back board, page block, front board (depth reads down-right) -->
+<path d="M20 20H270.4Q271 20 271.4 20.7L278.8 33H27.8Z" fill="#3c6c45" stroke="#0f2414" stroke-width=".9" stroke-linejoin="round"/>
+<path d="M23.6 21.5H266.6L272.3 31.3H29.4Z" fill="url(#book-g-pages)"/>
+<path d="M23.6 21.5H266.6L272.3 31.3H29.4Z" fill="url(#book-g-pages-h)"/>
+<path d="M25 23.9H268M26.2 26H269.3M27.4 28.2H270.6M28.5 30H271.6" stroke="#b9a983" stroke-width=".45" opacity=".8"/>
+<path d="M21 20.6H270" stroke="#a8c9a6" stroke-width=".8" opacity=".6"/>
+<!-- spine -->
+<path d="M20 20L27.8 33V405L20 392Z" fill="url(#book-g-spine)" stroke="#0f2414" stroke-width=".9" stroke-linejoin="round"/>
+<path d="M20 20L27.8 33V405L20 392Z" fill="url(#book-g-spine-v)"/>
+<path d="M20.2 40.5L27.6 53M20.2 44.5L27.6 57M20.2 372L27.6 384.5M20.2 376L27.6 388.5" stroke="#14301a" stroke-width=".9" opacity=".75"/>
+<path d="M20.2 42L27.6 54.5M20.2 373.5L27.6 386" stroke="#9cc49c" stroke-width=".6" opacity=".5"/>
+<path d="M21.4 30V384" stroke="#c5e2c2" stroke-width=".8" opacity=".45"/>
+<path d="M20 20L27.8 33V39.5L20.6 27.6Z" fill="#a9b9a0" opacity=".55"/>
+<path d="M20 392L27.8 405V398.5L20.6 386.6Z" fill="#a9b9a0" opacity=".45"/>
+<!-- front cover -->
+<rect x="27.8" y="33" width="251" height="372" rx="2.5" fill="url(#book-g-cloth)"/>
+<g clip-path="url(#book-clip-face)">
+<rect x="27.8" y="33" width="251" height="372" fill="url(#book-weave)"/>
+<rect x="27.8" y="33" width="251" height="372" fill="url(#book-g-glow)"/>
+<rect x="27.8" y="33" width="251" height="372" fill="url(#book-g-shade-b)"/>
+<rect x="27.8" y="33" width="251" height="372" fill="url(#book-g-shade-r)"/>
+<!-- hinge groove beside the spine -->
+<path d="M41.2 33V405" stroke="#10261a" stroke-width="1.8" opacity=".8"/>
+<path d="M43.1 33V405" stroke="#7fae86" stroke-width="1" opacity=".45"/>
+<path d="M28.5 33V405" stroke="#6f9f77" stroke-width="2.2" opacity=".35"/>
+<!-- blind-embossed frame -->
+<rect x="56.5" y="50.5" width="206" height="337" rx="1.5" fill="none" stroke="#14301b" stroke-width="1.4" opacity=".75"/>
+<rect x="57.6" y="51.6" width="206" height="337" rx="1.5" fill="none" stroke="#7ead85" stroke-width=".9" opacity=".35"/>
+<!-- worn corners and edges -->
+<path d="M278.8 33H268.5C271.5 34.5 274 36.6 275.6 39.2C276.6 40.9 277.9 42.4 278.8 44.6Z" fill="#9fb79b" opacity=".55"/>
+<path d="M278.8 33H273.6C275.4 34.1 276.9 35.5 278.8 37.8Z" fill="#cfc6b3" opacity=".7"/>
+<path d="M278.8 405H268.2C271.8 403.5 274.3 401.1 276 398.2C276.9 396.6 277.9 395.2 278.8 393.4Z" fill="#8fa98c" opacity=".5"/>
+<path d="M278.8 405H274C275.6 403.9 277.2 402.4 278.8 400.2Z" fill="#bfb6a3" opacity=".65"/>
+<path d="M30 33.7H277.8" stroke="#bfe0bd" stroke-width="1.1" opacity=".42"/>
+<path d="M277.9 60V160M277.9 250V330" stroke="#a7c4a3" stroke-width=".9" opacity=".3"/>
+<path d="M90 404.3H180M210 404.3H260" stroke="#a7c4a3" stroke-width=".9" opacity=".25"/>
+</g>
+<rect x="27.8" y="33" width="251" height="372" rx="2.5" fill="none" stroke="#0c1f11" stroke-width="1.2"/>
+<!-- paper title label -->
+<rect x="78.5" y="76" width="163" height="114" rx="1" fill="#0b1a0e" opacity=".35" transform="translate(1.2 1.6)"/>
+<rect x="78.5" y="76" width="163" height="114" rx="1" fill="url(#book-g-label)"/>
+<path d="M79.2 189.4V76.7H240.8" fill="none" stroke="#ffffff" stroke-width="1" opacity=".8"/>
+<path d="M79 189.5H241V76.5" fill="none" stroke="#8b8471" stroke-width=".8" opacity=".7"/>
+<rect x="84.5" y="82" width="151" height="102" fill="none" stroke="#24342a" stroke-width="1.1"/>
+<rect x="87" y="84.5" width="146" height="97" fill="none" stroke="#24342a" stroke-width=".5"/>
+<g fill="#1d2b22">
+<path d="M125 94h31v4.5h-31zM159 94h36v4.5h-36z"/>
+<path d="M100 108h68v13h-68zM172 108h48v13h-48zM112 126h40v13h-40zM156 126h52v13h-52z"/>
+<rect x="130" y="146" width="60" height="1.4"/>
+<path d="M120 153h22v6h-22zM145 153h33v6h-33zM181 153h19v6h-19z"/>
+<rect x="140" y="170" width="40" height="4" rx="1"/>
+</g>
+</g>
+</svg>

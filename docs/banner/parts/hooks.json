@@ -1,7 +1,7 @@
 {
  "name": "hooks",
  "width": 480,
- "height": 200,
+ "height": 400,
  "usage": "Each hook is two groups in <defs>: <id>-back and <id>-front, drawn with the origin at the upper (left) anchor hole centre. Place both with the same translate(hole_x, hole_y): back, then the hung object, then front. Back alone plus front alone is the empty hook.",
  "projection": {
   "a": 0.15,
@@ -157,6 +157,61 @@
     185.4,
     28.1
    ]
+  },
+  "pocket": {
+   "kind": "pocket",
+   "anchors": [
+    {
+     "x": 0,
+     "y": 0,
+     "role": "left back tab"
+    },
+    {
+     "x": 308,
+     "y": 0,
+     "role": "right back tab"
+    },
+    {
+     "x": 0,
+     "y": 44,
+     "role": "left back wire, stub seated in hole behind it"
+    },
+    {
+     "x": 308,
+     "y": 44,
+     "role": "right back wire, stub seated in hole behind it"
+    }
+   ],
+   "hang": {
+    "x": 163.0,
+    "y": 135.0,
+    "means": "where the book stands: its centre line at x, the bottom edge of its front face at y. The book stands upright on the tray (top surface y 120 at the board), back against the back wires at depth 8 px, front face at depth 60 px, so the front bottom edge is drawn at (154 + 0.15*60, 120 + 0.25*60)"
+   },
+   "book_offset": [
+    9.7,
+    -270.0
+   ],
+   "tray_top_y": 120.0,
+   "rail_top_y": 17.3,
+   "inner_width_px": 300.2,
+   "size_cm": [
+    17.8,
+    4.0,
+    7.0
+   ],
+   "wire_px": 7.79,
+   "bbox_back": [
+    -3.9,
+    -10.1,
+    322.9,
+    146.1
+   ],
+   "bbox_front": [
+    7.1,
+    17.3,
+    322.9,
+    146.1
+   ]
   }
  },
  "preview_origins": {
@@ -171,12 +226,17 @@
   "shelf": [
    240,
    60
+  ],
+  "pocket": [
+   90,
+   230
   ]
  },
  "real_size_cm": {
   "hook-single": "4.5 mm wire, 7.3 cm reach",
   "hook-heavy": "5.4 mm wire, two parallel 12.1 cm prongs 20 px apart",
-  "shelf": "sheet shelf 11.0 x 8.9 cm, 6 mm front lip, two 4.5 mm wire brackets"
+  "shelf": "sheet shelf 11.0 x 8.9 cm, 6 mm front lip, two 4.5 mm wire brackets",
+  "pocket": "wire literature pocket 17.8 cm wide (17.3 cm inside), 4.0 cm deep tray, front rails 7.0 cm high, 4.5 mm wire; back tabs 7 pitches apart"
  },
  "traced_from": "US 4,750,700 Fig. 3 (United States patent drawing, https://patents.google.com/patent/US4750700A): side profile, bend radii, 5.0 deg prong droop, 35.9 deg upturn",
  "notes": "parts/hooks-notes.md"

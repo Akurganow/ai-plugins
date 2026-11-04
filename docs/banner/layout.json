@@ -1,6 +1,6 @@
 [
- {"object": "ruler", "kind": "single", "i": 3, "j": 4, "hang": [47.5, 25.0], "shadow": "flat"},
- {"object": null, "kind": "single", "i": 8, "j": 10},
+ {"object": "book", "kind": "pocket", "i": 1, "j": 8, "hang": [153.3, 405.0], "shadow": "far"},
+ {"object": null, "kind": "single", "i": 5, "j": 14},
  {"object": "compass", "kind": "single", "i": 10, "j": 2, "hang": [59.0, 26.0], "shadow": "flat"},
  {"object": "backpack", "kind": "heavy", "i": 22, "j": 0, "hang": [302.0, 43.0], "shadow": "far"},
  {"object": null, "kind": "heavy", "i": 31, "j": 7},

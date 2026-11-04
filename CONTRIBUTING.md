@@ -23,7 +23,8 @@ Commits follow Conventional Commits. The type sets the next version:
 
 Source: [Conventional Commits 1.0.0](https://www.conventionalcommits.org/en/v1.0.0/), documentation.
 
-cocogitto versions each package from the commits that touched its path, and
+cocogitto versions each package from the commits that touched its source,
+`src/<name>/`, or its builds, `bundles/<name>/` and `plugins/<name>/`. It
 writes that package's `CHANGELOG.md`. Source:
 [Automatic versioning for monorepo](https://github.com/cocogitto/website/blob/8fa24cde1ec4598ccee7cdd47de40fa594282de2/src/guide/README.md#automatic-versioning-for-monorepo),
 cocogitto documentation.
@@ -39,42 +40,62 @@ cocogitto source at 7.0.0, the release that `release.yml` installs.
 Put the package name in the scope, as in `fix(triz): correct one matrix cell`.
 Renaming a skill breaks its users, so it takes `!`, as in
 `feat(triz)!: rename the skill`. Use `docs:`, `ci:` or `chore:` for changes
-outside `plugins/`.
+outside a package's source and builds.
 
 Pull requests merge with a merge commit, so each commit reaches `main` as
 written. CI refuses a pull request with a non-conventional commit that touches
-`plugins/`, because the release would skip that commit. The `commits` job in
+`src/`, `bundles/`, `plugins/`, `LICENSE`, `tools/build.sh` or
+`tools/regions.sh`, because the release would skip that commit. The `commits` job in
 [`conformance.yml`](.github/workflows/conformance.yml) runs that check.
 
-Never edit `version` in a `plugin.json`, and never edit a package's
-`CHANGELOG.md`. [`release.yml`](.github/workflows/release.yml) writes both when
-it releases a package.
+Never edit `version` in a `source.json` or in a manifest, and never edit a
+package's `CHANGELOG.md`. [`release.yml`](.github/workflows/release.yml) writes
+the version and the changelog when it releases a package, and runs the builder
+so that every manifest carries the new version.
 
 ## Run the checks
 
 CI runs these checks on every pull request. Run them before you push.
 
-### Regenerate the generated files
+### Edit the source, then regenerate
 
-[`tools/regenerate.sh`](tools/regenerate.sh) writes some files and regions
-from another source. Edit the source, run the script, and commit what it
-changes:
+Edit `src/` only. `bundles/`, `plugins/`, the four catalogues and the
+generated regions of the READMEs come from it. Never edit one by hand, because
+the next run rewrites it and CI fails on the difference.
+
+[`tools/regenerate.sh`](tools/regenerate.sh) fills the regions and tables of
+contents, then runs [`tools/build.sh`](tools/build.sh):
 
 ```
 bash tools/regenerate.sh
 ```
 
-It needs `jq`, Node.js with `npm`, and `shasum` or `sha256sum`. It installs
-doctoc from `tools/package-lock.json` when `tools/node_modules` does not match it.
-That install needs the npm registry. CI runs the script and fails if the tree
-changes afterwards.
+Commit what it changes in the same commit as the change that produced it. CI
+checks every commit of a pull request. For each commit that changes `src/`,
+`LICENSE`, `tools/build.sh` or `tools/regions.sh`, it runs the builder and
+fails when the tree differs. cocogitto counts the builds toward a package's
+release, so builds that land in a later commit leave the earlier commit with
+nothing to release.
 
-It writes these whole files:
+The script needs `jq`, Node.js with `npm`, and `shasum` or `sha256sum`. It
+installs doctoc from `tools/package-lock.json` when `tools/node_modules` does
+not match it. That install needs the npm registry. The builder needs only
+`jq` and POSIX tools, so `bash tools/build.sh` runs alone when no README region
+changes.
 
-- `.claude-plugin/marketplace.json`, built from every `plugin.json` and
-  `tools/templates/marketplace.json`
-- `plugins/<name>/.claude-plugin/plugin.json`, a byte-identical copy of `plugins/<name>/plugin.json`
-- `plugins/<name>/LICENSE`, a byte-identical copy of the root `LICENSE`
+The builder writes these, from `src/<name>/source.json`, the other files of
+`src/<name>/` and `tools/templates/marketplace.json`:
+
+- `bundles/<name>/`, with a manifest folder for Claude Code, Codex and Cursor
+- `plugins/<name>/`, the Agent Plugins package
+- `.claude-plugin/marketplace.json`, `.agents/plugins/marketplace.json`,
+  `.omp-plugin/marketplace.json` and `.cursor-plugin/marketplace.json`
+
+For `prose-discipline`, it also writes the two hooks files and the `.mdc` rule
+into the bundle. It refuses a short form of the rules that breaks a limit, and
+the message names the limit.
+[About this repository's design](docs/design.md#no-hook-blocks-the-agent)
+gives the reasons.
 
 A generated region sits between two comments, `<!-- <region>:start -->` and
 `<!-- <region>:end -->`. A table of contents sits between doctoc's
@@ -116,30 +137,38 @@ It must exit 0. CI runs it in the `check` job.
 
 ### Validate with Claude Code
 
-With Claude Code installed, validate each plugin you changed:
+With Claude Code installed, validate each bundle you changed and the Claude
+catalogue:
 
 ```
-claude plugin validate plugins/<name>
+claude plugin validate --strict bundles/<name>
+claude plugin validate --strict .claude-plugin/marketplace.json
+claude plugin validate --profile directory bundles/<name>
 ```
 
-Source: [Plugins reference](https://code.claude.com/docs/en/plugins-reference),
-Claude Code documentation, read 2026-09-25. CI also runs the Agent Skills and
-Hermes validators. It installs every package into each client that
+`--strict` fails on a warning, such as an unknown manifest field. The directory
+profile runs the checks the Anthropic plugin directory applies before it
+accepts a submission, and needs Claude Code 2.1.305 or later. CI ignores one
+finding of that profile, `ICON_MISSING`, because an icon is a binary image and
+this repository stores text only. Source: [Plugins CLI reference](https://code.claude.com/docs/en/plugins/cli-reference),
+Claude Code documentation, read 2026-11-04, for `--strict`; running
+`claude plugin validate --help` on Claude Code 2.1.305, for `--profile`. CI
+also runs the Agent Skills and Hermes validators on `plugins/<name>`. It installs every package into each client that
 [`integration.yml`](.github/workflows/integration.yml) lists.
 
 ## Propose a new package
 
 1. Open a **New package** issue before you write the package.
-2. Once a maintainer accepts the proposal, open a pull request that adds `plugins/<name>/`.
-3. Follow the shape of an existing package, such as `plugins/triz/`.
-4. Write `plugin.json` as an Agent Plugins 1.0.0 manifest.
+2. Once a maintainer accepts the proposal, open a pull request that adds `src/<name>/`.
+3. Follow the shape of an existing package, such as `src/triz/`.
+4. Write `source.json` with the nine fields that `tools/source.schema.json` requires, and no other.
 5. Make its `description` one sentence of at most 250 characters and 25 words.
-6. Set `extensions["io.github.akurganow.ai-plugins"].category` to the category of the closest package.
+6. Set its `category` to the category of the closest package.
 7. Write `README.md` with the sections of the other package READMEs, in their order.
 8. Put each skill in `skills/<skill>/SKILL.md` with `license: MIT` in its front matter.
-9. Add the package to the `[monorepo.packages]` table in `cog.toml`.
+9. Add the package to the `[monorepo.packages]` table in `cog.toml`, with the `include` globs of the other entries.
 10. For each skill, write `evals/<name>/<skill>/cases.yaml` and `rubric.yaml` by [these rules](#write-a-skills-evals-cases).
-11. Run `bash tools/regenerate.sh`, then the checks above.
+11. Run `bash tools/regenerate.sh`, then the checks above, and commit the builds with the source.
 12. After the merge, a maintainer pushes the seed tag `<name>--v<version>` at the merge commit.
 
 In a package README, link a file outside the package by its full GitHub URL,
@@ -148,7 +177,7 @@ Hermes catalogue renders its README at the pinned commit. Source:
 [`plugin-catalog/README.md`](https://github.com/NousResearch/hermes-agent/blob/749220ef0007f8d87bd1531f1c24b0fe93816385/plugin-catalog/README.md#L86),
 Hermes documentation.
 
-The seed tag carries the version in the package's `plugin.json`.
+The seed tag carries the version in the package's `source.json`.
 [`release.yml`](.github/workflows/release.yml) refuses to release any package
 while a `cog.toml` package has no such tag reachable from `main`.
 

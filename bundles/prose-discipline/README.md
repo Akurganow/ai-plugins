@@ -17,7 +17,7 @@ An engineering prose standard for agent-written text: short active sentences, pl
 /plugin install prose-discipline@ai-plugins
 ```
 
-Source: Claude Code documentation, <https://code.claude.com/docs/en/discover-plugins>.
+Source: Claude Code documentation, <https://code.claude.com/docs/en/discover-plugins>. CI installs it on Ubuntu, macOS and Windows.
 
 ### Codex
 
@@ -26,7 +26,7 @@ codex plugin marketplace add Akurganow/ai-plugins --ref main
 codex plugin add prose-discipline@ai-plugins
 ```
 
-Source: Codex documentation, <https://developers.openai.com/plugins/build/plugins>, for `marketplace add`; Codex source, [`plugin_cmd.rs`](https://github.com/openai/codex/blob/e3e5ad28470f6a225301518c30a66e749a880164/codex-rs/cli/src/plugin_cmd.rs), for `plugin add`.
+Source: Codex documentation, <https://developers.openai.com/plugins/build/plugins>, for `marketplace add`; Codex source, [`plugin_cmd.rs`](https://github.com/openai/codex/blob/e3e5ad28470f6a225301518c30a66e749a880164/codex-rs/cli/src/plugin_cmd.rs), for `plugin add`. CI installs it on Ubuntu, macOS and Windows.
 
 ### Oh-My-Pi
 
@@ -35,7 +35,7 @@ omp plugin marketplace add Akurganow/ai-plugins
 omp plugin install prose-discipline@ai-plugins
 ```
 
-Source: Oh-My-Pi documentation, [`docs/marketplace.md`](https://github.com/can1357/oh-my-pi/blob/a33cc26824e3c91edd9fa42d681f10dceb4ac2f0/docs/marketplace.md).
+Source: Oh-My-Pi documentation, [`docs/marketplace.md`](https://github.com/can1357/oh-my-pi/blob/a33cc26824e3c91edd9fa42d681f10dceb4ac2f0/docs/marketplace.md). CI installs it on Ubuntu, macOS and Windows.
 
 ### Hermes
 
@@ -47,17 +47,41 @@ hermes plugins enable prose-discipline
 
 Keep the `plugins/prose-discipline` suffix: without it Hermes copies the whole repository, and its [two-level scan](https://github.com/NousResearch/hermes-agent/blob/a0ca7c19204e514f9590ce3b812e029b315ab9e9/website/docs/user-guide/features/plugins.md) finds no package.
 
-Source: Hermes documentation, [`developer-guide/plugins/index.md`](https://github.com/NousResearch/hermes-agent/blob/a0ca7c19204e514f9590ce3b812e029b315ab9e9/website/docs/developer-guide/plugins/index.md), for the commands; Hermes source, [`plugins_cmd.py`](https://github.com/NousResearch/hermes-agent/blob/a0ca7c19204e514f9590ce3b812e029b315ab9e9/hermes_cli/plugins_cmd.py) (`_resolve_git_url`), for the subdirectory form and what happens without it.
+Source: Hermes documentation, [`developer-guide/plugins/index.md`](https://github.com/NousResearch/hermes-agent/blob/a0ca7c19204e514f9590ce3b812e029b315ab9e9/website/docs/developer-guide/plugins/index.md), for the commands; Hermes source, [`plugins_cmd.py`](https://github.com/NousResearch/hermes-agent/blob/a0ca7c19204e514f9590ce3b812e029b315ab9e9/hermes_cli/plugins_cmd.py) (`_resolve_git_url`), for the subdirectory form and what happens without it. CI installs it on Ubuntu and macOS.
+
+### Cursor
+
+Cursor's documentation names no command that installs from a repository. It names three routes:
+
+- Public marketplace: open **Customize**, find the plugin, select **Install**. A plugin appears there only after Cursor reviews a submitted repository, and this repository claims no listing.
+- Team marketplace, on Teams and Enterprise plans: in **Dashboard**, **Plugins & MCPs**, **Team Marketplaces**, select **Add Marketplace**, then **Import from Repo**, and paste `https://github.com/Akurganow/ai-plugins`. Developers then install from **Customize**.
+- Local: copy `bundles/prose-discipline` to `~/.cursor/plugins/local/prose-discipline`, then restart Cursor or run **Developer: Reload Window**.
+
+Source: Cursor documentation, [Plugins](https://cursor.com/docs/plugins), read 2026-11-04, for the three routes; [Plugins reference](https://cursor.com/docs/reference/plugins), read 2026-11-04, for the submission and review. CI does not install it.
+
+### OpenClaw
+
+```
+openclaw plugins install prose-discipline --marketplace Akurganow/ai-plugins
+```
+
+Source: OpenClaw documentation, [`docs/cli/plugins/install.md`](https://github.com/openclaw/openclaw/blob/db6ac584cf205ea9a72de7ae83a4e65199b926a4/docs/cli/plugins/install.md#L277-L283). OpenClaw reads this repository's `.claude-plugin/marketplace.json` (OpenClaw source, [`marketplace.ts`](https://github.com/openclaw/openclaw/blob/db6ac584cf205ea9a72de7ae83a4e65199b926a4/src/plugins/marketplace.ts#L35-L38)). CI does not install it.
+
+### Kiro
+
+No install command is given. Kiro's documentation says Powers follow the Agent Plugins specification, and `plugins/prose-discipline/plugin.json` carries every field the documentation requires. The documentation does not say how Kiro finds several packages in one repository. CI does not install it.
+
+Source: Kiro documentation, [Create a power](https://kiro.dev/docs/powers/create) and [Installation](https://kiro.dev/docs/powers/installation), read 2026-11-04.
 
 <!-- install:end -->
 
 ## Usage
 
-The standard needs no prompt. Claude Code and Oh-My-Pi load it into every
-session on their own. Codex documents that it runs the same hooks once you
-trust them ([hooks](https://learn.chatgpt.com/docs/hooks#plugin-bundled-hooks),
+The standard needs no prompt. Claude Code, Cursor and Oh-My-Pi load it into
+every session on their own. Codex runs its hooks once you trust them
+([hooks](https://learn.chatgpt.com/docs/hooks#plugin-bundled-hooks),
 documentation). Hermes loads it once you pin the skill, as its section below
-shows.
+shows. OpenClaw loads the skill only.
 
 To check existing text against the standard, ask for it:
 
@@ -73,18 +97,20 @@ Each client gets the same core rules by its own documented route:
 | Client | Route | What you do |
 | :-- | :-- | :-- |
 | Claude Code | `SessionStart` and `SubagentStart` hooks | nothing |
-| Codex | the same hooks, declared in `plugin.json` | trust the hooks |
-| Oh-My-Pi | the rules file, applied to every request | nothing |
+| Codex | the same hooks, declared in the Codex manifest, `.codex-plugin/plugin.json`, as `hooks: ./hooks/codex.json` | trust the hooks, again after each release |
+| Cursor | the `.mdc` rule, with `alwaysApply: true` | nothing |
+| Oh-My-Pi | the `.mdc` rule, applied to every request | nothing |
 | Hermes | the skill, pinned with `skills.auto_load` | add the lines below to `config.yaml` |
+| OpenClaw | the skill only | nothing |
 
 ### Claude Code
 
-The `SessionStart` hook prints the core rules as plain text, and Claude Code
-adds that text to the context. The text ends with the plugin root, so the
-reference paths in the rules resolve. The hook also runs on a resume, a fork,
-`/clear` and every compaction, so the rules come back after `/clear` or a
-compaction removes them. The `SubagentStart` hook hands each subagent the
-same text as `additionalContext`. Claude Code does not load a plugin's
+The `SessionStart` hook prints the short form of the core rules as plain text,
+and Claude Code adds that text to the context. The short form ends by saying
+that the full rules, with their reasons and examples, are in the `house-style`
+skill. The hook also runs on a resume, a fork, `/clear` and every compaction,
+so the rules come back after `/clear` or a compaction removes them. The
+`SubagentStart` hook hands each subagent the same text as `additionalContext`. Claude Code does not load a plugin's
 `CLAUDE.md`. Its documentation says to put instructions for the context in a
 skill.
 
@@ -101,25 +127,35 @@ Sources, all Claude Code documentation:
 
 ### Codex
 
-`plugin.json` declares the hook file under `extensions["com.openai"].hooks`.
-Codex documents that it loads an enabled plugin's hooks, here the same
-`SessionStart` and `SubagentStart` hooks. Codex skips
-a plugin's hooks until you review and trust the current hook definition.
-When hooks are new or changed, Codex opens a "Hooks need review" prompt at
-startup. Its options include "Review hooks" and "Trust all and continue".
-It sets `CLAUDE_PLUGIN_ROOT` for compatibility, so the same command finds the
-script. Codex also lists every installed skill and tells the model to use one
-whose description matches the task.
+The Codex manifest, `.codex-plugin/plugin.json`, declares
+`"hooks": "./hooks/codex.json"`. A declared `hooks` entry replaces Codex's
+default `hooks/hooks.json`, so Codex never runs Claude Code's hooks file. The
+file holds the `SessionStart` and `SubagentStart` hooks, each with a Windows
+command. Codex skips a plugin's hooks until you review and trust the current
+hook definition. When hooks are new or changed, Codex opens a "Hooks need
+review" prompt at startup. Its options include "Review hooks" and "Trust all
+and continue". Codex ties that trust to a hash of the whole installed plugin,
+and every release changes `version` in the manifests, so it asks again after
+each release. Codex also lists every installed skill and tells the model to
+use one whose description matches the task.
 
 Sources:
 
 - Codex documentation,
   [plugin packaging](https://developers.openai.com/plugins/build/plugins):
-  the `hooks` field under `extensions.com.openai`, loading an enabled
-  plugin's hooks, and hook trust.
+  legacy packages declare `hooks` in `.codex-plugin/plugin.json`, loading an
+  enabled plugin's hooks, and hook trust.
 - Codex documentation, [hooks](https://learn.chatgpt.com/docs/hooks):
-  the `SessionStart` and `SubagentStart` events, and `CLAUDE_PLUGIN_ROOT`
-  for compatibility.
+  the `SessionStart` and `SubagentStart` events, `commandWindows`, and a new
+  review after a plugin update.
+- Codex source,
+  [`loader.rs` L1220–L1275](https://github.com/openai/codex/blob/6ff1e1ca3b30fc8b914720681fcf5fe62e95f856/codex-rs/core-plugins/src/loader.rs#L1220-L1275):
+  a declared `hooks` entry replaces the default `hooks/hooks.json`.
+- Codex source,
+  [`plugin_trust.rs`](https://github.com/openai/codex/blob/6ff1e1ca3b30fc8b914720681fcf5fe62e95f856/codex-rs/hooks/src/engine/plugin_trust.rs#L29-L69)
+  and [`plugin_fingerprint.rs`](https://github.com/openai/codex/blob/6ff1e1ca3b30fc8b914720681fcf5fe62e95f856/codex-rs/hooks/src/engine/plugin_fingerprint.rs#L13-L91),
+  at `rust-v0.166.0`: trust is bound to a hash of every file in the installed
+  plugin.
 - Codex source,
   [`catalog_prompt.rs`](https://github.com/openai/codex/blob/549455f3ec5a7f2a0489894543a0e49f307142a6/codex-rs/ext/skills/src/catalog_prompt.rs#L3-L8):
   the skill trigger rule.
@@ -129,9 +165,10 @@ Sources:
 
 ### Oh-My-Pi
 
-Oh-My-Pi reads `rules/prose-discipline.md` from a marketplace install. The
-file's `alwaysApply: true` puts its full text into the system prompt of every
-request. The file names no agents, so subagents get it too.
+Oh-My-Pi reads `rules/prose-discipline.mdc` from the bundle that a
+marketplace install copies. The file's `alwaysApply: true` puts its full text
+into the system prompt of every request. The file names no agents, so
+subagents get it too.
 
 Sources:
 
@@ -145,9 +182,42 @@ Sources:
 - Oh-My-Pi source,
   [`claude-plugins.ts`](https://github.com/can1357/oh-my-pi/blob/ba56afb26280a6a3195c329fa66a3f8fb52f82eb/packages/coding-agent/src/discovery/claude-plugins.ts#L266-L285):
   the loader for a plugin's `rules/` directory.
-- Oh-My-Pi source,
-  [`agent-plugin-format.ts`](https://github.com/can1357/oh-my-pi/blob/ba56afb26280a6a3195c329fa66a3f8fb52f82eb/packages/coding-agent/src/discovery/agent-plugin-format.ts#L539-L551):
-  an Agent Plugins package keeps its rules.
+
+### Cursor
+
+Cursor reads the same `rules/prose-discipline.mdc` from the bundle. Its
+default discovery takes every `.mdc` file in `rules/`, and a rule with
+`alwaysApply: true` applies to all files. Cursor's default discovery also
+parses `hooks/hooks.json`, where the bundle holds Claude Code's hooks file.
+The documentation does not say whether Cursor accepts that file, and nothing
+here ran it. CI does not install the plugin into Cursor.
+
+Source: Cursor documentation,
+[Plugins reference](https://cursor.com/docs/reference/plugins), component
+discovery and rules, read 2026-11-04.
+
+### OpenClaw
+
+OpenClaw loads this plugin's skill and nothing else. It picks the Codex
+manifest when a bundle holds several, detects `hooks/hooks.json` without
+running it, reads a Codex manifest's `hooks` value as a list of hook
+directories, so `hooks/codex.json` loads nothing, and reads no plugin-root
+`rules/`. CI does not install the plugin into OpenClaw.
+
+Sources, at OpenClaw commit `db6ac58`:
+
+- OpenClaw source,
+  [`bundle-manifest.ts` L388–L397](https://github.com/openclaw/openclaw/blob/db6ac584cf205ea9a72de7ae83a4e65199b926a4/src/plugins/bundle-manifest.ts#L388-L397):
+  the Codex manifest comes first.
+- OpenClaw documentation,
+  [`docs/plugins/bundles.md` L197–L201](https://github.com/openclaw/openclaw/blob/db6ac584cf205ea9a72de7ae83a4e65199b926a4/docs/plugins/bundles.md#L197-L201):
+  Claude `hooks/hooks.json` is recognised and not run.
+- OpenClaw source,
+  [`discovery.ts` L178–L180](https://github.com/openclaw/openclaw/blob/db6ac584cf205ea9a72de7ae83a4e65199b926a4/src/hooks/discovery.ts#L178-L180):
+  a hook root that is not a directory loads nothing.
+- OpenClaw source,
+  [`bundle-manifest.ts` L170–L175](https://github.com/openclaw/openclaw/blob/db6ac584cf205ea9a72de7ae83a4e65199b926a4/src/plugins/bundle-manifest.ts#L170-L175):
+  the only `rules` lookup is for `.cursor/rules`.
 
 ### Hermes
 
@@ -206,33 +276,45 @@ Sources:
 
 | Path | What it is |
 | :-- | :-- |
-| `rules/prose-discipline.md` | the core rules, the one source every client receives |
-| `skills/house-style/SKILL.md` | the skill: a generated copy of the core rules, the checking procedure, and which reference to read when |
-| `skills/house-style/references/` | structural rules, vocabulary, slop pruning, comment hygiene, artifact formats, and a calibration corpus |
-| `hooks/hooks.json` | the `SessionStart` and `SubagentStart` hooks |
-| `hooks/print-rules.sh` | prints the core rules, as plain text or, with `--json`, as a hook object |
-| `plugin.json` | the Agent Plugins 1.0.0 manifest |
-| `.claude-plugin/plugin.json` | a generated copy of `plugin.json`, where Claude Code reads it |
+| `src/prose-discipline/rules/prose-discipline.md` | the core rules, the one source of every client's copy, with a `hook-text` region that holds the short form the hooks print |
+| `src/prose-discipline/skills/house-style/SKILL.md` | the skill: a generated copy of the core rules, the checking procedure, and which reference to read when |
+| `src/prose-discipline/skills/house-style/references/` | structural rules, vocabulary, slop pruning, comment hygiene, artifact formats, and a calibration corpus |
+| `bundles/prose-discipline/hooks/hooks.json` | Claude Code's `SessionStart` and `SubagentStart` hooks |
+| `bundles/prose-discipline/hooks/codex.json` | Codex's two hooks, each with a Windows command |
+| `bundles/prose-discipline/rules/prose-discipline.mdc` | the full rules without the short-form region, with `alwaysApply: true`, for Cursor and Oh-My-Pi |
+| `plugins/prose-discipline/plugin.json` | the Agent Plugins 1.0.0 manifest, for Hermes and Kiro |
 | `LICENSE` | the MIT license |
+
+`bundles/` and `plugins/` are generated from `src/`. No file in the package is
+a script.
 
 Changes to the hand-written files above must pass this standard, so the
 package stays an example of what it asks for.
 
 ## Requirements and network
 
-The hooks run `sh` and `awk` from `PATH`. On Windows, Claude Code runs
-shell-form hooks in Git Bash when it is installed, and in PowerShell
-otherwise. Source: Claude Code documentation,
+The hooks print text with a literal `echo` or `printf`. They read no file,
+name no variable and run no script, so they need no `awk` and no runtime. On
+Windows, Claude Code runs shell-form hooks in Git Bash when it is installed,
+and in PowerShell otherwise. Source: Claude Code documentation,
 [hooks](https://code.claude.com/docs/en/hooks), "Exec form and shell form".
-If Git Bash is missing and `PATH` has no `sh`, or the script fails, the
-session starts without the hook's copy of the rules. A failing script writes
-one line to stderr with the cause and the fix. The skill and the rules file
-still ship.
+The `SubagentStart` command uses `printf`. Whether PowerShell has a `printf`
+is untested, so without Git Bash that command may print nothing, and a
+subagent then gets no rules. Codex runs `cmd.exe` on Windows, and its file
+carries a `commandWindows` for it. The skill still ships.
 
-The rules file stays under 8,000 characters. That keeps the hook text under
-Claude Code's 10,000-character cap and Codex's default 2,500-token threshold
-for hook context ([Claude Code hooks](https://code.claude.com/docs/en/hooks),
-[Codex hooks](https://learn.chatgpt.com/docs/hooks), both documentation).
+The builder limits the short form, the text the hooks print. It must stay
+under 8,000 bytes, because Codex's default 2,500-token threshold for hook
+context and Claude Code's 10,000-character cap would otherwise cut it
+([Codex hooks](https://learn.chatgpt.com/docs/hooks),
+[Claude Code hooks](https://code.claude.com/docs/en/hooks), both
+documentation). Its Windows command must stay under 8,191 characters, the
+command-line limit of cmd.exe
+([Microsoft](https://learn.microsoft.com/en-us/troubleshoot/windows-client/shell-experience/command-line-string-limitation),
+documentation). The builder also refuses characters that `sh`, PowerShell or
+cmd.exe would read as something other than text.
+[About this repository's design](https://github.com/Akurganow/ai-plugins/blob/main/docs/design.md#no-hook-blocks-the-agent)
+gives each limit and its reason.
 
 The package makes no network requests, needs no credentials and writes no
 files. It adds no MCP servers and no settings files.

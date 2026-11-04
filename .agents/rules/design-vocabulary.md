@@ -152,10 +152,9 @@ commit.
   The records are `docs/design.md`, "CI checks structure and installation", the
   docstring of `check_skill_frontmatter`, and `.agents/rules/slop.md`, "The
   fence".
-- **A step that reports "not run".** The step `Report the prose-discipline hook
-  check as not run (Codex)` in `integration.yml` cannot fail. `docs/design.md`,
-  "Codex gets its documented hook route", records why it is a notice and not an
-  assertion. It is recorded.
+- **A job that reports "not run".** The `cursor` job in `integration.yml`
+  cannot fail. `docs/design.md`, "CI checks structure and installation",
+  records why it is a notice and not an assertion. It is recorded.
 - **A called workflow with a second entry.** `evals.yml` has one caller,
   `release.yml`, and also runs by hand through `workflow_dispatch`. The records
   are the comment above the `evals` job in `release.yml` and `docs/design.md`,

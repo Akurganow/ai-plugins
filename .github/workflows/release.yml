@@ -2,7 +2,8 @@ name: release
 
 # Releases each package that has a feat, fix or breaking commit since its last
 # tag, straight on main, with cocogitto (https://docs.cocogitto.io/guide/monorepo).
-# cog.toml names the packages and writes the version into both manifests.
+# cog.toml names the packages and writes the version into source.json, then
+# builds every manifest from it.
 #
 # Loop guard: a push made with GITHUB_TOKEN starts no new workflow run
 # (documentation: https://github.com/github/docs/blob/75ea7dd097a5564f27364a5b70eaa1979106eabd/data/reusables/actions/actions-do-not-trigger-workflows.md),
@@ -38,6 +39,11 @@ jobs:
         with:
           ref: main
           fetch-depth: 0
+
+      # `ubuntu-latest` moves between images, and jq is not promised on
+      # every one. The bump hooks and tools/build.sh need it.
+      - name: Install jq
+        run: command -v jq >/dev/null || { sudo apt-get update && sudo apt-get install -y jq; }
 
       # cocogitto 7.0.0's release archive for this runner, pinned by sha256
       # and checked before use. The digest matches GitHub's record of the upload.
@@ -107,7 +113,7 @@ jobs:
             name=${tag%--v*}
             notes="$RUNNER_TEMP/$tag.md"
             awk -v head="## $tag " 'index($0, head) == 1 { p = 1; next } p && (/^- - -$/ || /^## /) { exit } p' \
-              "plugins/$name/CHANGELOG.md" > "$notes"
+              "src/$name/CHANGELOG.md" > "$notes"
             [ -s "$notes" ] || { echo "::error::no changelog section for $tag"; exit 1; }
             gh release create "$tag" --verify-tag --title "$tag" --notes-file "$notes"
           done

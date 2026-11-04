@@ -3,6 +3,18 @@ All notable changes to this project will be documented in this file. See [conven
 
 - - -
 
+## design-review--v0.3.2 - 2026-11-04
+#### Bug Fixes
+- point every link at Akurganow/pegboard (2fb81f7)
+- install from the pegboard marketplace (50f6135)
+#### Documentation
+- drop the ai-plugins move note (43e9797)
+- move every installed plugin off ai-plugins (0779a54)
+- lead the README with the plugins and add a move note (6c95eee)
+
+- - -
+
+
 ## design-review--v0.3.1 - 2026-11-04
 #### Bug Fixes
 - point the sibling skills and READMEs at triz-thinking (2d31af7)

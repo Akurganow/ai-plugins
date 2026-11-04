@@ -103,7 +103,7 @@ jobs:
         run: |
           bash tools/regenerate.sh
           git add --intent-to-add --all
-          git diff --exit-code -- . ':(exclude)bundles/*/assets/icon.png' || {
+          git diff --exit-code -- . ':(exclude)bundles/*/.claude-plugin/icon.png' || {
             echo "::error::Generated files differ from their sources. Run bash tools/regenerate.sh and commit the result."
             exit 1
           }
@@ -208,7 +208,7 @@ jobs:
           printf '%s\n' "$out"
           grep -qF 'src/triz/icon.svg is missing' <<<"$out" ||
             { echo "::error::The builder refused the package, but not for its missing icon."; exit 1; }
-          [ -f bundles/triz/assets/icon.png ] ||
+          [ -f bundles/triz/.claude-plugin/icon.png ] ||
             { echo "::error::The builder deleted the triz bundle before it refused the package."; exit 1; }
 
       # Probe, protected by .agents/rules/tests.md, "Protected", item 1. Another resvg
@@ -367,7 +367,7 @@ jobs:
             git checkout --quiet --force "$sha"
             git clean -fdq
             bash tools/build.sh
-            drift=$(git status --porcelain -- . ':(exclude)bundles/*/assets/icon.png')
+            drift=$(git status --porcelain -- . ':(exclude)bundles/*/.claude-plugin/icon.png')
             if [ -n "$drift" ]; then
               echo "::error::Commit $sha changes src/ or a shared file, and tools/build.sh writes a different tree from it. Run bash tools/build.sh on that commit and commit the builds with it."
               printf '%s\n' "$drift"

@@ -108,7 +108,7 @@ A renderer that runs only by hand leaves the builder unable to write the whole b
 ## Skill names carry no plugin prefix
 
 Claude Code, Codex and Hermes prefix a plugin skill with a namespace ([Claude Code](clients.md#claude-code), [Codex](clients.md#codex), [Hermes](clients.md#hermes)).
-So a skill named after its plugin reads `/triz:triz` in Claude Code.
+So a skill named after its plugin reads `/triz-thinking:triz-thinking` in Claude Code.
 Claude Code also answers a bare `/<skill>` while no other command uses that name ([Claude Code](clients.md#claude-code)).
 Oh-My-Pi shows the bare name, keeps the first skill of each name, and drops the rest ([Oh-My-Pi](clients.md#oh-my-pi)).
 A generic name such as `review` collides in Oh-My-Pi with any other source that ships one.
@@ -124,13 +124,13 @@ The directories under `src/*/skills/` hold the names in use, except `howp`'s, wh
 | howp | `forecast`, `interests` |
 | prose-discipline | `house-style` |
 | toc-thinking | `root-cause` |
-| triz | `contradiction`, `ariz` |
+| triz-thinking | `contradiction`, `ariz` |
 
 A package holds a second skill when one skill carried two jobs with different triggers.
 In `howp`, `interests` interviews the person and writes the two files they own, once per interest.
 `forecast` keeps the binary, the cycle and the procedures that run on every cycle.
 `interview` lost as that skill's name, because it is the likeliest bare name for an unrelated skill.
-In `triz`, `ariz` walks ARIZ-85C, a nine-part algorithm that the matrix route never opens.
+In `triz-thinking`, `ariz` walks ARIZ-85C, a nine-part algorithm that the matrix route never opens.
 `contradiction` keeps the matrix route, and hands a problem it did not crack to `ariz`.
 `toc-thinking` stays one skill.
 Its five trees form one sequence, and each tree's output is the next one's input.

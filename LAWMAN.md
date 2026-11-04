@@ -53,7 +53,7 @@ contract_version: 3
 - src/design-review/CHANGELOG.md
 - src/prose-discipline/CHANGELOG.md
 - src/toc-thinking/CHANGELOG.md
-- src/triz/CHANGELOG.md
+- src/triz-thinking/CHANGELOG.md
 - plugins/howp/binaries.json
 - plugins/howp/skills/forecast/references/commands.md
 - tools/schemas

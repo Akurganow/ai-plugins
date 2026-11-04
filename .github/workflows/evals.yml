@@ -35,9 +35,6 @@ on:
 permissions:
   contents: read
 
-env:
-  MARKETPLACE: pegboard
-
 jobs:
   matrix:
     runs-on: ubuntu-latest
@@ -109,7 +106,11 @@ jobs:
           bun-version: latest
 
       - name: Install the client and the released package
+        # The released tag's catalogue names the marketplace, and a tag from
+        # before the rename to pegboard names it ai-plugins.
         run: |
+          MARKETPLACE=$(python -c 'import json; print(json.load(open("released/.claude-plugin/marketplace.json"))["name"])')
+          echo "MARKETPLACE=$MARKETPLACE" >> "$GITHUB_ENV"
           case "$CLIENT" in
             claude)
               npm install -g @anthropic-ai/claude-code@latest

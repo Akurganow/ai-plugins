@@ -47,7 +47,10 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 SOURCES_DIR = REPO_ROOT / "src"
 EVALS_DIR = REPO_ROOT / "evals"
 FIXTURES_DIR = REPO_ROOT / "tools" / "evals-fixtures"
-MARKETPLACE = json.loads((REPO_ROOT / ".claude-plugin" / "marketplace.json").read_text())["name"]
+# The evals workflow sets MARKETPLACE from the released tag's catalogue,
+# which may carry an older name than this checkout's.
+MARKETPLACE = (os.environ.get("MARKETPLACE")
+               or json.loads((REPO_ROOT / ".claude-plugin" / "marketplace.json").read_text())["name"])
 
 REPEATS = 3
 CASES_PER_KIND = 10
@@ -1038,11 +1041,14 @@ def question_detail(package, skill, client, group, always_on) -> list[str]:
         notes.append("Held-out prompts loaded, with the package: " + ", ".join(parts) + ".")
     carried = [s for s in sessions if s.get("loaded") is not None]
     if carried:
-        key = f"{package}@{MARKETPLACE}"
+        # The report job runs from this checkout, whose catalogue name may be
+        # newer than the one the released tag installed under.
+        prefix = f"{package}@"
 
         def listed(arm):
             of_arm = [s for s in carried if s["arm"] == arm]
-            return f"{sum(key in s['loaded']['plugins'] for s in of_arm)} of {len(of_arm)}"
+            found = sum(any(p.startswith(prefix) for p in s["loaded"]["plugins"]) for s in of_arm)
+            return f"{found} of {len(of_arm)}"
 
         notes.append(f"Package in the session's plugin list: {listed('with')} sessions with it, "
                      f"{listed('without')} without.")

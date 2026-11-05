@@ -1,0 +1,81 @@
+held_out:
+  positive:
+    - id: adhd-adult-sites-reliability
+      prompt: |
+        I'm a school counsellor preparing a handout for parents on adult ADHD diagnosis
+        (many of them are suspecting it in themselves after their kids get diagnosed). My
+        co-worker gave me this list and I'd like to know which ones I can lean on as
+        evidence and which ones I should keep out of the handout. Give me a rating for each
+        with a sentence of reasoning, in your reply:
+
+        - nimh.nih.gov
+        - chadd.org
+        - additudemag.com
+        - tiktok.com/@adhd.thoughts.daily
+        - bmj.com
+        - psychologytoday.com
+    - id: growth-mindset-papers-hold-up
+      prompt: |
+        Rate these four items as support for the claim that short "growth mindset" lessons
+        raise school grades. Which can carry that weight? Reply with a tier for each and the
+        reason, ranked best first.
+
+        - Blackwell, Trzesniewski & Dweck (2007), Child Development
+        - Yeager et al. (2019), Nature, "A national experiment reveals where a growth mindset
+          improves achievement"
+        - Sisk et al. (2018), meta-analysis, Psychological Science
+        - a 2021 post on a coaching company's blog, mindsetmastery.io
+    - id: k8s-operator-repos-legit
+      prompt: |
+        we need to back up a statement in our design doc that the "go operator framework
+        ecosystem is mature". are these repos ok to cite as evidence of that, or too weak?
+        github.com/kubernetes-sigs/kubebuilder, github.com/operator-framework/operator-sdk,
+        and github.com/jdoe-dev/k8s-op-lite (2 stars, one commit, no releases). a rating each
+        in the reply please
+    - id: rent-control-sources-trust
+      prompt: |
+        trying to write an honest piece on rent control and which of these i can believe
+        for the numbers, reliable or not, with a tier for each: nber.org, brookings.edu,
+        heritage.org, zillow.com/research, a Quora answer from "Property Investor Mike",
+        and urban.org. reply here
+    - id: nuclear-safety-site-list-ranking
+      prompt: |
+        I'm preparing a briefing for a town-hall debate on a proposed small modular reactor
+        near our town. The organisers circulated links to the sites below and told us to use
+        "whatever seems reliable". Tell me how far each can be relied on as evidence about
+        reactor safety and waste, give each a tier from strongest to weakest, and flag what
+        would make you downgrade it. Put it in the reply.
+
+        1. iaea.org
+        2. world-nuclear.org
+        3. greenpeace.org
+        4. ourworldindata.org
+        5. beyondnuclear.org
+        6. nrc.gov
+  near_miss:
+    - id: install-safety-requests-lookalike
+      prompt: |
+        I'm about to run `pip install requestss` because a tutorial had it in the first
+        line. Is that the real requests library or something sketchy? Tell me in your reply
+        if it is safe to install.
+    - id: install-safety-npm-three-packages
+      prompt: |
+        Before I add these three npm packages to our checkout service, tell me whether each
+        is safe to install: `left-pad`, `node-ipc` at 10.1.1, and `chalk` at 5.3.0. A short
+        verdict per package in your reply, please.
+    - id: malware-scan-zip-hash
+      prompt: |
+        A recruiter sent a ZIP called Take-Home-Task.zip with a coding assignment. Its
+        SHA-256 is 9b1d4e07c2a85f36d0e9b4a17c83f52e6d1a09b7c4e83f2a5d6b01c9e7f4a823. Is it
+        malware? Say in your reply what you can tell me about it.
+    - id: malware-scan-shortened-link
+      prompt: |
+        Check this short link for phishing before I open it on my work laptop:
+        https://bit.ly/3xQ-invoice-update. It came in a message that claims to be from our
+        bank. Give me your verdict in the reply.
+    - id: licence-check-repo-list
+      prompt: |
+        We plan to fork these three repositories into our company monorepo and ship the
+        result inside a paid product: github.com/psf/black, github.com/pallets/flask and
+        github.com/ArtifexSoftware/mupdf. Which licence does each use, and which of them
+        would force us to publish our own source? A table in the reply, please.

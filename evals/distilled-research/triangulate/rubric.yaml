@@ -1,0 +1,108 @@
+questions:
+  lists_tools:
+    instructions: >-
+      The answer lists the tools found for the research.
+    cases:
+      - vector-db-options-comparison
+      - creatine-cognition-evidence-review
+      - remote-work-productivity-agreement
+      - ev-fire-claim-support
+      - fasting-sources-agree
+      - bronze-age-collapse-field-survey
+  names_sources:
+    instructions: >-
+      The answer names the sources it plans to use.
+    cases:
+      - vector-db-options-comparison
+      - creatine-cognition-evidence-review
+      - remote-work-productivity-agreement
+      - ev-fire-claim-support
+      - fasting-sources-agree
+      - microplastics-water-vetted-parallel
+      - finland-basic-income-viral-claim
+      - bronze-age-collapse-field-survey
+      - tdd-defect-claim-terse
+      - four-day-week-board-section
+  rates_each_source:
+    instructions: >-
+      The answer gives each planned source a rating.
+    cases:
+      - vector-db-options-comparison
+      - creatine-cognition-evidence-review
+      - remote-work-productivity-agreement
+      - ev-fire-claim-support
+      - fasting-sources-agree
+      - microplastics-water-vetted-parallel
+      - finland-basic-income-viral-claim
+      - bronze-age-collapse-field-survey
+      - tdd-defect-claim-terse
+      - four-day-week-board-section
+  asks_run_folder:
+    instructions: >-
+      The answer asks the user where to write the run folder.
+    cases:
+      - vector-db-options-comparison
+      - creatine-cognition-evidence-review
+      - remote-work-productivity-agreement
+      - ev-fire-claim-support
+      - fasting-sources-agree
+      - microplastics-water-vetted-parallel
+      - finland-basic-income-viral-claim
+      - bronze-age-collapse-field-survey
+      - tdd-defect-claim-terse
+      - four-day-week-board-section
+  asks_approval:
+    instructions: >-
+      The answer asks the user to approve the plan before research starts.
+    cases:
+      - vector-db-options-comparison
+      - creatine-cognition-evidence-review
+      - remote-work-productivity-agreement
+      - ev-fire-claim-support
+      - fasting-sources-agree
+      - microplastics-water-vetted-parallel
+      - finland-basic-income-viral-claim
+      - bronze-age-collapse-field-survey
+      - tdd-defect-claim-terse
+      - four-day-week-board-section
+  says_nothing_started:
+    instructions: >-
+      The answer says that no research has started yet.
+    cases:
+      - creatine-cognition-evidence-review
+      - ev-fire-claim-support
+      - fasting-sources-agree
+      - microplastics-water-vetted-parallel
+      - finland-basic-income-viral-claim
+      - tdd-defect-claim-terse
+      - four-day-week-board-section
+  names_catalogue:
+    instructions: >-
+      The answer names the catalogue that a source rating comes from.
+    cases:
+      - vector-db-options-comparison
+      - creatine-cognition-evidence-review
+      - remote-work-productivity-agreement
+      - microplastics-water-vetted-parallel
+      - bronze-age-collapse-field-survey
+      - four-day-week-board-section
+  no_numeric_score:
+    instructions: >-
+      The answer gives no numeric trust score for any source.
+    cases:
+      - remote-work-productivity-agreement
+      - ev-fire-claim-support
+      - fasting-sources-agree
+      - microplastics-water-vetted-parallel
+      - finland-basic-income-viral-claim
+      - tdd-defect-claim-terse
+  calls_none_safe:
+    instructions: >-
+      The answer calls no source safe.
+    cases:
+      - vector-db-options-comparison
+      - creatine-cognition-evidence-review
+      - ev-fire-claim-support
+      - finland-basic-income-viral-claim
+      - tdd-defect-claim-terse
+      - four-day-week-board-section

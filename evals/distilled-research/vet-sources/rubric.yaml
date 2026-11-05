@@ -1,0 +1,71 @@
+questions:
+  names_sources:
+    instructions: >-
+      The answer names the sources it rates.
+    cases:
+      - sleep-claims-site-ranking
+      - can-i-cite-wikipedia-and-statista
+      - which-papers-hold-up-replication
+      - github-repos-benchmark-evidence
+      - is-this-a-reliable-source-single
+      - rate-before-citing-legal-memo
+      - econ-papers-trust-ordering
+      - oss-repos-reliability-casual
+      - climate-sources-tiering-detailed
+      - which-sites-for-crypto-claims
+  rates_each_source:
+    instructions: >-
+      The answer gives each source a rating.
+    cases:
+      - sleep-claims-site-ranking
+      - can-i-cite-wikipedia-and-statista
+      - which-papers-hold-up-replication
+      - github-repos-benchmark-evidence
+      - is-this-a-reliable-source-single
+      - rate-before-citing-legal-memo
+      - econ-papers-trust-ordering
+      - oss-repos-reliability-casual
+      - climate-sources-tiering-detailed
+      - which-sites-for-crypto-claims
+  names_catalogue:
+    instructions: >-
+      The answer names the catalogue behind a rating.
+    cases:
+      - sleep-claims-site-ranking
+      - can-i-cite-wikipedia-and-statista
+      - which-papers-hold-up-replication
+      - github-repos-benchmark-evidence
+      - is-this-a-reliable-source-single
+      - rate-before-citing-legal-memo
+      - econ-papers-trust-ordering
+      - oss-repos-reliability-casual
+      - climate-sources-tiering-detailed
+      - which-sites-for-crypto-claims
+  no_numeric_score:
+    instructions: >-
+      The answer gives no numeric trust score.
+    cases:
+      - sleep-claims-site-ranking
+      - can-i-cite-wikipedia-and-statista
+      - which-papers-hold-up-replication
+      - github-repos-benchmark-evidence
+      - is-this-a-reliable-source-single
+      - rate-before-citing-legal-memo
+      - econ-papers-trust-ordering
+      - oss-repos-reliability-casual
+      - climate-sources-tiering-detailed
+      - which-sites-for-crypto-claims
+  calls_none_safe:
+    instructions: >-
+      The answer calls no source safe.
+    cases:
+      - sleep-claims-site-ranking
+      - can-i-cite-wikipedia-and-statista
+      - which-papers-hold-up-replication
+      - github-repos-benchmark-evidence
+      - is-this-a-reliable-source-single
+      - rate-before-citing-legal-memo
+      - econ-papers-trust-ordering
+      - oss-repos-reliability-casual
+      - climate-sources-tiering-detailed
+      - which-sites-for-crypto-claims

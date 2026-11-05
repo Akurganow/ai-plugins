@@ -1,0 +1,79 @@
+held_out:
+  positive:
+    - id: standing-desk-back-pain-casual
+      prompt: |
+        do standing desks actually help w back pain?? ive seen both "yes totally" and "no
+        difference" so i dont know what to think. look at a bunch of sources not just one or
+        two and tell me what they mostly agree on. reply here pls
+    - id: vitamin-d-respiratory-infections
+      prompt: |
+        The literature on vitamin D supplementation and acute respiratory infections looks
+        contradictory to me: some meta-analyses report a protective effect and others report
+        none. I would like to know what the body of evidence supports as a whole. Please
+        consult trials, systematic reviews, guideline bodies and reputable press, state which
+        conclusions are shared across independent sources, and give the result in your
+        reply.
+    - id: memory-safety-seventy-percent
+      prompt: |
+        I'm putting together a conference talk on moving a C++ codebase to a memory-safe
+        language, and the slide I care about says "around 70% of serious security bugs are
+        memory safety issues." That number shows up in nearly every article I find. Before
+        it goes on a slide, I want to know how many genuinely separate sources back it,
+        whether the articles just repeat one original report, and what the independent
+        evidence says. Give me the answer in the reply; I'll handle the slides myself.
+    - id: homework-primary-school-results
+      prompt: |
+        My daughter's primary school has just told parents that daily homework in the early
+        grades raises results. I'm not convinced. Could you read around widely, across
+        researchers, education departments and journalists, and tell me where they line up
+        and where they do not? A plain answer in the reply is fine, no jargon.
+    - id: microservices-small-team-consensus
+      prompt: |
+        Context: we are a 15-person product team with one Rails monolith, 9 years old, about
+        400k lines. The CTO wants to split it into microservices because "everyone says it
+        pays off". I have to write the technical rationale section of the proposal, and I
+        want it to rest on more than my opinion. What do engineering write-ups, industry
+        surveys, case studies and academic papers agree on about whether microservices pay
+        off for teams of our size? Mark which claims are well supported and which come from
+        a single company's story. Put it in your reply.
+  near_miss:
+    - id: vitamin-d-recommended-intake
+      prompt: |
+        What is the recommended daily vitamin D intake in IU for adults aged 19 to 70
+        according to the US National Institutes of Health? Just the number in your reply.
+    - id: microservices-term-origin-year
+      prompt: |
+        In what year was the word "microservices" first used to describe an architecture
+        style at a software workshop near Venice? One year in the reply, please.
+    - id: summarise-standing-desk-trial-page
+      prompt: |
+        Summarise the text below in two sentences in your reply. Stay inside the text.
+
+        "A standing-desk trial at one insurance office. Forty-two staff with chronic lower
+        back pain were given sit-stand desks for twelve weeks. Thirty-one reported lower
+        pain scores at the end, nine saw no change and two reported more pain. The office
+        manager noted that there was no comparison group, and that staff were also given a
+        short ergonomics talk at the start, so the effect of the desk alone cannot be
+        separated out. Absenteeism fell by 8% over the period, though it also fell at the
+        firm's other site, which had no new desks."
+    - id: summarise-homework-article
+      prompt: |
+        I only have a minute. Can you put this article into three short bullets for me, here
+        in the chat?
+
+        "Does homework help? One district's experience. After a school district in Ohio cut
+        homework for grades one to three from thirty minutes to ten minutes a night, reading
+        scores at the end of the year were unchanged and maths scores rose slightly. Teachers
+        said evenings at home became calmer. Some parents worried that children would fall
+        behind in older grades, and the superintendent said the district would track the same
+        pupils until grade six before drawing any conclusions."
+    - id: find-memory-unsafe-definition
+      prompt: |
+        Here is the output of my search for `count_unsafe_blocks` in a Rust repo. Which file
+        holds the definition, and which files only call it? Answer in your reply.
+
+        tools/audit/src/lib.rs:22:pub fn count_unsafe_blocks(src: &str) -> usize {
+        tools/audit/src/main.rs:14:    let n = count_unsafe_blocks(&text);
+        tools/audit/tests/basic.rs:8:    assert_eq!(count_unsafe_blocks("unsafe { }"), 1);
+        docs/audit.md:31:`count_unsafe_blocks` counts every `unsafe` block in a file.
+        ci/check.sh:5:# runs count_unsafe_blocks through the audit binary

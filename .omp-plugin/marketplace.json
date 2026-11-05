@@ -18,6 +18,11 @@
       "description": "Reviews a software design for complexity with the red flags and principles of Ousterhout's A Philosophy of Software Design, each finding cited by chapter."
     },
     {
+      "name": "distilled-research",
+      "source": "./bundles/distilled-research",
+      "description": "Vets sources, reads them in parallel, collapses copies to independent origins, and grades each claim by how many independent origins support it."
+    },
+    {
       "name": "prose-discipline",
       "source": "./bundles/prose-discipline",
       "description": "An engineering prose standard for agent-written text: short active sentences, plain words, comments that explain why, and labelled review comments."

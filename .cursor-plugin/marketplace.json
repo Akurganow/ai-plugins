@@ -20,6 +20,12 @@
       "category": "Developer Tools"
     },
     {
+      "name": "distilled-research",
+      "source": "./bundles/distilled-research",
+      "description": "Vets sources, reads them in parallel, collapses copies to independent origins, and grades each claim by how many independent origins support it.",
+      "category": "Developer Tools"
+    },
+    {
       "name": "prose-discipline",
       "source": "./bundles/prose-discipline",
       "description": "An engineering prose standard for agent-written text: short active sentences, plain words, comments that explain why, and labelled review comments.",

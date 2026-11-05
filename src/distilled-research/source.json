@@ -1,0 +1,21 @@
+{
+  "name": "distilled-research",
+  "version": "0.1.0",
+  "description": "Vets sources, reads them in parallel, collapses copies to independent origins, and grades each claim by how many independent origins support it.",
+  "author": {
+    "name": "Alexander Kurganov",
+    "url": "https://github.com/Akurganow"
+  },
+  "homepage": "https://github.com/Akurganow/pegboard/tree/main/plugins/distilled-research",
+  "repository": "https://github.com/Akurganow/pegboard",
+  "license": "MIT",
+  "keywords": [
+    "research",
+    "source-vetting",
+    "triangulation",
+    "independent-origins",
+    "claim-grading",
+    "fact-checking"
+  ],
+  "category": "Developer Tools"
+}

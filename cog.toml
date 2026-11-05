@@ -43,6 +43,7 @@ package_template = "tools/templates/changelog.tera"
 [monorepo.packages]
 cognitive-load = { path = "src/cognitive-load", include = ["bundles/cognitive-load/**", "plugins/cognitive-load/**"] }
 design-review = { path = "src/design-review", include = ["bundles/design-review/**", "plugins/design-review/**"] }
+distilled-research = { path = "src/distilled-research", include = ["bundles/distilled-research/**", "plugins/distilled-research/**"] }
 prose-discipline = { path = "src/prose-discipline", include = ["bundles/prose-discipline/**", "plugins/prose-discipline/**"] }
 toc-thinking = { path = "src/toc-thinking", include = ["bundles/toc-thinking/**", "plugins/toc-thinking/**"] }
 triz-thinking = { path = "src/triz-thinking", include = ["bundles/triz-thinking/**", "plugins/triz-thinking/**"] }

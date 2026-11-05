@@ -136,7 +136,14 @@ runs a shell command from its hooks when a session or a subagent starts, in
 clients that run plugin hooks. The command is a literal `echo` or `printf` of
 the rules' short form. It reads no file and runs no script, and
 `bundles/prose-discipline/hooks/` holds both hooks files. The other plugins
-carry instructions and reference text only.
+carry instructions and reference text only. The instructions of
+`distilled-research` direct an agent to read public web pages, run web
+searches (a site hostname, the query strings you approve, a source's
+hostname or title words) and query open catalogues. If you choose "also
+unflagged hosts", it may also fetch a public host first met after your
+approval, unless a catalogue lookup finds a negative record. Its
+[README](plugins/distilled-research/README.md) lists the catalogues and what
+each receives.
 
 
 ## Documentation

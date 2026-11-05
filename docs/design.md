@@ -136,6 +136,7 @@ The directories under `src/*/skills/` hold the names in use, except `howp`'s, wh
 | :-- | :-- |
 | cognitive-load | `extraneous` |
 | design-review | `red-flags` |
+| distilled-research | `triangulate`, `vet-sources` |
 | howp | `forecast`, `interests` |
 | prose-discipline | `house-style` |
 | toc-thinking | `root-cause` |
@@ -147,6 +148,10 @@ In `howp`, `interests` interviews the person and writes the two files they own, 
 `interview` lost as that skill's name, because it is the likeliest bare name for an unrelated skill.
 In `triz-thinking`, `ariz` walks ARIZ-85C, a nine-part algorithm that the matrix route never opens.
 `contradiction` keeps the matrix route, and hands a problem it did not crack to `ariz`.
+In `distilled-research`, `vet-sources` rates a list of sources on its own, in the main thread.
+`triangulate` runs the full research and reads the files `vet-sources` owns, so the two install together.
+`vet-sources` reads nothing from `triangulate`: the dependency runs one way.
+Its vetter brief defines the plan fields it reads, so the skill stands alone.
 `toc-thinking` stays one skill.
 Its five trees form one sequence, and each tree's output is the next one's input.
 

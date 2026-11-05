@@ -3,7 +3,7 @@
  {"object": null, "kind": "single", "i": 5, "j": 14},
  {"object": "compass", "kind": "single", "i": 10, "j": 2, "hang": [59.0, 26.0], "shadow": "flat"},
  {"object": "backpack", "kind": "heavy", "i": 22, "j": 0, "hang": [302.0, 43.0], "shadow": "far"},
- {"object": null, "kind": "heavy", "i": 31, "j": 7},
+ {"object": "level", "kind": "single", "i": 31, "j": 5, "hang": [43.5, 42.1], "shadow": "flat"},
  {"object": "wrench", "kind": "single", "i": 35, "j": 2, "hang": [85.4, 32.5], "shadow": "flat"},
  {"object": "bottle", "kind": "shelf", "i": 40, "j": 16, "hang": [81.0, 487.0], "shadow": "far"},
  {"object": null, "kind": "single", "i": 45, "j": 4}

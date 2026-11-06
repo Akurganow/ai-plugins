@@ -1,19 +1,19 @@
 ---
 name: ariz
 description: >
-  Walk a hard software problem through ARIZ-85C, Altshuller's nine-part
-  algorithm of inventive problem solving, part by part. Use when the obvious
-  fixes were tried and the problem is still there: a setting flipped back
-  and forth between two teams who each hold a rule, or a fix that breaks
-  something else while the next fix brings the first problem back. Use when
-  the same issue keeps returning, every compromise failed, or the user
-  suspects the problem is stated wrong. Use when two or three tensions are
-  tied and what one choice improves makes another worse. Use when a
-  contradiction-matrix lookup gave nothing usable. Use even when the
-  question is short and never says TRIZ: a few failed attempts and "what is
-  the way out?" count. The contradiction skill of this package takes a
-  trade-off at first sight, before any fix was tried. This one takes it from
-  there.
+  Use this skill whenever a hard software problem has outlasted the obvious
+  fixes and the user wants a way out. Phrasings: "we keep going back and
+  forth on this", "every compromise failed", "what is the way out?". It
+  covers a setting flipped back and forth between two teams who each hold a
+  rule. It covers a fix that breaks something else, while the next fix
+  brings the first problem back. It covers an issue that keeps returning,
+  two or three tied tensions, and a problem that may be stated wrong. It
+  covers a contradiction-matrix lookup that gave nothing usable. Use it even
+  when TRIZ is never named. Use it instead of generic tips. It walks the
+  problem through ARIZ-85C, Altshuller's nine-part algorithm, part by part.
+  For a trade-off seen at first sight, before any fix was tried, use
+  contradiction. Skip it for interview-style puzzles, document rewrites and
+  plain bugs or incidents.
 license: MIT
 ---
 

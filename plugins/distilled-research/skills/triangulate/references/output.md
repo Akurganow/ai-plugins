@@ -1,6 +1,6 @@
 # Output
 
-The reply is the distillate, in the order below, unless the user asked for a form ("A requested form" below). Grades, `N`, `M`, `K` and tiers come from `origins-and-grades.md`. The lists behind the reply stay in `appendix.md`. Report final totals only.
+By default the reply is the distillate, in the order below. When the user asks for another length or form, reply in it, and the run folder keeps the rest. Grades, `N`, `M`, `K` and tiers come from `origins-and-grades.md`. The lists behind the reply stay in `appendix.md`. Report final totals only.
 
 1. **Answer:** write one opening sentence, up to four direction sentences and one closing caveat sentence.
    - The opening sentence answers in plain words. For "it depends", name the question, not the topic, and say on what.
@@ -49,12 +49,3 @@ The reply is the distillate, in the order below, unless the user asked for a for
 - Evidence URLs are plain, on hosts the run could read. Embed no images. Copy no link text from a page.
 - Mark every date or collapse the run did not open as `unconfirmed`.
 - Never say that a failed check changed no grade unless you name the rows.
-
-## A requested form
-
-When the user asks for a length or a form, such as a short answer, one section or about 500 words, the reply takes that form instead of items 1 to 9. Every form keeps these:
-
-- The grade word of each point the reply states, by the Grade column above.
-- The line "Grades and tiers are ordinal and uncalibrated. They rank claims in this run and give no probability."
-- Each line that item 9 adds and that applies: the redirect line, the no-literal-quote line and the science or health line.
-- The paths of `distillate.md` and `appendix.md`, which hold the table and the full lists.

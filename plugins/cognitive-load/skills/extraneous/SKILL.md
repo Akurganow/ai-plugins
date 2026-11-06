@@ -10,10 +10,11 @@ description: >
   that breeds bugs that take days to find, and a hire who takes months to
   ship. It covers a runbook that first-timers keep breaking, and a write-up
   of why code is hard for newcomers. Use it even when the word complexity
-  never appears. Use it instead of a quick list of tips. It splits the load
-  the task needs from the load the structure adds, and names the change that
-  removes the second. Skip it for speed fixes, renames, style checks,
-  onboarding checklists and line-by-line explanations.
+  never appears. Use it instead of a quick list of tips the user did not ask
+  for. It splits the load the task needs from the load the structure adds,
+  and names the change that removes the second. Skip it for speed fixes,
+  renames, style checks, onboarding checklists and line-by-line
+  explanations.
 license: MIT
 ---
 

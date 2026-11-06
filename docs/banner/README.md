@@ -19,6 +19,7 @@ holds its sources, and `scripts/compose-banner.py` writes the banner from them.
 | `book` | `prose-discipline` |
 | `backpack` | `cognitive-load` |
 | `bottle` | `toc-thinking` |
+| `level` | `distilled-research` |
 
 ## How every part is drawn
 
@@ -85,6 +86,11 @@ An entry with `"object": null` draws an empty hook, room for the next tool.
 - The wrench's outline is traced from
   [Adjustable wrench - 15 x 2 cm - B2](https://commons.wikimedia.org/wiki/File:Adjustable_wrench_-_15_x_2_cm_-_B2.jpg),
   a CC0 photo by Fructibus on Wikimedia Commons.
+- The level's outline, hang holes, vial windows, vials and rails are traced from
+  [Tool-level.jpg](https://commons.wikimedia.org/wiki/File:Tool-level.jpg), a
+  public-domain photo by Evan-Amos on Wikimedia Commons. The photo is rectified
+  to a straight front view, scaled to 23 cm at 17.3 px per cm, and its left half
+  is traced and mirrored.
 - The hooks' bends and angles are traced from Fig. 3 of United States patent
   [US 4,750,700](https://patents.google.com/patent/US4750700A), a patent
   drawing.

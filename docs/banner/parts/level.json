@@ -1,0 +1,19 @@
+{
+ "name": "level",
+ "width": 85,
+ "height": 406,
+ "hang": [
+  {
+   "x": 43.5,
+   "y": 42.1,
+   "kind": "single",
+   "r": 8.0
+  }
+ ],
+ "real_size_cm": {
+  "length": 23.0,
+  "height": 4.0,
+  "hole_diameter": 0.93
+ },
+ "notes": "Torpedo spirit level, 23 cm long and 4.0 cm high hanging plumb from the hang hole in its upper end cap, front view. Outline, hang holes with their bosses, the three vial windows with their raised bezels, the vials (45 degree, central, plumb) and the rail extents are traced from https://commons.wikimedia.org/wiki/File:Tool-level.jpg (Evan-Amos, public domain): the photo is rectified to a straight front view with a homography from the panel edges, scaled so the length is 23 cm at 17.3 px per cm, and the left half is traced and mirrored. Hang hole: circle of radius 8 (0.93 cm) at (43.5, 50.1); its inside top edge, where the prong rests, is the hang point (43.5, 42.1). The hole is cut out (evenodd), as are the three window openings, so the board shows through. The part is turned 1.1 degrees about the hang point so the centre of mass of the silhouette hangs straight below it (the hole sits 0.2 cm off the axis). Hung plumb, the central vial's bubble sits at its upper end, the plumb vial's bubble is centred, and the 45 degree vial's bubble sits at its upper end. Red ABS body with a recessed ribbed panel and raised bezels, aluminium rails on both long edges. Light from the upper left; no cast shadow. Size: 23 cm is the nominal 9 in torpedo level. Klein Tools lists an overall length of 9 in (229 mm) for its 9 in torpedo level (https://www.kleintools.com/product/9329RESEN, whose page names model 932-9RESEN, read 2026-11-05). A retailer lists Stanley 0-43-511 at 230 mm (9 in) (https://ocldirect.co.uk/stanley-230mm-9-shock-proof-magnetic-torpedo-level-3-vials-0-43-511, read 2026-11-05). The 4.0 cm height is the photo's own length-to-height ratio (23 : 4.0 across the rail faces and end caps). Listed 9 in torpedo levels give the other sides as 22 mm by 65 mm (Kincrome K11225, https://www.kincrome.com.au/billet-torpedo-verti-site, read 2026-11-05) and 29 mm by 50 mm (Ox Pro, https://www.toolstation.com/ox-pro-torpedo-level/pAE994, read 2026-11-05), so 4.0 cm lies inside that range."
+}

@@ -1,6 +1,6 @@
 # pegboard
 
-<p align="center"><img src="docs/banner.svg" alt="Five tools hanging on a pegboard: an adjustable wrench, a drafting compass, a green reference book, a backpack and a bottle" width="100%"></p>
+<p align="center"><img src="docs/banner.svg" alt="Six tools hanging on a pegboard: an adjustable wrench, a drafting compass, a green reference book, a backpack, a bottle and a spirit level" width="100%"></p>
 
 A toolkit of engineering methods for coding agents, such as design review and root-cause analysis.
 
@@ -33,6 +33,7 @@ Each name links to the plugin's README.
 | :-- | :-- |
 | [cognitive-load](plugins/cognitive-load/README.md) | Separates the cognitive load a task needs from the load a code base's structure adds, and names the change that removes the second. |
 | [design-review](plugins/design-review/README.md) | Reviews a software design for complexity with the red flags and principles of Ousterhout's A Philosophy of Software Design, each finding cited by chapter. |
+| [distilled-research](plugins/distilled-research/README.md) | Vets sources, reads them in parallel, collapses copies to independent origins, and grades each claim by how many independent origins support it. |
 | [prose-discipline](plugins/prose-discipline/README.md) | An engineering prose standard for agent-written text: short active sentences, plain words, comments that explain why, and labelled review comments. |
 | [toc-thinking](plugins/toc-thinking/README.md) | Applies Goldratt's Thinking Processes to software: finds the core problem behind many symptoms, resolves the conflict that sustains it, and plans the change. |
 | [triz-thinking](plugins/triz-thinking/README.md) | Resolves software trade-offs with TRIZ: the contradiction matrix and 40 inventive principles, the separation principles, and ARIZ-85C walked part by part with the user. |
@@ -135,7 +136,16 @@ runs a shell command from its hooks when a session or a subagent starts, in
 clients that run plugin hooks. The command is a literal `echo` or `printf` of
 the rules' short form. It reads no file and runs no script, and
 `bundles/prose-discipline/hooks/` holds both hooks files. The other plugins
-carry instructions and reference text only.
+carry instructions and reference text only. The instructions of
+`distilled-research` direct an agent to read public web pages, run web
+searches (a site hostname, the query strings you approve, a source's
+hostname or title words) and query open catalogues. If you choose "also
+unflagged hosts", it may also fetch a public host first met after your
+approval, unless a catalogue lookup finds a negative record. A fetch tool
+that follows redirects without showing the target can reach an unlisted host
+before the check; the report says whether yours does. Its
+[README](plugins/distilled-research/README.md) lists the catalogues and what
+each receives.
 
 
 ## Documentation

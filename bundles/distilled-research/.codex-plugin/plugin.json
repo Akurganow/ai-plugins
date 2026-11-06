@@ -1,0 +1,18 @@
+{
+  "name": "distilled-research",
+  "version": "0.1.0",
+  "description": "Vets sources, reads them in parallel, collapses copies to independent origins, and grades each claim by how many independent origins support it.",
+  "keywords": [
+    "research",
+    "source-vetting",
+    "triangulation",
+    "independent-origins",
+    "claim-grading",
+    "fact-checking"
+  ],
+  "interface": {
+    "composerIcon": "./.claude-plugin/icon.png",
+    "logo": "./.claude-plugin/icon.png"
+  },
+  "skills": "./skills/"
+}

@@ -39,4 +39,4 @@ Apply the rows in order. The first row that fits sets the grade. The ladder, hig
 | lowered | Replace the point's grade, `N`, `M`, `K` and best tier with the verifier's values. The verifier derives the grade from the table. It is Not established only when `N` = 0. |
 | unsupported | The grade is Not established. |
 
-The lead edits the point's row in `distillate.md` in place. A Contested point keeps its grade on `supported` or `lowered`, and the lead narrows its claim text. On `unsupported` it becomes Not established. Any grade in a run file that is not on the ladder or Contested is an error. The lead stops and fixes it.
+The lead edits the point's row in `distillate.md` in place. A Contested point keeps its grade on `supported`. On `lowered`, the lead tests the Contested row again with the verifier's origins. If both positions still rest on different traced origins, it stays Contested and the lead narrows its claim text. Otherwise the verifier's grade stands for the one position left. On `unsupported` it becomes Not established. Any grade in a run file that is not on the ladder or Contested is an error. The lead stops and fixes it.

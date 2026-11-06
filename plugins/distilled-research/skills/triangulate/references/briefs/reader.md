@@ -12,7 +12,10 @@ You read the primary text of the sources the lead assigns you. You write one sec
 
 1. Read `plan.md`. Record only claims that answer a sub-question.
 2. Read only the sources assigned to you. Open no others.
-3. A pasted or attached source has no vet row. Read `pasted-<id>.md` or the attached file, and take its row from `candidates-user.md`. Set `read` to `full` and `fetch returned` to `page text`.
+3. A pasted or attached source has no vet row. Read `pasted-<id>.md` or the attached file, and take its row from `candidates-user.md`. Set `read` and `fetch returned` from what the text holds.
+   - `full`: the source's own text with its method and results, or its source files.
+   - `abstract`: an abstract alone. `snippet`: an excerpt.
+   - `page text`: the source's own words. A summary or paraphrase by the user or a tool is `summary`. When you cannot tell, mark `summary`.
 4. Read the primary text: a paper's method and results, a repository's source files, or the page itself.
 5. For a paper, prefer an HTML version on a host the dispatch lists. Otherwise use the PDF reader.
 6. Take the first fetch's result and act by this table.

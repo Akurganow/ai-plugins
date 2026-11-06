@@ -33,7 +33,7 @@ No open catalogue rates a site's safety. For each planned site, run one web sear
 | `skipped` | The harness refused the call, or no tool was available. |
 | `not looked up` | The host is private, internal, intranet or an IP literal. |
 
-Absence is never "safe". A `no-record` or `error(code)` says nothing about safety. A site no listed catalogue covers reads "not checked". A negative record is a `listed` entry that rates the host unreliable, deprecated or blacklisted.
+Absence is never "safe". A `no-record` or `error(code)` says nothing about safety. A site no listed catalogue covers reads "not checked". A negative record is a `listed` entry that rates the host unreliable, deprecated or blacklisted. A `no-record` from Crossref or OpenAlex does not prove a paper is not retracted: Crossref omits a Retraction Watch record that has no notice DOI.
 
 ## After the yes
 
@@ -52,7 +52,7 @@ Entries by topic type:
 
 ## Lookup rules
 
-- Read one record per lookup, one DOI or repository per call. Never load a whole list or a bulk file.
+- Look up one DOI or repository per call. Read the Crossref route to its last page. Never load a whole list or a bulk file.
 - Never turn an error into `no-record`.
 - A refusal by the harness sets `skipped`. Do not retry through another route.
 - Do not work around a bot check or a 403 on a catalogue route. Mark it `error(403)` and move on.

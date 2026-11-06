@@ -141,7 +141,9 @@ carry instructions and reference text only. The instructions of
 searches (a site hostname, the query strings you approve, a source's
 hostname or title words) and query open catalogues. If you choose "also
 unflagged hosts", it may also fetch a public host first met after your
-approval, unless a catalogue lookup finds a negative record. Its
+approval, unless a catalogue lookup finds a negative record. A fetch tool
+that follows redirects without showing the target can reach an unlisted host
+before the check; the report says whether yours does. Its
 [README](plugins/distilled-research/README.md) lists the catalogues and what
 each receives.
 

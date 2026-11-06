@@ -16,6 +16,8 @@ Send one message. Number the items so the user can answer by number. State "No p
    - A run needs a file-read tool. Without one, say so and stop.
    - Ask the user when you cannot tell whether a tool is allowed. Do not guess.
    - Say that the yes approves the tools this item lists. Shell reads need their own yes.
+   - State whether the fetch tool shows a cross-host redirect target before it follows. Answer yes, no or unknown.
+   - On no or unknown, name the limit: a fetch may reach an unlisted host before the check.
 2. **Topic type:** classify the request by "Topic type" in `../../vet-sources/SKILL.md`.
    - List the subjects and hosts that make a source off topic.
 3. **Rated sources:** per planned site, give a row from a hostname-only catalogue lookup and one hostname-only web search.
@@ -54,6 +56,7 @@ Send one message. Number the items so the user can answer by number. State "No p
 ## Host choice
 
 - "Listed only" also refuses an off-list redirect target and an open-access host from a record.
+- A tool that follows redirects without showing the target cannot enforce this. The child checks the final URL and discards an off-list page.
 - "Also unflagged hosts" admits the hosts that "Dispatch" in `../SKILL.md` lists for it, for any topic type.
 - Neither choice admits a host with a negative record, or a host marked `not looked up`.
 - Record the choice in `plan.md` after the reply.
@@ -82,7 +85,7 @@ After a yes to shell reads, run the stage-0 lookups that way, then send the repo
 4. Leave `url` empty for a pasted text. An attached file keeps its path as `url`.
 5. Save each pasted text as `pasted-<id>.md` in the run folder.
 6. Write a row per source in `candidates-user.md`, in the row format of `briefs/collector.md`.
-7. Continue at stage 5 and read every source. No point grades above Tentative.
+7. Continue at stage 5 and read each source assigned to a reader. No point grades above Tentative.
 8. After stage 5, run the id check: every `user-<n>` id outside the plan's not-read list has one cards section.
 
 ## No subagents

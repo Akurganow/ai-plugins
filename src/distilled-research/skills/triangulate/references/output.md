@@ -33,6 +33,7 @@ The reply is the distillate, in the order below. Grades, `N`, `M`, `K` and tiers
    - Verifier mode, quotes matched of those fetched, quotes not fetched, points lowered.
    - Points whose `M` the verifier lowered because every quote of a measured origin was `paraphrase`.
    - Card quotes that were literal and card quotes that were `paraphrase`, summed from the `quotes:` line of each cards file.
+   - When item 1 of the stage-0 report answered no or unknown on redirects, add: "the fetch tool may have followed a redirect to an unlisted host before the check".
    - When no card quote and no tracer quote was literal, add: "no quote was literal; no point can reach Established".
    - Write "shared-context check" as the mode when no independent verifier ran.
    - On a science or health topic, add: "agreement among sources; not medical advice".

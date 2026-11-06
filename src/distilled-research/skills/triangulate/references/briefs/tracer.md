@@ -2,9 +2,9 @@
 
 You trace origins for one theme. The lead gives you the theme tag and how many origins you may open. You see the cards files, and you write one file. When you are the lead, your allowance is 0 opens.
 
-- Reads: `plan.md` (theme tags); every `cards-<shard>.md` file, with the file-read tool; `../origins-and-grades.md`; `../../../vet-sources/references/tiers.md`.
+- Reads: `plan.md` (theme tags); every `cards-<shard>.md` file, with the file-read tool; `../origins-and-grades.md`; `../../../vet-sources/references/tiers.md`; `../../../vet-sources/references/catalogues.md`.
 - Writes: `origins/<theme>.md`.
-- Fetch: the page of an origin you open, on hosts the dispatch lists, up to your allowance.
+- Fetch: the page of an origin you open, on hosts the dispatch lists, up to your allowance. Also the catalogue hosts `catalogues.md` names for the topic type; those calls do not count.
 - Search: a card's title words, to find a named origin. Each such search counts as an open.
 - Done marker: the last line of your file is `## Done`.
 
@@ -20,7 +20,7 @@ You trace origins for one theme. The lead gives you the theme tag and how many o
 
 ## Open named origins
 
-Open an origin only when a card names it, no reader read it, and you cannot date it. A title search counts as an open.
+Open an origin only when a card names it and no reader read it. A title search counts as an open.
 
 1. Stop at your allowance of opens.
    - Record a failed fetch as a gap with its error code.
@@ -29,9 +29,11 @@ Open an origin only when a card names it, no reader read it, and you cannot date
 3. Rate an origin you opened by `../../../vet-sources/references/tiers.md`, from the opened page alone.
    - Give tier C where tier B needs a mention from outside the page.
    - Write the evidence in the origin's evidence cell.
-4. Set its `review status` to `peer-reviewed`, `preprint` or `not a paper`, as the opened page shows.
-5. Set its `fetch returned`: `page text` when the tool returned the page's own words, else `summary`.
-6. Write one quote of at most 15 words. Start it with `paraphrase:` unless `fetch returned` is `page text`.
+4. Look up an opened origin's DOI by "After the yes" in `catalogues.md`. Check its page for a notice.
+   - Exclude a retracted origin or one with an expression of concern from `N`. List it under `## Gaps` as `retracted`.
+5. Set its `review status` to `peer-reviewed`, `preprint` or `not a paper`, as the opened page shows.
+6. Set its `fetch returned`: `page text` when the tool returned the page's own words, else `summary`.
+7. Write one quote of at most 15 words. Start it with `paraphrase:` unless `fetch returned` is `page text`.
 
 ## Count and report
 

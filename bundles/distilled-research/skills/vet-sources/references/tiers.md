@@ -20,6 +20,8 @@ Name who wrote the source and who stands behind it. Check whether it makes the c
 
 ## What moves a source
 
+A move up needs the evidence column of the destination tier.
+
 - Up one tier: an independent mention by a higher-tier source.
 - Up one tier: a record in an open catalogue, or a named author with a checkable record.
 - Down one tier: no named author, or a claim copied from another source.

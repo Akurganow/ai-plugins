@@ -12,8 +12,8 @@ You collect candidate sources for one lane.
 
 1. Read `plan.md`.
 2. Run each query string and any opposite-claim string of your lane once, character for character.
-3. If the strings return too little, write the gap under `## Gaps` and stop. Do not widen the query.
-4. Record title, URL and date from the search result.
+3. If the strings return too little, write the gap under `## Gaps`. Do not widen the query.
+4. Record title, URL and date from every search result you have.
 5. Fill `canonical_id` from the plan's rule. Keep one row per canonical id.
 6. Fill `instruction_flag`.
 7. Over the row cap, cut duplicates, then out-of-topic rows, then the rows farthest from the sub-question.

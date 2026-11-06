@@ -12,7 +12,8 @@ The lead runs this stage alone, under "Before the user's yes" in `../SKILL.md`. 
 
 Send one message. Number the items so the user can answer by number. State "No paid checker found" in one intro line when none exists.
 
-1. **Tools:** name the user's search, fetch, PDF, shell and subagent tools by role. Mark a missing role "none".
+1. **Tools:** name the user's search, fetch, PDF, file-read, shell and subagent tools by role. Mark a missing role "none".
+   - A run needs a file-read tool. Without one, say so and stop.
    - Ask the user when you cannot tell whether a tool is allowed. Do not guess.
    - Say that the yes approves the tools this item lists. Shell reads need their own yes.
 2. **Topic type:** classify the request by "Topic type" in `../../vet-sources/SKILL.md`.
@@ -26,7 +27,8 @@ Send one message. Number the items so the user can answer by number. State "No p
    - The user's allow and deny lists.
    - A host that only a catalogue record names is an unflagged host. See "Host choice".
    - Add that after the yes the DOIs and repository paths of the sources go to the catalogue hosts.
-   - Add that each source page is fetched once, with its repository page for a repository.
+   - Add that a vetter fetches each source page once, with its repository page for a repository.
+   - Add that a reader fetches each kept source up to three times.
    - Add that a verifier fetches up to five quote pages.
 5. **Query strings:** write strings for all six lanes, in priority order.
    - Quick uses lanes 1 and 2, standard lanes 1 to 4, deep 1 to 6. The yes covers any depth.
@@ -75,13 +77,13 @@ After a yes to shell reads, run the stage-0 lookups that way, then send the repo
 ## Pasted sources
 
 1. Skip stages 2 to 4. List them as skipped, with the reason "sources supplied by the user".
-2. Send the report with every status `skipped` and every tier `none`. After the yes, run stage 1.
+2. Send the report with every status `skipped` and every tier `none`. Say how many sources the depth reads, 5 per reader. After the yes, run stage 1.
 3. Give each source the `id` `user-<n>`, and set `canonical_id` to it.
 4. Leave `url` empty for a pasted text. An attached file keeps its path as `url`.
 5. Save each pasted text as `pasted-<id>.md` in the run folder.
 6. Write a row per source in `candidates-user.md`, in the row format of `briefs/collector.md`.
 7. Continue at stage 5 and read every source. No point grades above Tentative.
-8. After stage 5, run the id check: every `user-<n>` id has one cards section.
+8. After stage 5, run the id check: every `user-<n>` id outside the plan's not-read list has one cards section.
 
 ## No subagents
 

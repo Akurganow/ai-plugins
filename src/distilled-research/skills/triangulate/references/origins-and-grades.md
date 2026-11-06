@@ -26,7 +26,7 @@ Apply the rows in order. The first row that fits sets the grade. The ladder, hig
 | Grade | Rule | Legend text |
 | :-- | :-- | :-- |
 | Contested | Two positions rest on different traced origins, at least one side tier A or B or measured. A finding that only narrows the claim edits the claim text instead. | Contested: independent origins on both sides, at least one side tier A, tier B or measured. It is no rank and does not weigh the sides. |
-| Established | At least one claim row is not `opinion`. `N` >= 3. `M` >= 1 from tier A, or on a topic other than science or health from tier A or B. On a science or health topic, a measurement from an unreviewed preprint counts as tier B. Grade the point Probable when no independent verifier ran. | Established: three or more independent origins, one a tier A or B measurement, and the verifier agreed. On a science or health topic the measurement is tier A and no unreviewed preprint. |
+| Established | At least one claim row is not `opinion`. `N` >= 3. `M` >= 1 from tier A, or on a topic other than science or health from tier A or B. On a science or health topic, a measurement from an unreviewed preprint counts as tier B. The reply shows the point as Probable when no independent verifier ran. | Established: three or more independent origins, one a tier A or B measurement, and the verifier agreed. On a science or health topic the measurement is tier A and no unreviewed preprint. |
 | Probable | At least one claim row is not `opinion`. `N` >= 2 with a tier A or B origin. | Probable: two or more independent origins, one from a tier A or B source. |
 | Tentative | `N` >= 1 and no row above fits. Every point whose claim rows are all `opinion` lands here. | Tentative: one origin, an opinion, or only lower-tier origins. |
 | Not established | `N` = 0, or the point has no cluster ids. | Not established: no independent origin was traced, or the verifier found the point unsupported. |
@@ -39,4 +39,4 @@ Apply the rows in order. The first row that fits sets the grade. The ladder, hig
 | lowered | Replace the point's grade, `N`, `M`, `K` and best tier with the verifier's values. The verifier derives the grade from the table. It is Not established only when `N` = 0. |
 | unsupported | The grade is Not established. |
 
-The lead edits the point's row in `distillate.md` in place. A Contested point keeps its grade, and the lead narrows its claim text. Any grade in a run file that is not on the ladder or Contested is an error. The lead stops and fixes it.
+The lead edits the point's row in `distillate.md` in place. A Contested point keeps its grade on `supported` or `lowered`, and the lead narrows its claim text. On `unsupported` it becomes Not established. Any grade in a run file that is not on the ladder or Contested is an error. The lead stops and fixes it.

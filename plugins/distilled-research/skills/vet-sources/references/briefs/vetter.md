@@ -24,14 +24,16 @@ When a lead dispatched you, `plan.md` holds four fields that you read:
 2. Take row details from the `candidates-<lane>.md` files, or from the user's list when no lead dispatched you.
 3. Read the four fields of `plan.md`, when a lead dispatched you.
 4. Read `../catalogues.md`. Load the entries for the topic type.
-5. Reuse the record and hostname search of each rated host.
+5. Reuse the record of each rated host. Reuse its hostname search for a row, except a row on a code forge or another host that serves many sources.
    - Look up each other host, and set its status before any fetch. Its hostname search is that row's one search.
+   - A row on a shared host takes its own title search, as its one search.
 6. Query each catalogue for each row by its DOI or repository path, one record per lookup.
 7. Write `oa_url` in `record` as `../catalogues.md` says.
 8. Fetch the source page once, on a host the dispatch or report lists.
    - For a repository, also fetch its repository page on the same host.
    - On any other host, or one with a negative record, fetch nothing. Set `keep` = `no`, reason `host not approved`.
-9. Check each source from outside (lateral reading): run the row's one search, hostname or title alone, unless step 5 did.
+   - Check a redirect target against the host list before you follow it. If the tool hides the target, check the final URL. Discard a page from an off-list host, with reason `host not approved`.
+9. Check each source from outside (lateral reading): run the row's one search, hostname or title alone, unless step 5 reused one.
 10. Assign a tier from `../tiers.md`. Name the evidence behind it in `reason`.
     - Read what a correction notice changes. If the record is silent, note it in `reason` and lower no tier.
 11. Set `keep` by the rule below, for the tier, the topic and any retraction notice.
@@ -54,7 +56,7 @@ Columns of a vet row: `id`, `url`, `record`, `status`, `tier`, `keep`, `reason`,
 | :-- | :-- |
 | `id` | The candidate id, or the user's own label. |
 | `record` | The catalogue name and a quoted excerpt of its record, at most 25 words, with `oa_url` where `../catalogues.md` says. The full record stays in the catalogue. |
-| `status` | A status from `../catalogues.md`. |
+| `status` | One status from `../catalogues.md` per lookup, as `Crossref: error(403); OpenAlex: listed`. |
 | `tier` | A, B, C or `none`. |
 | `keep` | `yes` or `no`. Only a tier A or B primary source on topic gets `yes`. Commentary (a news summary included), tier C, flagged and archive-only sources get `no`. So does a retracted source, or one with a retraction or expression-of-concern notice, with the reason `retracted`. A correction notice alone never sets `no`. |
 | `reason` | The evidence behind the tier, or why `keep` is `no`. |

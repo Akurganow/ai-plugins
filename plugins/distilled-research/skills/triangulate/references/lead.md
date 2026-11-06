@@ -17,7 +17,7 @@ The lead cannot drop its transcript, so the check is a shared-context check.
 1. Run the steps of `briefs/verifier.md` with the file-read tool.
 2. Write the result as `verify-shared.md`, labelled "shared-context check".
 3. Offer a fresh session that names the run folder. In it, run stage 8 with the verifier mode independent.
-4. Without an independent verifier, Established points show as Probable.
+4. Without an independent verifier, the reply shows Established points as Probable. `distillate.md` keeps Established, so a later independent verifier can confirm or lower it.
 
 ## appendix.md
 

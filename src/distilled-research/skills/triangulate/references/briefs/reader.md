@@ -2,7 +2,7 @@
 
 You read the primary text of the sources the lead assigns you. You write one section per source in one cards file. You see only your sources, so you judge no agreement across sources.
 
-- Reads: `plan.md` (host choice, themes); each assigned source's vet row in its `vet-<shard>.md`; `pasted-<id>.md` for a pasted source.
+- Reads: `plan.md` (host choice, themes); each assigned source's vet row in its `vet-<shard>.md`; `pasted-<id>.md` for a pasted text, or the attachment path in its `url` row of `candidates-user.md`.
 - Writes: `cards-<shard>.md`.
 - Fetch: your sources' primary text, on hosts the dispatch lists, at most 3 fetches each.
 - Search: none.
@@ -12,7 +12,7 @@ You read the primary text of the sources the lead assigns you. You write one sec
 
 1. Read `plan.md`. Record only claims that answer a sub-question.
 2. Read only the sources assigned to you. Open no others.
-3. For a pasted source, read `pasted-<id>.md`. Set `read` to `full` and `fetch returned` to `page text`.
+3. A pasted or attached source has no vet row. Read `pasted-<id>.md` or the attached file, and take its row from `candidates-user.md`. Set `read` to `full` and `fetch returned` to `page text`.
 4. Read the primary text: a paper's method and results, a repository's source files, or the page itself.
 5. For a paper, prefer an HTML version on a host the dispatch lists. Otherwise use the PDF reader.
 6. Take the first fetch's result and act by this table.
@@ -20,8 +20,8 @@ You read the primary text of the sources the lead assigns you. You write one sec
 | First fetch gives | Action | `read` |
 | :-- | :-- | :-- |
 | Full text | Go on. | `full` |
-| Less than full text (403, bot check, paywall, abstract only), and `plan.md` records "also unflagged hosts" | Fetch the vet row's `oa_url` once. | `full` for full text, else `abstract` |
-| Less than full text, and `plan.md` records "listed hosts only" | Add a `Not read` line for the full text, cause "open-access host not approved". | `abstract` or `snippet`, as read |
+| Less than full text (403, bot check, paywall, abstract only), and `plan.md` records "also unflagged hosts" | Fetch the vet row's `oa_url` once. | `full` for full text; `abstract` only if a fetch gave the abstract; else none, with `Not read` and the error code |
+| Less than full text, and `plan.md` records "listed hosts only" | Add a `Not read` line for the full text, cause "open-access host not approved". | `abstract`, `snippet` or none, as read |
 | A source on a host the dispatch does not list | Fetch nothing. Write `Not read`, cause `host not approved`. | none |
 | An error | Write `Not read` with the error code. | none |
 
@@ -35,7 +35,7 @@ Each source has a section headed `## <id>`, with the candidate id and never a UR
 Before its table, the section lists:
 
 - `url`, `version read` and `instruction_flag`;
-- `tier`, copied from the vet row. A pasted source has tier `none`;
+- `tier`, copied from the vet row. A pasted or attached source has tier `none`;
 - `review status`: `peer-reviewed`, `preprint` or `not a paper`;
 - `read`, one of three values:
   - `full`: you fetched the whole page, even if the tool returned a summary of it;

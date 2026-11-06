@@ -90,12 +90,12 @@ The `vet-sources` skill fires when you ask whether a site, paper or repository c
 
 ### What triangulate asks first
 
-Nothing runs until you answer. The agent first sends one numbered report, so you can reply by number. The report holds:
+Before the report, the agent sends only site hostnames, to Wikipedia and to a web search provider. Nothing else runs until you answer. The agent sends one numbered report, so you can reply by number. The report holds:
 
-1. The search, fetch, PDF, shell and subagent tools it found, or "none" for a missing role.
+1. The search, fetch, PDF, file-read, shell and subagent tools it found, or "none" for a missing role. Without a file-read tool the run stops.
 2. The topic type: practice/technology, science/health, news/facts or other.
 3. One row per planned site: its status, the catalogue record as found, what others say about the site, the safety column, and a tier. Each row comes from a hostname-only catalogue lookup and one hostname-only web search.
-4. The hosts it would contact: research hosts, catalogue hosts, and your allow and deny lists. After your yes, the DOIs and repository paths of the sources go to the catalogue hosts. Each source page is fetched once, with its repository page for a repository.
+4. The hosts it would contact: research hosts, catalogue hosts, and your allow and deny lists. After your yes, the DOIs and repository paths of the sources go to the catalogue hosts. A vetter fetches each source page once, with its repository page for a repository. A reader fetches each kept source up to three times.
 5. The query strings of each lane, written for the lanes of every depth in priority order. The first lane that serves a sub-question also gets its string worded as the opposite claim. The report names any sub-question a depth leaves without a lane. Collectors search these strings character for character. A vetter may search once per row, with a source's hostname or title alone. A tracer at standard and deep depth may search a card's title words to find a cited origin.
 6. A choice: listed hosts only, or also unflagged hosts.
 7. The scope of each depth: lanes, sources read and a ceiling on child agents.
@@ -134,7 +134,7 @@ The run folder you chose holds the plan, the candidates, the merged list `merged
 
 ### Other starts
 
-- **Rating alone:** `vet-sources` rates up to 15 sources and names `triangulate` for the rest. Before your yes it looks up hostnames only. After your yes it checks DOIs and repository paths. It reports the catalogue record as found and a tier. Absence from a catalogue is not safety, and it never calls a source safe.
+- **Rating alone:** `vet-sources` rates up to 15 sources per request and takes the rest in further batches of 15. Before your yes it looks up hostnames only. After your yes it checks DOIs and repository paths. It reports the catalogue record as found and a tier. Absence from a catalogue is not safety, and it never calls a source safe.
 - **No search or page-reading tool:** the agent asks whether it may read pages through the shell, says how to connect a search or page-reading tool, and offers to run on sources you paste. If you decline both, it says research cannot run.
 - **Pasted sources:** the agent skips collecting and vetting, gives every source status `skipped` and tier `none`, and reads each pasted text. No source has a tier, so no point grades above Tentative.
 - **No subagents:** the pieces run in turn from the run-folder files. Verification then becomes a shared-context check, labelled so, and Established points show as Probable. The agent offers a fresh session that names the folder, and recommends the quick depth.
@@ -159,30 +159,30 @@ The run folder you chose holds the plan, the candidates, the merged list `merged
 | [`skills/vet-sources/references/catalogues.md`](skills/vet-sources/references/catalogues.md) | the catalogues by phase, their routes and terms, the statuses, and the lookup rules |
 | [`skills/vet-sources/references/tiers.md`](skills/vet-sources/references/tiers.md) | tiers A, B and C, their legend text, and what moves a source between them |
 | [`skills/vet-sources/references/briefs/vetter.md`](skills/vet-sources/references/briefs/vetter.md) | the brief for the child that vets a shard of sources, with the vet row format |
-| [`plugin.json`](plugin.json) | the Agent Plugins 1.0.0 manifest |
+| `plugin.json` in `plugins/distilled-research/`; `.claude-plugin/`, `.codex-plugin/` and `.cursor-plugin/` manifests in `bundles/distilled-research/` | the Agent Plugins 1.0.0 manifest in the first build, one manifest per client in the second |
 | [`LICENSE`](LICENSE) | the MIT license |
 
 The package is instructions and reference text. The agent runs the research with the tools your session already has.
 
 ## Requirements and network
 
-**Tools.** Research needs a search tool and a page-reading tool. A PDF reader helps with papers. Subagents are optional: without them the pieces run in turn. The agent uses the shell to read pages only after you say yes, and never uses it to read or join run files. The package needs no runtime, key or account, and the agent holds and reads no key.
+**Tools.** Research needs a search tool, a page-reading tool and a file-read tool. A PDF reader helps with papers. Subagents are optional: without them the pieces run in turn. The agent uses the shell to read pages only after you say yes, and never uses it to read or join run files. The package needs no runtime, key or account, and the agent holds and reads no key.
 
 **Catalogues.** The package lists a catalogue only if it is public without a key or an account. Each entry cites the pages that state its access terms or data licence, the day each was read, and what they state. The agent reads one record per lookup and marks a bot check or a 403 as an error. Four catalogues are listed.
 
 - **Wikipedia Perennial Sources**, host `en.wikipedia.org`. It is the one catalogue with a hostname route, so it answers before your yes. It also answers after.
-  - Search: `https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch="<host>" prefix:"Wikipedia:Reliable sources/Perennial sources"&srlimit=2&format=json`
+  - Search: `https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch="<host>" prefix:"Wikipedia:Reliable sources/Perennial sources"&srlimit=2&format=json`, with the host written without `www.`
   - Read one subpage: `https://en.wikipedia.org/w/index.php?title=<subpage>&action=raw`
   - The list records how Wikipedia editors rate a source's reliability ([page](https://en.wikipedia.org/wiki/Wikipedia:Reliable_sources/Perennial_sources), read 2026-11-05). It is no safety rating.
   - Terms: Wikimedia [robot policy](https://wikitech.wikimedia.org/wiki/Robot_policy), read 2026-11-05, which asks a bot to identify itself in its User-Agent header; see also the [Terms of Use](https://foundation.wikimedia.org/wiki/Policy:Terms_of_Use), section 12, read 2026-11-05. The agent uses its tool's own client and invents no personal contact.
-- **Crossref REST API, with Retraction Watch data**, host `api.crossref.org`. It runs after your yes, by DOI, on science/health topics.
-  - Route: `https://api.crossref.org/v1/works?filter=updates:<doi>&rows=1`. The filter `updates` means "Is an update to the given DOI", and `update-type` names a correction or retraction ([filter table](https://www.crossref.org/documentation/retrieve-metadata/rest-api/rest-api-filters/), read 2026-11-05). A returned record is an update notice. A record from the Retraction Watch database has `"source":"retraction-watch"` ([documentation](https://www.crossref.org/documentation/retrieve-metadata/retraction-watch/), read 2026-11-05).
+- **Crossref REST API, with Retraction Watch data**, host `api.crossref.org`. It runs after your yes, by DOI, on science/health topics. Tracers also look up the DOI of each origin they open.
+  - Route: `https://api.crossref.org/v1/works?filter=updates:<doi>&rows=20&cursor=*`, then each returned `next-cursor` while a page is full ([pagination](https://www.crossref.org/documentation/retrieve-metadata/rest-api/tips-for-using-the-crossref-rest-api/), read 2026-11-06). The filter `updates` means "Is an update to the given DOI", and `update-type` names a correction or retraction ([filter table](https://www.crossref.org/documentation/retrieve-metadata/rest-api/rest-api-filters/), read 2026-11-05). A returned record is an update notice. A record from the Retraction Watch database has `"source":"retraction-watch"` ([documentation](https://www.crossref.org/documentation/retrieve-metadata/retraction-watch/), read 2026-11-05).
   - Terms: [access terms](https://www.crossref.org/documentation/retrieve-metadata/rest-api/access-and-authentication/), read 2026-11-05. The [Retraction Watch in Crossref](https://www.crossref.org/documentation/retrieve-metadata/retraction-watch/) page, read 2026-11-05, describes the data and states no usage terms.
 - **OpenAlex**, host `api.openalex.org`. It runs after your yes, by DOI, for every topic type.
   - Route: `https://api.openalex.org/works/doi:<doi>?select=id,is_retracted,open_access`. A true `is_retracted` counts as a retraction notice. The `open_access.oa_url` field may be a landing page, a PDF or null (field seen in a returned work record, 2026-11-05).
   - Terms: [authentication](https://help.openalex.org/api/authentication/), read 2026-11-05, says basic queries need no key, at 10 requests per second. [About](https://openalex.org/about), read 2026-11-05, says the data is CC0. Neither page states terms of use for the API.
 - **OpenSSF Scorecard**, host `api.scorecard.dev`. It runs after your yes, by repository path, on practice/technology topics.
-  - Route: `https://api.scorecard.dev/projects/github.com/<owner>/<repo>`
+  - Route: `https://api.scorecard.dev/projects/github.com/<owner>/<repo>`, for `github.com` repositories only. Other hosts read "not checked".
   - Terms: [README, section "Scorecard REST API"](https://github.com/ossf/scorecard/blob/e73dbc5037aa4940d567e4878d50a7f524f30f08/README.md), read 2026-11-05, states the data licence, CDLA Permissive 2.0, and no access terms or authentication rule. Its MCP section says a server that reads the REST API "needs no credentials".
 
 **Other lookups.** Before your yes the agent also runs one web search per planned site, with the hostname alone and never topic words or your text. It reports in one line what others say about the site. No listed catalogue rates a site's safety, so the safety column reads "not checked: no open catalogue". If you have a checker of your own, the agent names it and uses it only after your yes.

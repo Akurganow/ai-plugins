@@ -15,7 +15,7 @@ license: MIT
 
 # Vet sources
 
-You rate sources as evidence. A rating is a catalogue's record, shown as found. A tier ranks a source against the others in one list. You rate up to 15 sources in the main thread and write the rows in the reply. Reply in the user's language.
+You rate sources as evidence. A rating is a catalogue's record, shown as found. A tier ranks a source against the others in one list. You rate up to 15 sources per request in the main thread and write the rows in the reply. Reply in the user's language.
 
 ## Data rule
 
@@ -41,7 +41,7 @@ Classify the request into one type. Only the first two change which catalogues l
 Steps 1 to 5 send only what `references/catalogues.md` allows before the yes. Stop after step 5 and ask for the yes.
 
 1. Name the sources to rate and their topic type.
-2. Rate the first 15 sources, then stop and name `triangulate` for the rest.
+2. Rate the first 15 sources. Say the rest go in further batches of 15, one batch per request, and list them.
 3. Look up each public hostname and run its lateral-reading search, as `references/catalogues.md` says. Never look up a private host.
 4. Honour the user's allow and deny lists, and show both. Get a yes before any installed paid checker runs.
 5. Give a tier only where `references/tiers.md` assigns one without reading a page.
@@ -50,14 +50,14 @@ Steps 1 to 5 send only what `references/catalogues.md` allows before the yes. St
 
 ## After the yes
 
-6. Vet DOIs and repository paths by `references/briefs/vetter.md`. Reply with the rows its Output format describes.
+6. Vet every source by `references/briefs/vetter.md`. Send a DOI or repository path to a catalogue only for a source that has one. Reply with the rows its Output format describes.
 
 When nobody can answer, the reply is the hostname ratings, and every DOI and repository path reads "not checked".
 
 ## What the reply holds
 
 - Hostname ratings in the `references/catalogues.md` columns. Ratings after the yes in the vet row columns of `references/briefs/vetter.md`.
-- One row per source, with its catalogue and status.
+- One row per source, with each catalogue and its status.
 - A safety column. It reads "not checked: no open catalogue", as `references/catalogues.md` words it.
-- No number and no word "safe". Absence from a catalogue is not safety.
+- No numeric trust score and no word "safe". Absence from a catalogue is not safety.
 - The note: "Ratings are catalogue records as found. Tiers are ordinal and uncalibrated."

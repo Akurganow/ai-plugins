@@ -22,6 +22,7 @@ You start with no context from the run. You check `distillate.md` against the ru
 5. Pick up to two clusters per theme, or all when it has fewer.
    - Re-derive each from the cards and `origins/<theme>.md`.
 6. For each sampled cluster, find one claim row quote in its source section. Confirm it supports the claim.
+   - A cluster with only `snippet` claims has no quote. Record "no quote", report the cluster as unchecked and invent none.
 7. Fetch the pages of up to five checked quotes, from the highest-graded points. Judge each result by this table.
 
 | Fetch gives | Result | Effect on the recount |
@@ -55,4 +56,4 @@ After the rows give:
 
 ## Check before reporting
 
-Confirm every point has one verdict and no row raises a grade. Confirm each theme has up to two sampled clusters, all of them when it has fewer, each with one quote.
+Confirm every point has one verdict and no row raises a grade. Confirm each theme has up to two sampled clusters, all of them when it has fewer, each with one quote or the note "no quote".

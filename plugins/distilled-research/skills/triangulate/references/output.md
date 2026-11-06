@@ -33,14 +33,14 @@ The reply is the distillate, in the order below. Grades, `N`, `M`, `K` and tiers
    - Verifier mode, quotes matched of those fetched, quotes not fetched, points lowered.
    - Points whose `M` the verifier lowered because every quote of a measured origin was `paraphrase`.
    - Card quotes that were literal and card quotes that were `paraphrase`, summed from the `quotes:` line of each cards file.
-   - When no quote was literal, add: "no card quote was literal; no point can reach Established".
+   - When no card quote and no tracer quote was literal, add: "no quote was literal; no point can reach Established".
    - Write "shared-context check" as the mode when no independent verifier ran.
    - On a science or health topic, add: "agreement among sources; not medical advice".
 
 | Column | Content |
 | :-- | :-- |
 | Claim | One sentence, with its `kind`. A Contested row says "Studies disagree on ...". |
-| Grade | A grade from the legend. Add "(lowered by the verifier)" on every lowered point. |
+| Grade | A grade from the legend. Show Established as Probable when no independent verifier ran. Add "(lowered by the verifier)" on every lowered point. |
 | `N (M) + K` | Copy the final row of `distillate.md`. |
 | Evidence | Per study: year (the card's `first-public date`), first author, name, design, `n`, population and effect with its interval, copied from the cards. Add `preprint` when the card's review status says so. Add `read: full`, `abstract` or `snippet`. End with up to two plain URLs, best tier first. |
 | Dissent | The strongest opposing origin, or "none found". An untraced or `unconfirmed` opposing source shows as a `K` line. |

@@ -10,10 +10,10 @@ description: >
   when TRIZ is never named. Use it even when the user also wants a note,
   comment or message drafted from the answer. Use it instead of a quick list
   of tips, even when a direct answer looks easy. The contradiction matrix
-  names inventive directions a plain answer misses. Skip it for bugs, run-
-  time tuning, sizing formulas, config precedence and plain refactoring. A
-  problem that keeps coming back after fixes, tied tensions, or a matrix
-  lookup that gave nothing belong to ariz.
+  names inventive directions a plain answer misses. Skip it for bugs or
+  tuning with no trade-off, sizing formulas, config precedence and plain
+  refactoring. A problem that keeps coming back after fixes, tied tensions,
+  or a matrix lookup that gave nothing belong to ariz.
 license: MIT
 ---
 

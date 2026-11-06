@@ -1,19 +1,19 @@
 ---
 name: extraneous
 description: >
-  Diagnose what a reader must hold in mind at once to do a task in a code
-  base, a system or a process, sort it into the load the task needs and the
-  load the structure adds, and name the change that removes the second. Use
-  when something is too complex and nobody can say why, or when someone must
-  keep many things in their head to change it. Use when understanding one
-  piece of code means opening many files, such as a slow review or a deep
-  class hierarchy. Use when a component keeps breeding bugs that take days
-  to find, when newcomers stay confused, when a hire takes months to ship,
-  or when first-timers keep breaking a runbook. Use when asked to write up
-  why code is hard for newcomers. Use even when the question never says
-  complexity: a pasted function with "why is this so hard to follow?"
-  counts. The terms come from cognitive load theory and a practitioner's
-  catalogue of extraneous load in code.
+  Use this skill whenever the user asks why code, a system or a process is
+  hard to work in. Phrasings: "why is this so hard to follow?", "I keep too
+  much in my head", "newcomers stay confused". It covers something too
+  complex that nobody can explain. It covers a task that needs many things
+  held in mind at once. It covers code that takes many files to understand,
+  such as a slow review or a deep class hierarchy. It covers a component
+  that breeds bugs that take days to find, and a hire who takes months to
+  ship. It covers a runbook that first-timers keep breaking, and a write-up
+  of why code is hard for newcomers. Use it even when the word complexity
+  never appears. Use it instead of a quick list of tips. It splits the load
+  the task needs from the load the structure adds, and names the change that
+  removes the second. Skip it for speed fixes, renames, style checks,
+  onboarding checklists and line-by-line explanations.
 license: MIT
 ---
 

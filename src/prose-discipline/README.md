@@ -335,4 +335,4 @@ MIT. See [LICENSE](LICENSE).
 
 ## Help
 
-See [SUPPORT.md](https://github.com/Akurganow/pegboard/blob/main/SUPPORT.md).
+See [SUPPORT.md](https://github.com/Akurganow/pegboard/blob/main/SUPPORT.md). The [pegboard marketplace](https://github.com/Akurganow/pegboard#plugins) lists the other packages.

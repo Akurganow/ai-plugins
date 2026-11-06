@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "distilled-research",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Vets sources, reads them in parallel, collapses copies to independent origins, and grades each claim by how many independent origins support it.",
   "author": {
     "name": "Alexander Kurganov",

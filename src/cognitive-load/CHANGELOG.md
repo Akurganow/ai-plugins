@@ -3,6 +3,14 @@ All notable changes to this project will be documented in this file. See [conven
 
 - - -
 
+## cognitive-load--v0.3.3 - 2026-11-06
+#### Bug Fixes
+- (**cognitive-load**) narrow the skip lines of the description (ea5621c)
+- (**cognitive-load**) describe when to use the skill in the user's words (d0f41cf)
+
+- - -
+
+
 ## cognitive-load--v0.3.2 - 2026-11-04
 #### Bug Fixes
 - point every link at Akurganow/pegboard (2fb81f7)

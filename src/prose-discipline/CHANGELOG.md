@@ -3,6 +3,14 @@ All notable changes to this project will be documented in this file. See [conven
 
 - - -
 
+## prose-discipline--v2.2.1 - 2026-11-06
+#### Bug Fixes
+- (**prose-discipline**) narrow the skip lines of the description (fbfbe27)
+- (**prose-discipline**) describe when to use the skill in the user's words (a781986)
+
+- - -
+
+
 ## prose-discipline--v2.2.0 - 2026-11-04
 #### Features
 - (**prose-discipline**) show a reference book as the listing icon (84e7ee8)

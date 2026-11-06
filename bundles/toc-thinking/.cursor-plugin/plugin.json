@@ -1,7 +1,7 @@
 {
   "name": "toc-thinking",
   "description": "Applies Goldratt's Thinking Processes to software: finds the core problem behind many symptoms, resolves the conflict that sustains it, and plans the change.",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "author": {
     "name": "Alexander Kurganov"
   },

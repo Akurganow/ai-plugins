@@ -3,6 +3,13 @@ All notable changes to this project will be documented in this file. See [conven
 
 - - -
 
+## toc-thinking--v0.3.3 - 2026-11-06
+#### Bug Fixes
+- (**toc-thinking**) describe when to use the skill in the user's words (75b4ce0)
+
+- - -
+
+
 ## toc-thinking--v0.3.2 - 2026-11-04
 #### Bug Fixes
 - point every link at Akurganow/pegboard (2fb81f7)

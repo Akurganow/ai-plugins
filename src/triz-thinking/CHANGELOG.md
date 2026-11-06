@@ -3,6 +3,14 @@ All notable changes to this project will be documented in this file. See [conven
 
 - - -
 
+## triz-thinking--v0.3.2 - 2026-11-06
+#### Bug Fixes
+- (**triz-thinking**) narrow the skip lines of the description (facdc50)
+- (**triz-thinking**) describe when to use each skill in the user's words (73f82a8)
+
+- - -
+
+
 ## triz-thinking--v0.3.1 - 2026-11-04
 #### Bug Fixes
 - point every link at Akurganow/pegboard (2fb81f7)

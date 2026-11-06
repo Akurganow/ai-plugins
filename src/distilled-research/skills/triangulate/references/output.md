@@ -1,6 +1,6 @@
 # Output
 
-The reply is the distillate, in the order below. Grades, `N`, `M`, `K` and tiers come from `origins-and-grades.md`. The lists behind the reply stay in `appendix.md`. Report final totals only.
+By default the reply is the distillate, in the order below. When the user asks for another length or form, reply in it, and the run folder keeps the rest. Grades, `N`, `M`, `K` and tiers come from `origins-and-grades.md`. The lists behind the reply stay in `appendix.md`. Report final totals only.
 
 1. **Answer:** write one opening sentence, up to four direction sentences and one closing caveat sentence.
    - The opening sentence answers in plain words. For "it depends", name the question, not the topic, and say on what.

@@ -118,13 +118,16 @@ jobs:
 
       # The notes are the new section of the package's CHANGELOG.md, which
       # cocogitto heads "## <tag> - <date>".
-      # It reads the tags on main's head and skips released ones, so re-running
-      # a run whose release step failed creates only the missing releases.
-      - name: Create one GitHub release per tag on main's head
+      # It reads every package tag reachable from main and skips released ones,
+      # so the next run finishes a run whose release step failed, even after main
+      # has moved. A seed tag sits on a commit cocogitto did not write, so it
+      # gets no release.
+      - name: Create the GitHub release of every version tag that has none
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          for tag in $(git tag --points-at HEAD | grep -e '--v' || true); do
+          for tag in $(git tag --merged HEAD -l '*--v*'); do
+            case "$(git log -1 --format=%s "$tag")" in 'chore(version):'*) ;; *) continue ;; esac
             gh release view "$tag" >/dev/null 2>&1 && continue
             name=${tag%--v*}
             notes="$RUNNER_TEMP/$tag.md"

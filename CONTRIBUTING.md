@@ -261,7 +261,8 @@ Oh-My-Pi documentation.
 
 ### Write a skill's evals cases
 
-A skill's folder holds two files:
+A skill's folder holds `cases.yaml` and `rubric.yaml`, and may hold
+`held-out.yaml` and `calibration.json`:
 
 - `cases.yaml` has a `positive` list and a `near_miss` list. Each list has ten
   entries, and each entry has an `id` and a `prompt`.

@@ -1,21 +1,19 @@
 ---
 name: contradiction
 description: >
-  Resolve a trade-off between two software requirements with TRIZ, so the
-  answer is a set of named inventive directions and not a list of tips.
-  State the contradiction, set the ideal final result, read Altshuller's
-  contradiction matrix or the separation principles, and adapt each
-  principle to the user's system. Use when improving one thing makes another
-  worse, when two requirements look incompatible, or when one thing must be
-  both long and short, open and closed, frozen and editable. Use when the
-  only option on the table is a middle setting, a split-the-difference limit
-  or a pick of one side, and the user wants a smarter way or both. Use even
-  when the user never says TRIZ, and even when they also want a note, a
-  comment or a message drafted from the answer. Use even when a direct
-  answer looks easy: the matrix names directions a plain answer misses. A
-  problem that keeps coming back after fixes, tensions that feed each other,
-  or a matrix lookup that gave nothing belong to the ariz skill of this
-  package.
+  Use this skill whenever the user faces a trade-off between two software
+  requirements and wants more than a compromise. Phrasings: "improving X
+  makes Y worse", "these two requirements look incompatible", "it must be
+  both short and long". It covers one thing that must be long and short,
+  open and closed, or frozen and editable. It covers a proposal that only
+  sets a middle value, splits the difference or picks one side. Use it even
+  when TRIZ is never named. Use it even when the user also wants a note,
+  comment or message drafted from the answer. Use it instead of a quick list
+  of tips, even when a direct answer looks easy. The contradiction matrix
+  names inventive directions a plain answer misses. Skip it for bugs or
+  tuning with no trade-off, sizing formulas, config precedence and plain
+  refactoring. A problem that keeps coming back after fixes, tied tensions,
+  or a matrix lookup that gave nothing belong to ariz.
 license: MIT
 ---
 

@@ -12,8 +12,8 @@ description: >
   pasted function with a pointed question. Use it instead of a general code
   review from memory. It applies Ousterhout's red flags, ranks the findings
   by how often each part is touched, and cites the chapter for each. Skip it
-  for bug fixes, tests, security or performance reviews, walkthroughs,
-  renames and diagrams.
+  for bug fixes, security or performance reviews, walkthroughs, mechanical
+  renames, writing tests and drawing diagrams.
 license: MIT
 ---
 

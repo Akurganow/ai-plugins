@@ -1,16 +1,16 @@
 ---
 name: house-style
 description: >-
-  Use this skill whenever the user wants text written, checked or fixed that
-  an engineer will read. That means a commit message, review comment, error
-  message, doc, PR description, code comment, agent instruction or reply.
+  Use this skill whenever the user wants text written, checked or fixed.
+  That means a commit message, review comment, error message, doc, PR
+  description, code comment, agent instruction, or a reply to any reader.
   Phrasings: "commit msg for this pls", "de-slop this", "shorten this",
   "check this reply before I post it". Also use it to check, clean up or
   shorten existing text. Use it instead of writing in your own default
   voice. The house rules give each sentence one thought, cut filler and
   hedges, and fit the form of each artifact. Skip it for translation,
-  grammar questions, data or format conversion, git commands, config edits
-  and creative writing.
+  grammar questions, data conversion, creative writing, git commands that
+  write no message and config edits that write no prose.
 license: MIT
 ---
 

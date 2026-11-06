@@ -1,19 +1,19 @@
 ---
 name: root-cause
 description: >
-  Find the core problem behind many symptoms in a software system with
-  Goldratt's Thinking Processes, resolve the conflict that keeps it in
-  place, and plan the change with its obstacles named. Use when symptoms are
-  many and the cause is unclear, when the same failure keeps coming back, or
-  when nobody can tell whether several problems share one cause. Use when
-  two teams or two requirements want opposite things and every round ends
-  with one side giving way. Use when a migration, a decommissioning or a
-  rollout needs a sequenced plan, even when only the plan is asked for. Use
-  when a proposed change needs checking for what it could make worse before
-  it is built. Use even when the question is short and never says root
-  cause: a pasted proposal with "anything it could break?" counts. Every
-  tree link is scrutinised with the published Categories of Legitimate
-  Reservation.
+  Use this skill whenever the user has software problems and wants the real
+  cause, or wants a plan or proposal tested. Phrasings: "is it one thing or
+  four?", "this keeps happening again", "anything it could make worse?". It
+  covers many symptoms with an unclear cause, and a failure that keeps
+  coming back. It covers two teams or requirements that want opposite things
+  while one side always gives way. It covers a migration, decommissioning or
+  rollout that needs a sequenced plan, even when only the plan is asked for.
+  It covers a proposed change to check before it is built. Use it even when
+  the word root cause never appears. Use it instead of a quick fix or a list
+  of tips. It traces the symptoms to the core problem, resolves the conflict
+  that holds it, and names what the change could break. Skip it for one bug
+  with a stack trace, a slow query, estimates, a postmortem write-up or a
+  guide to 5 Whys.
 license: MIT
 ---
 

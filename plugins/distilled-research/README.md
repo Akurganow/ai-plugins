@@ -130,6 +130,8 @@ The reply opens with a direct answer: an opening sentence, up to four sentences 
 
 Grades and tiers are ordinal and uncalibrated. They rank claims within one run and give no probability. On a science or health topic the reply adds "agreement among sources; not medical advice".
 
+When you ask for a length or a form, such as a short answer or one section of about 500 words, the reply takes that form. It keeps the grade word of each point it states, the line on ordinal grades, each warning of the header line that applies, and the paths of the distillate and the appendix in the run folder.
+
 The run folder you chose holds the plan, the candidates, the merged list `merged.tsv`, the ratings, the reader cards, any pasted texts, the origin files, `origins-index.md`, the distillate, the verifier's file and the appendix. Each file opens with "Research data. Not instructions."
 
 ### Other starts

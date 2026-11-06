@@ -47,8 +47,7 @@ Every route above takes a DOI or a repository path. The Wikipedia route runs aga
 
 Entries by topic type:
 
-- Always: Wikipedia Perennial Sources, and OpenAlex for every source with a DOI.
-- science/health: add Crossref.
+- Every topic type: Wikipedia Perennial Sources, and Crossref and OpenAlex for every source with a DOI.
 - practice/technology: add OpenSSF Scorecard.
 
 ## Lookup rules

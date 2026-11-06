@@ -29,7 +29,7 @@ A question about safe installs, malware or licences gets one sentence that says 
 
 ## Topic type
 
-Classify the request into one type. Only the first two change which catalogues load.
+Classify the request into one type. Only practice/technology changes which catalogues load. Science/health also changes the grade rules.
 
 - practice/technology: tools, methods and engineering or work practice.
 - science/health: studies, trials, mechanisms and clinical or biological claims.
@@ -45,7 +45,7 @@ Steps 1 to 5 send only what `references/catalogues.md` allows before the yes. St
 3. Look up each public hostname and run its lateral-reading search, as `references/catalogues.md` says. Never look up a private host.
 4. Honour the user's allow and deny lists, and show both. Get a yes before any installed paid checker runs.
 5. Give a tier only where `references/tiers.md` assigns one without reading a page.
-   - Say that after the yes, DOIs and repository paths go to the catalogue hosts the topic type loads.
+   - Say that after the yes, DOIs and repository paths go to the catalogue hosts. Crossref and OpenAlex load for every topic type, and OpenSSF Scorecard for practice/technology.
    - Say that step 6 fetches each source page and repository page once, and searches its hostname or title once.
 
 ## After the yes

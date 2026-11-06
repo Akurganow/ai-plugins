@@ -12,7 +12,7 @@ You vet the candidate rows assigned to you, by the lead or by the user. The user
 
 When a lead dispatched you, `plan.md` holds four fields that you read:
 
-- Topic type: `practice/technology`, `science/health`, `news/facts` or `other`. It picks the catalogue entries.
+- Topic type: `practice/technology`, `science/health`, `news/facts` or `other`. Only `practice/technology` adds a catalogue entry, OpenSSF Scorecard.
 - Out-of-topic list: the subjects and hosts that make a source off topic.
 - Rated hosts: each host the stage-0 report rated, with its status and record.
 - Host choice: "listed hosts only" or "also unflagged hosts". The dispatch's host list applies it.

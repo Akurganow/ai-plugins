@@ -23,7 +23,7 @@ Send one message. Number the items so the user can answer by number. State "No p
    - Derive source types and sites from the request. Store no list.
 4. **Hosts to contact:** list three groups.
    - Research hosts, and the hosts of the stage-0 lookups.
-   - The catalogue hosts that `catalogues.md` loads after the yes for the topic type.
+   - The catalogue hosts that `catalogues.md` loads after the yes. Name `api.crossref.org` and `api.openalex.org` for every topic type.
    - The user's allow and deny lists.
    - A host that only a catalogue record names is an unflagged host. See "Host choice".
    - Add that after the yes the DOIs and repository paths of the sources go to the catalogue hosts.

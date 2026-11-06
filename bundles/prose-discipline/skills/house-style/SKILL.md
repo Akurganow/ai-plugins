@@ -1,12 +1,16 @@
 ---
 name: house-style
 description: >-
-  Apply the prose-discipline engineering prose standard to anything an
-  agent writes, from replies and code comments to commit messages and error
-  messages. Use when writing or reviewing replies, docs, code comments,
-  review comments, commit messages, change descriptions, error messages or
-  agent instructions. Also use when asked to check, clean up, shorten or
-  de-slop text.
+  Use this skill whenever the user wants text written, checked or fixed that
+  an engineer will read. That means a commit message, review comment, error
+  message, doc, PR description, code comment, agent instruction or reply.
+  Phrasings: "commit msg for this pls", "de-slop this", "shorten this",
+  "check this reply before I post it". Also use it to check, clean up or
+  shorten existing text. Use it instead of writing in your own default
+  voice. The house rules give each sentence one thought, cut filler and
+  hedges, and fit the form of each artifact. Skip it for translation,
+  grammar questions, data or format conversion, git commands, config edits
+  and creative writing.
 license: MIT
 ---
 

@@ -59,7 +59,7 @@ Entries by topic type:
 
 ## User lists and paid checkers
 
-- Honour a user's allow and deny lists. Never fetch a denied host. An allowed host skips no check.
+- Honour a user's allow and deny lists. Never request a denied host. An allowed host skips no check.
 - Show both lists in the report. The plugin holds no list.
 - Name each paid checker the user has installed, and the exact names it would receive, in the report or reply.
 - Use a checker only after the user says yes to it. This file names no paid checker.

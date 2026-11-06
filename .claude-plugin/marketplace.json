@@ -4,7 +4,7 @@
     "name": "Alexander Kurganov",
     "url": "https://github.com/Akurganow"
   },
-  "description": "Agent plugins for forecasting from prediction markets, writing engineering prose, and reasoning about software design, root causes and trade-offs.",
+  "description": "Agent plugins for writing engineering prose, grading claims across vetted sources, and reasoning about software design, root causes and trade-offs.",
   "plugins": [
     {
       "name": "cognitive-load",

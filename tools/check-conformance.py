@@ -11,9 +11,9 @@ contains the spec text, the two JSON schemas, and governance files, and
 nothing executable. The Agent Skills project does publish a reference
 validator, `skills-ref`, but its own README says "This library is intended
 for demonstration purposes only. It is not meant to be used in production",
-and it is distributed from a source tree rather than a package index, so it
-is not something to pin a CI job to (it is still the right thing to run by
-hand when changing a skill).
+and it is distributed from a source tree rather than a package index, so
+this script does not depend on it. `conformance.yml` still runs it on every
+skill, installed from a pinned commit, as a second check.
 
 So the split here is: everything the official schema can decide is decided
 by the official schema, through `jsonschema` — the schema file in

@@ -1,18 +1,19 @@
 ---
 name: red-flags
 description: >
-  Review code or a design for complexity with the red flags and principles
-  of Ousterhout's A Philosophy of Software Design. Rank the findings by how
-  often each part is touched and what touching it costs. Use when reviewing
-  a function, a module, an API, an architecture or a refactoring plan. Use
-  when an interface feels wrong, when a module might need splitting or
-  merging, or when a name will not come. Use when there are too many layers,
-  when one change touches too many places, when every caller handles the
-  same error, or when a team must choose which cleanup to take on first. Use
-  when someone asks whether an abstraction is right, or says the code feels
-  tangled. Use even when the question looks small and never says design: one
-  pasted function with a pointed question counts. Each finding cites its
-  chapter.
+  Use this skill whenever the user wants code or a design judged for
+  complexity. That means a function, module, API, architecture or
+  refactoring plan to review, or a feeling that something is off. Phrasings:
+  "is this abstraction right?", "this feels tangled", "should I merge these
+  packages?", "what do I name this?". It covers an interface that feels
+  wrong, a module to split or merge, and too many layers. It covers one
+  change that touches too many places, and every caller handling the same
+  error. It covers which cleanup to take on first. Use it even for one
+  pasted function with a pointed question. Use it instead of a general code
+  review from memory. It applies Ousterhout's red flags, ranks the findings
+  by how often each part is touched, and cites the chapter for each. Skip it
+  for bug fixes, tests, security or performance reviews, walkthroughs,
+  renames and diagrams.
 license: MIT
 ---
 

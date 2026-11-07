@@ -9,23 +9,6 @@
 # (plugins/prose-discipline/README.md, "Codex").
 always_on: [claude, omp]
 positive:
-  - id: commit-msg-backoff-fix
-    prompt: |
-      commit msg for this pls, it goes straight to main
-
-      ```diff
-      --- a/sync/retry.py
-      +++ b/sync/retry.py
-      @@ -9,4 +9,4 @@ def backoff_delays(base=0.5, cap=30.0, attempts=6):
-           delays = []
-           for n in range(attempts):
-      -        delays.append(min(cap, base * 2 * n))
-      +        delays.append(min(cap, base * 2 ** n))
-           return delays
-      ```
-
-      the old formula grew linearly and started at 0, so the first retry fired instantly and
-      we hammered the partner api during tuesdays outage
   - id: webhook-review-comment
     prompt: |
       Reviewing a teammate's PR on our payments service. There's one thing in this diff I
@@ -44,51 +27,6 @@ positive:
       +        logger.info("webhook failed")
            return Response(status=200)
       ```
-  - id: deploy-cli-missing-region
-    prompt: |
-      People keep opening support tickets with this traceback from our deploy CLI, and none
-      of them can tell what to do about it:
-
-      ```
-      Traceback (most recent call last):
-        File "/usr/local/bin/shipctl", line 8, in <module>
-          sys.exit(main())
-        File "/usr/local/lib/python3.12/site-packages/shipctl/deploy.py", line 41, in deploy
-          region = cfg["region"]
-      KeyError: 'region'
-      ```
-
-      It happens when ~/.shipctl/config.toml has no region key, which is the case for
-      everyone who installed before v2.3. Running `shipctl configure --region <name>` fixes
-      it, and the valid regions are eu-west, us-east and ap-south. This is the function:
-
-      ```python
-      def deploy(args):
-          cfg = load_config(Path.home() / ".shipctl" / "config.toml")
-          region = cfg["region"]
-          client = ShipClient(region=region, token=cfg["token"])
-          client.deploy(args.service, args.image)
-      ```
-
-      Change it so this case exits with status 2 and tells people what to do instead of
-      printing the traceback.
-  - id: api-rate-limits-docs
-    prompt: |
-      We publish the documentation for our public REST API next week, and the page on rate
-      limits is still empty. These are the facts from the gateway configuration:
-
-      - Each API token may send 600 requests per minute, counted over a rolling 60-second
-        window.
-      - Bursts of up to 50 requests in one second are allowed.
-      - Over the limit, the API answers 429 Too Many Requests with a Retry-After header in
-        seconds.
-      - Every response carries the headers X-RateLimit-Limit, X-RateLimit-Remaining and
-        X-RateLimit-Reset.
-      - Customers on the Enterprise plan can request a higher limit from their account
-        manager.
-
-      Please write the page and reply with it. It is Markdown, and I will add it as
-      docs/api/rate-limits.md myself.
   - id: export-fix-pr-description
     prompt: |
       can you clean up my notes into the PR description? our template is just Summary and
@@ -144,20 +82,6 @@ positive:
           return d, nil
       }
       ```
-  - id: deslop-webhooks-intro
-    prompt: |
-      this intro for our webhooks docs reads like a press release. de-slop it, and list what
-      you changed so i can check
-
-      "In today's fast-paced world, real-time data is more important than ever. That's why
-      we're thrilled to introduce Webhooks, a powerful and seamless way to leverage events
-      from your account. It's worth noting that webhooks aren't just notifications, they're
-      the backbone of a truly event-driven architecture. Simply register an endpoint and
-      you'll be up and running in no time!"
-
-      the actual facts: you register an HTTPS endpoint under Settings > Webhooks, we POST a
-      JSON event for every order, payment or refund change, each request is signed with
-      HMAC-SHA256 in the Signature header, and failed deliveries are retried for 72 hours
   - id: shorten-incident-update
     prompt: |
       Nobody reads my incident updates past the first two lines. Can you shorten this one
@@ -173,29 +97,12 @@ positive:
       window, and we are currently in the process of identifying the affected orders so that
       we can reach out to them. We will continue to monitor the situation closely and will
       provide another update as soon as we have more information. Thanks for your patience!"
-  - id: check-issue-reply
-    prompt: |
-      Before I post this reply on a GitHub issue, could you check it? A user reported that
-      our Python SDK times out on uploads over 100 MB. Please tell me what to change. I will
-      edit it myself.
-
-      "Thanks so much for reaching out! We totally understand how frustrating this must be.
-      Rest assured that the team is looking into it. I think the issue might possibly be
-      related to the default timeout, which is perhaps set a bit low for larger files. You
-      could maybe try passing timeout=300 to upload() and see if that helps? We'll hopefully
-      have a more permanent fix in an upcoming release. Let us know!"
 near_miss:
   - id: squash-keep-first-message
     prompt: |
       How do I squash my last four commits into one but keep the message of the oldest one
       exactly as it is? They're already pushed to my feature branch, and nobody else works on
       it.
-  - id: list-todo-comments
-    prompt: |
-      I need every TODO and FIXME comment in our monorepo as a CSV with file, line and the
-      comment text, so I can paste it into a planning spreadsheet. Python lives under
-      services/, Go under cmd/ and pkg/. Give me a ripgrep one-liner, and skip vendor/ and
-      anything under testdata/.
   - id: error-messages-to-csv
     prompt: |
       Our support team wants the API's error messages in their spreadsheet. Turn this into
@@ -246,31 +153,3 @@ near_miss:
       directorio tiene más de 10.000 archivos. Con la 3.1 funcionaba bien. Uso macOS 15 y
       Python 3.12. Si pongo `--workers 1` termina, pero tarda una hora. ¿Es un bug o tengo
       que cambiar algo en la configuración?"
-  - id: export-my-review-comments
-    prompt: |
-      I'm leaving the team and want to keep the review comments I wrote on our repo
-      northwind/billing. Give me a gh api command with jq that exports every pull request
-      review comment I authored since 2026-01-01 into a CSV with PR number, file path, line,
-      created_at and body.
-  - id: fill-prompt-placeholders
-    prompt: |
-      Our support agent's system prompt lives in prompts/support.md and has placeholders like
-      {product_name} and {escalation_email}. It also contains literal JSON examples with curly
-      braces, so str.format() blows up with a KeyError. Write a small Python function that
-      fills only the known placeholders and leaves every other brace alone. Don't touch the
-      prompt text itself.
-  - id: shorten-zshrc-function
-    prompt: |
-      can you make this shorter? same behaviour. it's in my .zshrc and it bugs me how long it
-      is
-
-      ```bash
-      mkcd() {
-        if [ -d "$1" ]; then
-          cd "$1"
-        else
-          mkdir -p "$1"
-          cd "$1"
-        fi
-      }
-      ```

@@ -49,8 +49,6 @@ questions:
         A note sits before or after the artifact, such as what was left out,
         what was not run, or another version to choose from.
     cases:
-      - commit-msg-backoff-fix
-      - api-rate-limits-docs
       - export-fix-pr-description
       - issue-triage-agent
   review_label:
@@ -103,7 +101,6 @@ questions:
       whole text.
     cases:
       - go-comments-before-merge
-      - check-issue-reply
   severity_named:
     instructions: >-
       Each finding in the answer carries a severity, such as major, minor or
@@ -116,7 +113,6 @@ questions:
         nit.
     cases:
       - go-comments-before-merge
-      - check-issue-reply
   hedge_comment_dropped:
     instructions: >-
       The answer never suggests keeping the "should work for negative values
@@ -132,10 +128,10 @@ questions:
       - go-comments-before-merge
   cuts_quoted:
     instructions: >-
-      The answer quotes the words it cut, such as "It's worth noting that",
-      instead of describing them, such as "the promotional language".
+      The answer quotes the words it cut, such as "just wanted to give everyone",
+      instead of describing them, such as "the filler phrases".
     cases:
-      - deslop-webhooks-intro
+      - shorten-incident-update
   no_sign_off:
     instructions: >-
       The shortened update has no greeting or sign-off, such as "Hi all" or

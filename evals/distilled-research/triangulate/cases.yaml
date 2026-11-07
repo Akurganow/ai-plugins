@@ -17,33 +17,12 @@ positive:
       review of that across the research literature? I'd like to know which findings hold up
       across several independent studies and which rest on a single trial. Give me the review
       in the reply, plain language is fine.
-  - id: remote-work-productivity-agreement
-    prompt: |
-      I'm writing a memo for our leadership team on remote versus in-office work and
-      productivity. Before I write it, what do the sources actually agree on? Please read
-      widely: academic studies, company surveys, think-tank reports and press coverage. I
-      also suspect many of the articles just repeat one or two famous studies, so tell me
-      which sources only copy each other and which are independent. Reply with the agreed
-      points and the disputed ones.
-  - id: ev-fire-claim-support
-    prompt: |
-      My brother-in-law keeps saying electric cars catch fire far more often than petrol cars.
-      I've seen it repeated in a lot of articles and social posts. How well supported is
-      that, really? I want your answer in the reply, with the numbers and where they come from.
   - id: fasting-sources-agree
     prompt: |
       whats the deal with intermittent fasting for weight loss, like do the sources agree
       on anything?? i keep reading contradicting stuff. please look at lots of sources not
       just a couple and tell me what they agre on and what they dont, write it up here in
       the chat
-  - id: microplastics-water-vetted-parallel
-    prompt: |
-      I need a careful write-up on microplastics in drinking water and what is known about
-      health effects. Cast a wide net: journals, regulators, university labs, water utilities,
-      news. Please check each source before leaning on it, split the reading so several
-      sources are read at once, and have a second pass verify every claim against the
-      source it came from before it goes into the write-up. Put the final write-up in your
-      reply, with each claim graded by how many independent origins support it.
   - id: finland-basic-income-viral-claim
     prompt: |
       A claim keeps coming up in articles about universal basic income: that Finland's
@@ -59,49 +38,11 @@ positive:
       the sources converge and where they split. Read broadly, including older and newer
       work, and check that the sources are sound before relying on them. Give the survey
       in your reply.
-  - id: tdd-defect-claim-terse
-    prompt: |
-      Does TDD really cut defects? how well supported is that claim? answer here, short
-      is fine but base it on many sources
-  - id: four-day-week-board-section
-    prompt: |
-      I'm preparing a board paper on whether our 280-person logistics firm should trial a
-      four-day working week. Most of it is internal: the pilot design, the roster changes and
-      the cost model, which I will write myself. What I need from you is the section headed
-      "What the evidence says". Read many sources on four-day-week trials and studies,
-      and judge the sources before you trust them. Find what they agree on, and mark which
-      of them just repeat the same pilot results. Write only that section, in your reply,
-      about 500 words.
 near_miss:
-  - id: postgres-merge-version
-    prompt: |
-      Quick one for the migration doc I'm editing: which PostgreSQL major version first
-      added the MERGE command? Just give me the version number in your reply.
-  - id: lisbon-census-population
-    prompt: |
-      I'm writing a travel article and only need one number. What was the
-      population of Lisbon, Portugal city proper, in the 2021 national census? Reply with
-      the figure and nothing else.
-  - id: creatine-usual-dose
-    prompt: |
-      What is the usual daily maintenance dose of creatine monohydrate in grams for an adult
-      who lifts weights? One number or a range in your reply is all I need.
   - id: who-pandemic-declaration-date
     prompt: |
       On what date did the World Health Organization declare COVID-19 a pandemic? Give me
       the date in your reply.
-  - id: summarise-vector-db-page
-    prompt: |
-      Summarise this page in three bullets in your reply. Do not add anything that is not in it.
-
-      "Choosing a vector database: what we learned. When our search team moved 12 million
-      product embeddings off a single Postgres instance, the first surprise was memory. An
-      HNSW index with 768 dimensions held entirely in RAM needed about 48 GB, far above the
-      estimate in the vendor guide. We tried product quantization, which cut memory by 60%
-      but lost four points of recall at the top ten results. In the end we kept full
-      precision for the 2 million most-searched products and quantized the rest. Latency at
-      the 95th percentile fell from 310 ms to 85 ms. Our advice: benchmark on your own
-      queries, not on the public datasets, because ours behaved nothing like them."
   - id: summarise-remote-work-page
     prompt: |
       Here is the text of one blog post. Give me a four-sentence summary in your reply.
@@ -115,41 +56,6 @@ near_miss:
       productive than they had been before, which suggests that choice mattered as well as
       location. The author notes that the study covers one firm and one type of job, and
       that results for creative or collaborative roles could differ."
-  - id: summarise-microplastics-page
-    prompt: |
-      Please condense the following page into a short paragraph for my newsletter, in the
-      reply.
-
-      "What is in your tap water? A municipal utility in the Netherlands sampled treated
-      drinking water at 20 points across its network in spring. Particles larger than 10
-      micrometres were found in 17 of the 20 samples, at a median of 2 particles per
-      litre. Polyethylene terephthalate and polypropylene made up most of the fragments. The
-      utility says the numbers are well below the levels at which any health effect has been
-      shown, and adds that the filtration plant removes about 90% of the particles that
-      enter it. A spokesperson said the next round of sampling would cover smaller particles
-      too, using a new detection method."
-  - id: find-fetch-sources-callers
-    prompt: |
-      In my repo, the file layout is below. Where is `fetch_sources` called? List each file
-      and function that calls it in your reply.
-
-      src/research/pipeline.py
-          def run(topic):
-              docs = fetch_sources(topic, limit=50)
-              return rank(docs)
-
-      src/research/cli.py
-          def main():
-              docs = fetch_sources(args.topic)
-              print(len(docs))
-
-      src/research/sources.py
-          def fetch_sources(topic, limit=20):
-              ...
-
-      tests/test_sources.py
-          def test_limit():
-              assert len(fetch_sources("x", limit=3)) <= 3
   - id: find-evidence-grade-definition
     prompt: |
       I'm grepping a codebase for how a source's evidence grade gets computed, and the
@@ -162,14 +68,17 @@ near_miss:
       core/grading.py:57:    return grade_evidence(claim, sources=[])
       docs/grading.md:3:`grade_evidence` returns A, B or C
       tests/test_grading.py:9:    assert grade_evidence(c) == "A"
-  - id: find-config-key-readers
+  - id: sleep-claims-site-ranking
     prompt: |
-      Which files in this repository read the config key `max_parallel_readers`? The output
-      of my search is below. Reply with the file names and say which one sets the default.
+      I'm writing a section of a wellness newsletter on sleep and memory. Before I lean on
+      any of these as evidence, tell me how far each can be relied on and give each one a
+      tier from best to worst, with a line of reasoning per site:
 
-      config/defaults.toml:4:max_parallel_readers = 4
-      config/ci.toml:2:max_parallel_readers = 1
-      src/agent/spawn.py:30:    n = cfg["max_parallel_readers"]
-      src/agent/spawn.py:31:    pool = ThreadPool(n)
-      src/agent/status.py:17:    print(cfg.get("max_parallel_readers"))
-      README.md:55:Set `max_parallel_readers` to limit concurrency.
+      - pubmed.ncbi.nlm.nih.gov
+      - sleepfoundation.org
+      - mercola.com
+      - healthline.com
+      - nature.com/articles (Nature Communications)
+      - reddit.com/r/sleep
+
+      Put the ranked list in your reply.

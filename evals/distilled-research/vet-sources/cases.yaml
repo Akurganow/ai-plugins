@@ -1,18 +1,4 @@
 positive:
-  - id: sleep-claims-site-ranking
-    prompt: |
-      I'm writing a section of a wellness newsletter on sleep and memory. Before I lean on
-      any of these as evidence, tell me how far each can be relied on and give each one a
-      tier from best to worst, with a line of reasoning per site:
-
-      - pubmed.ncbi.nlm.nih.gov
-      - sleepfoundation.org
-      - mercola.com
-      - healthline.com
-      - nature.com/articles (Nature Communications)
-      - reddit.com/r/sleep
-
-      Put the ranked list in your reply.
   - id: can-i-cite-wikipedia-and-statista
     prompt: |
       can I cite these in my undergrad thesis on EV adoption? which are ok as evidence and
@@ -25,19 +11,6 @@ positive:
       a random Medium post by "ev_guru_2021"
 
       just reply here with a rating for each
-  - id: which-papers-hold-up-replication
-    prompt: |
-      Which of these papers hold up as evidence for the claim that power posing changes
-      hormone levels? Rate each with a reliability tier and explain what you based it on
-      (venue, replication record, sample, retractions):
-
-      1. Carney, Cuddy & Yap (2010), "Power Posing: Brief Nonverbal Displays Affect
-         Neuroendocrine Levels and Risk Tolerance", Psychological Science
-      2. Ranehill et al. (2015), "Assessing the Robustness of Power Posing", Psychological Science
-      3. Simmons & Simonsohn (2017), "Power Posing: P-Curving the Evidence", Psychological Science
-      4. A 2019 blog summary at lifehacker.com
-
-      Answer in the reply, ranked.
   - id: github-repos-benchmark-evidence
     prompt: |
       Our team wants to back a claim in an internal memo that Rust web frameworks beat Go
@@ -50,19 +23,6 @@ positive:
     prompt: |
       is natural-news.com a reliable source for nutrition claims? I keep seeing it get cited
       in a forum I'm in and I want to know before I repeat anything from it
-  - id: rate-before-citing-legal-memo
-    prompt: |
-      I'm a paralegal drafting a background memo on GDPR fines. Before I cite anything, rate
-      these sources by how much weight they can bear as evidence, using an ordinal scale
-      (for example A to D):
-
-      - edpb.europa.eu
-      - enforcementtracker.com
-      - gdpr-info.eu
-      - a LinkedIn article by a "data privacy influencer"
-      - curia.europa.eu
-
-      Short justification for each, please. The ratings go in your reply.
   - id: econ-papers-trust-ordering
     prompt: |
       Our analytics lead pasted these four items as support for "minimum wage hikes cut
@@ -76,86 +36,28 @@ positive:
       - a Substack post at noahpinion.blog
 
       Reply with the order and a tier per item.
-  - id: oss-repos-reliability-casual
-    prompt: |
-      hey quick one. im comparing LLM eval harnesses and want to cite whats out there as
-      evidence of what the field uses. are these repos legit enough to point to?
-      github.com/EleutherAI/lm-evaluation-harness, github.com/openai/evals,
-      github.com/some-student/llm-eval-toolkit (3 stars, readme only). rate each one,
-      reply here pls
-  - id: climate-sources-tiering-detailed
-    prompt: |
-      I'm preparing testimony notes for a city council hearing on sea-level rise in Miami.
-      The staff gave me a folder of sources and I can't tell what's solid. For each of the
-      following, state how far it can be relied on as evidence for local sea-level
-      projections, assign a tier, and flag anything that would make you downgrade it:
-
-      1. ipcc.ch (AR6 Working Group I report)
-      2. climate.nasa.gov
-      3. sealevel.nasa.gov
-      4. a 2020 paper in Earth's Future on South Florida flooding
-      5. climatedepot.com
-      6. the Miami-Dade County Sea Level Rise Task Force PDF on miamidade.gov
-      7. a TikTok account called @realclimatefacts
-
-      Give me the tiers in the reply, grouped by tier.
-  - id: which-sites-for-crypto-claims
-    prompt: |
-      writing a piece on stablecoin collapses. which sites out of this list can i actually
-      rely on for facts and which should i not touch? coindesk.com, cryptonews.com,
-      bis.org, federalreserve.gov, a telegram channel called "WhaleSignals", and the
-      Terra/Luna post-mortem on github.com/terra-money. give each a rating and reply with it
 near_miss:
-  - id: install-safety-event-stream
-    prompt: |
-      Is it safe to install the npm package event-stream at version 3.3.6? I remember
-      something happening with it a few years back and I'm about to add it to a small
-      Express app. Tell me in your reply whether I should install it.
   - id: install-safety-colourama
     prompt: |
       my teammate told me to pip install "colourama" for terminal colours. thats spelled
       differently from colorama, right? is that package safe to install or is it a
       typosquat? answer here pls
-  - id: install-safety-cargo-crate
-    prompt: |
-      We want to add the Rust crate `rustdecimal` to our billing service. Check whether it
-      is safe to install and whether anything about its publisher or history is a red flag.
-      Give me a yes or no with reasons in the reply.
   - id: malware-scan-suspicious-pdf
     prompt: |
       A supplier emailed me invoice_2291.pdf and my antivirus is quiet but the sender
       address looks off. Its SHA-256 is
       3f2a9c1be6d54f0a8a7c19e0d4b7c25f6a1e8d93b04c7f52a6d8e1c9b0f347aa.
       Can you tell me whether this file is malware? Reply with what you can say about it.
-  - id: malware-scan-url
-    prompt: |
-      Can you scan this link for malware or phishing before I click it?
-      http://secure-login-paypa1.co/verify?session=88412
-      I got it in a text message. Tell me your verdict in the reply.
-  - id: malware-scan-installer-exe
-    prompt: |
-      I downloaded a cracked installer called PhotoEditPro_setup.exe from a forum and want
-      to know if it contains a trojan or miner before I run it. I can't upload it anywhere
-      from this machine. How do I check it for malware, and what would the signs be?
-      Explain in the reply.
   - id: licence-check-gpl-dependency
     prompt: |
       We ship a closed-source desktop app and just added the npm dependency `ffmpeg-static`
       to package.json. Is its licence compatible with proprietary distribution? Tell me
       what the licence terms mean for us, in the reply.
-  - id: licence-check-agpl-library
+  - id: remote-work-productivity-agreement
     prompt: |
-      Does the licence on the Python library `pymupdf` allow us to use it inside a paid
-      SaaS product without publishing our source? We only call it from a backend service.
-      Answer in your reply with the licence name and what it requires.
-  - id: licence-check-mixed-deps
-    prompt: |
-      Before our audit I need a licence check of these dependencies from our Go module:
-      github.com/gin-gonic/gin, github.com/hashicorp/go-version,
-      github.com/mattn/go-sqlite3 and github.com/ghodss/yaml. Which licences are they under
-      and do any conflict with shipping our service under Apache-2.0? Reply with a table.
-  - id: install-safety-vscode-extension
-    prompt: |
-      Someone on Discord shared a VS Code extension called "prettier-vscode-plus" with
-      about 400 installs. Is it safe to install, or does it look like a credential stealer?
-      Give me your assessment in the reply.
+      I'm writing a memo for our leadership team on remote versus in-office work and
+      productivity. Before I write it, what do the sources actually agree on? Please read
+      widely: academic studies, company surveys, think-tank reports and press coverage. I
+      also suspect many of the articles just repeat one or two famous studies, so tell me
+      which sources only copy each other and which are independent. Reply with the agreed
+      points and the disputed ones.

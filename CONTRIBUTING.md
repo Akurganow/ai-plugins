@@ -264,8 +264,8 @@ Oh-My-Pi documentation.
 A skill's folder holds `cases.yaml` and `rubric.yaml`, and may hold
 `held-out.yaml` and `calibration.json`:
 
-- `cases.yaml` has a `positive` list and a `near_miss` list. Each list has ten
-  entries, and each entry has an `id` and a `prompt`.
+- `cases.yaml` has a `positive` list and a `near_miss` list. Each list has at
+  least one entry, and each entry has an `id` and a `prompt`.
 - `cases.yaml` may also have `always_on`, a list of the clients that get the
   skill's rules in every session without loading the skill. A comment beside
   it names each client's route and its source. For those clients the summary
@@ -288,7 +288,12 @@ Agent Skills documentation, read 2026-10-09. These rules follow the guide, add
 this repository's own, and apply to every skill:
 
 - **Positive prompts** cover every "Use when" clause of the skill's
-  `description` at least once.
+  `description` at least once. One prompt may cover several clauses.
+- **Near-miss prompts** cover every skip clause of the `description` and
+  every neighbour skill it names.
+- **No two prompts** test the same clause on the same axis. Every positive
+  prompt runs three times per client with the package on each release that
+  changes the package, so a duplicate adds that cost and no clause.
 - **Positive prompts** vary along four axes. Phrasing runs from formal to
   casual, with an occasional typo. Explicitness runs from naming the domain to
   describing only the need. Detail runs from terse to context-heavy.

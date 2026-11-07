@@ -46,8 +46,10 @@ how a case behaved against real clients. `tools/evals.py` writes them
   A run records `tag`, `package`, `skill`, `client`, `repeat`, `run`,
   `run_id`, `client_version`, `model`, `jev_model`, `cases_sha256`,
   `rubric_sha256`, `always_on`, `questions` and `sessions`. A session records
-  `case`, `kind`, `arm`, `fired`, `answer`, `cost_usd`, `error` and `nouls`,
-  Jev's score per question id.
+  `case`, `kind`, `arm`, `fired`, `answer`, `cost_usd`, `error`, `nouls`
+  (Jev's score per question id), `inputs` and `client_version`. A session
+  copied from an earlier run also records `carried_from`, the tag it ran on.
+  It measures that tag's client, not the record's.
 - **Comparable.** Two runs are comparable when both hashes are equal and
   both recorded the same `model`. `compare` applies the same rule. A record
   measures the folder at the analysed commit when its hashes equal the
@@ -105,7 +107,9 @@ rubric edit leaves it describing the old text. The alternative says so.
    - the Jev model is pinned;
    - the latest client is installed;
    - held-out prompts are never graded;
-   - ten prompts per kind and three repeats follow the Agent Skills guide;
+   - the prompts cover each clause once, and three repeats follow the Agent
+     Skills guide;
+   - a session whose inputs did not change is copied from the previous run;
    - the without arm removes a different set in each client.
 
    A claim of fact inside a reason is still judged against the tree.

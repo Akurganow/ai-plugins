@@ -429,12 +429,31 @@ A re-run of the release job skips the evals, because its bump step then finds no
 So a run by hand is the recovery when a release run created its tags but stopped before the evals job.
 howp is not measured here, because another repository builds, checks and releases it.
 
-Each skill has ten positive and ten near-miss prompts in `evals/<package>/<skill>/cases.yaml`.
+Each skill has positive and near-miss prompts in `evals/<package>/<skill>/cases.yaml`.
 The folder sits outside the packages, so no installed package carries the prompts.
 A positive prompt runs with the package and again without it, and a near-miss prompt runs with it.
 Each prompt runs three times in each of three clients: Claude Code with `haiku`, Codex with `gpt-6-luna`, and Oh-My-Pi with `openrouter/z-ai/glm-5.3-flash`.
-The counts follow the Agent Skills guide on trigger tests.
+The three repeats follow the Agent Skills guide on trigger tests.
 (documentation: [Optimizing descriptions](https://agentskills.io/skill-creation/optimizing-descriptions), read 2026-10-08)
+The prompts cover each clause of the description once, and no two test the same clause in the same way.
+Ten of each kind, the guide's count, cost 100 sessions per skill and client on every release.
+On `distilled-research--v0.1.1` the positive sessions cost the most: $0.53 of Claude Code's $0.72, and 45.5M of Codex's 52.1M input tokens.
+(running: the records of `distilled-research--v0.1.1` in `ghcr.io/akurganow/pegboard-evals`, 2026-11-07)
+
+A release runs only the sessions its changes can affect.
+`run` copies a session from the latest complete run of the same skill, client and repeat when the session's inputs are equal and it did not fail.
+The inputs of a session without the package are the client command, which holds the prompt, the model and the flags.
+A session with the package adds the package tree the client installs, less the manifests' `version`, the listing icon, README and LICENSE.
+The tree covers the whole package, because a skill reads its siblings' files: `triangulate` reads `../vet-sources/SKILL.md`, and Codex counts that read as a load of `vet-sources`.
+So a release that changed only a README or an icon runs no session, and a skill edit reruns the sessions with the package of every skill in its package.
+The sessions without the package rerun when their prompt or the client command changes, or when the last run's session failed.
+When the fresh sessions ran on another model than the copied ones, the copied ones run again, so a record holds one model.
+Jev's scores of a copied answer stay while the rubric and the Jev model are the same, and otherwise Jev grades the answer again.
+A copied session keeps the tag and client version it ran on.
+The client installs at its latest version, so `improvement` can subtract an older client's answers without the package from a newer client's answers with it.
+A client update can then move `improvement` with no change to the skill, and an issue names every client version behind it.
+A run by hand passes `--fresh` and copies nothing.
+A change to how a session runs or is parsed, such as `run_session`, an adapter's `parse` or an install step, is not part of the inputs, so it needs a run by hand.
 A skill may add five positive and five near-miss prompts in `held-out.yaml`.
 They run with the package once per client, on the first repeat, and are not graded.
 Nobody reads them while editing a description, so their load count checks the trigger rate on prompts the description was not tuned on.

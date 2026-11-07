@@ -1,89 +1,4 @@
 positive:
-  - id: blob-store-abstraction
-    prompt: |
-      quick q: is this abstraction actually right, or am I just adding a layer for nothing?
-      It's src/infra/blob_store.py in our Flask app, and every upload and download goes through it.
-
-      ```python
-      class BlobStore:
-          def __init__(self, s3_client, bucket):
-              self._s3 = s3_client
-              self._bucket = bucket
-
-          def put(self, key, body, content_type, acl, storage_class, metadata):
-              return self._s3.put_object(Bucket=self._bucket, Key=key, Body=body,
-                                         ContentType=content_type, ACL=acl,
-                                         StorageClass=storage_class, Metadata=metadata)
-
-          def get(self, key):
-              return self._s3.get_object(Bucket=self._bucket, Key=key)["Body"].read()
-
-          def delete(self, key):
-              return self._s3.delete_object(Bucket=self._bucket, Key=key)
-      ```
-
-      Callers almost always pass acl="private", storage_class="STANDARD", metadata={}.
-  - id: sdk-client-interface
-    prompt: |
-      We are preparing to publish version 1.0 of our internal TypeScript SDK, which 14
-      services consume. My team of three maintains it. Before we freeze the public API,
-      please review the design of the HTTP client below. Something about the interface
-      feels wrong to me, but I cannot say what.
-
-      ```ts
-      export interface RequestOptions {
-        method: "GET" | "POST" | "PUT" | "DELETE";
-        url: string;
-        body?: unknown;
-        headers: Record<string, string>;
-        timeoutMs: number;
-        retries: number;
-        retryBackoff: "none" | "linear" | "exponential";
-        parseJson: boolean;
-        throwOnNon2xx: boolean;
-        traceparent: string;
-      }
-
-      export class HttpClient {
-        constructor(private readonly fetchImpl: typeof fetch) {}
-        request<T>(opts: RequestOptions): Promise<T | Response> { /* ... */ }
-      }
-      ```
-
-      A typical call site today:
-
-      ```ts
-      const user = (await client.request<User>({
-        method: "GET", url: `${BASE}/users/${id}`, headers: {}, timeoutMs: 5000,
-        retries: 3, retryBackoff: "exponential", parseJson: true,
-        throwOnNon2xx: true, traceparent: ctx.traceparent,
-      })) as User;
-      ```
-
-      Nearly every call site passes these same values. Two services set parseJson: false
-      to stream files.
-  - id: order-status-five-repos
-    prompt: |
-      Every time product wants a new order status it turns into a week of work and an
-      incident or two. Here's how it's set up today:
-
-      - order-service (Kotlin) owns the orders table. Status is a VARCHAR with values like
-        "PAID", "PACKED", "SHIPPED".
-      - billing-service (Go) consumes order.updated events from Kafka and switches on the
-        status string to decide when to invoice.
-      - notification-service (Node) also consumes order.updated and keeps its own map from
-        status string to email template.
-      - warehouse-adapter (Python) polls order-service's REST API and maps statuses to the
-        warehouse vendor's codes.
-      - The admin frontend (React) hardcodes a dropdown of statuses and their colours.
-
-      Last month we added "PARTIALLY_SHIPPED". It needed PRs in all five repos, billing
-      double-invoiced for a day because its switch fell through to the default branch, and
-      nobody knew the warehouse adapter needed a change until the vendor complained.
-
-      What's wrong here and what should we change first? Five teams own these services, we
-      add a status maybe once a quarter, and reading an order's current state is by far the
-      most common thing the consumers do.
   - id: user-service-split-plan
     prompt: |
       I am about to file the epic for splitting our UserService
@@ -105,41 +20,6 @@ positive:
       Please assess whether this refactoring plan reduces complexity or adds to it. Then
       draft the epic description for Jira (goal, scope, acceptance criteria) for the plan
       you recommend.
-  - id: merge-invoice-packages
-    prompt: |
-      should i merge these two go packages or keep em seperate? internal/invoice builds
-      invoices, internal/invoicepdf renders them. they keep leaking into each other somehow
-
-      ```go
-      // internal/invoice/invoice.go
-      type Line struct {
-          SKU       string
-          Qty       int
-          UnitCents int64
-          TaxCode   string // "STD", "RED", "ZERO"
-      }
-
-      func Total(lines []Line) int64 { /* sums Qty*UnitCents plus tax by TaxCode */ }
-
-      // internal/invoicepdf/render.go
-      func Render(lines []invoice.Line, w io.Writer) error {
-          for _, l := range lines {
-              rate := 0.0
-              switch l.TaxCode {
-              case "STD":
-                  rate = 0.20
-              case "RED":
-                  rate = 0.05
-              }
-              // draws the row, prints the rate, recomputes the line total with tax
-          }
-          // draws the footer, recomputes the grand total itself
-          return nil
-      }
-      ```
-
-      nothing uses invoicepdf except the invoice email job, and the tax rates changed twice
-      this year
   - id: name-for-batch-function
     prompt: |
       I've renamed this function three times now (process_records, then normalize_and_enrich,
@@ -337,20 +217,6 @@ near_miss:
               f.write(await file.read())
           return {"url": f"/static/{folder}/{file.filename}"}
       ```
-  - id: speed-up-monthly-report
-    prompt: |
-      Our monthly report endpoint takes 40 seconds for big orgs, and the profiler says the
-      data layer below is where the time goes. How do I make it fast? Django 5, Postgres.
-
-      ```python
-      def monthly_report(org_id, month):
-          rows = []
-          for project in Project.objects.filter(org_id=org_id):
-              for task in project.tasks.filter(closed_at__month=month):
-                  hours = sum(e.hours for e in task.time_entries.all())
-                  rows.append({"project": project.name, "task": task.title, "hours": hours})
-          return rows
-      ```
   - id: rename-handle-to-dispatch
     prompt: |
       We agreed in code review that handle is a bad name and the new name is dispatch_event.
@@ -377,51 +243,6 @@ near_miss:
           bus.handle(Event.from_json(request.body))
           return 204
       ```
-  - id: resolve-discount-conflict
-    prompt: |
-      git merge main left a conflict in pricing/discounts.py. My branch adds a loyalty
-      discount, main changed the rounding. I want both changes. Resolve it please:
-
-      ```python
-      def apply_discounts(order):
-      <<<<<<< HEAD
-          total = order.subtotal
-          if order.customer.loyalty_years >= 3:
-              total *= 0.95
-          return round(total, 2)
-      =======
-          total = order.subtotal
-          return Decimal(total).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
-      >>>>>>> main
-      ```
-  - id: eslint-complexity-rules
-    prompt: |
-      Our tech lead wants CI to fail when a function gets too complex. Add rules to this
-      .eslintrc.json so that cyclomatic complexity above 10, more than 60 lines in a
-      function, or nesting deeper than 4 levels is an error. It should apply to src/ only,
-      not to scripts/.
-
-      ```json
-      {
-        "root": true,
-        "extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended"],
-        "parser": "@typescript-eslint/parser",
-        "rules": {}
-      }
-      ```
-  - id: commit-message-order-split
-    prompt: |
-      Write a commit message for this refactor. We use Conventional Commits with refactor:
-      for these.
-
-      - src/orders/OrderService.ts deleted (640 lines)
-      - src/orders/OrderPlacement.ts added (310 lines: placeOrder, validateCart, reserveStock)
-      - src/orders/OrderFulfilment.ts added (290 lines: ship, cancel, refund)
-      - src/orders/index.ts re-exports both, and keeps OrderService as a deprecated alias
-      - 12 call sites now import from the new modules
-
-      Why we split it: placement and fulfilment are owned by different teams now, and every
-      PR to OrderService needed reviewers from both.
   - id: mermaid-service-diagram
     prompt: |
       Can you turn our service architecture into a Mermaid flowchart for the README? Just

@@ -512,8 +512,10 @@ def package_tree(bundle: Path) -> str:
 # package, not the skill's folder: a skill reads its siblings' files
 # (triangulate's SKILL.md reads ../vet-sources/SKILL.md), and Codex counts such
 # a read as a load of the sibling. The without arm runs without the package.
-def session_inputs(adapter, case: dict, arm: str, tree: str | None) -> str:
-    parts = [json.dumps(adapter.command(case["prompt"], arm))] + ([tree or ""] if arm == "with" else [])
+def session_inputs(adapter, case: dict, arm: str, tree: str | None) -> str | None:
+    if arm == "with" and tree is None:
+        return None
+    parts = [json.dumps(adapter.command(case["prompt"], arm))] + ([tree] if arm == "with" else [])
     return hashlib.sha256("\0".join(parts).encode()).hexdigest()
 
 
@@ -739,8 +741,10 @@ def cmd_run(args) -> int:
     cases, questions = load_cases(skill_dir)
     adapter = CLIENTS[args.client][0](package, args.skill)
     version = client_version(args.client)
-    # A run by hand may measure a tag from before the bundles/ layout.
-    tree = None if args.fresh else package_tree(Path(args.released) / "bundles" / package)
+    # A run by hand may measure a tag from before the bundles/ layout. Its with
+    # arm then records no inputs, so no later run copies it.
+    bundle = Path(args.released) / "bundles" / package
+    tree = package_tree(bundle) if bundle.is_dir() or not args.fresh else None
     carry = {} if args.fresh else reusable(baseline_record(package, args.tag, args.skill, args.client, args.repeat),
                                            sha256(skill_dir / "rubric.yaml"))
     sessions = run_job(adapter, cases, held_out=args.repeat == 1, carry=carry,
@@ -1950,6 +1954,7 @@ def _selftest_carry() -> None:
     assert session_inputs(Fake(), case, "without", "t1") == session_inputs(Fake(), case, "without", "t2")
     assert session_inputs(Fake(), case, "with", "t1") != session_inputs(Fake(), case, "with", "t2")
     assert session_inputs(Fake(), case, "with", "t1") != session_inputs(Fake("m2"), case, "with", "t1")
+    assert session_inputs(Fake(), case, "with", None) is None and session_inputs(Fake(), case, "without", None)
 
     cases = {"positive": [case, {"id": "o", "prompt": "O"}], "near_miss": [{"id": "n", "prompt": "N"}]}
 

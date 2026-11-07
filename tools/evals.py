@@ -1987,6 +1987,17 @@ def _selftest_carry() -> None:
     # A new rubric or Jev model keeps the answers and drops the scores.
     assert all(s["nouls"] is None for s in reusable(record, "r2").values())
     assert all(s["nouls"] is None for s in reusable(record | {"jev_model": "jev-0"}, "r").values())
+    # Unchanged held-out sessions on repeat 1 are carried with their load result.
+    spare = cases | {"held_out": {"positive": [{"id": "hp", "prompt": "HP"}], "near_miss": [{"id": "hn", "prompt": "HN"}]}}
+    held = run_job(Fake(), spare, session=fake_session, held_out=True, inputs=inputs_of("t1"))
+    held_record = {"tag": "x--v0.1.0", "client_version": "1", "rubric_sha256": "r", "jev_model": JEV_MODEL,
+                   "sessions": held}
+    fake = Fake()
+    kept_held = run_job(fake, spare, session=fake_session, held_out=True, inputs=inputs_of("t1"),
+                        carry=reusable(held_record, "r"))
+    assert fake.order == [], fake.order
+    assert [(s["kind"], s["fired"], s["carried_from"]) for s in kept_held[3:5]] == [
+        ("held_out_positive", True, "x--v0.1.0"), ("held_out_near_miss", True, "x--v0.1.0")], kept_held
     # A fresh session on another model makes the carried ones run again.
     fake = Fake("m2")
     moved = run_job(fake, cases, session=fake_session, inputs=inputs_of("t2"), carry=carry)

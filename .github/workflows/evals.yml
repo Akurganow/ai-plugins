@@ -131,6 +131,13 @@ jobs:
       # stays in the report job. Codex's documentation says not to set
       # CODEX_API_KEY at job level in a workflow that runs repository code
       # (documentation: https://learn.chatgpt.com/docs/non-interactive-mode, read 2026-10-08).
+      # A session whose inputs match the previous run's is copied from it, so a
+      # release pays only for what it changed. A run by hand measures every
+      # session: it is the baseline and the recovery path. When release.yml
+      # calls this workflow, the github context is the caller's, so event_name
+      # is push (documentation:
+      # https://docs.github.com/en/actions/reference/workflows-and-actions/reusing-workflow-configurations,
+      # read 2026-11-07).
       - name: Run the skill
         env:
           ANTHROPIC_API_KEY: ${{ matrix.client == 'claude' && secrets.ANTHROPIC_API_KEY || '' }}
@@ -139,9 +146,10 @@ jobs:
           TAG: ${{ matrix.tag }}
           SKILL: ${{ matrix.skill }}
           REPEAT: ${{ matrix.repeat }}
+          FRESH: ${{ github.event_name == 'workflow_dispatch' && '1' || '' }}
         run: >-
           python tools/evals.py run --tag "$TAG" --skill "$SKILL" --client "$CLIENT"
-          --repeat "$REPEAT" --out "$RUNNER_TEMP/run.json"
+          --repeat "$REPEAT" --released "$PWD/released" ${FRESH:+--fresh} --out "$RUNNER_TEMP/run.json"
 
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:

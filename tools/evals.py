@@ -19,6 +19,10 @@ A skill may add `held-out.yaml`: five positive and five near-miss prompts that
 run with the package on repeat 1 only and are never graded. Nobody reads them
 while editing a description, so their load count checks the trigger rate on
 prompts the description was not tuned on.
+A release runs only the sessions its changes can affect. `run` copies a
+session from the latest complete run when the session's inputs are equal and
+it did not fail; `session_inputs` says what the inputs are. A
+`workflow_dispatch` run passes `--fresh` and copies nothing.
 `validate` checks that every folder under evals/ has its skill and loads.
 `selftest` checks the parsers against the event streams in
 tools/evals-fixtures/, and the arithmetic, without calling a model. The comment
@@ -53,7 +57,6 @@ MARKETPLACE = (os.environ.get("MARKETPLACE")
                or json.loads((REPO_ROOT / ".claude-plugin" / "marketplace.json").read_text())["name"])
 
 REPEATS = 3
-CASES_PER_KIND = 10
 HELD_OUT_PER_KIND = 5
 HELD_OUT_FILE = "held-out.yaml"
 HELD_OUT_KINDS = {"positive": "held_out_positive", "near_miss": "held_out_near_miss"}
@@ -316,9 +319,11 @@ def load_cases(skill_dir: Path) -> tuple[dict, dict]:
     return check_cases(skill_dir, cases, rubric, held_out)
 
 
-def check_entries(where: str, kind: str, entries, count: int) -> list[str]:
-    if not isinstance(entries, list) or len(entries) != count:
-        raise SystemExit(f"{where}: {kind} must list exactly {count} entries.")
+# `count` None asks for at least one entry. CONTRIBUTING.md says which prompts a
+# list holds, so the number follows from the skill's clauses.
+def check_entries(where: str, kind: str, entries, count: int | None = None) -> list[str]:
+    if not isinstance(entries, list) or not entries or (count is not None and len(entries) != count):
+        raise SystemExit(f"{where}: {kind} must list " + (f"exactly {count} entries." if count else "at least one entry."))
     if not all(isinstance(c, dict) and isinstance(c.get("id"), str) and isinstance(c.get("prompt"), str)
                for c in entries):
         raise SystemExit(f"{where}: every {kind} entry needs a string id and prompt.")
@@ -330,7 +335,7 @@ def check_cases(skill_dir: Path, cases, rubric, held_out=None) -> tuple[dict, di
         raise SystemExit(f"{skill_dir}/cases.yaml: expected a map with positive and near_miss.")
     ids = []
     for kind in ("positive", "near_miss"):
-        ids += check_entries(f"{skill_dir}/cases.yaml", kind, cases.get(kind), CASES_PER_KIND)
+        ids += check_entries(f"{skill_dir}/cases.yaml", kind, cases.get(kind))
     always_on = cases.get("always_on", [])
     if not isinstance(always_on, list) or not set(always_on) <= set(CLIENTS):
         raise SystemExit(f"{skill_dir}/cases.yaml: always_on must list client names from {', '.join(CLIENTS)}.")
@@ -474,25 +479,103 @@ def grade(request_text: str, answer: str, questions: dict, send=jev_request) -> 
         raise JevError(f"jev reply without a noul: {json.dumps(reply)[:300]}") from e
 
 
-def run_job(adapter, cases: dict, session=run_session, held_out: bool = False) -> list[dict]:
-    sessions = [session(adapter, c, kind, "with") for kind in ("positive", "near_miss") for c in cases[kind]]
+# The tree a client installs, by path and content, less what changes on every
+# release: each manifest folder carries the version, and carried the old
+# repository name until the rename. README.md and LICENSE are listing text. A
+# manifest's description stays in, because whether a client shows it to the
+# model was not checked.
+MANIFEST_DIRS = (".claude-plugin", ".codex-plugin", ".cursor-plugin")
+LISTING_FILES = ("README.md", "LICENSE")
+
+
+def package_tree(bundle: Path) -> str:
+    digest, measured = hashlib.sha256(), 0
+    for path in sorted(p for p in bundle.rglob("*") if p.is_file()):
+        rel = path.relative_to(bundle)
+        if rel.parts[0] in MANIFEST_DIRS:
+            if path.name != "plugin.json":
+                continue
+            content = json.dumps(json.loads(path.read_text()).get("description")).encode()
+        elif rel.as_posix() in LISTING_FILES:
+            continue
+        else:
+            content, measured = path.read_bytes(), measured + 1
+        digest.update(rel.as_posix().encode() + b"\0" + hashlib.sha256(content).digest())
+    if not measured:
+        raise SystemExit(f"{bundle}: no package files to measure.")
+    return digest.hexdigest()
+
+
+# What can change a session's result. The command holds the prompt, the model
+# alias, the thinking level and the arm's flags. The package tree is the whole
+# package, not the skill's folder: a skill reads its siblings' files
+# (triangulate's SKILL.md reads ../vet-sources/SKILL.md), and Codex counts such
+# a read as a load of the sibling. The without arm runs without the package.
+def session_inputs(adapter, case: dict, arm: str, tree: str) -> str:
+    parts = [json.dumps(adapter.command(case["prompt"], arm))] + ([tree] if arm == "with" else [])
+    return hashlib.sha256("\0".join(parts).encode()).hexdigest()
+
+
+# Sessions of the baseline record that may stand in for new ones, keyed by case,
+# kind, arm and inputs. A failed session or grade is run again. Jev's scores
+# stay only while the rubric and the Jev model are the ones that gave them.
+def reusable(record: dict | None, rubric_sha256: str) -> dict:
+    if not record:
+        return {}
+    scores_hold = record.get("rubric_sha256") == rubric_sha256 and record.get("jev_model") == JEV_MODEL
+    return {(s["case"], s["kind"], s["arm"], s["inputs"]):
+            s | {"carried_from": s.get("carried_from") or record["tag"],
+                 "client_version": s.get("client_version") or record.get("client_version"),
+                 "nouls": s["nouls"] if scores_hold else None, "grade_error": None}
+            for s in record["sessions"] if s.get("inputs") and not s["error"] and not s.get("grade_error")}
+
+
+# Runs the items at `picked` in their order, the with arm first, and switches
+# the package off once for the without arm.
+def run_items(adapter, items: list, picked: list[int], session) -> dict:
+    done = {}
+    for i in picked:
+        if items[i][2] == "with":
+            done[i] = session(adapter, *items[i][:3])
+    without = [i for i in picked if items[i][2] == "without"]
+    if without:
+        adapter.switch_to_without()
+        try:
+            for i in without:
+                done[i] = session(adapter, *items[i][:3])
+        finally:
+            adapter.switch_back()
+    return done
+
+
+def run_job(adapter, cases: dict, session=run_session, held_out: bool = False,
+            inputs=None, carry: dict | None = None) -> list[dict]:
+    items = [(c, kind, "with") for kind in ("positive", "near_miss") for c in cases[kind]]
     # Held-out prompts measure loading alone: with the package only, never graded.
     if held_out and "held_out" in cases:
-        sessions += [session(adapter, c, HELD_OUT_KINDS[kind], "with")
-                     for kind in ("positive", "near_miss") for c in cases["held_out"][kind]]
-    adapter.switch_to_without()
-    try:
-        sessions += [session(adapter, c, "positive", "without") for c in cases["positive"]]
-    finally:
-        adapter.switch_back()
-    return sessions
+        items += [(c, HELD_OUT_KINDS[kind], "with") for kind in ("positive", "near_miss") for c in cases["held_out"][kind]]
+    items += [(c, "positive", "without") for c in cases["positive"]]
+    items = [(c, kind, arm, inputs(c, arm) if inputs else None) for c, kind, arm in items]
+    carried = [(carry or {}).get((c["id"], kind, arm, key)) for c, kind, arm, key in items]
+    done = run_items(adapter, items, [i for i, s in enumerate(carried) if not s], session)
+    # A record holds one model: when the fresh sessions ran on another one, the
+    # carried items run again.
+    models = {s["model"] for s in done.values() if s.get("model")}
+    if models and any(s and s.get("model") and s["model"] not in models for s in carried):
+        done |= run_items(adapter, items, [i for i, s in enumerate(carried) if s], session)
+    for i, s in done.items():
+        if items[i][3]:
+            s["inputs"] = items[i][3]
+    return [done.get(i) or carried[i] for i in range(len(items))]
 
 
 def grade_sessions(sessions: list[dict], cases: dict, questions: dict, grader=grade) -> None:
     prompts = {c["id"]: c["prompt"] for c in cases["positive"]}
+    # A carried answer keeps its scores while they hold (`reusable`).
     for s in sessions:
-        if s["kind"] != "positive" or s["error"]:
+        if s["kind"] != "positive" or s["error"] or s["nouls"] is not None:
             continue
+        s["grade_error"] = None
         try:
             s["nouls"] = grader(prompts[s["case"]], s["answer"], applicable(questions, s["case"]))
         except JevError as e:
@@ -508,10 +591,13 @@ def redact(text: str) -> str:
 
 
 # A refused client key fails every session, and a refused Jev key fails every
-# grade. Either means the run itself broke.
+# grade. Either means the run itself broke. A carried session ran in an earlier
+# run, so it says nothing about this run's key unless it was graded again here.
 def run_broke(sessions: list[dict]) -> bool:
-    gradable = [s for s in sessions if s["kind"] == "positive" and not s["error"]]
-    return all(s["error"] for s in sessions) or (bool(gradable) and all(s["grade_error"] for s in gradable))
+    fresh = [s for s in sessions if not s.get("carried_from")]
+    gradable = [s for s in sessions if s["kind"] == "positive" and not s["error"]
+                and (not s.get("carried_from") or s["grade_error"])]
+    return (bool(fresh) and all(s["error"] for s in fresh)) or (bool(gradable) and all(s["grade_error"] for s in gradable))
 
 
 def metrics(sessions: list[dict], always_on: bool = False) -> dict:
@@ -648,7 +734,13 @@ def cmd_run(args) -> int:
     cases, questions = load_cases(skill_dir)
     adapter = CLIENTS[args.client][0](package, args.skill)
     version = client_version(args.client)
-    sessions = run_job(adapter, cases, held_out=args.repeat == 1)
+    tree = package_tree(Path(args.released) / "bundles" / package)
+    carry = {} if args.fresh else reusable(baseline_record(package, args.tag, args.skill, args.client, args.repeat),
+                                           sha256(skill_dir / "rubric.yaml"))
+    sessions = run_job(adapter, cases, held_out=args.repeat == 1, carry=carry,
+                       inputs=lambda case, arm: session_inputs(adapter, case, arm, tree))
+    for s in sessions:
+        s.setdefault("client_version", version)
     record = {
         "tag": args.tag, "package": package, "skill": args.skill, "client": args.client, "repeat": args.repeat,
         "client_version": version, "model": next((s["model"] for s in sessions if s["model"]), None),
@@ -658,8 +750,9 @@ def cmd_run(args) -> int:
     }
     Path(args.out).write_text(redact(json.dumps(record, indent=1)))
     failed = sum(1 for s in sessions if s["error"])
+    reused = sum(1 for s in sessions if s.get("carried_from"))
     print(f"{package}/{args.skill} on {args.client}, repeat {args.repeat}: {len(sessions)} sessions, "
-          f"{failed} failed.")
+          f"{reused} carried, {failed} failed.")
     return 1 if run_broke(sessions) else 0
 
 
@@ -869,6 +962,15 @@ def previous_results(owner: str, package: str, tag: str, bearer: str | None = No
     return {"tag": baseline[0]["tag"], "runs": baseline} if baseline else None
 
 
+# The run `report` compares this one with, so a carried session comes from the
+# baseline itself. The registry package is public, so a run job reads it with
+# an anonymous token.
+def baseline_record(package: str, tag: str, skill: str, client: str, repeat: int) -> dict | None:
+    found = previous_results(ghcr_owner(os.environ.get("GITHUB_REPOSITORY", "")), package, tag)
+    return next((r for r in (found or {}).get("runs", [])
+                 if r["skill"] == skill and r["client"] == client and r["repeat"] == repeat), None)
+
+
 def open_fingerprints() -> set[str]:
     issues = within_limit(json.loads(gh("issue", "list", "--label", "police-report", "--state", "open",
                                         "--limit", str(ISSUE_LIMIT), "--json", "body")),
@@ -936,6 +1038,12 @@ def counted(runs: list[dict], metric: str) -> str:
     return "/".join(parts)
 
 
+# A carried session keeps the client version it ran on, so one run can hold two.
+def versions(runs: list[dict]) -> str:
+    found = dict.fromkeys(str(s.get("client_version") or r.get("client_version")) for r in runs for s in r["sessions"])
+    return ", ".join(found) or str(runs[0].get("client_version"))
+
+
 def issue_body(package, skill, client, old_tag, new_tag, found, old_runs, new_runs, run_url, repo) -> str:
     rows = "\n".join(f"| `{m}` | {span(old)} ({covers(old)}) | {span(new)} ({covers(new)}) |"
                      for m, (old, new) in found.items())
@@ -946,7 +1054,7 @@ def issue_body(package, skill, client, old_tag, new_tag, found, old_runs, new_ru
         f"`{package}/{skill}` on {client} regressed between {old_head} and {new_head}. "
         "Each range spans the repeats of one release, and the two ranges do not overlap.\n\n"
         f"| Metric | {old_head} | {new_head} |\n| :-- | :-- | :-- |\n{rows}\n\n"
-        f"Client version: {old_runs[0]['client_version']} → {new_runs[0]['client_version']}. "
+        f"Client version: {versions(old_runs)} → {versions(new_runs)}. "
         f"Model: {old_runs[0]['model']} → {new_runs[0]['model']}.\n\n"
         f"Run: {run_url}. Results: https://github.com/{repo}/pkgs/container/{GHCR_PACKAGE}.\n"
     )
@@ -1042,14 +1150,14 @@ def question_detail(package, skill, client, group, always_on) -> list[str]:
             hits = ", ".join(c for c, f, _ in found if f)
             parts.append(f"{kind.replace('_', '-')} {fired}/{done}" + (f" ({hits})" if hits else ""))
         notes.append("Held-out prompts loaded, with the package: " + ", ".join(parts) + ".")
-    carried = [s for s in sessions if s.get("loaded") is not None]
-    if carried:
+    with_list = [s for s in sessions if s.get("loaded") is not None]
+    if with_list:
         # The report job runs from this checkout, whose catalogue name may be
         # newer than the one the released tag installed under.
         prefix = f"{package}@"
 
         def listed(arm):
-            of_arm = [s for s in carried if s["arm"] == arm]
+            of_arm = [s for s in with_list if s["arm"] == arm]
             found = sum(any(p.startswith(prefix) for p in s["loaded"]["plugins"]) for s in of_arm)
             return f"{found} of {len(of_arm)}"
 
@@ -1072,7 +1180,9 @@ def report_tag(tag, package, runs, no_cases, previous, seen, run_url, repo, can_
             values = {m: [v for r in group if (v := metrics(r["sessions"], r.get("always_on", False))[m]) is not None]
                       for m in METRICS}
             always_on = all(r.get("always_on", False) for r in group)
-            sessions = [s for r in group for s in r["sessions"]]
+            # Spend is this run's: a carried session was paid for in the run it came from.
+            sessions = [s for r in group for s in r["sessions"] if not s.get("carried_from")]
+            reused = sum(1 for r in group for s in r["sessions"] if s.get("carried_from"))
             cost = sum(s["cost_usd"] or 0 for s in sessions)
             tokens = sum((s["tokens"] or {}).get("input_tokens", 0) + (s["tokens"] or {}).get("output_tokens", 0)
                          for s in sessions)
@@ -1099,7 +1209,7 @@ def report_tag(tag, package, runs, no_cases, previous, seen, run_url, repo, can_
                         seen.add(mark)
                 else:
                     status = "no regression"
-            spent = f"${cost:.2f}" if client != "codex" else f"{tokens} tokens"
+            spent = (f"${cost:.2f}" if client != "codex" else f"{tokens} tokens") + (f", {reused} carried" if reused else "")
             cells = " | ".join("n/a" if always_on and m in NOT_APPLICABLE_ALWAYS_ON
                                else f"{span(values[m])} (n={counted(group, m)}, {covers(values[m])})" for m in METRICS)
             marked_na = marked_na or always_on
@@ -1439,8 +1549,10 @@ def _selftest_core() -> None:
         assert not is_question(bad), bad
     pool = {"q1": "Q1?", "q2": scoped, "q3": bounded}
     assert applicable(pool, "p") == pool and applicable(pool, "o") == {"q1": "Q1?", "q3": bounded}
-    ten = {kind: [{"id": f"{kind[0]}{i}", "prompt": "T"} for i in range(CASES_PER_KIND)]
+    ten = {kind: [{"id": f"{kind[0]}{i}", "prompt": "T"} for i in range(3)]
            for kind in ("positive", "near_miss")}
+    one = {"positive": ten["positive"][:1], "near_miss": ten["near_miss"][:1]}
+    assert check_cases(Path("d"), one, {"questions": {"q": "Q?"}}) == (one, {"q": "Q?"})
     assert check_cases(Path("d"), ten, {"questions": {"q": "Q?"}}) == (ten, {"q": "Q?"})
     for rubric, needle in (({"questions": {"q": {"instructions": "Q?", "cases": ["n0"]}}}, "not a positive case: n0"),
                            ({"questions": {"q": {"instructions": "Q?", "cases": ["p0"]}}}, "no question applies to p1"),
@@ -1448,8 +1560,8 @@ def _selftest_core() -> None:
                            ({"questions": {}}, "questions must map")):
         _expect_error(lambda: check_cases(Path("d"), ten, rubric), needle)
     _expect_error(lambda: check_cases(Path("d"), ten | {"always_on": ["hermes"]}, {"questions": {"q": "Q?"}}), "always_on")
-    _expect_error(lambda: check_cases(Path("d"), ten | {"near_miss": ten["near_miss"][:3]}, {"questions": {"q": "Q?"}}),
-                  "near_miss must list exactly")
+    _expect_error(lambda: check_cases(Path("d"), ten | {"near_miss": []}, {"questions": {"q": "Q?"}}),
+                  "near_miss must list at least one entry")
     rubric = {"questions": {"q": "Q?"}}
     five = {kind: [{"id": f"h{kind[0]}{i}", "prompt": "H"} for i in range(HELD_OUT_PER_KIND)]
             for kind in ("positive", "near_miss")}
@@ -1787,9 +1899,117 @@ def _selftest_folders() -> None:
             "evals/alpha/s: ValueError: expected the node content, found '<stream end>'")
 
 
+def _selftest_carry() -> None:
+    with tempfile.TemporaryDirectory() as tmp:
+        def tree(version, readme, skill_text, description="D"):
+            root = Path(tmp, f"t{len(list(Path(tmp).iterdir()))}")
+            for folder in MANIFEST_DIRS:
+                (root / folder).mkdir(parents=True)
+                (root / folder / "plugin.json").write_text(json.dumps(
+                    {"version": version, "homepage": f"h{version}", "description": description}))
+            (root / ".claude-plugin" / "icon.png").write_bytes(version.encode())
+            (root / "skills" / "s").mkdir(parents=True)
+            (root / "skills" / "s" / "SKILL.md").write_text(skill_text)
+            (root / "README.md").write_text(readme)
+            (root / "LICENSE").write_text(version)
+            return package_tree(root)
+
+        base = tree("0.1.0", "old", "rules")
+        assert tree("0.1.1", "new", "rules") == base
+        assert tree("0.1.1", "old", "rules, edited") != base
+        assert tree("0.1.1", "old", "rules", description="E") != base
+        Path(tmp, "empty", "README.md").parent.mkdir()
+        Path(tmp, "empty", "README.md").write_text("r")
+        _expect_error(lambda: package_tree(Path(tmp, "empty")), "no package files")
+
+    class Fake:
+        name = "fake"
+
+        def __init__(self, model="m"):
+            self.order, self.model = [], model
+
+        def command(self, prompt, arm):
+            return ["fake", self.model, prompt] + (["--off"] if arm == "without" else [])
+
+        def switch_to_without(self):
+            self.order.append("switch")
+
+        def switch_back(self):
+            self.order.append("back")
+
+    case = {"id": "p", "prompt": "P"}
+    assert session_inputs(Fake(), case, "without", "t1") == session_inputs(Fake(), case, "without", "t2")
+    assert session_inputs(Fake(), case, "with", "t1") != session_inputs(Fake(), case, "with", "t2")
+    assert session_inputs(Fake(), case, "with", "t1") != session_inputs(Fake("m2"), case, "with", "t1")
+
+    cases = {"positive": [case, {"id": "o", "prompt": "O"}], "near_miss": [{"id": "n", "prompt": "N"}]}
+
+    def fake_session(adapter, c, kind, arm):
+        adapter.order.append(f"{c['id']}:{arm}")
+        return _session(c["id"], kind, arm, arm == "with") | {"answer": "A", "model": adapter.model}
+
+    def inputs_of(tree_hash):
+        return lambda c, arm: session_inputs(Fake(), c, arm, tree_hash)
+
+    first = run_job(Fake(), cases, session=fake_session, inputs=inputs_of("t1"))
+    for s in first:
+        s["nouls"] = {"q": 1.0} if s["kind"] == "positive" else None
+    first[1]["error"] = "exit 1"
+    record = {"tag": "x--v0.1.0", "client_version": "1", "rubric_sha256": "r", "jev_model": JEV_MODEL,
+              "sessions": first}
+    carry = reusable(record, "r")
+    assert len(carry) == 4 and not any(k[0] == "o" and k[2] == "with" for k in carry), carry
+
+    # Only the package changed: the with arm runs again, the without arm is carried.
+    fake = Fake()
+    second = run_job(fake, cases, session=fake_session, inputs=inputs_of("t2"), carry=carry)
+    assert fake.order == ["p:with", "o:with", "n:with"], fake.order
+    assert [s.get("carried_from") for s in second] == [None, None, None, "x--v0.1.0", "x--v0.1.0"], second
+    assert second[3]["nouls"] == {"q": 1.0} and second[3]["client_version"] == "1", second[3]
+    assert all(s["inputs"] for s in second), second
+    # Nothing changed: only the failed session runs again.
+    fake = Fake()
+    third = run_job(fake, cases, session=fake_session, inputs=inputs_of("t1"), carry=carry)
+    assert fake.order == ["o:with"], fake.order
+    # A session carried twice names the run that measured it.
+    again = reusable({"tag": "x--v0.1.1", "client_version": "2", "rubric_sha256": "r", "jev_model": JEV_MODEL,
+                      "sessions": third}, "r")
+    assert {s["carried_from"] for k, s in again.items() if k[0] != "o"} == {"x--v0.1.0"}, again
+    # A new rubric or Jev model keeps the answers and drops the scores.
+    assert all(s["nouls"] is None for s in reusable(record, "r2").values())
+    assert all(s["nouls"] is None for s in reusable(record | {"jev_model": "jev-0"}, "r").values())
+    # A fresh session on another model makes the carried ones run again.
+    fake = Fake("m2")
+    moved = run_job(fake, cases, session=fake_session, inputs=inputs_of("t2"), carry=carry)
+    assert fake.order == ["p:with", "o:with", "n:with", "switch", "p:without", "o:without", "back"], fake.order
+    assert not any(s.get("carried_from") for s in moved), moved
+
+    # A refused key fails every fresh session, even when carried ones are fine.
+    refused = [s | {"error": "exit 1"} if not s.get("carried_from") else s for s in second]
+    assert run_broke(refused) and not run_broke(second)
+    assert not run_broke([s for s in third if s.get("carried_from")])
+    # A carried answer keeps its scores, and an answer graded again loses its old error.
+    regraded = [s | {"nouls": None, "grade_error": "jev 500"} if s["case"] == "p" else s for s in third]
+    asked = []
+    grade_sessions(regraded, cases, {"q": "Q"}, grader=lambda r, a, q: asked.append(r) or {"q": 0.5})
+    assert asked == ["P", "O", "P"] and [s["grade_error"] for s in regraded] == [None] * 5, (asked, regraded)
+    assert regraded[4]["nouls"] == {"q": 1.0}, regraded[4]
+    # A refused Jev key fails every grade made here, while kept scores stay.
+    assert run_broke([s | {"nouls": None, "grade_error": "jev 401"} if s["kind"] == "positive" and s is not regraded[4]
+                      else s for s in regraded])
+
+    runs = [{"skill": "s", "client": "claude", "repeat": r, "always_on": False, "client_version": "2",
+             "sessions": [s | {"cost_usd": 1.0, "tokens": None} for s in second]} for r in (1, 2, 3)]
+    assert versions(runs) == "2, 1", versions(runs)
+    row = next(l for l in report_tag("x--v0.1.1", "x", runs, [], None, set(), "u", "o/r", False)
+               if l.startswith("| s | claude"))
+    assert "$9.00, 6 carried" in row, row
+
+
 def selftest() -> int:
     _selftest_parsers()
     _selftest_core()
+    _selftest_carry()
     _selftest_publish()
     _selftest_gh()
     _selftest_registry()
@@ -1809,6 +2029,8 @@ def main() -> int:
         r.add_argument(name, required=True)
     r.add_argument("--client", required=True, choices=CLIENTS)
     r.add_argument("--repeat", required=True, type=int)
+    r.add_argument("--released", default=str(REPO_ROOT), help="checkout of the released tag")
+    r.add_argument("--fresh", action="store_true", help="run every session, carrying none over")
     g = sub.add_parser("grade", help="grade the positive answers of some runs with Jev")
     g.add_argument("--runs", required=True)
     g.add_argument("--out", required=True)

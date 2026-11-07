@@ -480,10 +480,10 @@ def grade(request_text: str, answer: str, questions: dict, send=jev_request) -> 
 
 
 # The tree a client installs, by path and content, less what changes on every
-# release: each manifest folder carries the version, and carried the old
-# repository name until the rename. README.md and LICENSE are listing text. A
-# manifest's description stays in, because whether a client shows it to the
-# model was not checked.
+# release or no session reads: the manifests' `version`, the listing icon in a
+# manifest folder, README.md and LICENSE. The rest of a manifest stays in: the
+# Codex manifest names the hooks file, and whether a client shows the
+# description to the model was not checked.
 MANIFEST_DIRS = (".claude-plugin", ".codex-plugin", ".cursor-plugin")
 LISTING_FILES = ("README.md", "LICENSE")
 
@@ -495,7 +495,8 @@ def package_tree(bundle: Path) -> str:
         if rel.parts[0] in MANIFEST_DIRS:
             if path.name != "plugin.json":
                 continue
-            content = json.dumps(json.loads(path.read_text()).get("description")).encode()
+            manifest = {k: v for k, v in json.loads(path.read_text()).items() if k != "version"}
+            content = json.dumps(manifest, sort_keys=True).encode()
         elif rel.as_posix() in LISTING_FILES:
             continue
         else:
@@ -511,8 +512,8 @@ def package_tree(bundle: Path) -> str:
 # package, not the skill's folder: a skill reads its siblings' files
 # (triangulate's SKILL.md reads ../vet-sources/SKILL.md), and Codex counts such
 # a read as a load of the sibling. The without arm runs without the package.
-def session_inputs(adapter, case: dict, arm: str, tree: str) -> str:
-    parts = [json.dumps(adapter.command(case["prompt"], arm))] + ([tree] if arm == "with" else [])
+def session_inputs(adapter, case: dict, arm: str, tree: str | None) -> str:
+    parts = [json.dumps(adapter.command(case["prompt"], arm))] + ([tree or ""] if arm == "with" else [])
     return hashlib.sha256("\0".join(parts).encode()).hexdigest()
 
 
@@ -526,7 +527,7 @@ def reusable(record: dict | None, rubric_sha256: str) -> dict:
     return {(s["case"], s["kind"], s["arm"], s["inputs"]):
             s | {"carried_from": s.get("carried_from") or record["tag"],
                  "client_version": s.get("client_version") or record.get("client_version"),
-                 "nouls": s["nouls"] if scores_hold else None, "grade_error": None}
+                 "nouls": s["nouls"] if scores_hold else None}
             for s in record["sessions"] if s.get("inputs") and not s["error"] and not s.get("grade_error")}
 
 
@@ -575,7 +576,6 @@ def grade_sessions(sessions: list[dict], cases: dict, questions: dict, grader=gr
     for s in sessions:
         if s["kind"] != "positive" or s["error"] or s["nouls"] is not None:
             continue
-        s["grade_error"] = None
         try:
             s["nouls"] = grader(prompts[s["case"]], s["answer"], applicable(questions, s["case"]))
         except JevError as e:
@@ -592,12 +592,17 @@ def redact(text: str) -> str:
 
 # A refused client key fails every session, and a refused Jev key fails every
 # grade. Either means the run itself broke. A carried session ran in an earlier
-# run, so it says nothing about this run's key unless it was graded again here.
+# run, so it says nothing about this run's keys unless it was graded again here.
+# While the carried sessions outnumber the failed ones, the record is still
+# mostly measured, and the failures stay in the summary's Excluded list.
 def run_broke(sessions: list[dict]) -> bool:
     fresh = [s for s in sessions if not s.get("carried_from")]
-    gradable = [s for s in sessions if s["kind"] == "positive" and not s["error"]
-                and (not s.get("carried_from") or s["grade_error"])]
-    return (bool(fresh) and all(s["error"] for s in fresh)) or (bool(gradable) and all(s["grade_error"] for s in gradable))
+    carried = len(sessions) - len(fresh)
+    graded_here = [s for s in sessions if s["kind"] == "positive" and not s["error"]
+                   and (not s.get("carried_from") or s["grade_error"])]
+    kept = sum(1 for s in sessions if s.get("carried_from") and s["nouls"])
+    return ((len(fresh) > carried and all(s["error"] for s in fresh))
+            or (len(graded_here) > kept and all(s["grade_error"] for s in graded_here)))
 
 
 def metrics(sessions: list[dict], always_on: bool = False) -> dict:
@@ -734,7 +739,8 @@ def cmd_run(args) -> int:
     cases, questions = load_cases(skill_dir)
     adapter = CLIENTS[args.client][0](package, args.skill)
     version = client_version(args.client)
-    tree = package_tree(Path(args.released) / "bundles" / package)
+    # A run by hand may measure a tag from before the bundles/ layout.
+    tree = None if args.fresh else package_tree(Path(args.released) / "bundles" / package)
     carry = {} if args.fresh else reusable(baseline_record(package, args.tag, args.skill, args.client, args.repeat),
                                            sha256(skill_dir / "rubric.yaml"))
     sessions = run_job(adapter, cases, held_out=args.repeat == 1, carry=carry,
@@ -924,7 +930,7 @@ def fetch_record(owner: str, bearer: str, tag_name: str) -> dict | None:
     return json.loads(blob_body) if blob_body is not None else None
 
 
-def previous_results(owner: str, package: str, tag: str, bearer: str | None = None) -> dict | None:
+def previous_results(owner: str, package: str, tag: str, bearer: str | None = None, only=None) -> dict | None:
     bearer = bearer or ghcr_token(owner, "pull")
     current_run_id = os.environ.get("GITHUB_RUN_ID") or None
     target_key = version_key(tag)
@@ -944,6 +950,8 @@ def previous_results(owner: str, package: str, tag: str, bearer: str | None = No
         grouped.setdefault((skill, client), {}).setdefault((cand_tag, stamp, int(attempt)), {})[int(rep)] = name
     baseline = []
     for skill, client in sorted(grouped):
+        if only and (skill, client) != only:
+            continue
         candidates = sorted(
             ((cand_tag, stamp, attempt, reps) for (cand_tag, stamp, attempt), reps in grouped[(skill, client)].items()
              if set(reps) == {1, 2, 3}),
@@ -966,7 +974,7 @@ def previous_results(owner: str, package: str, tag: str, bearer: str | None = No
 # baseline itself. The registry package is public, so a run job reads it with
 # an anonymous token.
 def baseline_record(package: str, tag: str, skill: str, client: str, repeat: int) -> dict | None:
-    found = previous_results(ghcr_owner(os.environ.get("GITHUB_REPOSITORY", "")), package, tag)
+    found = previous_results(ghcr_owner(os.environ.get("GITHUB_REPOSITORY", "")), package, tag, only=(skill, client))
     return next((r for r in (found or {}).get("runs", [])
                  if r["skill"] == skill and r["client"] == client and r["repeat"] == repeat), None)
 
@@ -1901,12 +1909,12 @@ def _selftest_folders() -> None:
 
 def _selftest_carry() -> None:
     with tempfile.TemporaryDirectory() as tmp:
-        def tree(version, readme, skill_text, description="D"):
+        def tree(version, readme, skill_text, description="D", hooks="./hooks/codex.json"):
             root = Path(tmp, f"t{len(list(Path(tmp).iterdir()))}")
             for folder in MANIFEST_DIRS:
                 (root / folder).mkdir(parents=True)
                 (root / folder / "plugin.json").write_text(json.dumps(
-                    {"version": version, "homepage": f"h{version}", "description": description}))
+                    {"version": version, "description": description, "hooks": hooks}))
             (root / ".claude-plugin" / "icon.png").write_bytes(version.encode())
             (root / "skills" / "s").mkdir(parents=True)
             (root / "skills" / "s" / "SKILL.md").write_text(skill_text)
@@ -1918,6 +1926,7 @@ def _selftest_carry() -> None:
         assert tree("0.1.1", "new", "rules") == base
         assert tree("0.1.1", "old", "rules, edited") != base
         assert tree("0.1.1", "old", "rules", description="E") != base
+        assert tree("0.1.1", "old", "rules", hooks="./hooks/other.json") != base
         Path(tmp, "empty", "README.md").parent.mkdir()
         Path(tmp, "empty", "README.md").write_text("r")
         _expect_error(lambda: package_tree(Path(tmp, "empty")), "no package files")
@@ -1988,8 +1997,11 @@ def _selftest_carry() -> None:
     refused = [s | {"error": "exit 1"} if not s.get("carried_from") else s for s in second]
     assert run_broke(refused) and not run_broke(second)
     assert not run_broke([s for s in third if s.get("carried_from")])
-    # A carried answer keeps its scores, and an answer graded again loses its old error.
-    regraded = [s | {"nouls": None, "grade_error": "jev 500"} if s["case"] == "p" else s for s in third]
+    # One flaky session among carried ones is excluded, not a broken run.
+    flaky = [s for s in third if s.get("carried_from")] + [_session("o", "positive", "with", False, error="timeout")]
+    assert not run_broke(flaky)
+    # A carried answer keeps its scores while they hold.
+    regraded = [s | {"nouls": None} if s["case"] == "p" else s for s in third]
     asked = []
     grade_sessions(regraded, cases, {"q": "Q"}, grader=lambda r, a, q: asked.append(r) or {"q": 0.5})
     assert asked == ["P", "O", "P"] and [s["grade_error"] for s in regraded] == [None] * 5, (asked, regraded)

@@ -49,7 +49,8 @@ how a case behaved against real clients. `tools/evals.py` writes them
   `case`, `kind`, `arm`, `fired`, `answer`, `cost_usd`, `error`, `nouls`
   (Jev's score per question id), `inputs` and `client_version`. A session
   copied from an earlier run also records `carried_from`, the tag it ran on.
-  It measures that tag's client, not the record's.
+  It measures that tag's client, not the record's, so `improvement` can
+  mix two client versions.
 - **Comparable.** Two runs are comparable when both hashes are equal and
   both recorded the same `model`. `compare` applies the same rule. A record
   measures the folder at the analysed commit when its hashes equal the
